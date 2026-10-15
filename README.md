@@ -113,3 +113,17 @@ python -m news_archive --db data/archive.sqlite3 --export-jsonl data/archive.jso
 - X 帖子仍为 P1，不在本 workflow
 
 推到 GitHub 后在仓库 Settings → Actions 确认已启用；私有仓的 schedule 需要至少一次成功的 workflow 或手动触发来激活。
+
+## 静态新闻浏览器（GitHub Pages）
+
+只读网页版，展示归档数据（新闻 / 专题 / X 帖子），自动部署到 GitHub Pages。
+
+- **访问**：`https://<username>.github.io/<repo>/`（需启用 Pages）
+- **更新**：`daily-fetch` 完成后自动刷新（或手动触发 `deploy-pages` workflow）
+- **本地预览**：
+  ```bash
+  python3 scripts/export_site_data.py  # 导出 JSON
+  cd site && python3 -m http.server 8000
+  # 访问 http://localhost:8000
+  ```
+- **详细文档**：见 [docs/SITE.md](docs/SITE.md)
