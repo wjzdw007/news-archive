@@ -18,6 +18,7 @@ class Article:
     fetched_at: str  # ISO-8601 UTC
     content_snapshot: str | None  # RSS body snapshot for offline read
     status: Status = "active"
+    topic_id: str | None = None  # UUID for clustering same-event articles
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

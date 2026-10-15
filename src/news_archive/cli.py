@@ -7,6 +7,7 @@ import json
 import sys
 from pathlib import Path
 
+from .clustering import assign_topic_ids
 from .fetch import fetch_all
 from .sources import SOURCES
 from .store import Store
@@ -51,6 +52,13 @@ def main(argv: list[str] | None = None) -> int:
             "inserted": inserted,
         }
         stats["inserted"] = int(stats["inserted"]) + inserted
+
+    # Cluster articles by topic_id
+    articles = store.get_articles_for_clustering()
+    clustered = assign_topic_ids(articles)
+    url_to_topic = {a["url"]: a["topic_id"] for a in clustered if a.get("topic_id")}
+    clustered_count = store.update_topic_ids(url_to_topic)
+    stats["clustered"] = clustered_count
 
     export_count = None
     if args.export_jsonl:
