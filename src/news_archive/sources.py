@@ -1,0 +1,81 @@
+"""P0 sources: non-official primary + international + 1 official control."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class Source:
+    id: str
+    name: str
+    feed_url: str
+    category: str
+    role: str  # primary | control
+
+
+SOURCES: tuple[Source, ...] = (
+    Source(
+        id="36kr",
+        name="36氪",
+        feed_url="https://www.36kr.com/feed",
+        category="科技商业",
+        role="primary",
+    ),
+    Source(
+        id="tmtpost",
+        name="钛媒体",
+        feed_url="https://www.tmtpost.com/rss.xml",
+        category="科技商业",
+        role="primary",
+    ),
+    Source(
+        id="geekpark",
+        name="极客公园",
+        feed_url="https://www.geekpark.net/rss",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="ftchinese",
+        name="FT中文网",
+        feed_url="https://www.ftchinese.com/rss/news",
+        category="财经·独立",
+        role="primary",
+    ),
+    Source(
+        id="bbc_zh_simp",
+        name="BBC中文(简)",
+        feed_url="https://feeds.bbci.co.uk/zhongwen/simp/rss.xml",
+        category="综合·独立",
+        role="primary",
+    ),
+    Source(
+        id="guardian_world",
+        name="Guardian World",
+        feed_url="https://www.theguardian.com/world/rss",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="nyt_world",
+        name="NYT World",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="aljazeera",
+        name="Al Jazeera",
+        feed_url="https://www.aljazeera.com/xml/rss/all.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="people_finance",
+        name="人民网·财经",
+        feed_url="https://www.people.com.cn/rss/finance.xml",
+        category="官方",
+        role="control",
+    ),
+)

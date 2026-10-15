@@ -1,0 +1,19 @@
+[project]
+name = "news-archive"
+version = "0.1.0"
+description = "Daily Chinese news archive — AI-friendly permanent storage"
+requires-python = ">=3.11"
+dependencies = [
+  "feedparser>=6.0.11",
+  "httpx>=0.27.0",
+]
+
+[project.scripts]
+news-archive = "news_archive.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

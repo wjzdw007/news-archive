@@ -1,0 +1,73 @@
+name: daily-fetch
+
+on:
+  schedule:
+    # every 4 hours UTC — P0 SLA published_at→fetched_at ≤ 4h
+    - cron: "0 */4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-fetch
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      - name: Fetch feeds into SQLite + JSONL
+        id: fetch
+        run: |
+          set -euo pipefail
+          mkdir -p data
+          PYTHONPATH=src python -m news_archive \
+            --db data/archive.sqlite3 \
+            --export-jsonl data/archive.jsonl \
+            --json | tee data/run-stats.json
+
+      - name: Fail if no articles inserted and DB empty
+        run: |
+          python - << 'PY'
+          import json, sqlite3, sys
+          from pathlib import Path
+          stats = json.loads(Path("data/run-stats.json").read_text())
+          if stats.get("errors"):
+              print("source errors:", stats["errors"], file=sys.stderr)
+              sys.exit(1)
+          db = Path("data/archive.sqlite3")
+          if not db.exists():
+              print("missing sqlite db", file=sys.stderr)
+              sys.exit(1)
+          n = sqlite3.connect(db).execute("SELECT COUNT(*) FROM articles").fetchone()[0]
+          print(f"articles_in_db={n}")
+          if n < 1:
+              print("archive is empty after fetch", file=sys.stderr)
+              sys.exit(1)
+          PY
+
+      - name: Upload archive artifact
+        if: always() && hashFiles('data/archive.sqlite3') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: news-archive-${{ github.run_id }}
+          path: |
+            data/archive.sqlite3
+            data/archive.jsonl
+            data/run-stats.json
+          if-no-files-found: error
+          retention-days: 90
