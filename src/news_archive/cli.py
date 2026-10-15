@@ -1,4 +1,4 @@
-"""CLI: fetch → dedupe → store → enrich thin summaries → optional JSONL export."""
+"""CLI: fetch → dedupe → store → enrich missing snapshots → optional JSONL export."""
 
 from __future__ import annotations
 
@@ -59,8 +59,9 @@ def main(argv: list[str] | None = None) -> int:
         }
         stats["inserted"] = int(stats["inserted"]) + inserted
 
-    # Thin RSS summaries: fetch original page into private content_snapshot,
-    # then write a ≤280 public summary. Soft-fail — never fail the RSS job.
+    # Archive-first: fetch original page into private content_snapshot when
+    # the snapshot is missing/unusable. Public summary stays ≤280; only fill
+    # it when empty/<80. Soft-fail — never fail the RSS job.
     try:
         stats["enrich"] = enrich_store(store)
     except Exception as exc:  # noqa: BLE001 — isolate from persist / clustering

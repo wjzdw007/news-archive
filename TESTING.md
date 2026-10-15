@@ -215,15 +215,16 @@ PYTHONPATH=src python tests/test_dedup.py
 
 **注意**：此测试使用固定的种子数据，不需要网络连接或实时 RSS 源。测试验证 `INSERT OR IGNORE` 和 URL PRIMARY KEY 约束的正确性。
 
-### 薄摘要原文补抓（产品门禁）
+### 归档优先原文补抓（产品门禁）
 ```bash
 PYTHONPATH=src python tests/test_enrich.py
 ```
 
-- people.cn 空摘要 fixture：入库后有 `content_snapshot`，公开 summary 80–280 字
-- 公开 JSON 全量扫描不含 `content_snapshot` 键
-- 模拟 403/付费墙：该行软失败，主抓取仍绿
-- 已有合格长摘要：不发起 enrich HTTP
+- 合格长公开摘要但缺 snapshot：enrich 后库内有 snapshot；公开 JSON 无 `content_snapshot` 键
+- 已有可用 snapshot：第二次运行不再发起 HTTP
+- 模拟 403/付费墙：该行软失败，主抓取仍绿（exit 0）
+- 公开 JSON 全量扫描：无 `content_snapshot` 键；无公开 summary >280
+- people.cn 空摘要 fixture：入库后有 `content_snapshot`，公开 summary 80–280 字（回归）
 
 ### 标记失效 URL
 
