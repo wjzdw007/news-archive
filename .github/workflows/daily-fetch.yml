@@ -40,25 +40,15 @@ jobs:
             --export-jsonl data/archive.jsonl \
             --json | tee data/run-stats.json
 
-      - name: Fail if no articles inserted and DB empty
+      - name: Run P0 acceptance validation
         run: |
-          python - << 'PY'
-          import json, sqlite3, sys
-          from pathlib import Path
-          stats = json.loads(Path("data/run-stats.json").read_text())
-          if stats.get("errors"):
-              print("source errors:", stats["errors"], file=sys.stderr)
-              sys.exit(1)
-          db = Path("data/archive.sqlite3")
-          if not db.exists():
-              print("missing sqlite db", file=sys.stderr)
-              sys.exit(1)
-          n = sqlite3.connect(db).execute("SELECT COUNT(*) FROM articles").fetchone()[0]
-          print(f"articles_in_db={n}")
-          if n < 1:
-              print("archive is empty after fetch", file=sys.stderr)
-              sys.exit(1)
-          PY
+          PYTHONPATH=src python -m news_archive.validate \
+            --db data/archive.sqlite3 \
+            --stats data/run-stats.json
+
+      - name: Test high-frequency dedup
+        run: |
+          PYTHONPATH=src python tests/test_dedup.py
 
       - name: Upload archive artifact
         if: always() && hashFiles('data/archive.sqlite3') != ''
