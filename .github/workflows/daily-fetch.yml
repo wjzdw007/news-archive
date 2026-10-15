@@ -81,9 +81,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Copy archive.sqlite3 to temp location BEFORE switching branches
-          # (prevents "same file" error when creating orphan data branch)
+          # Copy archive.sqlite3 + validation-meta to temp BEFORE switching branches
+          # (orphan/git rm wipes workspace; also avoids same-file cp on sqlite)
           cp "$GITHUB_WORKSPACE/data/archive.sqlite3" "$RUNNER_TEMP/archive.sqlite3"
+          if [ -f "$GITHUB_WORKSPACE/data/validation-meta.json" ]; then
+            cp "$GITHUB_WORKSPACE/data/validation-meta.json" "$RUNNER_TEMP/validation-meta.json"
+          fi
           
           # Try to checkout data branch, or create it as orphan if it doesn't exist
           if git fetch origin data:data 2>/dev/null; then
@@ -95,20 +98,13 @@ jobs:
             mkdir -p data
           fi
           
-          # Copy from temp location to data branch
+          # Copy sqlite from temp to data branch
           cp "$RUNNER_TEMP/archive.sqlite3" data/archive.sqlite3
           
-          # Copy validation metadata for consecutive latency check
-          if [ -f "$RUNNER_TEMP/validation-meta.json" ]; then
-            cp "$RUNNER_TEMP/validation-meta.json" "$RUNNER_TEMP/validation-meta-backup.json"
-          fi
-          
-          # Read latency_sla_passed from validation metadata
+          # Read latency_sla_passed from TEMP copy (workspace meta is gone after checkout)
           LATENCY_PASSED="null"
-          if [ -f "$GITHUB_WORKSPACE/data/validation-meta.json" ]; then
-            # Copy to temp before switching branches
-            cp "$GITHUB_WORKSPACE/data/validation-meta.json" "$RUNNER_TEMP/validation-meta.json"
-            LATENCY_PASSED=$(cat "$RUNNER_TEMP/validation-meta.json" | python3 -c "import sys, json; print(json.dumps(json.load(sys.stdin).get('latency_sla_passed', None)))" 2>/dev/null || echo "null")
+          if [ -f "$RUNNER_TEMP/validation-meta.json" ]; then
+            LATENCY_PASSED=$(python3 -c "import json; print(json.dumps(json.load(open('$RUNNER_TEMP/validation-meta.json')).get('latency_sla_passed', None)))" 2>/dev/null || echo "null")
           fi
           
           # Create run metadata with latency SLA status for consecutive check
