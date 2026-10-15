@@ -16,7 +16,7 @@ class Article:
     summary: str | None
     source: str  # source id
     fetched_at: str  # ISO-8601 UTC
-    content_snapshot: str | None  # RSS body snapshot for offline read
+    content_snapshot: str | None  # private body snapshot; never exported to Pages
     status: Status = "active"
     topic_id: str | None = None  # UUID for clustering same-event articles
 

@@ -1,4 +1,4 @@
-"""CLI: fetch → dedupe → store → optional JSONL export."""
+"""CLI: fetch → dedupe → store → enrich thin summaries → optional JSONL export."""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ from .briefs import (
     topics_needing_briefs,
 )
 from .clustering import assign_topic_ids
+from .enrich import enrich_store
 from .fetch import fetch_all
 from .sources import SOURCES
 from .store import Store
@@ -57,6 +58,14 @@ def main(argv: list[str] | None = None) -> int:
             "inserted": inserted,
         }
         stats["inserted"] = int(stats["inserted"]) + inserted
+
+    # Thin RSS summaries: fetch original page into private content_snapshot,
+    # then write a ≤280 public summary. Soft-fail — never fail the RSS job.
+    try:
+        stats["enrich"] = enrich_store(store)
+    except Exception as exc:  # noqa: BLE001 — isolate from persist / clustering
+        stats["enrich_error"] = type(exc).__name__
+        print(f"enrich soft-fail (job continues): {type(exc).__name__}", file=sys.stderr)
 
     # Recluster: clear topic_ids not covered by an ok brief, then assign
     cleared = store.clear_topic_ids_without_ok_brief()

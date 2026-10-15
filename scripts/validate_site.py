@@ -17,6 +17,11 @@ def validate_json_file(filepath: Path, expected_keys: list[str]) -> tuple[bool, 
         
         if not isinstance(data, list):
             return False, f"{filepath.name} must be an array"
+
+        raw = filepath.read_text(encoding="utf-8")
+        if filepath.name in ("articles.json", "daily_briefs.json", "topics.json", "x_posts.json"):
+            if "content_snapshot" in raw:
+                return False, f"{filepath.name} must not include content_snapshot"
         
         if data and expected_keys:
             first_item = data[0]

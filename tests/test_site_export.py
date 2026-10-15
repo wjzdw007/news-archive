@@ -315,6 +315,7 @@ def test_export_articles_strips_html_from_summary():
         assert "</p>" not in summary
         assert "FSB said reporter was arrested on Sakhalin." in summary
         assert "content_snapshot" not in exported[0]
+        assert len(summary) <= 280
 
         store.close()
 
