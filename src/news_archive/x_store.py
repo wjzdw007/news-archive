@@ -78,6 +78,20 @@ class XStore:
         self._conn.commit()
         return cur.rowcount == 1
 
+
+    def active_ids_for_author(self, author: str) -> list[str]:
+        rows = self._conn.execute(
+            "SELECT post_id FROM x_posts WHERE author = ? AND status = 'active'",
+            (author.lstrip("@"),),
+        ).fetchall()
+        return [r["post_id"] for r in rows]
+
+    def count_by_author(self) -> dict[str, int]:
+        rows = self._conn.execute(
+            "SELECT author, COUNT(*) AS n FROM x_posts GROUP BY author"
+        ).fetchall()
+        return {r["author"]: r["n"] for r in rows}
+
     def get(self, post_id: str) -> dict | None:
         row = self._conn.execute(
             "SELECT * FROM x_posts WHERE post_id = ?", (post_id,)
