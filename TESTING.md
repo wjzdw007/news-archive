@@ -77,16 +77,19 @@
 **要求**：短时间内连续运行抓取任务不应产生重复 URL。
 
 **检查逻辑**：
-1. 对同一数据库运行两次完整抓取
-2. ✅ 第二次运行插入 0 条新记录 → 通过
-3. ❌ 第二次插入 >0 条 → 失败（重复去重逻辑失效）
+1. 使用固定测试数据创建一组文章（包含唯一的 URL）
+2. 第一次插入应成功插入所有文章
+3. ✅ 第二次插入相同文章应插入 0 条（PRIMARY KEY 约束生效）→ 通过
+4. ❌ 第二次插入 >0 条 → 失败（重复去重逻辑失效）
 
 **场景**：
 - 手动触发 + 定时触发重叠
 - 失败重试
 - 多并发运行（虽然 workflow 配置了 `cancel-in-progress: false`）
 
-**实施**：`tests/test_dedup.py`（集成测试）
+**实施**：`tests/test_dedup.py`（单元测试，使用种子数据，不依赖实时 RSS 源）
+
+**注意**：此测试已从实时 RSS 抓取改为使用固定测试数据，以避免源在两次抓取之间发布新内容导致的误报失败。
 
 ---
 
@@ -107,9 +110,9 @@
    - `git show data:data/archive.sqlite3 > data/archive.sqlite3`
    - 若 `data` 分支或文件不存在 → 从空数据库开始（首次运行正常）
 
-2. **验证阶段**（fetch + P0 验收 + 高频去重）
+2. **验证阶段**（fetch + P0 验收）
 
-3. **持久化阶段**（验证成功后）：
+3. **持久化阶段**（验证成功后立即执行，在其他测试之前）：
    - Checkout `data` 分支（不存在则创建 orphan branch）
    - 将更新的 `data/archive.sqlite3` 和 `data/LAST_RUN.json` commit 并 push
    - 冲突处理：`git pull --rebase origin data` + 最多重试 3 次
@@ -121,12 +124,14 @@
 - **禁止 force-push**：并发运行时保留所有提交历史
 - **main 分支无大文件**：`.gitignore` 已排除 `*.sqlite3`
 - **Gone 状态持久化**：`status='gone'` 的 URL 在 `data` 分支数据库中保留
+- **持久化优先**：数据库持久化在 P0 验收通过后立即执行，不等待后续单元测试（如 `test_dedup.py`），确保即使非关键测试失败也能创建/更新 `data` 分支
 
 **检查步骤**：
 
 #### 1. 运行 P0 验收验证
 ```yaml
 - name: Run P0 acceptance validation
+  id: validate
   run: |
     PYTHONPATH=src python -m news_archive.validate \
       --db data/archive.sqlite3 \
@@ -134,18 +139,30 @@
 ```
 
 - 执行所有上述 4 项检查（增量、去重、字段、时效）
-- 任一失败 → **workflow 失败（红）**
+- 任一失败 → **workflow 失败（红）**，不执行后续步骤
 
-#### 2. 测试高频去重
+#### 2. 持久化数据库
+```yaml
+- name: Persist SQLite to data branch
+  if: steps.validate.outcome == 'success'
+  run: |
+    # ... 详见完整 workflow
+```
+
+- **仅在 P0 验收通过后执行**
+- 先于单元测试运行，确保验收通过的数据立即持久化
+- 单元测试失败不会阻止数据库更新
+
+#### 3. 测试高频去重
 ```yaml
 - name: Test high-frequency dedup
   run: |
     PYTHONPATH=src python tests/test_dedup.py
 ```
 
-- 临时数据库运行两次抓取
-- 验证第二次插入为 0
-- 失败 → **workflow 失败（红）**
+- 使用种子测试数据（不依赖实时 RSS）运行两次插入
+- 验证第二次插入为 0（PRIMARY KEY 约束）
+- 失败 → **workflow 失败（红）**，但不影响已完成的数据持久化
 
 ---
 
@@ -173,7 +190,7 @@ PYTHONPATH=src python -m news_archive.validate \
 PYTHONPATH=src python tests/test_dedup.py
 ```
 
-**注意**：此测试会发起真实的网络请求抓取 RSS feeds，需要网络连接。
+**注意**：此测试使用固定的种子数据，不需要网络连接或实时 RSS 源。测试验证 `INSERT OR IGNORE` 和 URL PRIMARY KEY 约束的正确性。
 
 ### 标记失效 URL
 

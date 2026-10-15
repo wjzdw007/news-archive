@@ -63,17 +63,14 @@ jobs:
             --json | tee data/run-stats.json
 
       - name: Run P0 acceptance validation
+        id: validate
         run: |
           PYTHONPATH=src python -m news_archive.validate \
             --db data/archive.sqlite3 \
             --stats data/run-stats.json
 
-      - name: Test high-frequency dedup
-        run: |
-          PYTHONPATH=src python tests/test_dedup.py
-
       - name: Persist SQLite to data branch
-        if: success()
+        if: steps.validate.outcome == 'success'
         run: |
           set -euo pipefail
           
@@ -134,6 +131,10 @@ jobs:
           
           # Return to original branch
           git checkout "${{ github.ref_name }}"
+
+      - name: Test high-frequency dedup
+        run: |
+          PYTHONPATH=src python tests/test_dedup.py
 
       - name: Upload archive artifact
         if: always() && hashFiles('data/archive.sqlite3') != ''
