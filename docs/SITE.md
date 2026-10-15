@@ -7,10 +7,14 @@
 ### 三个 Tab
 
 1. **新闻** (`/` 或 `#news`)
-   - 列表：按 `published_at` 倒序展示所有文章（缺失 / null / 空则回退 `fetched_at`）
+   - 列表：先按 `published_at` 倒序（缺失 / null / 空则回退 `fetched_at`），再计算展示序
+   - **来源多样性**：展示位 1–50 内同一 `source` ≤ 6 条；被挤出的文章按时间序排在第 50 位之后（仍可滚动，总数不变）
+   - **36氪快讯**：URL 含 `newsflashes` 显示「快讯」角标；进入前 50 展示位的快讯默认折成一行「快讯 N 条」，展开后列出
+   - 非快讯优先占用来源上限名额（快讯不挤掉同源正式稿）
    - 展示：标题 / 来源 / 时间（同样优先 `published_at`，否则 `fetched_at`）/ 单行摘要
    - 详情：点击后展示 `summary` + 原文链接（**不含** `content_snapshot` 全文）；时间字段与列表一致
    - 关联专题：若 `topic_id` 存在，显示「查看相关专题」链接
+   - **X Tab 不套用上述展示序**
 
 2. **专题** (`#topics`)
    - 仅展示 `topic_briefs` 中 `status=ok` 的专题
@@ -161,6 +165,9 @@ news-archive/
 - [ ] 本地构建：`python scripts/export_site_data.py` 成功导出 JSON
 - [ ] 本地预览：`cd site && python -m http.server 8000` 打开页面正常
 - [ ] 新闻 Tab：列表显示、详情页（仅 summary + 原链，无全文快照）、返回列表、原文链接
+- [ ] 新闻 Tab 展示位 1–50：任一 `source` ≤ 6；被挤出的仍在 50 位之后
+- [ ] 36氪快讯：`newsflashes` URL 有「快讯」角标；前 50 快讯默认折行；非快讯 URL 无角标
+- [ ] 展示序 fixture：`PYTHONPATH=src python3 tests/test_news_display.py`
 - [ ] 专题 Tab：仅显示 status=ok 的专题、来源列表、gone 标记变灰
 - [ ] X Tab：帖子列表、作者/时间/文本、gone 变灰、原文链接
 - [ ] 移动端：手机浏览器打开，布局适配、可滚动、无横向溢出

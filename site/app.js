@@ -70,6 +70,106 @@ function compareArticleListTimeDesc(a, b) {
     return articleListTime(b).localeCompare(articleListTime(a));
 }
 
+// News Tab DISPLAY order (X Tab does not use these helpers):
+// 1) sort by published_at desc (fallback fetched_at)
+// 2) positions 1–50: same source ≤ 6; overflow stays in time order after 50
+// 3) non-flash articles take per-source cap slots before newsflashes
+// 4) newsflashes that land in the top-50 window fold into one row by default
+const NEWS_DISPLAY_WINDOW = 50;
+const NEWS_SOURCE_CAP = 6;
+let newsflashesExpanded = false;
+
+function isNewsflash(article) {
+    return typeof article.url === 'string' && article.url.includes('newsflashes');
+}
+
+function newsflashBadgeLabel(article) {
+    return isNewsflash(article) ? '快讯' : '';
+}
+
+function buildNewsDisplayModel(articles) {
+    const sorted = [...articles].sort(compareArticleListTimeDesc);
+    const sourceCounts = {};
+    const top = [];
+    const overflow = [];
+
+    function tryPlace(article) {
+        const src = article.source || '';
+        const count = sourceCounts[src] || 0;
+        if (top.length < NEWS_DISPLAY_WINDOW && count < NEWS_SOURCE_CAP) {
+            top.push(article);
+            sourceCounts[src] = count + 1;
+            return;
+        }
+        overflow.push(article);
+    }
+
+    // Non-flash first so they consume per-source cap slots before flashes.
+    for (const article of sorted) {
+        if (!isNewsflash(article)) tryPlace(article);
+    }
+    for (const article of sorted) {
+        if (isNewsflash(article)) tryPlace(article);
+    }
+
+    top.sort(compareArticleListTimeDesc);
+    overflow.sort(compareArticleListTimeDesc);
+
+    const topFlashes = top.filter(isNewsflash);
+    return {
+        sorted: sorted,
+        top: top,
+        overflow: overflow,
+        topFlashes: topFlashes,
+        foldCount: topFlashes.length,
+        displayOrder: top.concat(overflow),
+    };
+}
+
+function buildNewsDisplayRows(articles, options) {
+    const expanded = !!(options && options.expanded);
+    const model = buildNewsDisplayModel(articles);
+    const rows = [];
+    let foldInserted = false;
+
+    for (const article of model.top) {
+        if (isNewsflash(article)) {
+            if (!foldInserted) {
+                rows.push({ type: 'fold', count: model.foldCount, expanded: expanded });
+                if (expanded) {
+                    for (const flash of model.topFlashes) {
+                        rows.push({
+                            type: 'article',
+                            article: flash,
+                            badge: '快讯',
+                            inFold: true,
+                        });
+                    }
+                }
+                foldInserted = true;
+            }
+            continue;
+        }
+        rows.push({
+            type: 'article',
+            article: article,
+            badge: newsflashBadgeLabel(article),
+            inFold: false,
+        });
+    }
+
+    for (const article of model.overflow) {
+        rows.push({
+            type: 'article',
+            article: article,
+            badge: newsflashBadgeLabel(article),
+            inFold: false,
+        });
+    }
+
+    return Object.assign({}, model, { rows: rows });
+}
+
 // Render news list
 function renderNewsList() {
     const container = document.getElementById('news-list');
@@ -78,15 +178,29 @@ function renderNewsList() {
         container.innerHTML = '<div class="empty-state">暂无新闻</div>';
         return;
     }
-    
-    const html = [...articlesData].sort(compareArticleListTimeDesc).map(article => {
-        const date = formatDate(articleListTime(article));
-        const summary = article.summary || '无摘要';
-        const oneLineSummary = summary.length > 100 ? summary.substring(0, 100) + '...' : summary;
-        
-        return `
+
+    const { rows } = buildNewsDisplayRows(articlesData, { expanded: newsflashesExpanded });
+    container.innerHTML = rows.map(renderNewsRowHtml).join('');
+}
+
+function toggleNewsflashes(event) {
+    if (event) event.stopPropagation();
+    newsflashesExpanded = !newsflashesExpanded;
+    renderNewsList();
+}
+
+function renderArticleItemHtml(article) {
+    const date = formatDate(articleListTime(article));
+    const summary = article.summary || '无摘要';
+    const oneLineSummary = summary.length > 100 ? summary.substring(0, 100) + '...' : summary;
+    const badge = newsflashBadgeLabel(article);
+    const badgeHtml = badge
+        ? `<span class="newsflash-badge">${escapeHtml(badge)}</span>`
+        : '';
+
+    return `
             <div class="article-item" onclick="showArticleDetail('${escapeHtml(article.url)}')">
-                <h3 class="article-title">${escapeHtml(article.title)}</h3>
+                <h3 class="article-title">${badgeHtml}${badgeHtml ? ' ' : ''}${escapeHtml(article.title)}</h3>
                 <div class="article-meta">
                     <span class="source">${escapeHtml(article.source)}</span>
                     <span class="date">${date}</span>
@@ -94,9 +208,20 @@ function renderNewsList() {
                 <p class="article-summary">${escapeHtml(oneLineSummary)}</p>
             </div>
         `;
-    }).join('');
-    
-    container.innerHTML = html;
+}
+
+function renderNewsRowHtml(row) {
+    if (row.type === 'fold') {
+        const hint = row.expanded ? '点击收起' : '点击展开';
+        return `
+            <div class="newsflash-fold" role="button" tabindex="0" onclick="toggleNewsflashes(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleNewsflashes(event);}">
+                <span class="newsflash-badge">快讯</span>
+                <span class="newsflash-fold-label">快讯 ${row.count} 条</span>
+                <span class="newsflash-fold-hint">${hint}</span>
+            </div>
+        `;
+    }
+    return renderArticleItemHtml(row.article);
 }
 
 // Show article detail

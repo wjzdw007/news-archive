@@ -139,6 +139,47 @@ main {
     color: #3498db;
 }
 
+.newsflash-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #fff;
+    background-color: #e67e22;
+    padding: 0.12rem 0.4rem;
+    border-radius: 3px;
+    margin-right: 0.4rem;
+    vertical-align: middle;
+}
+
+.newsflash-fold {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px dashed #e67e22;
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+    background-color: #fff8f0;
+    transition: all 0.2s;
+}
+
+.newsflash-fold:hover {
+    box-shadow: 0 2px 8px rgba(230, 126, 34, 0.15);
+    border-color: #d35400;
+}
+
+.newsflash-fold-label {
+    font-weight: 600;
+    color: #d35400;
+}
+
+.newsflash-fold-hint {
+    margin-left: auto;
+    font-size: 0.8rem;
+    color: #b9770e;
+}
+
 .date {
     color: #95a5a6;
 }
