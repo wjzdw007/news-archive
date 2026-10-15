@@ -420,6 +420,32 @@ def test_chinese_title_clustering():
     print(f"✓ Chinese title clustering works")
 
 
+
+def test_threshold_0_7_does_not_merge_half_similar_en_pair():
+    """Product gold: Guardian/NYT-like rewrite ~0.525 must stay apart at 0.7."""
+    from news_archive.clustering import jaccard_similarity, normalize_title, should_merge
+
+    t1 = normalize_title("Russia detains Japanese journalist in Moscow")
+    t2 = normalize_title("Japanese reporter held by Russia after Moscow raid")
+    sim = jaccard_similarity(t1, t2)
+    # Document observed band; don't assert exact value
+    assert sim < 0.7, f"fixture unexpectedly ≥0.7: {sim}"
+    base = __import__("datetime").datetime.now(__import__("datetime").timezone.utc)
+    a1 = {
+        "title": "Russia detains Japanese journalist in Moscow",
+        "published_at": base.isoformat(),
+        "source": "guardian_world",
+        "status": "active",
+    }
+    a2 = {
+        "title": "Japanese reporter held by Russia after Moscow raid",
+        "published_at": (base + __import__("datetime").timedelta(hours=1)).isoformat(),
+        "source": "nyt_world",
+        "status": "active",
+    }
+    assert not should_merge(a1, a2, similarity_threshold=0.7)
+    print("✓ 0.7 still separates ~0.5 English rewrite pair")
+
 if __name__ == "__main__":
     # Run all acceptance tests
     print("Running topic_id clustering acceptance tests...\n")
@@ -441,5 +467,6 @@ if __name__ == "__main__":
     test_same_source_not_merged()
     test_integration_with_store()
     test_chinese_title_clustering()
+    test_threshold_0_7_does_not_merge_half_similar_en_pair()
     
     print("\n✅ All tests PASSED!")
