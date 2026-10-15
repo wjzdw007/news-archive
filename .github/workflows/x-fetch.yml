@@ -1,0 +1,21 @@
+name: x-fetch
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */4 * * *"
+jobs:
+  x-fetch:
+    runs-on: ubuntu-latest
+    # Soft-fail: job can fail without blocking daily-fetch (separate workflow)
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -r requirements.txt
+      - name: Fetch X (mock until live creds)
+        # Always soft: exit 0 on XFetchError via CLI default
+        run: |
+          mkdir -p data
+          PYTHONPATH=src python -m news_archive.x_cli --db data/archive.sqlite3 --mode mock --json | tee data/x-run-stats.json
