@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import json
 import os
+import sqlite3
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
+from news_archive.daily_brief import generate_for_dates
 from news_archive.daily_brief import main as daily_brief_main
 from news_archive.daily_briefs import (
     API_BASE_ENV,
@@ -20,6 +22,7 @@ from news_archive.daily_briefs import (
     articles_for_day,
     generate_daily_brief,
     group_sections,
+    input_fingerprint,
     redact_secrets,
     resolve_llm_config,
     resolve_model,
@@ -294,6 +297,233 @@ def test_store_daily_brief_query_omits_snapshot():
         store.close()
 
 
+def _seed_article(store: Store, **kwargs) -> None:
+    payload = {
+        "title": "SpaceX今日成功发射火星探测器",
+        "published_at": "2026-10-15T02:00:00+00:00",
+        "url": "https://example.com/1",
+        "summary": "SpaceX今日成功发射火星探测器，任务按计划进行。",
+        "source": "36kr",
+        "fetched_at": "2026-10-15T03:00:00+00:00",
+        "content_snapshot": SECRET_SNAPSHOT,
+        "status": "active",
+        "topic_id": "t-space",
+    }
+    payload.update(kwargs)
+    store.upsert(Article(**payload))
+
+
+def _counting_llm():
+    calls = {"n": 0}
+
+    def llm(grouped):
+        calls["n"] += 1
+        return _ok_llm(grouped)
+
+    return llm, calls
+
+
+def test_input_fingerprint_stable_sorted_by_url():
+    a = [
+        _art(url="https://b.com/1", title="B稿", source="tmtpost"),
+        _art(url="https://a.com/1", title="A稿", source="36kr"),
+    ]
+    b = list(reversed(a))
+    assert input_fingerprint(a) == input_fingerprint(b)
+    edited = [
+        _art(url="https://b.com/1", title="B稿改标题", source="tmtpost"),
+        _art(url="https://a.com/1", title="A稿", source="36kr"),
+    ]
+    assert input_fingerprint(a) != input_fingerprint(edited)
+
+
+def test_ok_same_fingerprint_kept_ok_skips_llm():
+    llm, calls = _counting_llm()
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        _seed_article(store)
+        first = generate_for_dates(
+            store, ["2026-10-15"], llm_fn=llm, model="deepseek/deepseek-flash"
+        )
+        assert first[0]["action"] == "inserted"
+        assert first[0]["status"] == "ok"
+        assert calls["n"] == 1
+        saved = store.get_daily_brief("2026-10-15")
+        assert saved["status"] == "ok"
+        assert saved["input_fingerprint"] == input_fingerprint(
+            articles_for_day(store.get_articles_for_daily_brief(), "2026-10-15")
+        )
+        second = generate_for_dates(
+            store, ["2026-10-15"], llm_fn=llm, model="deepseek/deepseek-flash"
+        )
+        assert second[0]["action"] == "kept_ok"
+        assert second[0]["status"] == "ok"
+        assert calls["n"] == 1
+        store.close()
+
+
+def test_ok_changed_article_set_updates_and_calls_llm():
+    llm, calls = _counting_llm()
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        _seed_article(store)
+        first = generate_for_dates(
+            store, ["2026-10-15"], llm_fn=llm, model="deepseek/deepseek-flash"
+        )
+        assert first[0]["action"] == "inserted"
+        assert calls["n"] == 1
+        _seed_article(
+            store,
+            url="https://example.com/2",
+            title="第二篇入选稿件标题足够长",
+            summary="新增稿件改变当日所选集合。",
+            source="tmtpost",
+        )
+        second = generate_for_dates(
+            store, ["2026-10-15"], llm_fn=llm, model="deepseek/deepseek-flash"
+        )
+        assert second[0]["action"] == "updated"
+        assert second[0]["status"] == "ok"
+        assert calls["n"] == 2
+        saved = store.get_daily_brief("2026-10-15")
+        assert saved["input_fingerprint"] == input_fingerprint(
+            articles_for_day(store.get_articles_for_daily_brief(), "2026-10-15")
+        )
+        store.close()
+
+
+def test_failed_or_empty_regenerated():
+    llm, calls = _counting_llm()
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        _seed_article(store)
+        store.upsert_daily_brief(
+            {
+                "date": "2026-10-15",
+                "generated_at": "2026-10-15T01:00:00+00:00",
+                "status": "failed",
+                "model": "",
+                "lede": "",
+                "sections": [],
+                "error": "missing DAILY_BRIEF_API_KEY or DAILY_BRIEF_API_BASE",
+                "input_fingerprint": input_fingerprint(
+                    articles_for_day(store.get_articles_for_daily_brief(), "2026-10-15")
+                ),
+            }
+        )
+        failed_run = generate_for_dates(
+            store, ["2026-10-15"], llm_fn=llm, model="deepseek/deepseek-flash"
+        )
+        assert failed_run[0]["action"] == "updated"
+        assert failed_run[0]["status"] == "ok"
+        assert calls["n"] == 1
+
+        store.upsert_daily_brief(
+            {
+                "date": "2026-10-14",
+                "generated_at": "2026-10-14T01:00:00+00:00",
+                "status": "empty",
+                "model": "",
+                "lede": "",
+                "sections": [],
+                "error": None,
+                "input_fingerprint": input_fingerprint([]),
+            }
+        )
+        _seed_article(
+            store,
+            url="https://example.com/empty-day",
+            published_at="2026-10-14T02:00:00+00:00",
+            fetched_at="2026-10-14T03:00:00+00:00",
+            title="空日后新增稿",
+            summary="空状态应重新生成日报。",
+        )
+        empty_run = generate_for_dates(
+            store, ["2026-10-14"], llm_fn=llm, model="deepseek/deepseek-flash"
+        )
+        assert empty_run[0]["action"] == "updated"
+        assert empty_run[0]["status"] == "ok"
+        assert calls["n"] == 2
+        store.close()
+
+
+def test_today_same_as_other_days_no_force_refresh():
+    """Today is not special: ok + same fingerprint → kept_ok, llm_fn not called."""
+    llm, calls = _counting_llm()
+    today = shanghai_calendar_date()
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        _seed_article(
+            store,
+            published_at=f"{today}T02:00:00+00:00",
+            fetched_at=f"{today}T03:00:00+00:00",
+        )
+        first = generate_for_dates(
+            store, [today], llm_fn=llm, model="deepseek/deepseek-flash"
+        )
+        assert first[0]["action"] == "inserted"
+        assert first[0]["status"] == "ok"
+        assert calls["n"] == 1
+        second = generate_for_dates(
+            store, [today], llm_fn=llm, model="deepseek/deepseek-flash"
+        )
+        assert second[0]["action"] == "kept_ok"
+        assert second[0]["status"] == "ok"
+        assert calls["n"] == 1
+        src = (ROOT / "src" / "news_archive" / "daily_brief.py").read_text(
+            encoding="utf-8"
+        )
+        assert "Always refresh today" not in src
+        assert "date != today" not in src
+        store.close()
+
+
+def test_store_migrates_input_fingerprint_column():
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "old.sqlite3"
+        conn = sqlite3.connect(path)
+        conn.executescript(
+            """
+            CREATE TABLE articles (
+                url TEXT PRIMARY KEY,
+                title TEXT NOT NULL,
+                published_at TEXT,
+                summary TEXT,
+                source TEXT NOT NULL,
+                fetched_at TEXT NOT NULL,
+                content_snapshot TEXT,
+                status TEXT NOT NULL DEFAULT 'active',
+                topic_id TEXT
+            );
+            CREATE TABLE daily_briefs (
+                date TEXT PRIMARY KEY,
+                generated_at TEXT NOT NULL,
+                status TEXT NOT NULL,
+                model TEXT NOT NULL DEFAULT '',
+                lede TEXT NOT NULL DEFAULT '',
+                sections_json TEXT NOT NULL,
+                error TEXT
+            );
+            INSERT INTO daily_briefs
+                (date, generated_at, status, model, lede, sections_json, error)
+            VALUES
+                ('2026-10-15', '2026-10-15T12:00:00+00:00', 'ok', 'm', 'lede', '[]', NULL);
+            """
+        )
+        conn.commit()
+        conn.close()
+        store = Store(path)
+        cols = {
+            row["name"]
+            for row in store._conn.execute("PRAGMA table_info(daily_briefs)").fetchall()
+        }
+        assert "input_fingerprint" in cols
+        saved = store.get_daily_brief("2026-10-15")
+        assert saved["status"] == "ok"
+        assert saved["input_fingerprint"] == ""
+        store.close()
+
+
 def _clear_brief_env() -> dict[str, str]:
     saved = {}
     for name in (API_KEY_ENV, API_BASE_ENV, MODEL_ENV, "OPENAI_API_KEY", "OPENAI_BASE_URL"):
@@ -460,4 +690,10 @@ if __name__ == "__main__":
     test_redact_secrets_never_keeps_values()
     test_model_error_redacts_secret_values()
     test_cli_stdout_never_prints_secret_values()
+    test_input_fingerprint_stable_sorted_by_url()
+    test_ok_same_fingerprint_kept_ok_skips_llm()
+    test_ok_changed_article_set_updates_and_calls_llm()
+    test_failed_or_empty_regenerated()
+    test_today_same_as_other_days_no_force_refresh()
+    test_store_migrates_input_fingerprint_column()
     print("✓ All daily brief tests passed")
