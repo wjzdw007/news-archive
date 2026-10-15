@@ -92,7 +92,8 @@ function showArticleDetail(url) {
     const article = articlesMap.get(url);
     if (!article) return;
     
-    const content = article.content_snapshot || article.summary || '无内容';
+    // Public site: summary + original link + topic jump only (no content_snapshot).
+    const summary = article.summary || '无摘要';
     const date = formatDate(article.published_at || article.fetched_at);
     const topicLink = article.topic_id ? `<p class="topic-link"><a href="#" onclick="showTopicFromArticle('${article.topic_id}'); return false;">→ 查看相关专题</a></p>` : '';
     
@@ -102,7 +103,7 @@ function showArticleDetail(url) {
             <span class="source">${escapeHtml(article.source)}</span>
             <span class="date">${date}</span>
         </div>
-        <div class="article-body">${escapeHtml(content)}</div>
+        <div class="article-body">${escapeHtml(summary)}</div>
         <p class="original-link">
             <a href="${escapeHtml(article.url)}" target="_blank" rel="noopener noreferrer">查看原文 ↗</a>
         </p>

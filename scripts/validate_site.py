@@ -23,6 +23,20 @@ def validate_json_file(filepath: Path, expected_keys: list[str]) -> tuple[bool, 
             missing_keys = [k for k in expected_keys if k not in first_item]
             if missing_keys:
                 return False, f"{filepath.name} items missing keys: {missing_keys}"
+            if filepath.name == "articles.json" and "content_snapshot" in first_item:
+                return False, "articles.json must not include content_snapshot"
+            if filepath.name == "x_posts.json":
+                allowed = {
+                    "author",
+                    "posted_at",
+                    "fetched_at",
+                    "text_snapshot",
+                    "url",
+                    "status",
+                }
+                extra = set(first_item) - allowed
+                if extra:
+                    return False, f"x_posts.json has non-display keys: {sorted(extra)}"
         
         return True, f"✓ {filepath.name}: {len(data)} items"
         
@@ -66,7 +80,7 @@ def main() -> int:
     validations = [
         (data_dir / "articles.json", ["url", "title", "source", "fetched_at"]),
         (data_dir / "topics.json", ["topic_id", "title", "sources", "status"]),
-        (data_dir / "x_posts.json", ["post_id", "author", "text_snapshot", "fetched_at"]),
+        (data_dir / "x_posts.json", ["author", "posted_at", "fetched_at", "text_snapshot", "url", "status"]),
     ]
     
     all_passed = True
@@ -82,6 +96,7 @@ def main() -> int:
         site_dir / "index.html",
         site_dir / "app.js",
         site_dir / "style.css",
+        site_dir / "favicon.svg",
     ]
     
     for filepath in html_files:
