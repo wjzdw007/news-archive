@@ -70,6 +70,21 @@ jobs:
             --stats data/run-stats.json \
             --output-meta data/validation-meta.json
 
+      - name: Generate daily brief (soft-fail)
+        # Missing DAILY_BRIEF_API_KEY / DAILY_BRIEF_API_BASE, model errors, or
+        # empty day write failed|empty and must not break fetch or persist.
+        if: always() && steps.fetch.outcome == 'success' && hashFiles('data/archive.sqlite3') != ''
+        continue-on-error: true
+        env:
+          DAILY_BRIEF_API_KEY: ${{ secrets.DAILY_BRIEF_API_KEY }}
+          DAILY_BRIEF_API_BASE: ${{ secrets.DAILY_BRIEF_API_BASE }}
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python -m news_archive.daily_brief \
+            --db data/archive.sqlite3 \
+            --days 7 \
+            --json
+
       - name: Persist SQLite to data branch
         # CRITICAL: Persist runs if fetch succeeded, even if latency validation failed
         # This ensures incremental data is never lost due to SLA violations

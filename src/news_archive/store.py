@@ -38,6 +38,16 @@ CREATE TABLE IF NOT EXISTS topic_briefs (
     error TEXT,
     last_error TEXT
 );
+
+CREATE TABLE IF NOT EXISTS daily_briefs (
+    date TEXT PRIMARY KEY,
+    generated_at TEXT NOT NULL,
+    status TEXT NOT NULL CHECK (status IN ('ok', 'failed', 'empty')),
+    model TEXT NOT NULL DEFAULT '',
+    lede TEXT NOT NULL DEFAULT '',
+    sections_json TEXT NOT NULL,
+    error TEXT
+);
 """
 
 # Migrate older DBs created before content_snapshot/status existed.
@@ -74,6 +84,19 @@ class Store:
         # skips altering old DBs, so these must run after ALTER).
         self._conn.execute(
             "CREATE INDEX IF NOT EXISTS idx_articles_topic_id ON articles(topic_id)"
+        )
+        self._conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS daily_briefs (
+                date TEXT PRIMARY KEY,
+                generated_at TEXT NOT NULL,
+                status TEXT NOT NULL CHECK (status IN ('ok', 'failed', 'empty')),
+                model TEXT NOT NULL DEFAULT '',
+                lede TEXT NOT NULL DEFAULT '',
+                sections_json TEXT NOT NULL,
+                error TEXT
+            )
+            """
         )
 
     def upsert(self, article: Article) -> bool:
@@ -255,6 +278,81 @@ class Store:
         )
         self._conn.commit()
         return "inserted_failed" if status == "failed" else "inserted"
+
+    def get_articles_for_daily_brief(self) -> list[dict]:
+        """Active articles for daily briefs. Never selects content_snapshot."""
+        rows = self._conn.execute(
+            """
+            SELECT url, title, published_at, summary, source, fetched_at,
+                   status, topic_id
+            FROM articles
+            WHERE status = 'active'
+            ORDER BY published_at ASC NULLS LAST, fetched_at ASC, url
+            """
+        ).fetchall()
+        return [dict(row) for row in rows]
+
+    def get_daily_brief(self, date: str) -> dict | None:
+        row = self._conn.execute(
+            "SELECT date, generated_at, status, model, lede, sections_json, error "
+            "FROM daily_briefs WHERE date = ?",
+            (date,),
+        ).fetchone()
+        if row is None:
+            return None
+        return self._parse_daily_brief_row(row)
+
+    def get_daily_briefs(self) -> list[dict]:
+        rows = self._conn.execute(
+            "SELECT date, generated_at, status, model, lede, sections_json, error "
+            "FROM daily_briefs ORDER BY date DESC"
+        ).fetchall()
+        return [self._parse_daily_brief_row(row) for row in rows]
+
+    @staticmethod
+    def _parse_daily_brief_row(row: sqlite3.Row) -> dict:
+        d = dict(row)
+        d["sections"] = json.loads(d.pop("sections_json") or "[]")
+        return d
+
+    def upsert_daily_brief(self, brief: dict) -> str:
+        """Insert or replace one calendar-day brief. Returns inserted|updated."""
+        date = brief["date"]
+        sections_json = json.dumps(brief.get("sections") or [], ensure_ascii=False)
+        existing = self._conn.execute(
+            "SELECT date FROM daily_briefs WHERE date = ?", (date,)
+        ).fetchone()
+        payload = (
+            brief.get("generated_at") or "",
+            brief.get("status") or "failed",
+            brief.get("model") or "",
+            brief.get("lede") or "",
+            sections_json,
+            brief.get("error"),
+            date,
+        )
+        if existing:
+            self._conn.execute(
+                """
+                UPDATE daily_briefs SET
+                    generated_at = ?, status = ?, model = ?, lede = ?,
+                    sections_json = ?, error = ?
+                WHERE date = ?
+                """,
+                payload,
+            )
+            self._conn.commit()
+            return "updated"
+        self._conn.execute(
+            """
+            INSERT INTO daily_briefs
+                (generated_at, status, model, lede, sections_json, error, date)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            payload,
+        )
+        self._conn.commit()
+        return "inserted"
 
     def count_by_source(self) -> dict[str, int]:
         rows = self._conn.execute(
