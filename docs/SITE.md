@@ -31,11 +31,13 @@
 
 4. **日报** (`#daily`)
    - 默认上海日历「今天」；可切换近 7 日
-   - `status=ok`：导语 + 最多 8 个分组（优先已有 `topic_id`；未归类最多一个「其它」）
+   - `status=ok`：导语 + RSS 最多 8 个分组（优先已有 `topic_id`；未归类最多一个「其它」）
+   - 当日 `x_posts`（`status=active`，既有 4 个账号）按上海日历 `posted_at` 进入独立分组 **「X 动态」**（`topic_id` 固定 `"x-daily"`，不并入 RSS 聚类）；无当日 X 帖则整节省略（不是 failed）
+   - 「X 动态」子弹 1–3 条（跨账号综述，不是一帖一条）；`links` ≤8，`source` 为作者；LLM/展示只用 `author` / `text_snapshot` / `url` / `posted_at`（截断后的 `text_snapshot` 来自 SQLite，不调 GraphQL / X API）
    - `status=empty` 或无记录：空态「当日暂无摘要」
    - `status=failed`：降级文案「当日摘要生成失败」（不打断 Pages）
    - **新闻 Tab 不插日报 banner**
-   - 子弹从 title + summary 生成；**禁止**读/写 `content_snapshot`；X 帖不进日报
+   - RSS 子弹从 title + summary 生成；**禁止**读/写 `content_snapshot`；公开 JSON 无 Cookie / Authorization / `post_id`
    - 公开导出：`site/data/daily_briefs.json`（无 `content_snapshot`、无内部 error）
 
 ### 约束
@@ -170,7 +172,7 @@ news-archive/
 - ❌ 实时更新 / WebSocket
 - ❌ 评论 / 点赞 / 收藏
 - ❌ 后端 API / 数据库写入
-- ❌ 修改 fetch/clustering/topic_briefs 规则、fetch SLA、来源筛选、people.cn 日期、X 进日报
+- ❌ 修改 fetch/clustering/topic_briefs 规则、fetch SLA、来源筛选、people.cn 日期
 
 ## 测试清单（QA 用）
 
@@ -185,8 +187,9 @@ news-archive/
 - [ ] 专题 Tab：仅显示 status=ok 的专题、来源列表、gone 标记变灰
 - [ ] X Tab：帖子列表、作者/时间/文本、gone 变灰、原文链接
 - [ ] 日报 Tab：默认今天（上海日历）、近 7 日切换、空态「当日暂无摘要」、failed 降级文案
+- [ ] 当日有 X 帖：日报含且仅含一节「X 动态」；当日无 X：该节不出现；RSS 分组仍在
 - [ ] 新闻 Tab **无**日报 banner
-- [ ] `daily_briefs.json` / `articles.json` 均无 `content_snapshot`
+- [ ] `daily_briefs.json` / `articles.json` 均无 `content_snapshot`；日报/X 导出无 Cookie / Authorization / `post_id`
 - [ ] 移动端：手机浏览器打开，布局适配、可滚动、无横向溢出
 - [ ] 无登录入口：确认没有任何登录或注册按钮
 - [ ] Pages 部署：workflow 成功运行、访问 URL 展示正确内容

@@ -30,6 +30,11 @@ def generate_for_dates(
 ) -> list[dict]:
     """Generate briefs for dates. Missing key / LLM errors write failed/empty."""
     articles = store.get_articles_for_daily_brief()
+    try:
+        x_posts = store.get_x_posts_for_daily_brief()
+    except Exception:
+        # X Tab / x-fetch soft-fail: missing table or read error omits X, RSS still runs.
+        x_posts = []
     config = resolve_llm_config()
     llm_fn = make_llm_fn(config) if config else None
     model = config["model"] if config else resolve_model()
@@ -48,6 +53,7 @@ def generate_for_dates(
             brief = generate_daily_brief(
                 articles,
                 date,
+                x_posts=x_posts,
                 llm_fn=llm_fn,
                 model=model,
                 missing_config=missing_config,

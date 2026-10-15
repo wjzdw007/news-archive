@@ -118,7 +118,7 @@ python -m news_archive --db data/archive.sqlite3 --export-jsonl data/archive.jso
 
 只读网页版，展示归档数据（新闻 / 专题 / X / 日报），自动部署到 GitHub Pages。公开站点不含 RSS `content_snapshot` 全文，仅 summary + 原链 + 专题跳转 + 日报摘要。
 
-日报在 `daily-fetch` 成功后软生成：需要 GitHub Actions Secrets `DAILY_BRIEF_API_KEY` 与 `DAILY_BRIEF_API_BASE`（腾讯云 LKEAP OpenAI 兼容）。默认模型 id 为 `deepseek/deepseek-flash`（可用环境变量 `DAILY_BRIEF_MODEL` 覆盖，**不是** Secret）。缺 key/base、模型错误或当日无稿时写入 `failed`/`empty`，**不打断** fetch/persist/Pages。绝不把 Secret 值打进日志。
+日报在 `daily-fetch` 成功后软生成：需要 GitHub Actions Secrets `DAILY_BRIEF_API_KEY` 与 `DAILY_BRIEF_API_BASE`（腾讯云 LKEAP OpenAI 兼容）。默认模型 id 为 `deepseek/deepseek-flash`（可用环境变量 `DAILY_BRIEF_MODEL` 覆盖，**不是** Secret）。缺 key/base、模型错误或当日无稿时写入 `failed`/`empty`，**不打断** fetch/persist/Pages。绝不把 Secret 值打进日志。同一上海日历日的 `x_posts`（既有 4 个账号、`status=active`）进入独立「X 动态」分组；无当日 X 帖则省略该节。LLM 只用库内 `author` / `text_snapshot` / `url` / `posted_at`，不调 X API。
 
 - **访问**：`https://<username>.github.io/<repo>/`（需启用 Pages）
 - **更新**：`daily-fetch` 完成后自动刷新（或手动触发 `deploy-pages` workflow）

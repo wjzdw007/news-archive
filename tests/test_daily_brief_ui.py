@@ -145,6 +145,8 @@ console.log(JSON.stringify({
     assert "SpaceX 今日完成发射" in result["ok"]
     assert "https://example.com/spacex" in result["ok"]
     assert "其它" in result["ok"]
+    assert "X 动态" in result["ok"]
+    assert "https://x.com/FT/status/1" in result["ok"]
     assert "content_snapshot" not in result["ok"]
     assert result["failedMsg"] in result["failed"]
     assert "多源关注" not in result["failed"]

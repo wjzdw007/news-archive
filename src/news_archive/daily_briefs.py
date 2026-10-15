@@ -15,6 +15,7 @@ from typing import Any, Callable
 from zoneinfo import ZoneInfo
 
 from .briefs import extract_bullets, is_noise_bullet
+from .x_config import X_NEWS_ACCOUNTS
 
 try:
     SHANGHAI_TZ = ZoneInfo("Asia/Shanghai")
@@ -25,6 +26,9 @@ LEDE_MAX = 80
 SECTIONS_MAX = 8
 BULLETS_MAX = 3
 LINKS_MAX = 5
+X_LINKS_MAX = 8
+# Truncate x_posts.text_snapshot before LLM/fingerprint (SQLite field only).
+X_TEXT_SNAPSHOT_MAX = 400
 # Code default only (not a GitHub Secret). Live path uses Tencent LKEAP
 # OpenAI-compatible POST {DAILY_BRIEF_API_BASE}/chat/completions.
 # Boss-locked LKEAP model id — deepseek-v3 403s on this endpoint.
@@ -45,7 +49,18 @@ DAILY_BRIEF_ARTICLE_FIELDS = (
     "topic_id",
 )
 
+# Public/LLM X fields from SQLite x_posts only. Never post_id / cookies / Authorization.
+DAILY_BRIEF_X_FIELDS = (
+    "author",
+    "text_snapshot",
+    "url",
+    "posted_at",
+)
+
 OTHER_TITLE = "其它"
+X_SECTION_TITLE = "X 动态"
+# Documented constant (not an RSS cluster id). Avoids colliding with 「其它」(null).
+X_SECTION_TOPIC_ID = "x-daily"
 
 LlmFn = Callable[[list[dict[str, Any]]], dict[str, Any]]
 
@@ -110,6 +125,199 @@ def articles_for_day(articles: list[dict[str, Any]], date: str) -> list[dict[str
             continue
         out.append(public_article(article))
     return out
+
+
+def truncate_x_text(text: str | None, max_len: int = X_TEXT_SNAPSHOT_MAX) -> str:
+    clipped = re.sub(r"\s+", " ", (text or "").strip())
+    if len(clipped) > max_len:
+        return clipped[: max_len - 3] + "..."
+    return clipped
+
+
+def public_x_post(post: dict[str, Any]) -> dict[str, Any]:
+    """Allowlisted x_posts fields only — never post_id / cookies / Authorization."""
+    posted_at = post.get("posted_at")
+    if not isinstance(posted_at, str):
+        posted_at = ""
+    return {
+        "author": (post.get("author") or "").strip().lstrip("@"),
+        "text_snapshot": truncate_x_text(post.get("text_snapshot")),
+        "url": (post.get("url") or "").strip(),
+        "posted_at": posted_at.strip(),
+    }
+
+
+def x_post_shanghai_date(post: dict[str, Any]) -> str | None:
+    posted_at = post.get("posted_at")
+    if not isinstance(posted_at, str):
+        return None
+    dt = parse_iso_datetime(posted_at)
+    if dt is None:
+        return None
+    return dt.astimezone(SHANGHAI_TZ).date().isoformat()
+
+
+def x_posts_for_day(
+    posts: list[dict[str, Any]],
+    date: str,
+    accounts: list[str] | None = None,
+) -> list[dict[str, Any]]:
+    """Active same-day X posts (Asia/Shanghai from posted_at), public fields only.
+
+    Sorted stably so a future input_fingerprint can hash this selected set.
+    """
+    allowed = {a.lstrip("@").lower() for a in (accounts or X_NEWS_ACCOUNTS)}
+    out: list[dict[str, Any]] = []
+    for post in posts or []:
+        status = post.get("status")
+        if status not in (None, "active"):
+            continue
+        author = (post.get("author") or "").strip().lstrip("@")
+        if author.lower() not in allowed:
+            continue
+        if x_post_shanghai_date(post) != date:
+            continue
+        pub = public_x_post({**post, "author": author})
+        if not pub["url"] and not pub["text_snapshot"]:
+            continue
+        out.append(pub)
+    out.sort(key=lambda p: (p.get("posted_at") or "", p.get("url") or "", p.get("author") or ""))
+    return out
+
+
+def daily_brief_fingerprint_input(
+    articles: list[dict[str, Any]],
+    date: str,
+    x_posts: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Shanghai-day selected set a future input_fingerprint can hash.
+
+    Includes RSS public articles and X public posts. Does not compute a hash
+    (fingerprint-skip/regen stays in a separate PR).
+    """
+    return {
+        "date": date,
+        "articles": articles_for_day(articles, date),
+        "x_posts": x_posts_for_day(x_posts or [], date),
+    }
+
+
+def is_x_section(section: dict[str, Any] | None) -> bool:
+    if not isinstance(section, dict):
+        return False
+    topic_id = section.get("topic_id")
+    if topic_id is not None and str(topic_id).strip() == X_SECTION_TOPIC_ID:
+        return True
+    if (section.get("title") or "").strip() == X_SECTION_TITLE:
+        return True
+    if section.get("x_posts"):
+        return True
+    return False
+
+
+def links_from_x_posts(
+    posts: list[dict[str, Any]], max_links: int = X_LINKS_MAX
+) -> list[dict[str, str]]:
+    links: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for post in posts:
+        url = (post.get("url") or "").strip()
+        if not url or url in seen:
+            continue
+        seen.add(url)
+        title = truncate_x_text(post.get("text_snapshot"), 80) or url
+        links.append(
+            {
+                "title": title,
+                "url": url,
+                "source": (post.get("author") or "").strip(),
+            }
+        )
+        if len(links) >= max_links:
+            break
+    return links
+
+
+def bullets_from_x_posts(
+    posts: list[dict[str, Any]], max_bullets: int = BULLETS_MAX
+) -> list[str]:
+    """1–3 multi-account highlights, not one bullet per post."""
+    if not posts:
+        return []
+    by_author: dict[str, list[dict[str, Any]]] = {}
+    for post in posts:
+        author = (post.get("author") or "").strip()
+        by_author.setdefault(author, []).append(post)
+    if len(by_author) == 1:
+        combined = " ".join(
+            truncate_x_text(p.get("text_snapshot")) for p in posts if p.get("text_snapshot")
+        )
+        extracted = extract_bullets(combined, max_bullets=max_bullets)
+        if extracted:
+            return extracted[:max_bullets]
+    bullets: list[str] = []
+    for author, group in by_author.items():
+        clip = truncate_x_text(group[0].get("text_snapshot"), 160)
+        if not clip:
+            continue
+        bullets.append(f"@{author}：{clip}" if author else clip)
+        if len(bullets) >= max_bullets:
+            break
+    if bullets:
+        return bullets[:max_bullets]
+    authors = [a for a in by_author if a]
+    if authors:
+        names = "、".join(f"@{a}" for a in authors[:4])
+        return [f"当日 {len(posts)} 条来自 {names}"]
+    return []
+
+
+def build_x_section(posts: list[dict[str, Any]]) -> dict[str, Any] | None:
+    if not posts:
+        return None
+    bullets = bullets_from_x_posts(posts)
+    links = links_from_x_posts(posts)
+    if not bullets and not links:
+        return None
+    return {
+        "topic_id": X_SECTION_TOPIC_ID,
+        "title": X_SECTION_TITLE,
+        "bullets": bullets,
+        "links": links,
+        "x_posts": posts,
+    }
+
+
+def public_x_section(
+    section: dict[str, Any],
+    llm_section: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    posts = section.get("x_posts") or []
+    llm_section = llm_section if isinstance(llm_section, dict) else {}
+    bullets = clip_bullets(llm_section.get("bullets") or section.get("bullets"))
+    if not bullets:
+        bullets = bullets_from_x_posts(posts)
+    return {
+        "topic_id": X_SECTION_TOPIC_ID,
+        "title": X_SECTION_TITLE,
+        "bullets": bullets[:BULLETS_MAX],
+        "links": links_from_x_posts(posts)[:X_LINKS_MAX],
+    }
+
+
+def llm_x_section(llm_payload: dict[str, Any] | None) -> dict[str, Any] | None:
+    if not isinstance(llm_payload, dict) or not isinstance(llm_payload.get("sections"), list):
+        return None
+    titled: dict[str, Any] | None = None
+    for raw in llm_payload["sections"]:
+        if not isinstance(raw, dict):
+            continue
+        topic_id = raw.get("topic_id")
+        if topic_id is not None and str(topic_id).strip() == X_SECTION_TOPIC_ID:
+            return raw
+        if (raw.get("title") or "").strip() == X_SECTION_TITLE:
+            titled = raw
+    return titled
 
 
 def _earliest_title(articles: list[dict[str, Any]]) -> str:
@@ -329,6 +537,17 @@ def resolve_llm_config(
 def _prompt_sections(grouped: list[dict[str, Any]]) -> list[dict[str, Any]]:
     payload: list[dict[str, Any]] = []
     for section in grouped:
+        if is_x_section(section):
+            payload.append(
+                {
+                    "topic_id": X_SECTION_TOPIC_ID,
+                    "title": X_SECTION_TITLE,
+                    "x_posts": [
+                        public_x_post(post) for post in (section.get("x_posts") or [])
+                    ],
+                }
+            )
+            continue
         payload.append(
             {
                 "topic_id": section.get("topic_id"),
@@ -363,9 +582,13 @@ def openai_complete(
             "content": (
                 "You write a concise Chinese daily news brief. Reply with JSON only: "
                 '{"lede":"...","sections":[{"topic_id":null,"title":"...","bullets":["..."]}]}'
-                " Use ONLY the given titles and summaries; do not invent facts. "
-                f"lede ≤{LEDE_MAX} chars. ≤{SECTIONS_MAX} sections, 1–{BULLETS_MAX} bullets each. "
-                f"Keep the given topic_id values. Untopic'd items stay in one section titled {OTHER_TITLE}."
+                " Use ONLY the given titles and summaries for RSS; do not invent facts. "
+                f"lede ≤{LEDE_MAX} chars. ≤{SECTIONS_MAX} RSS sections, 1–{BULLETS_MAX} bullets each. "
+                f"Keep the given topic_id values. Untopic'd RSS items stay in one section titled {OTHER_TITLE}. "
+                f"If a section titled {X_SECTION_TITLE} is present, keep that exact title and "
+                f'topic_id "{X_SECTION_TOPIC_ID}"; write 1–{BULLETS_MAX} bullets as multi-account '
+                "highlights (not one bullet per post); use ONLY that section's author, "
+                "text_snapshot, url, posted_at. Do not merge X posts into RSS topic_id clusters."
             ),
         },
         {
@@ -409,7 +632,7 @@ def merge_llm_sections(
     by_id: dict[str | None, dict[str, Any]] = {}
     if isinstance(llm_payload, dict) and isinstance(llm_payload.get("sections"), list):
         for raw in llm_payload["sections"]:
-            if not isinstance(raw, dict):
+            if not isinstance(raw, dict) or is_x_section(raw):
                 continue
             topic_id = raw.get("topic_id")
             if topic_id is not None:
@@ -437,6 +660,7 @@ def generate_daily_brief(
     articles: list[dict[str, Any]],
     date: str,
     *,
+    x_posts: list[dict[str, Any]] | None = None,
     llm_fn: LlmFn | None = None,
     model: str = "",
     now: datetime | None = None,
@@ -444,12 +668,14 @@ def generate_daily_brief(
 ) -> dict[str, Any]:
     """Build one daily brief. Never reads content_snapshot.
 
-    empty: no active articles that Shanghai day
+    empty: no active articles and no same-day X posts that Shanghai day
     failed: missing DAILY_BRIEF_API_KEY/BASE, model error, or unusable output
-    ok: LLM returned a usable brief (links always from our grouping)
+    ok: LLM returned a usable brief (RSS links from grouping; X links from x_posts)
+    Same-day X posts become at most one 「X 动态」 section (omitted when none).
     """
     day_articles = articles_for_day(articles, date)
-    if not day_articles:
+    day_x = x_posts_for_day(x_posts or [], date)
+    if not day_articles and not day_x:
         return empty_brief(date, now=now, model=model)
 
     if missing_config or llm_fn is None:
@@ -461,11 +687,16 @@ def generate_daily_brief(
         )
 
     grouped = group_sections(day_articles)
-    if not grouped:
+    x_section = build_x_section(day_x)
+    if not grouped and not x_section:
         return empty_brief(date, now=now, model=model)
 
+    prompt_grouped = list(grouped)
+    if x_section:
+        prompt_grouped.append(x_section)
+
     try:
-        llm_payload = llm_fn(grouped)
+        llm_payload = llm_fn(prompt_grouped)
     except Exception as exc:
         return failed_brief(
             date, error=redact_secrets(str(exc)), now=now, model=model
@@ -476,10 +707,14 @@ def generate_daily_brief(
 
     lede = clip_lede(llm_payload.get("lede"))
     sections = merge_llm_sections(grouped, llm_payload)
+    if not sections and grouped:
+        sections = [public_section(s) for s in grouped if s.get("bullets")][:SECTIONS_MAX]
+    if x_section:
+        x_pub = public_x_section(x_section, llm_x_section(llm_payload))
+        if x_pub.get("bullets") or x_pub.get("links"):
+            sections.append(x_pub)
     if not lede and not sections:
         return failed_brief(date, error="LLM returned empty brief", now=now, model=model)
-    if not sections:
-        sections = [public_section(s) for s in grouped if s.get("bullets")][:SECTIONS_MAX]
     if not lede:
         titles = [s["title"] for s in sections[:3] if s.get("title")]
         lede = clip_lede("；".join(titles))

@@ -672,6 +672,84 @@ def test_export_daily_briefs_omits_content_snapshot_and_error():
         store.close()
 
 
+def test_export_daily_briefs_x_section_omits_post_id_and_secrets():
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from export_site_data import export_daily_briefs, export_x_posts
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "test.db"
+        store = Store(db_path)
+        x_store = XStore(db_path)
+        x_store.upsert(
+            XPost(
+                post_id="secret-post-id",
+                author="FT",
+                url="https://x.com/FT/status/1",
+                text_snapshot="Markets rose.",
+                posted_at="2026-10-14T16:30:00Z",
+                fetched_at="2026-10-15T03:00:00Z",
+                status="active",
+            )
+        )
+        x_store.close()
+        store.upsert_daily_brief(
+            {
+                "date": "2026-10-15",
+                "generated_at": "2026-10-15T12:00:00+00:00",
+                "status": "ok",
+                "model": "deepseek/deepseek-flash",
+                "lede": "外媒账号关注市场。",
+                "sections": [
+                    {
+                        "topic_id": "t1",
+                        "title": "航天发射",
+                        "bullets": ["发射按计划完成。"],
+                        "links": [
+                            {
+                                "title": "发射成功",
+                                "url": "https://example.com/1",
+                                "source": "36kr",
+                            }
+                        ],
+                    },
+                    {
+                        "topic_id": "x-daily",
+                        "title": "X 动态",
+                        "bullets": ["FT 账号提到市场定价。"],
+                        "links": [
+                            {
+                                "title": "Markets rose.",
+                                "url": "https://x.com/FT/status/1",
+                                "source": "FT",
+                            }
+                        ],
+                    },
+                ],
+                "error": None,
+            }
+        )
+        conn = sqlite3.connect(db_path)
+        briefs_path = Path(tmpdir) / "daily_briefs.json"
+        posts_path = Path(tmpdir) / "x_posts.json"
+        export_daily_briefs(conn, briefs_path)
+        export_x_posts(conn, posts_path)
+        conn.close()
+        briefs_raw = briefs_path.read_text(encoding="utf-8")
+        posts_raw = posts_path.read_text(encoding="utf-8")
+        for raw in (briefs_raw, posts_raw):
+            assert "post_id" not in raw
+            assert "secret-post-id" not in raw
+            assert "cookie" not in raw.lower()
+            assert "authorization" not in raw.lower()
+            assert "content_snapshot" not in raw
+        exported = json.loads(briefs_raw)
+        titles = [s["title"] for s in exported[0]["sections"]]
+        assert "航天发射" in titles
+        assert "X 动态" in titles
+        store.close()
+
+
 def test_export_daily_briefs_missing_table_soft_fail():
     import sys
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
@@ -701,5 +779,6 @@ if __name__ == "__main__":
     test_export_empty_files()
     test_export_daily_briefs()
     test_export_daily_briefs_omits_content_snapshot_and_error()
+    test_export_daily_briefs_x_section_omits_post_id_and_secrets()
     test_export_daily_briefs_missing_table_soft_fail()
     print("✓ All site export tests passed")

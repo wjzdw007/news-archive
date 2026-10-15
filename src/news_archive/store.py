@@ -292,6 +292,34 @@ class Store:
         ).fetchall()
         return [dict(row) for row in rows]
 
+    def get_x_posts_for_daily_brief(self) -> list[dict]:
+        """Active x_posts public fields for daily briefs.
+
+        Allowlist only: author, text_snapshot, url, posted_at.
+        Never selects post_id, cookies, Authorization, or other internals.
+        Soft-empty if the x_posts table is missing (old data-branch sqlite).
+        """
+        try:
+            rows = self._conn.execute(
+                """
+                SELECT author, text_snapshot, url, posted_at
+                FROM x_posts
+                WHERE status = 'active'
+                ORDER BY posted_at ASC NULLS LAST, url
+                """
+            ).fetchall()
+        except sqlite3.OperationalError:
+            return []
+        return [
+            {
+                "author": row["author"],
+                "text_snapshot": row["text_snapshot"] or "",
+                "url": row["url"],
+                "posted_at": row["posted_at"],
+            }
+            for row in rows
+        ]
+
     def get_daily_brief(self, date: str) -> dict | None:
         row = self._conn.execute(
             "SELECT date, generated_at, status, model, lede, sections_json, error "
