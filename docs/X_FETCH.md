@@ -7,6 +7,7 @@ X/Twitter 帖子抓取功能支持两种模式，**严格遵循 [x-crawler](http
 ### x-crawler 模式（唯一支持路径）
 
 1. **HomeLatestTimeline / HomeTimeline** GraphQL endpoint
+   - Query ID: `1_nms9JVtHQxTw8VwZJciQ` (HomeTimeline, **default following**)
    - Query ID: `xNGIIoXaz9DyeBXBfn3AjA` (HomeLatestTimeline, recommended)
    - Query ID: `1_nms9JVtHQxTw8VwZJciQ` (HomeTimeline, following)
    - 来源：x-crawler `crawler.py` lines 40-42
