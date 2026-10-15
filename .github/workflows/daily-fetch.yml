@@ -78,6 +78,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
+          # Copy archive.sqlite3 to temp location BEFORE switching branches
+          # (prevents "same file" error when creating orphan data branch)
+          cp "$GITHUB_WORKSPACE/data/archive.sqlite3" "$RUNNER_TEMP/archive.sqlite3"
+          
           # Try to checkout data branch, or create it as orphan if it doesn't exist
           if git fetch origin data:data 2>/dev/null; then
             git checkout data
@@ -88,8 +92,8 @@ jobs:
             mkdir -p data
           fi
           
-          # Copy the updated archive.sqlite3
-          cp "$GITHUB_WORKSPACE/data/archive.sqlite3" data/archive.sqlite3
+          # Copy from temp location to data branch
+          cp "$RUNNER_TEMP/archive.sqlite3" data/archive.sqlite3
           
           # Create run metadata
           cat > data/LAST_RUN.json <<EOF
