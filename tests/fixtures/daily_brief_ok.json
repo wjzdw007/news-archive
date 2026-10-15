@@ -38,6 +38,20 @@
           "source": "geekpark"
         }
       ]
+    },
+    {
+      "topic_id": "x-daily",
+      "title": "X 动态",
+      "bullets": [
+        "多家外媒账号关注市场与科技进展。"
+      ],
+      "links": [
+        {
+          "title": "Markets rose as traders priced in a pause.",
+          "url": "https://x.com/FT/status/1",
+          "source": "FT"
+        }
+      ]
     }
   ]
 }

@@ -11,9 +11,8 @@ from pathlib import Path
 from .daily_briefs import (
     API_BASE_ENV,
     API_KEY_ENV,
-    articles_for_day,
+    day_input_fingerprint,
     generate_daily_brief,
-    input_fingerprint,
     last_n_shanghai_dates,
     make_llm_fn,
     redact_secrets,
@@ -34,9 +33,14 @@ def generate_for_dates(
     """Generate briefs for dates. Missing key / LLM errors write failed/empty.
 
     Skip LLM (`kept_ok`) when an existing row is status=ok and the day's
-    selected-article fingerprint is unchanged — including today.
+    selected RSS + X fingerprint is unchanged — including today.
     """
     articles = store.get_articles_for_daily_brief()
+    try:
+        x_posts = store.get_x_posts_for_daily_brief()
+    except Exception:
+        # X Tab / x-fetch soft-fail: missing table or read error omits X, RSS still runs.
+        x_posts = []
     config = resolve_llm_config()
     if llm_fn is None:
         llm_fn = make_llm_fn(config) if config else None
@@ -50,7 +54,7 @@ def generate_for_dates(
     results: list[dict] = []
 
     for date in dates:
-        fingerprint = input_fingerprint(articles_for_day(articles, date))
+        fingerprint = day_input_fingerprint(articles, date, x_posts)
         existing = store.get_daily_brief(date)
         if (
             existing
@@ -69,6 +73,7 @@ def generate_for_dates(
             brief = generate_daily_brief(
                 articles,
                 date,
+                x_posts=x_posts,
                 llm_fn=llm_fn,
                 model=model,
                 missing_config=missing_config,
