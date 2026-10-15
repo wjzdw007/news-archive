@@ -490,7 +490,10 @@ def test_store_migrates_input_fingerprint_column():
                 published_at TEXT,
                 summary TEXT,
                 source TEXT NOT NULL,
-                fetched_at TEXT NOT NULL
+                fetched_at TEXT NOT NULL,
+                content_snapshot TEXT,
+                status TEXT NOT NULL DEFAULT 'active',
+                topic_id TEXT
             );
             CREATE TABLE daily_briefs (
                 date TEXT PRIMARY KEY,
