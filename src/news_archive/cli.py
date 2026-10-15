@@ -7,6 +7,11 @@ import json
 import sys
 from pathlib import Path
 
+from .briefs import (
+    build_brief_for_topic,
+    group_active_by_topic,
+    topics_needing_briefs,
+)
 from .clustering import assign_topic_ids
 from .fetch import fetch_all
 from .sources import SOURCES
@@ -59,6 +64,40 @@ def main(argv: list[str] | None = None) -> int:
     url_to_topic = {a["url"]: a["topic_id"] for a in clustered if a.get("topic_id")}
     clustered_count = store.update_topic_ids(url_to_topic)
     stats["clustered"] = clustered_count
+
+    # P2: multi-source topic briefs (rules-v1); failures never block persist
+    brief_stats = {"generated": 0, "updated": 0, "kept_ok": 0, "failed": 0, "skipped": 0}
+    try:
+        arts = store.get_articles_for_briefs()
+        by_topic = group_active_by_topic(arts)
+        existing = store.get_topic_briefs()
+        for tid in topics_needing_briefs(by_topic, existing):
+            active = [a for a in by_topic[tid] if a.get("status") == "active"]
+            try:
+                brief = build_brief_for_topic(tid, active)
+                action = store.upsert_topic_brief(brief)
+                if brief["status"] == "failed":
+                    brief_stats["failed"] += 1
+                elif action == "updated":
+                    brief_stats["updated"] += 1
+                elif action == "kept_ok":
+                    brief_stats["kept_ok"] += 1
+                else:
+                    brief_stats["generated"] += 1
+            except Exception as exc:  # soft-fail per topic
+                failed = build_brief_for_topic(tid, active)
+                failed["status"] = "failed"
+                failed["error"] = str(exc)
+                failed["sources"] = []
+                action = store.upsert_topic_brief(failed)
+                brief_stats["failed"] += 1
+                if action == "kept_ok":
+                    brief_stats["kept_ok"] += 1
+        brief_stats["skipped"] = max(0, len(by_topic) - brief_stats["generated"]
+                                     - brief_stats["updated"] - brief_stats["failed"])
+    except Exception as exc:
+        stats["brief_error"] = str(exc)
+    stats["briefs"] = brief_stats
 
     export_count = None
     if args.export_jsonl:
