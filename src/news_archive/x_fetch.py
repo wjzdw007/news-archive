@@ -52,17 +52,25 @@ def fetch_account_posts(
     mode: str = "mock",
     live_fetcher: Callable[[str], list[dict[str, Any]]] | None = None,
 ) -> list[XPost]:
-    """Fetch posts. mode=mock uses fixtures; mode=live requires live_fetcher.
+    """Fetch posts. mode=mock uses fixtures; mode=live auto-creates fetcher if credentials present.
 
     live_fetcher(author) -> list of dicts with keys post_id, text, posted_at, url.
+    If mode=live and live_fetcher is None, will attempt to create one via x_http_client.
     """
     accounts = accounts or list(X_NEWS_ACCOUNTS)
     if mode == "mock":
         return mock_posts_for_accounts(accounts)
     if mode != "live":
         raise XFetchError(f"unknown mode: {mode}")
+    
+    # Auto-create live fetcher if not provided (uses env secrets)
     if live_fetcher is None:
-        raise XFetchError("live mode requires live_fetcher / X credentials")
+        try:
+            from .x_http_client import XHTTPError, create_live_fetcher
+            live_fetcher = create_live_fetcher()
+        except (ImportError, XHTTPError) as exc:
+            raise XFetchError(f"live mode unavailable: {exc}") from exc
+    
     now = _iso_now()
     out: list[XPost] = []
     try:
