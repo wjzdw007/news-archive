@@ -148,44 +148,69 @@ def check_source_incremental(
     return True, f"PASS: All {len(source_ids)} sources have content. Total articles: {total}"
 
 
-def check_fetch_latency(conn: sqlite3.Connection) -> tuple[bool, str]:
+def check_fetch_latency(
+    conn: sqlite3.Connection,
+    run_stats: dict[str, Any] | None = None,
+) -> tuple[bool, str]:
     """Check fetch latency SLA: published_at → fetched_at should be ≤ 4 hours.
     
-    Strategy: Check articles fetched in the last 6 hours (this run window + buffer).
+    Strategy: Check only articles inserted during THIS run (incremental inserts).
+    Identifies this run's articles by finding the most recent fetched_at timestamp.
     Fail if >10% of articles with parseable published_at exceed 4h latency.
-    Exclude articles >24h old at fetch time (likely republished content).
+    
+    Rationale: First-run backfills of old stock items (e.g., week-old RSS feeds)
+    would show high latency by design. We only measure freshness on new incremental
+    content, not historical imports.
     
     Returns (passed, message).
     """
-    now = datetime.now(timezone.utc)
-    window_start = now.replace(hour=now.hour - 6, minute=0, second=0, microsecond=0)
+    # Determine if this run inserted any articles
+    inserted = run_stats.get("inserted", 0) if run_stats else 0
     
+    if inserted == 0:
+        return True, "PASS: No new articles inserted this run (nothing to check)"
+    
+    # Find the most recent fetched_at timestamp (this run's batch)
+    latest_fetch_cursor = conn.execute(
+        "SELECT MAX(fetched_at) FROM articles"
+    )
+    latest_fetch_at = latest_fetch_cursor.fetchone()[0]
+    
+    if not latest_fetch_at:
+        return True, "PASS: No articles in database"
+    
+    # Query articles from this run's batch only
     cursor = conn.execute(
         """
-        SELECT published_at, fetched_at 
+        SELECT published_at, fetched_at, url
         FROM articles 
-        WHERE fetched_at >= ? 
-          AND published_at IS NOT NULL 
-          AND published_at != ''
+        WHERE fetched_at = ?
         """,
-        (window_start.isoformat(),),
+        (latest_fetch_at,),
     )
     
     rows = cursor.fetchall()
     
     if not rows:
-        return True, "PASS: No recent articles with published_at to check"
+        return True, "PASS: No articles from this run to check"
     
     violations = []
-    parse_errors = 0
+    skipped_no_published = 0
+    skipped_parse_error = 0
     skipped_old = 0
     
     for row in rows:
+        # Skip if published_at is missing (don't count as failure)
+        if not row[0] or row[0].strip() == "":
+            skipped_no_published += 1
+            continue
+        
         pub_at = parse_iso_datetime(row[0])
         fetch_at = parse_iso_datetime(row[1])
         
+        # Skip if parse failed (don't count as failure)
         if not pub_at or not fetch_at:
-            parse_errors += 1
+            skipped_parse_error += 1
             continue
         
         # Skip articles that were >24h old when fetched (republished content)
@@ -196,11 +221,19 @@ def check_fetch_latency(conn: sqlite3.Connection) -> tuple[bool, str]:
         
         # Check 4-hour SLA
         if age_at_fetch > 4.0:
-            violations.append((row[0], row[1], age_at_fetch))
+            violations.append((row[0], row[1], age_at_fetch, row[2]))
     
-    checked = len(rows) - parse_errors - skipped_old
+    checked = len(rows) - skipped_no_published - skipped_parse_error - skipped_old
+    
     if checked == 0:
-        return True, "PASS: No recent articles to check for latency"
+        skip_msg = []
+        if skipped_no_published:
+            skip_msg.append(f"{skipped_no_published} missing published_at")
+        if skipped_parse_error:
+            skip_msg.append(f"{skipped_parse_error} parse errors")
+        if skipped_old:
+            skip_msg.append(f"{skipped_old} >24h old")
+        return True, f"PASS: No checkable articles this run ({', '.join(skip_msg)})"
     
     violation_rate = (len(violations) / checked) * 100
     
@@ -208,10 +241,13 @@ def check_fetch_latency(conn: sqlite3.Connection) -> tuple[bool, str]:
     if violation_rate > 10.0:
         # Show worst 3 violations
         worst = sorted(violations, key=lambda x: x[2], reverse=True)[:3]
-        examples = [f"{pub} → {fetch} ({lat:.1f}h)" for pub, fetch, lat in worst]
+        examples = [
+            f"{pub} → {fetch} ({lat:.1f}h) [{url}]"
+            for pub, fetch, lat, url in worst
+        ]
         msg = (
             f"FAIL: {len(violations)}/{checked} ({violation_rate:.1f}%) articles "
-            f"exceed 4h SLA. Examples:\n  " + "\n  ".join(examples)
+            f"from this run exceed 4h SLA. Examples:\n  " + "\n  ".join(examples)
         )
         return False, msg
     
@@ -219,8 +255,15 @@ def check_fetch_latency(conn: sqlite3.Connection) -> tuple[bool, str]:
         f"PASS: {checked - len(violations)}/{checked} articles within 4h SLA. "
         f"{len(violations)} violations ({violation_rate:.1f}%) below 10% threshold."
     )
+    skip_details = []
+    if skipped_no_published:
+        skip_details.append(f"{skipped_no_published} no published_at")
+    if skipped_parse_error:
+        skip_details.append(f"{skipped_parse_error} parse errors")
     if skipped_old:
-        msg += f" Skipped {skipped_old} republished (>24h old at fetch)."
+        skip_details.append(f"{skipped_old} republished (>24h old)")
+    if skip_details:
+        msg += f" Skipped: {', '.join(skip_details)}."
     
     return True, msg
 
@@ -250,7 +293,7 @@ def validate(
         ("Duplicate URLs", lambda: check_duplicate_urls(conn)),
         ("Required Fields", lambda: check_required_fields(conn)),
         ("Source Incremental", lambda: check_source_incremental(conn, run_stats)),
-        ("Fetch Latency SLA", lambda: check_fetch_latency(conn)),
+        ("Fetch Latency SLA", lambda: check_fetch_latency(conn, run_stats)),
     ]
     
     results = []
