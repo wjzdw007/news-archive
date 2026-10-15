@@ -26,7 +26,6 @@ CREATE INDEX IF NOT EXISTS idx_articles_source ON articles(source);
 CREATE INDEX IF NOT EXISTS idx_articles_published_at ON articles(published_at);
 CREATE INDEX IF NOT EXISTS idx_articles_fetched_at ON articles(fetched_at);
 CREATE INDEX IF NOT EXISTS idx_articles_status ON articles(status);
-CREATE INDEX IF NOT EXISTS idx_articles_topic_id ON articles(topic_id);
 
 CREATE TABLE IF NOT EXISTS topic_briefs (
     topic_id TEXT PRIMARY KEY,
@@ -71,6 +70,11 @@ class Store:
             )
         if "topic_id" not in cols:
             self._conn.execute("ALTER TABLE articles ADD COLUMN topic_id TEXT")
+        # Indexes that depend on migrated columns (CREATE TABLE IF NOT EXISTS
+        # skips altering old DBs, so these must run after ALTER).
+        self._conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_articles_topic_id ON articles(topic_id)"
+        )
 
     def upsert(self, article: Article) -> bool:
         """Insert if URL is new. Returns True when inserted.
