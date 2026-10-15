@@ -111,7 +111,7 @@ class Store:
             )
 
     def get_articles_for_enrich(self) -> list[dict]:
-        """Private rows for thin-summary enrichment (includes content_snapshot)."""
+        """Private rows for archive-first snapshot enrich (includes content_snapshot)."""
         rows = self._conn.execute(
             """
             SELECT url, title, summary, content_snapshot, status

@@ -1,11 +1,16 @@
-"""Fill thin RSS summaries by fetching the original page.
+"""Archive-first page enrich: fill private content_snapshot from the original URL.
+
+Enqueue every eligible article that is missing a *usable* private snapshot
+(empty or too-short shell/nav chrome), not only thin public summaries.
 
 Private DB stores readable plain-text in content_snapshot.
-Public summary is derived (≤280 chars) and written to the summary column
-so Pages export never needs to read content_snapshot.
+Public summary stays ≤280 chars, tags stripped. If public summary is already
+qualified (≥80), leave it; only empty/<80 summaries are derived from the
+snapshot so Pages export never needs to read content_snapshot.
 
 Soft-fail per article: paywall / anti-bot / timeout / non-2xx must not
 fail the main RSS/X fetch job. Logs host + reason only (no secrets).
+X posts are out of scope this cut (text_snapshot only).
 """
 
 from __future__ import annotations
@@ -30,6 +35,16 @@ MAX_HTTP_PER_RUN = 40
 _SCRIPT_RE = re.compile(r"<(script|style)\b[^>]*>.*?</\1>", re.I | re.S)
 _TAG_RE = re.compile(r"<[^>]+>", re.S)
 _WS_RE = re.compile(r"\s+")
+
+# Chrome / nav / legal tokens. Too-short remainder after stripping these
+# counts as an unusable shell snapshot (same 80-char product floor).
+_SHELL_TOKEN_RE = re.compile(
+    r"(?i)"
+    r"首页|导航|登录|注册|搜索|版权所有|网站地图|联系我们|"
+    r"home|menu|login|sign[\s-]?in|sign[\s-]?up|subscribe now|"
+    r"cookie[\s-]?policy|all rights reserved|privacy policy|"
+    r"terms of (?:use|service)|advertisement|newsletter"
+)
 
 _ENRICH_HEADERS = {
     "User-Agent": "news-archive/0.1 (+https://localhost; daily archive bot)",
@@ -80,20 +95,39 @@ def snapshot_plain_len(snapshot: object | None) -> int:
     return len(html_to_text(snapshot))
 
 
+def is_shell_or_nav_text(text: str) -> bool:
+    """True when chrome/nav tokens leave too little real body (< 80 chars)."""
+    if not text:
+        return True
+    remainder = _SHELL_TOKEN_RE.sub(" ", text)
+    remainder = _WS_RE.sub(" ", remainder).strip()
+    return len(remainder) < MIN_USABLE_SUMMARY
+
+
+def is_usable_snapshot(snapshot: object | None) -> bool:
+    """Usable private body: stripped length ≥80 and not shell/nav chrome only."""
+    text = html_to_text(snapshot)
+    if len(text) < MIN_USABLE_SUMMARY:
+        return False
+    if is_shell_or_nav_text(text):
+        return False
+    return True
+
+
 def needs_summary_fill(row: dict[str, Any]) -> bool:
-    """True when stripped summary is empty or < 80 Unicode chars."""
+    """True when stripped public summary is empty or < 80 Unicode chars."""
     if row.get("status") == "gone":
         return False
     return summary_plain_len(row.get("summary")) < MIN_USABLE_SUMMARY
 
 
 def should_fetch_page(row: dict[str, Any]) -> bool:
-    """HTTP only when summary is thin, URL is http(s), and snapshot is unused."""
-    if not needs_summary_fill(row):
+    """HTTP when http(s), not gone, and private snapshot is missing/unusable."""
+    if row.get("status") == "gone":
         return False
     if not is_http_url(row.get("url")):
         return False
-    if snapshot_plain_len(row.get("content_snapshot")) >= MIN_USABLE_SUMMARY:
+    if is_usable_snapshot(row.get("content_snapshot")):
         return False
     return True
 
@@ -152,7 +186,10 @@ def enrich_store(
     max_http: int = MAX_HTTP_PER_RUN,
     timeout: float = ENRICH_TIMEOUT,
 ) -> dict[str, int]:
-    """Enrich thin-summary rows. Soft-fails per article; never raises out.
+    """Fill missing private snapshots. Soft-fails per article; never raises out.
+
+    Caps HTTP at max_http per run (~0.5s delay) so the stockpile drains
+    across cron runs. 403/paywall/timeout leave the row retryable later.
 
     Returns counters for run-stats (no URLs, no secrets).
     """
@@ -184,26 +221,29 @@ def enrich_store(
 
         for row in rows:
             try:
-                if not needs_summary_fill(row):
-                    stats["skipped"] += 1
-                    continue
-                stats["candidates"] += 1
                 url = row.get("url") or ""
-
                 snapshot = row.get("content_snapshot")
-                if snapshot_plain_len(snapshot) >= MIN_USABLE_SUMMARY:
-                    summary = derive_public_summary(
-                        snapshot=snapshot, summary=row.get("summary")
-                    )
-                    store.update_enrichment(url, summary=summary)
-                    stats["derived"] += 1
-                    continue
 
-                if not is_http_url(url):
+                if is_usable_snapshot(snapshot):
+                    if needs_summary_fill(row):
+                        summary = derive_public_summary(
+                            snapshot=snapshot, summary=row.get("summary")
+                        )
+                        if summary:
+                            store.update_enrichment(url, summary=summary)
+                            stats["derived"] += 1
+                            continue
                     stats["skipped"] += 1
                     continue
+
+                if not should_fetch_page(row):
+                    stats["skipped"] += 1
+                    continue
+
+                stats["candidates"] += 1
 
                 if http_used >= max_http:
+                    # Stockpile: leave unusable snapshot for a later cron run.
                     stats["skipped"] += 1
                     continue
 
@@ -215,8 +255,16 @@ def enrich_store(
                     stats["soft_failed"] += 1
                     continue
 
-                summary = derive_public_summary(snapshot=body, summary=row.get("summary"))
-                store.update_enrichment(url, content_snapshot=body, summary=summary)
+                # Qualified public summary (≥80) stays; only fill empty/<80.
+                if needs_summary_fill(row):
+                    summary = derive_public_summary(
+                        snapshot=body, summary=row.get("summary")
+                    )
+                    store.update_enrichment(
+                        url, content_snapshot=body, summary=summary
+                    )
+                else:
+                    store.update_enrichment(url, content_snapshot=body)
                 stats["fetched"] += 1
             except Exception as exc:  # noqa: BLE001 — isolate one row
                 stats["soft_failed"] += 1
