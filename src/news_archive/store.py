@@ -27,6 +27,18 @@ CREATE INDEX IF NOT EXISTS idx_articles_published_at ON articles(published_at);
 CREATE INDEX IF NOT EXISTS idx_articles_fetched_at ON articles(fetched_at);
 CREATE INDEX IF NOT EXISTS idx_articles_status ON articles(status);
 CREATE INDEX IF NOT EXISTS idx_articles_topic_id ON articles(topic_id);
+
+CREATE TABLE IF NOT EXISTS topic_briefs (
+    topic_id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    sources_json TEXT NOT NULL,
+    article_urls_json TEXT NOT NULL,
+    generated_at TEXT NOT NULL,
+    model TEXT NOT NULL,
+    status TEXT NOT NULL CHECK (status IN ('ok', 'failed')),
+    error TEXT,
+    last_error TEXT
+);
 """
 
 # Migrate older DBs created before content_snapshot/status existed.
@@ -121,6 +133,103 @@ class Store:
         
         self._conn.commit()
         return updated
+
+
+    def get_articles_for_briefs(self) -> list[dict]:
+        """Active (+ context) articles with body fields for brief generation."""
+        rows = self._conn.execute(
+            """
+            SELECT url, title, published_at, summary, source, status, topic_id,
+                   content_snapshot
+            FROM articles
+            WHERE topic_id IS NOT NULL
+            ORDER BY published_at ASC NULLS LAST, url
+            """
+        ).fetchall()
+        return [dict(row) for row in rows]
+
+    def get_topic_briefs(self) -> dict[str, dict]:
+        """Map topic_id -> brief dict with parsed JSON lists."""
+        rows = self._conn.execute(
+            "SELECT topic_id, title, sources_json, article_urls_json, "
+            "generated_at, model, status, error, last_error FROM topic_briefs"
+        ).fetchall()
+        out: dict[str, dict] = {}
+        for row in rows:
+            d = dict(row)
+            d["sources"] = json.loads(d.pop("sources_json") or "[]")
+            d["article_urls"] = json.loads(d.pop("article_urls_json") or "[]")
+            out[d["topic_id"]] = d
+        return out
+
+    def upsert_topic_brief(self, brief: dict) -> str:
+        """Save brief. On failed, do not overwrite an existing ok brief.
+
+        Returns: 'inserted' | 'updated' | 'kept_ok' | 'inserted_failed'
+        """
+        topic_id = brief["topic_id"]
+        existing = self._conn.execute(
+            "SELECT status FROM topic_briefs WHERE topic_id = ?", (topic_id,)
+        ).fetchone()
+        sources_json = json.dumps(brief.get("sources") or [], ensure_ascii=False)
+        urls_json = json.dumps(brief.get("article_urls") or [], ensure_ascii=False)
+        status = brief.get("status") or "ok"
+        error = brief.get("error")
+
+        if existing and existing["status"] == "ok" and status == "failed":
+            self._conn.execute(
+                "UPDATE topic_briefs SET last_error = ? WHERE topic_id = ?",
+                (error or "failed", topic_id),
+            )
+            self._conn.commit()
+            return "kept_ok"
+
+        if existing:
+            self._conn.execute(
+                """
+                UPDATE topic_briefs SET
+                    title = ?, sources_json = ?, article_urls_json = ?,
+                    generated_at = ?, model = ?, status = ?, error = ?,
+                    last_error = CASE WHEN ? = 'failed' THEN ? ELSE last_error END
+                WHERE topic_id = ?
+                """,
+                (
+                    brief["title"],
+                    sources_json,
+                    urls_json,
+                    brief["generated_at"],
+                    brief.get("model") or "rules-v1",
+                    status,
+                    error,
+                    status,
+                    error,
+                    topic_id,
+                ),
+            )
+            self._conn.commit()
+            return "updated"
+
+        self._conn.execute(
+            """
+            INSERT INTO topic_briefs
+                (topic_id, title, sources_json, article_urls_json,
+                 generated_at, model, status, error, last_error)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                topic_id,
+                brief["title"],
+                sources_json,
+                urls_json,
+                brief["generated_at"],
+                brief.get("model") or "rules-v1",
+                status,
+                error,
+                error if status == "failed" else None,
+            ),
+        )
+        self._conn.commit()
+        return "inserted_failed" if status == "failed" else "inserted"
 
     def count_by_source(self) -> dict[str, int]:
         rows = self._conn.execute(
