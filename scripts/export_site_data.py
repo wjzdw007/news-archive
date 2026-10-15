@@ -4,36 +4,80 @@
 Reads from archive.sqlite3 and generates:
 - site/data/articles.json (sorted by fetched_at desc)
 - site/data/topics.json (only topics with status=ok briefs)
-- site/data/x_posts.json (posts from tracked accounts)
+- site/data/x_posts.json (display fields only; no post_id / cookies / headers)
 
 Soft failure: if DB missing, generates empty JSON files (Pages build won't fail).
 """
 
 from __future__ import annotations
 
+import html
 import json
+import re
 import sqlite3
 import sys
 from pathlib import Path
 
+# Public Pages must never ship RSS full-text snapshots.
+_ARTICLE_EXPORT_FIELDS = (
+    "url",
+    "title",
+    "published_at",
+    "summary",
+    "source",
+    "fetched_at",
+    "status",
+    "topic_id",
+)
+
+# Public X tab: display fields only. Never cookies / Authorization / headers / post_id.
+_X_POST_EXPORT_FIELDS = (
+    "author",
+    "posted_at",
+    "fetched_at",
+    "text_snapshot",
+    "url",
+    "status",
+)
+
+_TAG_RE = re.compile(r"<[^>]+>", re.DOTALL)
+
+
+def strip_html(text: str | None) -> str | None:
+    """Unescape entities and strip tags for list/detail summary text."""
+    if text is None:
+        return None
+    unescaped = html.unescape(str(text))
+    stripped = _TAG_RE.sub(" ", unescaped)
+    cleaned = re.sub(r"\s+", " ", stripped).strip()
+    return cleaned or None
+
 
 def export_articles(conn: sqlite3.Connection, output_path: Path) -> int:
-    """Export articles sorted by fetched_at desc."""
+    """Export articles sorted by fetched_at desc.
+
+    Omits content_snapshot (copyright / public-repo product lock).
+    Strips HTML from summary so list/detail never show literal <p> tags.
+    """
     conn.row_factory = sqlite3.Row
     cursor = conn.execute(
         """
         SELECT url, title, published_at, summary, source, fetched_at,
-               content_snapshot, status, topic_id
+               status, topic_id
         FROM articles
         ORDER BY fetched_at DESC
         """
     )
-    articles = [dict(row) for row in cursor.fetchall()]
-    
+    articles = []
+    for row in cursor.fetchall():
+        article = {field: row[field] for field in _ARTICLE_EXPORT_FIELDS}
+        article["summary"] = strip_html(article.get("summary"))
+        articles.append(article)
+
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("w", encoding="utf-8") as f:
         json.dump(articles, f, ensure_ascii=False, indent=2)
-    
+
     return len(articles)
 
 
@@ -66,21 +110,27 @@ def export_topics(conn: sqlite3.Connection, output_path: Path) -> int:
 
 
 def export_x_posts(conn: sqlite3.Connection, output_path: Path) -> int:
-    """Export X posts sorted by posted_at desc."""
+    """Export X posts sorted by posted_at desc.
+
+    Allowlist only: author / posted_at / fetched_at / text_snapshot / url / status.
+    Never cookies, Authorization, headers, or post_id.
+    """
     conn.row_factory = sqlite3.Row
     cursor = conn.execute(
         """
-        SELECT post_id, author, url, text_snapshot, posted_at, fetched_at, status
+        SELECT author, posted_at, fetched_at, text_snapshot, url, status
         FROM x_posts
         ORDER BY posted_at DESC NULLS LAST, fetched_at DESC
         """
     )
-    posts = [dict(row) for row in cursor.fetchall()]
-    
+    posts = []
+    for row in cursor.fetchall():
+        posts.append({field: row[field] for field in _X_POST_EXPORT_FIELDS})
+
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("w", encoding="utf-8") as f:
         json.dump(posts, f, ensure_ascii=False, indent=2)
-    
+
     return len(posts)
 
 

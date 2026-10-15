@@ -9,7 +9,7 @@
 1. **新闻** (`/` 或 `#news`)
    - 列表：按 `fetched_at` 倒序展示所有文章
    - 展示：标题 / 来源 / 时间 / 单行摘要
-   - 详情：点击后展示 `content_snapshot`（或 summary）+ 原文链接
+   - 详情：点击后展示 `summary` + 原文链接（**不含** `content_snapshot` 全文）
    - 关联专题：若 `topic_id` 存在，显示「查看相关专题」链接
 
 2. **专题** (`#topics`)
@@ -20,9 +20,10 @@
 
 3. **X** (`#x`)
    - 列表：X 帖子按 `posted_at` 倒序
-   - 展示：作者 / 时间 / 文本快照
+   - 展示字段仅：`author` / `posted_at` / `fetched_at` / `text_snapshot` / `url` / `status`
    - gone 状态：变灰但快照仍可见
    - 点击：跳转原始 URL（新窗口）
+   - **禁止**导出 Cookie / Authorization / headers / `post_id`
 
 ### 约束
 
@@ -119,9 +120,9 @@ news-archive/
 │   ├── app.js                 # 前端逻辑（加载 JSON + 渲染）
 │   ├── style.css              # 样式（响应式 + 移动友好）
 │   └── data/                  # 导出的 JSON（构建时生成）
-│       ├── articles.json      # 所有文章（按 fetched_at desc）
+│       ├── articles.json      # 所有文章（按 fetched_at desc；无 content_snapshot）
 │       ├── topics.json        # 专题（仅 status=ok）
-│       └── x_posts.json       # X 帖子
+│       └── x_posts.json       # X 帖子（仅 author/posted_at/fetched_at/text_snapshot/url/status）
 ├── scripts/
 │   └── export_site_data.py    # 从 SQLite 导出 JSON
 └── .github/workflows/
@@ -159,7 +160,7 @@ news-archive/
 
 - [ ] 本地构建：`python scripts/export_site_data.py` 成功导出 JSON
 - [ ] 本地预览：`cd site && python -m http.server 8000` 打开页面正常
-- [ ] 新闻 Tab：列表显示、详情页、返回列表、原文链接
+- [ ] 新闻 Tab：列表显示、详情页（仅 summary + 原链，无全文快照）、返回列表、原文链接
 - [ ] 专题 Tab：仅显示 status=ok 的专题、来源列表、gone 标记变灰
 - [ ] X Tab：帖子列表、作者/时间/文本、gone 变灰、原文链接
 - [ ] 移动端：手机浏览器打开，布局适配、可滚动、无横向溢出

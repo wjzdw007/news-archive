@@ -116,7 +116,7 @@ python -m news_archive --db data/archive.sqlite3 --export-jsonl data/archive.jso
 
 ## 静态新闻浏览器（GitHub Pages）
 
-只读网页版，展示归档数据（新闻 / 专题 / X 帖子），自动部署到 GitHub Pages。
+只读网页版，展示归档数据（新闻 / 专题 / X 帖子），自动部署到 GitHub Pages。公开站点不含 RSS `content_snapshot` 全文，仅 summary + 原链 + 专题跳转。
 
 - **访问**：`https://<username>.github.io/<repo>/`（需启用 Pages）
 - **更新**：`daily-fetch` 完成后自动刷新（或手动触发 `deploy-pages` workflow）
