@@ -16,6 +16,7 @@ from .daily_briefs import (
     make_llm_fn,
     redact_secrets,
     resolve_llm_config,
+    resolve_model,
     shanghai_calendar_date,
 )
 from .store import Store
@@ -31,7 +32,7 @@ def generate_for_dates(
     articles = store.get_articles_for_daily_brief()
     config = resolve_llm_config()
     llm_fn = make_llm_fn(config) if config else None
-    model = config["model"] if config else ""
+    model = config["model"] if config else resolve_model()
     missing_config = config is None
     api_key = (config or {}).get("api_key") or ""
     today = force_today or shanghai_calendar_date()

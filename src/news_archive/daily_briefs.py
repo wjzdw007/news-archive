@@ -27,7 +27,9 @@ BULLETS_MAX = 3
 LINKS_MAX = 5
 # Code default only (not a GitHub Secret). Live path uses Tencent LKEAP
 # OpenAI-compatible POST {DAILY_BRIEF_API_BASE}/chat/completions.
-DEFAULT_MODEL = "deepseek-v3"
+# Boss-locked LKEAP model id — deepseek-v3 403s on this endpoint.
+DEFAULT_MODEL = "deepseek/deepseek-flash"
+MODEL_ENV = "DAILY_BRIEF_MODEL"
 API_KEY_ENV = "DAILY_BRIEF_API_KEY"
 API_BASE_ENV = "DAILY_BRIEF_API_BASE"
 
@@ -301,6 +303,13 @@ def redact_secrets(text: str, *secrets: str) -> str:
     return out
 
 
+def resolve_model(env: dict[str, str] | None = None) -> str:
+    """LKEAP model id: env DAILY_BRIEF_MODEL if set, else deepseek/deepseek-flash."""
+    source = env if env is not None else os.environ
+    override = (source.get(MODEL_ENV) or "").strip()
+    return override or DEFAULT_MODEL
+
+
 def resolve_llm_config(
     env: dict[str, str] | None = None,
 ) -> dict[str, str] | None:
@@ -312,7 +321,7 @@ def resolve_llm_config(
         return None
     return {
         "api_key": key,
-        "model": DEFAULT_MODEL,
+        "model": resolve_model(source),
         "base_url": base_url.rstrip("/"),
     }
 
@@ -479,7 +488,7 @@ def generate_daily_brief(
         "date": date,
         "generated_at": (now or datetime.now(timezone.utc)).astimezone(timezone.utc).isoformat(),
         "status": "ok",
-        "model": model or DEFAULT_MODEL,
+        "model": model or resolve_model(),
         "lede": lede,
         "sections": sections,
         "error": None,

@@ -147,7 +147,8 @@ news-archive/
 ### 数据流
 
 ```
-[daily-fetch] → (optional daily_brief via DAILY_BRIEF_API_KEY + DAILY_BRIEF_API_BASE)
+[daily-fetch] → (optional daily_brief via DAILY_BRIEF_API_KEY + DAILY_BRIEF_API_BASE;
+                     model default deepseek/deepseek-flash, override DAILY_BRIEF_MODEL)
                      ↓
               data branch (archive.sqlite3)
                      ↓

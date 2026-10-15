@@ -73,6 +73,8 @@ jobs:
       - name: Generate daily brief (soft-fail)
         # Missing DAILY_BRIEF_API_KEY / DAILY_BRIEF_API_BASE, model errors, or
         # empty day write failed|empty and must not break fetch or persist.
+        # Model id is code-default deepseek/deepseek-flash (not a Secret);
+        # override with env DAILY_BRIEF_MODEL if needed.
         if: always() && steps.fetch.outcome == 'success' && hashFiles('data/archive.sqlite3') != ''
         continue-on-error: true
         env:
