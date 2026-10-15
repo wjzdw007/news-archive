@@ -7,7 +7,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
+from .x_config import X_NEWS_ACCOUNTS
 from .x_store import XPost, XStore
+
+
+def _canon_author(author: str) -> str:
+    a = author.lstrip("@")
+    lookup = {x.lower(): x for x in X_NEWS_ACCOUNTS}
+    return lookup.get(a.lower(), a)
 
 
 REQUIRED = ("post_id", "author", "text_snapshot")
@@ -27,7 +34,7 @@ def parse_jsonl_line(line: str, *, fetched_at: str | None = None) -> XPost | Non
             raise ValueError(f"missing {key}")
     if not str(raw.get("text_snapshot") or "").strip():
         raise ValueError("text_snapshot empty")
-    author = str(raw["author"]).lstrip("@")
+    author = _canon_author(str(raw["author"]))
     pid = str(raw["post_id"])
     status = raw.get("status") or "active"
     if status not in ("active", "gone"):
