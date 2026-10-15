@@ -60,7 +60,7 @@ def test_export_articles():
             exported = json.load(f)
         
         assert len(exported) == 2
-        # Should be sorted by fetched_at desc
+        # Sorted by published_at desc (both have published_at here)
         assert exported[0]["url"] == "https://example.com/1"
         assert exported[1]["url"] == "https://example.com/2"
         assert exported[0]["status"] == "active"
@@ -69,6 +69,169 @@ def test_export_articles():
             assert "content_snapshot" not in item
         
         store.close()
+
+
+def test_article_list_time_prefers_published_at():
+    """List SORT / display time: published_at, else fetched_at (null/empty)."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from export_site_data import article_list_time
+
+    fetched = "2026-10-15T12:00:00Z"
+    published = "2024-01-01T08:00:00Z"
+    assert article_list_time({"published_at": published, "fetched_at": fetched}) == published
+    assert article_list_time({"published_at": None, "fetched_at": fetched}) == fetched
+    assert article_list_time({"published_at": "", "fetched_at": fetched}) == fetched
+    assert article_list_time({"published_at": "   ", "fetched_at": fetched}) == fetched
+
+
+def test_export_articles_sorts_by_published_at_fallback_fetched_at():
+    """Late-fetched old articles must not sort above newer published_at.
+
+    Fixture:
+      late-old   published 2024-01-01, fetched 2026-10-15  -> sort key 2024-01-01
+      recent     published 2026-10-10, fetched 2026-10-11  -> sort key 2026-10-10
+      no-pub     published None,       fetched 2026-10-12  -> sort key 2026-10-12
+      empty-pub  published "",         fetched 2026-10-08  -> sort key 2026-10-08
+
+    Expected desc: no-pub, recent, empty-pub, late-old
+    (fetched_at desc would have put late-old first.)
+    """
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from export_site_data import article_list_time, export_articles
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "test.db"
+        store = Store(db_path)
+        fixtures = [
+            Article(
+                url="https://example.com/late-old",
+                title="Old article fetched late",
+                published_at="2024-01-01T08:00:00Z",
+                summary="old",
+                source="test_source",
+                fetched_at="2026-10-15T12:00:00Z",
+                content_snapshot="must not appear",
+                status="active",
+            ),
+            Article(
+                url="https://example.com/recent",
+                title="Recently published",
+                published_at="2026-10-10T09:00:00Z",
+                summary="recent",
+                source="test_source",
+                fetched_at="2026-10-11T09:00:00Z",
+                content_snapshot="must not appear",
+                status="active",
+            ),
+            Article(
+                url="https://example.com/no-pub",
+                title="Missing published_at",
+                published_at=None,
+                summary="no pub",
+                source="test_source",
+                fetched_at="2026-10-12T09:00:00Z",
+                content_snapshot="must not appear",
+                status="active",
+            ),
+            Article(
+                url="https://example.com/empty-pub",
+                title="Empty published_at",
+                published_at="",
+                summary="empty pub",
+                source="test_source",
+                fetched_at="2026-10-08T09:00:00Z",
+                content_snapshot="must not appear",
+                status="active",
+            ),
+        ]
+        for article in fixtures:
+            store.upsert(article)
+
+        output_path = Path(tmpdir) / "articles.json"
+        conn = sqlite3.connect(db_path)
+        count = export_articles(conn, output_path)
+        conn.close()
+
+        assert count == 4
+        exported = json.loads(output_path.read_text(encoding="utf-8"))
+        urls = [item["url"] for item in exported]
+        assert urls == [
+            "https://example.com/no-pub",
+            "https://example.com/recent",
+            "https://example.com/empty-pub",
+            "https://example.com/late-old",
+        ]
+        assert urls[0] != "https://example.com/late-old"
+
+        keys = [article_list_time(item) for item in exported]
+        assert keys == [
+            "2026-10-12T09:00:00Z",
+            "2026-10-10T09:00:00Z",
+            "2026-10-08T09:00:00Z",
+            "2024-01-01T08:00:00Z",
+        ]
+        assert keys == sorted(keys, reverse=True)
+        for item in exported:
+            assert "content_snapshot" not in item
+
+        store.close()
+
+
+def test_news_list_viewer_uses_published_at_helper():
+    """Viewer list (not only detail) must use the published_at fallback helper."""
+    app_js = (Path(__file__).parent.parent / "site" / "app.js").read_text(encoding="utf-8")
+    assert "function articleListTime(article)" in app_js
+    assert "formatDate(articleListTime(article))" in app_js
+    assert "article.fetched_at);" not in app_js
+    # X tab stays on posted_at with fetched_at fallback
+    assert "formatDate(post.posted_at || post.fetched_at)" in app_js
+
+
+def test_js_viewer_sorts_by_published_at_fallback_fetched_at():
+    """Execute the viewer helpers against the late-fetch fixture."""
+    import shutil
+    import subprocess
+
+    if not shutil.which("node"):
+        raise AssertionError("node is required to execute the viewer list-time helpers")
+
+    app_js = (Path(__file__).parent.parent / "site" / "app.js").read_text(encoding="utf-8")
+    start = app_js.index("function articleListTime")
+    end = app_js.index("// Render news list")
+    helpers = app_js[start:end]
+    script = (
+        helpers
+        + """
+const items = [
+  {url:'late-old', published_at:'2024-01-01T08:00:00Z', fetched_at:'2026-10-15T12:00:00Z'},
+  {url:'recent', published_at:'2026-10-10T09:00:00Z', fetched_at:'2026-10-11T09:00:00Z'},
+  {url:'no-pub', published_at:null, fetched_at:'2026-10-12T09:00:00Z'},
+  {url:'empty-pub', published_at:'', fetched_at:'2026-10-08T09:00:00Z'},
+];
+const sorted = [...items].sort(compareArticleListTimeDesc);
+console.log(JSON.stringify({
+  urls: sorted.map(i => i.url),
+  times: sorted.map(articleListTime),
+}));
+"""
+    )
+    result = subprocess.run(
+        ["node", "--input-type=module", "-e", script],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    payload = json.loads(result.stdout)
+    assert payload["urls"] == ["no-pub", "recent", "empty-pub", "late-old"]
+    assert payload["times"] == [
+        "2026-10-12T09:00:00Z",
+        "2026-10-10T09:00:00Z",
+        "2026-10-08T09:00:00Z",
+        "2024-01-01T08:00:00Z",
+    ]
+    assert payload["urls"][0] != "late-old"
 
 
 def test_export_articles_omits_content_snapshot():
@@ -368,6 +531,10 @@ def test_export_empty_files():
 
 if __name__ == "__main__":
     test_export_articles()
+    test_article_list_time_prefers_published_at()
+    test_export_articles_sorts_by_published_at_fallback_fetched_at()
+    test_news_list_viewer_uses_published_at_helper()
+    test_js_viewer_sorts_by_published_at_fallback_fetched_at()
     test_export_articles_omits_content_snapshot()
     test_export_articles_strips_html_from_summary()
     test_export_topics()

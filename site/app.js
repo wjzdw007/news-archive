@@ -58,6 +58,18 @@ async function loadData() {
     }
 }
 
+// News list SORT + displayed time: published_at, else fetched_at.
+// X tab keeps posted_at || fetched_at and does not share this helper.
+function articleListTime(article) {
+    const published = typeof article.published_at === 'string' ? article.published_at.trim() : '';
+    if (published) return published;
+    return (article.fetched_at || '').toString().trim();
+}
+
+function compareArticleListTimeDesc(a, b) {
+    return articleListTime(b).localeCompare(articleListTime(a));
+}
+
 // Render news list
 function renderNewsList() {
     const container = document.getElementById('news-list');
@@ -67,8 +79,8 @@ function renderNewsList() {
         return;
     }
     
-    const html = articlesData.map(article => {
-        const date = formatDate(article.fetched_at);
+    const html = [...articlesData].sort(compareArticleListTimeDesc).map(article => {
+        const date = formatDate(articleListTime(article));
         const summary = article.summary || '无摘要';
         const oneLineSummary = summary.length > 100 ? summary.substring(0, 100) + '...' : summary;
         
@@ -94,7 +106,7 @@ function showArticleDetail(url) {
     
     // Public site: summary + original link + topic jump only (no content_snapshot).
     const summary = article.summary || '无摘要';
-    const date = formatDate(article.published_at || article.fetched_at);
+    const date = formatDate(articleListTime(article));
     const topicLink = article.topic_id ? `<p class="topic-link"><a href="#" onclick="showTopicFromArticle('${article.topic_id}'); return false;">→ 查看相关专题</a></p>` : '';
     
     const html = `

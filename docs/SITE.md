@@ -7,9 +7,9 @@
 ### 三个 Tab
 
 1. **新闻** (`/` 或 `#news`)
-   - 列表：按 `fetched_at` 倒序展示所有文章
-   - 展示：标题 / 来源 / 时间 / 单行摘要
-   - 详情：点击后展示 `summary` + 原文链接（**不含** `content_snapshot` 全文）
+   - 列表：按 `published_at` 倒序展示所有文章（缺失 / null / 空则回退 `fetched_at`）
+   - 展示：标题 / 来源 / 时间（同样优先 `published_at`，否则 `fetched_at`）/ 单行摘要
+   - 详情：点击后展示 `summary` + 原文链接（**不含** `content_snapshot` 全文）；时间字段与列表一致
    - 关联专题：若 `topic_id` 存在，显示「查看相关专题」链接
 
 2. **专题** (`#topics`)
@@ -120,7 +120,7 @@ news-archive/
 │   ├── app.js                 # 前端逻辑（加载 JSON + 渲染）
 │   ├── style.css              # 样式（响应式 + 移动友好）
 │   └── data/                  # 导出的 JSON（构建时生成）
-│       ├── articles.json      # 所有文章（按 fetched_at desc；无 content_snapshot）
+│       ├── articles.json      # 所有文章（按 published_at desc，缺则 fetched_at；无 content_snapshot）
 │       ├── topics.json        # 专题（仅 status=ok）
 │       └── x_posts.json       # X 帖子（仅 author/posted_at/fetched_at/text_snapshot/url/status）
 ├── scripts/
