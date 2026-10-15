@@ -16,22 +16,22 @@ jobs:
       - name: Install
         run: pip install -r requirements.txt
       
-      - name: Restore X posts DB from data branch
+      - name: Restore archive.sqlite3 from data branch
         id: restore-db
         run: |
           set -euo pipefail
           mkdir -p data
           
-          # Try to fetch x_posts.sqlite3 from data branch
+          # Fetch archive.sqlite3 from data branch (shared DB: articles + x_posts)
           if git fetch origin data:data 2>/dev/null; then
-            echo "Data branch exists, attempting to restore x_posts DB..."
-            if git show data:data/x_posts.sqlite3 > data/x_posts.sqlite3 2>/dev/null; then
+            echo "Data branch exists, attempting to restore archive.sqlite3..."
+            if git show data:data/archive.sqlite3 > data/archive.sqlite3 2>/dev/null; then
               echo "restored=true" >> "$GITHUB_OUTPUT"
-              echo "✓ Restored x_posts.sqlite3 from data branch"
-              ls -lh data/x_posts.sqlite3
+              echo "✓ Restored archive.sqlite3 from data branch"
+              ls -lh data/archive.sqlite3
             else
               echo "restored=false" >> "$GITHUB_OUTPUT"
-              echo "⚠ Data branch exists but no x_posts.sqlite3 found, starting fresh"
+              echo "⚠ Data branch exists but no archive.sqlite3 found, starting fresh"
             fi
           else
             echo "restored=false" >> "$GITHUB_OUTPUT"
@@ -41,9 +41,9 @@ jobs:
       - name: Detect X credentials and set mode
         id: detect-creds
         run: |
-          if [[ -n "${{ secrets.X_BEARER_TOKEN }}" && -n "${{ secrets.X_AUTH_TOKEN }}" && -n "${{ secrets.X_CT0_TOKEN }}" ]]; then
+          if [[ -n "${{ secrets.X_AUTH_TOKEN }}" && -n "${{ secrets.X_CT0_TOKEN }}" ]]; then
             echo "mode=live" >> "$GITHUB_OUTPUT"
-            echo "✓ X credentials detected, using live mode"
+            echo "✓ X credentials detected (auth_token + ct0), using live mode"
           else
             echo "mode=mock" >> "$GITHUB_OUTPUT"
             echo "⚠ X credentials missing, using mock mode"
@@ -51,19 +51,19 @@ jobs:
       
       - name: Fetch X posts
         env:
-          X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
           X_AUTH_TOKEN: ${{ secrets.X_AUTH_TOKEN }}
           X_CT0_TOKEN: ${{ secrets.X_CT0_TOKEN }}
+          X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
           X_CSRF_TOKEN: ${{ secrets.X_CSRF_TOKEN }}
         run: |
           mkdir -p data
           PYTHONPATH=src python -m news_archive.x_cli \
-            --db data/x_posts.sqlite3 \
+            --db data/archive.sqlite3 \
             --mode ${{ steps.detect-creds.outputs.mode }} \
             --json | tee data/x-run-stats.json
       
-      - name: Persist X posts DB to data branch
-        if: always() && hashFiles('data/x_posts.sqlite3') != ''
+      - name: Persist archive.sqlite3 to data branch
+        if: always() && hashFiles('data/archive.sqlite3') != ''
         run: |
           set -euo pipefail
           
@@ -72,7 +72,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
           # Copy DB + stats to temp
-          cp "$GITHUB_WORKSPACE/data/x_posts.sqlite3" "$RUNNER_TEMP/x_posts.sqlite3"
+          cp "$GITHUB_WORKSPACE/data/archive.sqlite3" "$RUNNER_TEMP/archive.sqlite3"
           cp "$GITHUB_WORKSPACE/data/x-run-stats.json" "$RUNNER_TEMP/x-run-stats.json"
           
           # Checkout or create data branch
@@ -86,7 +86,7 @@ jobs:
           fi
           
           # Copy DB back
-          cp "$RUNNER_TEMP/x_posts.sqlite3" data/x_posts.sqlite3
+          cp "$RUNNER_TEMP/archive.sqlite3" data/archive.sqlite3
           
           # Create run metadata
           cat > data/X_LAST_RUN.json <<EOF
@@ -106,7 +106,7 @@ jobs:
           fi
           
           # Stage and commit
-          git add data/x_posts.sqlite3 data/X_LAST_RUN.json data/X_LAST_RUN_STATS.json
+          git add data/archive.sqlite3 data/X_LAST_RUN.json data/X_LAST_RUN_STATS.json
           
           # Check if there are changes to commit
           if git diff --cached --quiet; then
@@ -134,12 +134,12 @@ jobs:
           # Return to original branch
           git checkout "${{ github.ref_name }}"
       
-      - name: Upload X posts artifact
-        if: always() && hashFiles('data/x_posts.sqlite3') != ''
+      - name: Upload archive artifact
+        if: always() && hashFiles('data/archive.sqlite3') != ''
         uses: actions/upload-artifact@v4
         with:
           name: x-posts-${{ github.run_id }}
           path: |
-            data/x_posts.sqlite3
+            data/archive.sqlite3
             data/x-run-stats.json
           retention-days: 30
