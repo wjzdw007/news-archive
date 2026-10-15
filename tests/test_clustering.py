@@ -446,6 +446,101 @@ def test_threshold_0_7_does_not_merge_half_similar_en_pair():
     assert not should_merge(a1, a2, similarity_threshold=0.7)
     print("✓ 0.7 still separates ~0.5 English rewrite pair")
 
+
+
+def test_en_0_5_merges_gold_russia_journalist_pair():
+    """Product gold: Guardian/NYT Russia-Japan journalist pair must merge at EN 0.5."""
+    from datetime import datetime, timedelta, timezone
+    from news_archive.clustering import (
+        assign_topic_ids,
+        jaccard_similarity,
+        normalize_title,
+        should_merge,
+    )
+
+    t1 = "Russia arrests Japanese journalist on allegations of spying"
+    t2 = "Russia Detains Japanese Journalist for Alleged Espionage"
+    sim = jaccard_similarity(normalize_title(t1), normalize_title(t2))
+    assert abs(sim - 0.525) < 0.02, f"unexpected sim={sim}"
+    base = datetime.now(timezone.utc)
+    a1 = {
+        "url": "https://guardian.example/1",
+        "title": t1,
+        "published_at": base.isoformat(),
+        "source": "guardian_world",
+        "status": "active",
+        "topic_id": None,
+    }
+    a2 = {
+        "url": "https://nyt.example/1",
+        "title": t2,
+        "published_at": (base + timedelta(hours=1)).isoformat(),
+        "source": "nyt_world",
+        "status": "active",
+        "topic_id": None,
+    }
+    assert should_merge(a1, a2)  # language-aware 0.5
+    assert not should_merge(a1, a2, similarity_threshold=0.7)
+    result = assign_topic_ids([a1, a2])
+    assert result[0]["topic_id"] == result[1]["topic_id"]
+    print(f"✓ EN 0.5 gold pair merges (sim={sim:.3f})")
+
+
+def test_cn_threshold_stays_0_7():
+    """Chinese pairs still need ≥0.7; loose EN threshold must not apply."""
+    from datetime import datetime, timezone
+    from news_archive.clustering import pair_similarity_threshold, should_merge
+
+    assert pair_similarity_threshold("美国通过新的科技法案", "日本发布经济数据") == 0.7
+    base = datetime.now(timezone.utc).isoformat()
+    a1 = {
+        "title": "美国通过新的科技法案",
+        "published_at": base,
+        "source": "36kr",
+        "status": "active",
+    }
+    a2 = {
+        "title": "日本发布经济数据报告",
+        "published_at": base,
+        "source": "tmtpost",
+        "status": "active",
+    }
+    assert not should_merge(a1, a2)
+    print("✓ CN threshold stays 0.7")
+
+
+def test_recluster_clears_topic_without_ok_brief():
+    import tempfile
+    from datetime import datetime, timezone
+    from pathlib import Path
+    from news_archive.schema import Article
+    from news_archive.store import Store
+
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        now = datetime.now(timezone.utc).isoformat()
+        store.upsert(
+            Article(
+                title="A",
+                published_at=now,
+                url="https://a.com/1",
+                summary="s",
+                source="36kr",
+                fetched_at=now,
+                content_snapshot="c",
+                topic_id="orphan-topic",
+            )
+        )
+        n = store.clear_topic_ids_without_ok_brief()
+        assert n == 1
+        row = store._conn.execute(
+            "SELECT topic_id FROM articles WHERE url=?", ("https://a.com/1",)
+        ).fetchone()
+        assert row[0] is None
+        store.close()
+    print("✓ recluster clears topic_id without ok brief")
+
+
 if __name__ == "__main__":
     # Run all acceptance tests
     print("Running topic_id clustering acceptance tests...\n")
@@ -468,5 +563,8 @@ if __name__ == "__main__":
     test_integration_with_store()
     test_chinese_title_clustering()
     test_threshold_0_7_does_not_merge_half_similar_en_pair()
+    test_en_0_5_merges_gold_russia_journalist_pair()
+    test_cn_threshold_stays_0_7()
+    test_recluster_clears_topic_without_ok_brief()
     
     print("\n✅ All tests PASSED!")
