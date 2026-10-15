@@ -6,6 +6,8 @@
     "TechCrunch"
   ],
   "mode": "live",
-  "status": "failed",
-  "error": "HTTP 403: "
+  "inserted": 0,
+  "gone": 0,
+  "seen": 0,
+  "status": "ok"
 }
