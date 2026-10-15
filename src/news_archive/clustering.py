@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-# CEO 2026-10-15: try 0.7 (was 0.8); revert this constant to roll back.
-DEFAULT_SIMILARITY_THRESHOLD = 0.7
+# Thresholds (revertible): CN stays 0.7; EN trial 0.5 (CEO/product 2026-10-15).
+DEFAULT_SIMILARITY_THRESHOLD = 0.7  # Chinese / mixed / fallback
+EN_SIMILARITY_THRESHOLD = 0.5
 DEFAULT_WINDOW_HOURS = 6.0
 
 import re
@@ -11,6 +12,28 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
+
+
+def mostly_cjk(title: str) -> bool:
+    """True when title is mostly CJK characters."""
+    if not title:
+        return False
+    cjk = sum(1 for ch in title if "一" <= ch <= "鿿" or "㐀" <= ch <= "䶿")
+    content = sum(
+        1
+        for ch in title
+        if ch.isalnum() or "一" <= ch <= "鿿" or "㐀" <= ch <= "䶿"
+    )
+    if content == 0:
+        return False
+    return (cjk / content) >= 0.3
+
+
+def pair_similarity_threshold(title1: str, title2: str) -> float:
+    """EN-EN pairs use 0.5; any CJK-heavy title keeps 0.7."""
+    if mostly_cjk(title1) or mostly_cjk(title2):
+        return DEFAULT_SIMILARITY_THRESHOLD
+    return EN_SIMILARITY_THRESHOLD
 
 def normalize_title(title: str) -> str:
     """Normalize title: lowercase, strip punctuation/whitespace, keep CJK/Latin/digits."""
@@ -78,7 +101,7 @@ def within_time_window(
 def should_merge(
     article1: dict[str, Any],
     article2: dict[str, Any],
-    similarity_threshold: float = DEFAULT_SIMILARITY_THRESHOLD,
+    similarity_threshold: float | None = None,
     window_hours: float = DEFAULT_WINDOW_HOURS,
 ) -> bool:
     """Determine if two articles should share the same topic_id.
@@ -87,20 +110,30 @@ def should_merge(
     - Normalized title similarity ≥ threshold (Jaccard on char bigrams)
     - Published within same time window (±6h anchored on earlier)
     - Preferentially merge across sources (same-source generally don't merge)
+
+    Threshold: EN-EN uses EN_SIMILARITY_THRESHOLD (0.5); CJK/mixed uses 0.7.
+    Pass similarity_threshold to override (tests).
     """
     # Skip if same source (generally don't merge same-source)
     if article1.get("source") == article2.get("source"):
         return False
     
     # Check title similarity
-    title1 = normalize_title(article1.get("title", ""))
-    title2 = normalize_title(article2.get("title", ""))
+    raw1 = article1.get("title", "") or ""
+    raw2 = article2.get("title", "") or ""
+    title1 = normalize_title(raw1)
+    title2 = normalize_title(raw2)
     
     if not title1 or not title2:
         return False
     
+    thr = (
+        similarity_threshold
+        if similarity_threshold is not None
+        else pair_similarity_threshold(raw1, raw2)
+    )
     similarity = jaccard_similarity(title1, title2)
-    if similarity < similarity_threshold:
+    if similarity < thr:
         return False
     
     # Check time window
@@ -115,7 +148,7 @@ def should_merge(
 
 def assign_topic_ids(
     articles: list[dict[str, Any]],
-    similarity_threshold: float = DEFAULT_SIMILARITY_THRESHOLD,
+    similarity_threshold: float | None = None,
     window_hours: float = DEFAULT_WINDOW_HOURS,
 ) -> list[dict[str, Any]]:
     """Assign topic_id to articles using greedy clustering.

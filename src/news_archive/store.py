@@ -122,6 +122,27 @@ class Store:
         ).fetchall()
         return [dict(row) for row in rows]
 
+
+    def clear_topic_ids_without_ok_brief(self) -> int:
+        """Null topic_id on active rows whose topic has no ok brief (enable recluster).
+
+        Preserves topic_ids that already have an ok topic_briefs row.
+        Returns number of rows cleared.
+        """
+        cur = self._conn.execute(
+            """
+            UPDATE articles
+            SET topic_id = NULL
+            WHERE status = 'active'
+              AND topic_id IS NOT NULL
+              AND topic_id NOT IN (
+                  SELECT topic_id FROM topic_briefs WHERE status = 'ok'
+              )
+            """
+        )
+        self._conn.commit()
+        return cur.rowcount
+
     def update_topic_ids(self, url_to_topic: dict[str, str]) -> int:
         """Batch update topic_ids for given URLs. Returns count of updated rows."""
         if not url_to_topic:

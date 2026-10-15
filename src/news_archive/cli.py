@@ -58,7 +58,9 @@ def main(argv: list[str] | None = None) -> int:
         }
         stats["inserted"] = int(stats["inserted"]) + inserted
 
-    # Cluster articles by topic_id
+    # Recluster: clear topic_ids not covered by an ok brief, then assign
+    cleared = store.clear_topic_ids_without_ok_brief()
+    stats["recluster_cleared"] = cleared
     articles = store.get_articles_for_clustering()
     clustered = assign_topic_ids(articles)
     url_to_topic = {a["url"]: a["topic_id"] for a in clustered if a.get("topic_id")}
