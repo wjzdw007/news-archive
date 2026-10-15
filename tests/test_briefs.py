@@ -217,6 +217,106 @@ def test_acceptance_5_p0_p1_schema():
     print("✓ Acceptance 5: P0/P1 schema intact + topic_briefs")
 
 
+
+
+def test_reject_nyt_caption_bullets():
+    """Product reject #1: NYT photo caption must not enter bullets."""
+    from news_archive.briefs import bullets_for_article, is_noise_bullet
+
+    caption = (
+        "A photo provided by Russian state media shows President Vladimir V. "
+        "Putin visiting the Sakhalin region in Russia’s far east in August."
+    )
+    assert is_noise_bullet(
+        "A photo provided by Russian state media shows President Vladimir V."
+    )
+    assert is_noise_bullet(
+        "Putin visiting the Sakhalin region in Russia’s far east in August."
+    )
+    article = {
+        "title": "Russia Detains Japanese Journalist for Alleged Espionage",
+        "content_snapshot": caption,
+        "summary": (
+            "The main security service said it had detained a reporter for the "
+            "Hokkaido Shimbun newspaper in Russia’s far east, where he had been "
+            "reporting on military recruitment."
+        ),
+    }
+    bullets = bullets_for_article(article)
+    joined = " ".join(bullets).lower()
+    assert "putin visiting sakhalin" not in joined.replace("’", "'")
+    assert "sakhalin region" not in joined or "detained" in joined
+    assert any("detained" in b.lower() or "hokkaido" in b.lower() for b in bullets)
+    print("✓ reject NYT caption; fall back to summary")
+
+
+def test_reject_continue_reading():
+    """Product reject #2: Continue reading / Read more / Advertisement."""
+    from news_archive.briefs import extract_bullets, is_noise_bullet
+
+    assert is_noise_bullet("Continue reading.")
+    assert is_noise_bullet("Read more")
+    assert is_noise_bullet("Advertisement")
+    text = (
+        "Russia has arrested a Japanese journalist on Sakhalin and accused him of spying. "
+        "Continue reading. "
+        "Officials said the reporter worked for Hokkaido Shimbun."
+    )
+    bullets = extract_bullets(text)
+    assert all("continue reading" not in b.lower() for b in bullets)
+    assert any("arrested" in b.lower() or "hokkaido" in b.lower() for b in bullets)
+    print("✓ reject Continue reading footer")
+
+
+def test_gold_brief_rebuild_filters_noise():
+    """Rebuild gold topic brief: no caption / Continue reading in any bullets."""
+    from news_archive.briefs import build_brief_for_topic
+
+    articles = [
+        {
+            "url": "https://www.nytimes.com/example",
+            "title": "Russia Detains Japanese Journalist for Alleged Espionage",
+            "published_at": "2026-10-13T12:00:00+00:00",
+            "source": "nyt_world",
+            "status": "active",
+            "content_snapshot": (
+                "A photo provided by Russian state media shows President Vladimir V. "
+                "Putin visiting the Sakhalin region in Russia’s far east in August."
+            ),
+            "summary": (
+                "The main security service said it had detained a reporter for the "
+                "Hokkaido Shimbun newspaper in Russia’s far east, where he had been "
+                "reporting on military recruitment."
+            ),
+        },
+        {
+            "url": "https://www.theguardian.com/example",
+            "title": "Russia arrests Japanese journalist on allegations of spying",
+            "published_at": "2026-10-14T12:00:00+00:00",
+            "source": "guardian_world",
+            "status": "active",
+            "content_snapshot": (
+                "<p>FSB security agency said reporter was arrested on island of Sakhalin, "
+                "alleging he was collecting information about Russia’s defences</p>"
+                "<p>Russia has arrested a Japanese journalist on the far east island of "
+                "Sakhalin and accused him of spying.</p>"
+                "<p>Continue reading.</p>"
+            ),
+            "summary": "FSB said reporter was arrested on Sakhalin.",
+        },
+    ]
+    brief = build_brief_for_topic("gold", articles)
+    assert brief["status"] == "ok"
+    assert len(brief["sources"]) == 2
+    for block in brief["sources"]:
+        for b in block["bullets"]:
+            low = b.lower()
+            assert "continue reading" not in low
+            assert "photo provided" not in low
+            assert not low.startswith("putin visiting")
+    print("✓ gold brief rebuild filters caption + footer")
+
+
 if __name__ == "__main__":
     test_extract_bullets_no_invent()
     test_acceptance_1_two_source_brief()
@@ -224,4 +324,7 @@ if __name__ == "__main__":
     test_acceptance_3_update_on_new_source()
     test_acceptance_4_fail_soft()
     test_acceptance_5_p0_p1_schema()
+    test_reject_nyt_caption_bullets()
+    test_reject_continue_reading()
+    test_gold_brief_rebuild_filters_noise()
     print("\n✅ All brief tests PASSED")
