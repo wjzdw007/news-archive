@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-15",
+  "generated_at": "2026-10-15T12:00:00+00:00",
+  "status": "ok",
+  "model": "gpt-4o-mini",
+  "lede": "多源关注航天发射与市场动态。",
+  "sections": [
+    {
+      "topic_id": "t-space",
+      "title": "航天发射",
+      "bullets": [
+        "SpaceX 今日完成发射，任务按计划进行。",
+        "地面站确认信号正常。"
+      ],
+      "links": [
+        {
+          "title": "SpaceX发射成功",
+          "url": "https://example.com/spacex",
+          "source": "36kr"
+        },
+        {
+          "title": "发射成功报道",
+          "url": "https://example.com/spacex-2",
+          "source": "tmtpost"
+        }
+      ]
+    },
+    {
+      "topic_id": null,
+      "title": "其它",
+      "bullets": [
+        "一则未归类财经短讯。"
+      ],
+      "links": [
+        {
+          "title": "财经短讯",
+          "url": "https://example.com/other",
+          "source": "geekpark"
+        }
+      ]
+    }
+  ]
+}

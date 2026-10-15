@@ -4,7 +4,7 @@
 
 ## 产品功能（CEO 锁定）
 
-### 三个 Tab
+### 四个 Tab
 
 1. **新闻** (`/` 或 `#news`)
    - 列表：先按 `published_at` 倒序（缺失 / null / 空则回退 `fetched_at`），再计算展示序
@@ -29,6 +29,15 @@
    - 点击：跳转原始 URL（新窗口）
    - **禁止**导出 Cookie / Authorization / headers / `post_id`
 
+4. **日报** (`#daily`)
+   - 默认上海日历「今天」；可切换近 7 日
+   - `status=ok`：导语 + 最多 8 个分组（优先已有 `topic_id`；未归类最多一个「其它」）
+   - `status=empty` 或无记录：空态「当日暂无摘要」
+   - `status=failed`：降级文案「当日摘要生成失败」（不打断 Pages）
+   - **新闻 Tab 不插日报 banner**
+   - 子弹从 title + summary 生成；**禁止**读/写 `content_snapshot`；X 帖不进日报
+   - 公开导出：`site/data/daily_briefs.json`（无 `content_snapshot`、无内部 error）
+
 ### 约束
 
 - **只读**：无搜索、无登录、无写 API
@@ -51,6 +60,7 @@ python scripts/export_site_data.py
 # ✓ Exported N articles
 # ✓ Exported M topics (status=ok only)
 # ✓ Exported K X posts
+# ✓ Exported D daily briefs
 
 # 2. 查看生成的 JSON
 ls -lh site/data/*.json
@@ -107,7 +117,7 @@ GitHub Pages (https://<username>.github.io/<repo>/)
 
 1. 部署成功后，在 Actions 页面查看 `deploy-pages` workflow 运行日志
 2. 访问 Pages URL（在 Settings → Pages 中显示）
-3. 检查三个 Tab 是否正常展示
+3. 检查四个 Tab（新闻 | 专题 | X | 日报）是否正常展示
 
 ### 故障排查
 
@@ -120,13 +130,14 @@ GitHub Pages (https://<username>.github.io/<repo>/)
 ```
 news-archive/
 ├── site/                      # 静态网站源文件
-│   ├── index.html             # 主页面（三个 Tab）
+│   ├── index.html             # 主页面（四个 Tab）
 │   ├── app.js                 # 前端逻辑（加载 JSON + 渲染）
 │   ├── style.css              # 样式（响应式 + 移动友好）
 │   └── data/                  # 导出的 JSON（构建时生成）
 │       ├── articles.json      # 所有文章（按 published_at desc，缺则 fetched_at；无 content_snapshot）
 │       ├── topics.json        # 专题（仅 status=ok）
-│       └── x_posts.json       # X 帖子（仅 author/posted_at/fetched_at/text_snapshot/url/status）
+│       ├── x_posts.json       # X 帖子（仅 author/posted_at/fetched_at/text_snapshot/url/status）
+│       └── daily_briefs.json  # 日报（ok/failed/empty；无 content_snapshot）
 ├── scripts/
 │   └── export_site_data.py    # 从 SQLite 导出 JSON
 └── .github/workflows/
@@ -136,7 +147,9 @@ news-archive/
 ### 数据流
 
 ```
-[daily-fetch] → data branch (archive.sqlite3)
+[daily-fetch] → (optional daily_brief via DAILY_BRIEF_API_KEY + DAILY_BRIEF_API_BASE)
+                     ↓
+              data branch (archive.sqlite3)
                      ↓
 [deploy-pages] → export JSON → static site → GitHub Pages
 ```
@@ -156,7 +169,7 @@ news-archive/
 - ❌ 实时更新 / WebSocket
 - ❌ 评论 / 点赞 / 收藏
 - ❌ 后端 API / 数据库写入
-- ❌ 修改 fetch/clustering/briefs 逻辑（仅读取结果）
+- ❌ 修改 fetch/clustering/topic_briefs 规则、fetch SLA、来源筛选、people.cn 日期、X 进日报
 
 ## 测试清单（QA 用）
 
@@ -170,6 +183,9 @@ news-archive/
 - [ ] 展示序 fixture：`PYTHONPATH=src python3 tests/test_news_display.py`
 - [ ] 专题 Tab：仅显示 status=ok 的专题、来源列表、gone 标记变灰
 - [ ] X Tab：帖子列表、作者/时间/文本、gone 变灰、原文链接
+- [ ] 日报 Tab：默认今天（上海日历）、近 7 日切换、空态「当日暂无摘要」、failed 降级文案
+- [ ] 新闻 Tab **无**日报 banner
+- [ ] `daily_briefs.json` / `articles.json` 均无 `content_snapshot`
 - [ ] 移动端：手机浏览器打开，布局适配、可滚动、无横向溢出
 - [ ] 无登录入口：确认没有任何登录或注册按钮
 - [ ] Pages 部署：workflow 成功运行、访问 URL 展示正确内容

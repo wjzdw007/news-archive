@@ -519,7 +519,7 @@ def test_export_empty_files():
         export_empty_files(site_data_dir)
         
         # Verify all files exist with empty arrays
-        for filename in ["articles.json", "topics.json", "x_posts.json"]:
+        for filename in ["articles.json", "topics.json", "x_posts.json", "daily_briefs.json"]:
             filepath = site_data_dir / filename
             assert filepath.exists()
             
@@ -527,6 +527,164 @@ def test_export_empty_files():
                 data = json.load(f)
             
             assert data == []
+
+
+def test_export_daily_briefs():
+    """Export ok/failed/empty rows; omit internal error and content_snapshot."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from export_site_data import export_daily_briefs
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "test.db"
+        store = Store(db_path)
+        store.upsert_daily_brief(
+            {
+                "date": "2026-10-15",
+                "generated_at": "2026-10-15T12:00:00+00:00",
+                "status": "ok",
+                "model": "deepseek-v3",
+                "lede": "多源关注航天发射。",
+                "sections": [
+                    {
+                        "topic_id": "t1",
+                        "title": "航天发射",
+                        "bullets": ["发射按计划完成。"],
+                        "links": [
+                            {
+                                "title": "发射成功",
+                                "url": "https://example.com/1",
+                                "source": "36kr",
+                            }
+                        ],
+                    }
+                ],
+                "error": None,
+            }
+        )
+        store.upsert_daily_brief(
+            {
+                "date": "2026-10-14",
+                "generated_at": "2026-10-14T12:00:00+00:00",
+                "status": "failed",
+                "model": "",
+                "lede": "",
+                "sections": [],
+                "error": "missing DAILY_BRIEF_API_KEY or DAILY_BRIEF_API_BASE",
+            }
+        )
+        store.upsert_daily_brief(
+            {
+                "date": "2026-10-13",
+                "generated_at": "2026-10-13T12:00:00+00:00",
+                "status": "empty",
+                "model": "",
+                "lede": "",
+                "sections": [],
+            }
+        )
+        output_path = Path(tmpdir) / "daily_briefs.json"
+        conn = sqlite3.connect(db_path)
+        count = export_daily_briefs(conn, output_path)
+        conn.close()
+        assert count == 3
+        exported = json.loads(output_path.read_text(encoding="utf-8"))
+        assert [row["date"] for row in exported] == [
+            "2026-10-15",
+            "2026-10-14",
+            "2026-10-13",
+        ]
+        assert exported[0]["status"] == "ok"
+        assert exported[1]["status"] == "failed"
+        assert exported[2]["status"] == "empty"
+        for row in exported:
+            assert set(row) == {
+                "date",
+                "generated_at",
+                "status",
+                "model",
+                "lede",
+                "sections",
+            }
+            assert "content_snapshot" not in row
+            assert "error" not in row
+        store.close()
+
+
+def test_export_daily_briefs_omits_content_snapshot_and_error():
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from export_site_data import export_articles, export_daily_briefs
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "test.db"
+        store = Store(db_path)
+        store.upsert(
+            Article(
+                url="https://example.com/secret",
+                title="Guardian piece",
+                published_at="2026-10-15T10:00:00Z",
+                summary="Visible summary.",
+                source="guardian",
+                fetched_at="2026-10-15T12:00:00Z",
+                content_snapshot="<p>FULL TEXT that must never ship to Pages.</p>",
+                status="active",
+            )
+        )
+        store.upsert_daily_brief(
+            {
+                "date": "2026-10-15",
+                "generated_at": "2026-10-15T12:00:00+00:00",
+                "status": "ok",
+                "model": "deepseek-v3",
+                "lede": "可见导语。",
+                "sections": [
+                    {
+                        "topic_id": None,
+                        "title": "其它",
+                        "bullets": ["Visible summary."],
+                        "links": [
+                            {
+                                "title": "Guardian piece",
+                                "url": "https://example.com/secret",
+                                "source": "guardian",
+                            }
+                        ],
+                    }
+                ],
+                "error": "internal: Bearer LEAK",
+            }
+        )
+        conn = sqlite3.connect(db_path)
+        articles_path = Path(tmpdir) / "articles.json"
+        briefs_path = Path(tmpdir) / "daily_briefs.json"
+        export_articles(conn, articles_path)
+        export_daily_briefs(conn, briefs_path)
+        conn.close()
+
+        articles_raw = articles_path.read_text(encoding="utf-8")
+        briefs_raw = briefs_path.read_text(encoding="utf-8")
+        for raw in (articles_raw, briefs_raw):
+            assert "content_snapshot" not in raw
+            assert "FULL TEXT that must never ship to Pages" not in raw
+        assert "Bearer LEAK" not in briefs_raw
+        assert "error" not in json.loads(briefs_raw)[0]
+        store.close()
+
+
+def test_export_daily_briefs_missing_table_soft_fail():
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from export_site_data import export_daily_briefs
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "old.db"
+        conn = sqlite3.connect(db_path)
+        output_path = Path(tmpdir) / "daily_briefs.json"
+        count = export_daily_briefs(conn, output_path)
+        conn.close()
+        assert count == 0
+        assert json.loads(output_path.read_text(encoding="utf-8")) == []
 
 
 if __name__ == "__main__":
@@ -541,4 +699,7 @@ if __name__ == "__main__":
     test_export_x_posts()
     test_export_x_posts_omits_secrets_and_post_id()
     test_export_empty_files()
+    test_export_daily_briefs()
+    test_export_daily_briefs_omits_content_snapshot_and_error()
+    test_export_daily_briefs_missing_table_soft_fail()
     print("✓ All site export tests passed")

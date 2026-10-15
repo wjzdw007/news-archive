@@ -17,6 +17,7 @@
             <button class="tab-button active" data-tab="news">新闻</button>
             <button class="tab-button" data-tab="topics">专题</button>
             <button class="tab-button" data-tab="x">X</button>
+            <button class="tab-button" data-tab="daily">日报</button>
         </nav>
         
         <main>
@@ -45,6 +46,14 @@
             <!-- X Tab -->
             <div id="x-tab" class="tab-content">
                 <div id="x-list" class="list-container">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+            
+            <!-- 日报 Tab -->
+            <div id="daily-tab" class="tab-content">
+                <div id="daily-date-switcher" class="date-switcher"></div>
+                <div id="daily-brief" class="daily-brief-container">
                     <div class="loading">加载中...</div>
                 </div>
             </div>

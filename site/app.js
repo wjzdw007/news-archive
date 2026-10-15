@@ -2,7 +2,9 @@
 let articlesData = [];
 let topicsData = [];
 let xPostsData = [];
+let dailyBriefsData = [];
 let articlesMap = new Map(); // url -> article
+let selectedDailyDate = null;
 
 // Tab switching
 document.querySelectorAll('.tab-button').forEach(button => {
@@ -31,15 +33,17 @@ function switchTab(tabName) {
 // Load data on page load
 async function loadData() {
     try {
-        const [articles, topics, xPosts] = await Promise.all([
+        const [articles, topics, xPosts, dailyBriefs] = await Promise.all([
             fetch('data/articles.json').then(r => r.json()),
             fetch('data/topics.json').then(r => r.json()),
-            fetch('data/x_posts.json').then(r => r.json())
+            fetch('data/x_posts.json').then(r => r.json()),
+            fetch('data/daily_briefs.json').then(r => r.ok ? r.json() : []).catch(() => [])
         ]);
         
         articlesData = articles;
         topicsData = topics;
         xPostsData = xPosts;
+        dailyBriefsData = Array.isArray(dailyBriefs) ? dailyBriefs : [];
         
         // Build articles map for quick lookup
         articles.forEach(article => {
@@ -49,6 +53,7 @@ async function loadData() {
         renderNewsList();
         renderTopicsList();
         renderXList();
+        renderDailyTab();
         
     } catch (error) {
         console.error('Failed to load data:', error);
@@ -361,6 +366,105 @@ function renderXList() {
     }).join('');
     
     container.innerHTML = html;
+}
+
+// Daily brief helpers
+const DAILY_BRIEF_DAYS = 7;
+const SHANGHAI_TZ = 'Asia/Shanghai';
+const DAILY_EMPTY_MESSAGE = '当日暂无摘要';
+const DAILY_FAILED_MESSAGE = '当日摘要生成失败';
+
+function shanghaiCalendarDate(date) {
+    const d = date instanceof Date ? date : new Date();
+    return new Intl.DateTimeFormat('en-CA', {
+        timeZone: SHANGHAI_TZ,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+    }).format(d);
+}
+
+function lastNShanghaiDates(n, now) {
+    const origin = now instanceof Date ? now : new Date();
+    const dates = [];
+    for (let i = 0; i < n; i++) {
+        dates.push(shanghaiCalendarDate(new Date(origin.getTime() - i * 24 * 60 * 60 * 1000)));
+    }
+    return dates;
+}
+
+function findDailyBrief(briefs, date) {
+    if (!Array.isArray(briefs) || !date) return null;
+    return briefs.find(b => b && b.date === date) || null;
+}
+
+function dailyDateButtonLabel(ymd, todayYmd) {
+    if (ymd === todayYmd) return '今天';
+    return ymd.slice(5);
+}
+
+function renderDateSwitcherHtml(dates, selected, todayYmd) {
+    return dates.map(ymd => {
+        const active = ymd === selected ? ' active' : '';
+        const label = dailyDateButtonLabel(ymd, todayYmd);
+        return `<button type="button" class="date-chip${active}" data-date="${ymd}" onclick="selectDailyDate('${ymd}')">${label}</button>`;
+    }).join('');
+}
+
+function renderDailySectionHtml(section) {
+    const title = escapeHtml(section.title || '无标题');
+    const bullets = (section.bullets || []).map(b => `<li>${escapeHtml(b)}</li>`).join('');
+    const links = (section.links || []).map(link => {
+        const href = escapeHtml(link.url || '');
+        const label = escapeHtml(link.title || link.url || '原文');
+        const source = link.source ? `<span class="source">${escapeHtml(link.source)}</span>` : '';
+        return `<li><a href="${href}" target="_blank" rel="noopener noreferrer">${label} ↗</a> ${source}</li>`;
+    }).join('');
+    return `
+        <section class="daily-section">
+            <h3 class="daily-section-title">${title}</h3>
+            ${bullets ? `<ul class="daily-bullets">${bullets}</ul>` : ''}
+            ${links ? `<ul class="daily-links">${links}</ul>` : ''}
+        </section>
+    `;
+}
+
+function renderDailyBriefHtml(brief, date) {
+    if (!brief || brief.status === 'empty') {
+        return `<div class="empty-state">${DAILY_EMPTY_MESSAGE}</div>`;
+    }
+    if (brief.status === 'failed') {
+        return `<div class="empty-state daily-failed">${DAILY_FAILED_MESSAGE}</div>`;
+    }
+    const lede = brief.lede ? `<p class="daily-lede">${escapeHtml(brief.lede)}</p>` : '';
+    const sections = (brief.sections || []).map(renderDailySectionHtml).join('');
+    const generated = brief.generated_at
+        ? `<p class="daily-meta">${escapeHtml(date)} · ${escapeHtml(brief.model || '')}</p>`
+        : '';
+    return `${generated}${lede}${sections || `<div class="empty-state">${DAILY_EMPTY_MESSAGE}</div>`}`;
+}
+
+// Render daily tab
+function renderDailyTab() {
+    const today = shanghaiCalendarDate();
+    const dates = lastNShanghaiDates(DAILY_BRIEF_DAYS);
+    if (!selectedDailyDate || !dates.includes(selectedDailyDate)) {
+        selectedDailyDate = dates[0] || today;
+    }
+    const switcher = document.getElementById('daily-date-switcher');
+    const container = document.getElementById('daily-brief');
+    if (switcher) {
+        switcher.innerHTML = renderDateSwitcherHtml(dates, selectedDailyDate, today);
+    }
+    if (container) {
+        const brief = findDailyBrief(dailyBriefsData, selectedDailyDate);
+        container.innerHTML = renderDailyBriefHtml(brief, selectedDailyDate);
+    }
+}
+
+function selectDailyDate(ymd) {
+    selectedDailyDate = ymd;
+    renderDailyTab();
 }
 
 // Utility functions

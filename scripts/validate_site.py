@@ -25,6 +25,8 @@ def validate_json_file(filepath: Path, expected_keys: list[str]) -> tuple[bool, 
                 return False, f"{filepath.name} items missing keys: {missing_keys}"
             if filepath.name == "articles.json" and "content_snapshot" in first_item:
                 return False, "articles.json must not include content_snapshot"
+            if filepath.name == "daily_briefs.json" and "content_snapshot" in first_item:
+                return False, "daily_briefs.json must not include content_snapshot"
             if filepath.name == "x_posts.json":
                 allowed = {
                     "author",
@@ -61,6 +63,7 @@ def validate_html_file(filepath: Path) -> tuple[bool, str]:
         "新闻",  # News tab
         "专题",  # Topics tab
         "X",     # X tab
+        "日报",  # Daily brief tab
     ]
     
     missing = [elem for elem in required_elements if elem not in content]
@@ -81,6 +84,7 @@ def main() -> int:
         (data_dir / "articles.json", ["url", "title", "source", "fetched_at"]),
         (data_dir / "topics.json", ["topic_id", "title", "sources", "status"]),
         (data_dir / "x_posts.json", ["author", "posted_at", "fetched_at", "text_snapshot", "url", "status"]),
+        (data_dir / "daily_briefs.json", ["date", "generated_at", "status", "model", "lede", "sections"]),
     ]
     
     all_passed = True

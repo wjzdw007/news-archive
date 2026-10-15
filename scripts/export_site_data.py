@@ -5,6 +5,7 @@ Reads from archive.sqlite3 and generates:
 - site/data/articles.json (sorted by published_at desc, fallback fetched_at)
 - site/data/topics.json (only topics with status=ok briefs)
 - site/data/x_posts.json (display fields only; no post_id / cookies / headers)
+- site/data/daily_briefs.json (one row per Shanghai day; no content_snapshot)
 
 Soft failure: if DB missing, generates empty JSON files (Pages build won't fail).
 """
@@ -38,6 +39,16 @@ _X_POST_EXPORT_FIELDS = (
     "text_snapshot",
     "url",
     "status",
+)
+
+# Public 日报 tab. Never content_snapshot; omit internal error strings.
+_DAILY_BRIEF_EXPORT_FIELDS = (
+    "date",
+    "generated_at",
+    "status",
+    "model",
+    "lede",
+    "sections",
 )
 
 _TAG_RE = re.compile(r"<[^>]+>", re.DOTALL)
@@ -150,11 +161,43 @@ def export_x_posts(conn: sqlite3.Connection, output_path: Path) -> int:
     return len(posts)
 
 
+def export_daily_briefs(conn: sqlite3.Connection, output_path: Path) -> int:
+    """Export daily_briefs for the 日报 tab (ok/failed/empty).
+
+    Soft-fail if the table is missing (old data-branch sqlite).
+    Never includes content_snapshot or internal error fields.
+    """
+    conn.row_factory = sqlite3.Row
+    try:
+        cursor = conn.execute(
+            """
+            SELECT date, generated_at, status, model, lede, sections_json
+            FROM daily_briefs
+            ORDER BY date DESC
+            """
+        )
+        rows = cursor.fetchall()
+    except sqlite3.OperationalError:
+        rows = []
+
+    briefs = []
+    for row in rows:
+        brief = {field: row[field] for field in _DAILY_BRIEF_EXPORT_FIELDS if field != "sections"}
+        brief["sections"] = json.loads(row["sections_json"] or "[]")
+        briefs.append(brief)
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf-8") as f:
+        json.dump(briefs, f, ensure_ascii=False, indent=2)
+
+    return len(briefs)
+
+
 def export_empty_files(site_data_dir: Path) -> None:
     """Generate empty JSON files when DB is missing."""
     site_data_dir.mkdir(parents=True, exist_ok=True)
     
-    for filename in ["articles.json", "topics.json", "x_posts.json"]:
+    for filename in ["articles.json", "topics.json", "x_posts.json", "daily_briefs.json"]:
         filepath = site_data_dir / filename
         with filepath.open("w", encoding="utf-8") as f:
             json.dump([], f)
@@ -177,12 +220,14 @@ def main() -> int:
         articles_count = export_articles(conn, site_data_dir / "articles.json")
         topics_count = export_topics(conn, site_data_dir / "topics.json")
         x_posts_count = export_x_posts(conn, site_data_dir / "x_posts.json")
+        daily_briefs_count = export_daily_briefs(conn, site_data_dir / "daily_briefs.json")
         
         conn.close()
         
         print(f"✓ Exported {articles_count} articles")
         print(f"✓ Exported {topics_count} topics (status=ok only)")
         print(f"✓ Exported {x_posts_count} X posts")
+        print(f"✓ Exported {daily_briefs_count} daily briefs")
         
         return 0
         
