@@ -59,7 +59,7 @@ jobs:
 
       - name: Export site data
         run: |
-          python scripts/export_site_data.py
+          python3 scripts/export_site_data.py
 
       - name: Copy static files
         run: |
