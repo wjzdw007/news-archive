@@ -7,7 +7,7 @@ without touching the RSS pipeline.
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import Any, Callable
+from typing import Any
 
 from .x_config import X_NEWS_ACCOUNTS
 from .x_store import XPost
@@ -50,13 +50,14 @@ def fetch_account_posts(
     accounts: list[str] | None = None,
     *,
     mode: str = "mock",
-    live_fetcher: Callable[[str], list[dict[str, Any]]] | None = None,
+    auth_token: str | None = None,
+    ct0: str | None = None,
+    bearer_token: str | None = None,
 ) -> list[XPost]:
-    """Fetch posts. mode=mock uses fixtures; mode=live auto-creates fetcher if credentials present.
+    """Fetch posts. mode=mock uses fixtures; mode=live uses HomeTimeline + filter.
 
-    live_fetcher(author) -> list of dicts with keys post_id, text, posted_at, url, author.
-    If mode=live and live_fetcher is None, will attempt to create one via x_http_client
-    using x-crawler HomeLatestTimeline pattern (fetch home timeline, filter to accounts).
+    Live mode fetches HomeTimeline via x_http_client, filters to target accounts,
+    and logs author distribution (pre/post filter).
     """
     accounts = accounts or list(X_NEWS_ACCOUNTS)
     if mode == "mock":
@@ -64,37 +65,45 @@ def fetch_account_posts(
     if mode != "live":
         raise XFetchError(f"unknown mode: {mode}")
     
-    # Auto-create live fetcher if not provided (uses env secrets)
-    if live_fetcher is None:
-        try:
-            from .x_http_client import XHTTPError, create_live_fetcher
-            # Pass target accounts for x-crawler HomeTimeline filtering
-            live_fetcher = create_live_fetcher(target_accounts=accounts)
-        except (ImportError, XHTTPError) as exc:
-            raise XFetchError(f"live mode unavailable: {exc}") from exc
-    
-    now = _iso_now()
-    out: list[XPost] = []
+    # Live mode: use x_http_client (HomeTimeline + filter + logging built-in)
     try:
-        for author in accounts:
-            for raw in live_fetcher(author):
-                pid = str(raw["post_id"])
-                out.append(
-                    XPost(
-                        post_id=pid,
-                        author=raw.get("author") or author,  # Use author from response if present
-                        url=raw.get("url") or f"https://x.com/{author}/status/{pid}",
-                        text_snapshot=raw.get("text") or "",
-                        posted_at=raw.get("posted_at"),
-                        fetched_at=now,
-                        status="active",
-                    )
+        from .x_http_client import XHTTPError, fetch_news_accounts
+        
+        # fetch_news_accounts logs author distribution internally
+        raw_tweets = fetch_news_accounts(
+            target_accounts=accounts,
+            auth_token=auth_token,
+            ct0=ct0,
+            bearer_token=bearer_token,
+            timeline_type="following",
+            max_results=40,
+        )
+        
+        # Convert to XPost format
+        now = _iso_now()
+        out: list[XPost] = []
+        for raw in raw_tweets:
+            out.append(
+                XPost(
+                    post_id=raw["post_id"],
+                    author=raw["author"],
+                    url=raw["url"],
+                    text_snapshot=raw["text"],
+                    posted_at=raw.get("posted_at"),
+                    fetched_at=now,
+                    status="active",
                 )
+            )
+        
+        return out
+        
     except XFetchError:
         raise
     except Exception as exc:  # noqa: BLE001 — boundary soft-fail
+        # Wrap XHTTPError and other exceptions
+        if exc.__class__.__name__ == "XHTTPError":
+            raise XFetchError(str(exc)) from exc
         raise XFetchError(str(exc)) from exc
-    return out
 
 
 def sync_posts(

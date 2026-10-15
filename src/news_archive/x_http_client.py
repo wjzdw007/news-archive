@@ -13,6 +13,8 @@ from __future__ import annotations
 
 import json
 import os
+import sys
+from collections import Counter
 from typing import Any
 
 try:
@@ -210,6 +212,10 @@ def _parse_tweets_from_timeline(data: dict[str, Any]) -> list[dict[str, Any]]:
                         tweet_results = item_content.get("tweet_results", {})
                         tweet_data = tweet_results.get("result", {})
                         
+                        # Unwrap TweetWithVisibilityResults if present
+                        if tweet_data.get("__typename") == "TweetWithVisibilityResults":
+                            tweet_data = tweet_data.get("tweet", {})
+                        
                         if tweet_data.get("__typename") == "Tweet":
                             parsed = _parse_single_tweet(tweet_data)
                             if parsed:
@@ -225,6 +231,10 @@ def _parse_tweets_from_timeline(data: dict[str, Any]) -> list[dict[str, Any]]:
                                 if item_content.get("itemType") == "TimelineTweet":
                                     tweet_results = item_content.get("tweet_results", {})
                                     tweet_data = tweet_results.get("result", {})
+                                    
+                                    # Unwrap TweetWithVisibilityResults if present
+                                    if tweet_data.get("__typename") == "TweetWithVisibilityResults":
+                                        tweet_data = tweet_data.get("tweet", {})
                                     
                                     if tweet_data.get("__typename") == "Tweet":
                                         parsed = _parse_single_tweet(tweet_data)
@@ -256,9 +266,14 @@ def _parse_single_tweet(tweet_data: dict[str, Any]) -> dict[str, Any] | None:
         if not text:
             text = legacy.get("full_text", "")
         
-        # Extract user info
+        # Extract user info (X moved screen_name to user.core.screen_name)
         user_results = tweet_data.get("core", {}).get("user_results", {}).get("result", {})
-        author = user_results.get("legacy", {}).get("screen_name", "unknown")
+        # Try core.screen_name first (new location), fallback to legacy.screen_name (old)
+        author = (
+            user_results.get("core", {}).get("screen_name")
+            or user_results.get("legacy", {}).get("screen_name")
+            or "unknown"
+        )
         
         # Parse timestamp (RFC 2822 format from X)
         created_at = legacy.get("created_at")  # e.g. "Mon Oct 14 12:34:56 +0000 2024"
@@ -343,12 +358,27 @@ def fetch_news_accounts(
     data = _fetch_home_timeline_raw(session, timeline_type, max_results)
     all_tweets = _parse_tweets_from_timeline(data)
     
+    # Log: author distribution before filtering (diagnostic)
+    all_authors = [t.get("author", "unknown") for t in all_tweets]
+    author_dist = dict(Counter(all_authors).most_common(20))
+    print(
+        f"[x-fetch] HomeTimeline: {len(all_tweets)} tweets, "
+        f"author distribution (top 20): {json.dumps(author_dist, ensure_ascii=False)}",
+        file=sys.stderr,
+    )
+    
     # Filter to target accounts (case-insensitive, x-crawler pattern line 688)
     target_set = {acc.lower() for acc in target_accounts}
     filtered = [
         tweet for tweet in all_tweets
         if tweet.get("author", "").lower() in target_set
     ]
+    
+    # Log: after filtering
+    print(
+        f"[x-fetch] Filtered to {len(filtered)} posts from target accounts: {target_accounts}",
+        file=sys.stderr,
+    )
     
     return filtered
 

@@ -9,7 +9,6 @@ X/Twitter 帖子抓取功能支持两种模式，**严格遵循 [x-crawler](http
 1. **HomeLatestTimeline / HomeTimeline** GraphQL endpoint
    - Query ID: `1_nms9JVtHQxTw8VwZJciQ` (HomeTimeline, **default following**)
    - Query ID: `xNGIIoXaz9DyeBXBfn3AjA` (HomeLatestTimeline, recommended)
-   - Query ID: `1_nms9JVtHQxTw8VwZJciQ` (HomeTimeline, following)
    - 来源：x-crawler `crawler.py` lines 40-42
 
 2. **认证方式**（x-crawler `config_loader.py` + `crawler.py`）：
@@ -21,6 +20,49 @@ X/Twitter 帖子抓取功能支持两种模式，**严格遵循 [x-crawler](http
    - 抓取 home timeline（推荐/关注流）
    - 过滤出目标账号帖子：`BBCChinese`, `Reuters`, `FT`, `TechCrunch`
    - 去重并持久化到 SQLite
+
+## Author 字段解析
+
+X 已将 `screen_name` 从 `user_results.result.legacy.screen_name` 迁移到 **`user_results.result.core.screen_name`**。
+
+解析逻辑（`x_http_client.py:_parse_single_tweet`）：
+1. 优先从 `user_results.result.core.screen_name` 获取（新位置）
+2. Fallback 到 `user_results.result.legacy.screen_name`（旧位置）
+3. 若都缺失，返回 `"unknown"`
+
+## TweetWithVisibilityResults Unwrap
+
+部分 timeline entry 的 tweet 被包装在 `TweetWithVisibilityResults` 中：
+
+```json
+{
+  "result": {
+    "__typename": "TweetWithVisibilityResults",
+    "tweet": { "__typename": "Tweet", ... }
+  }
+}
+```
+
+`_parse_tweets_from_timeline` 自动展开该包装，提取内层 `Tweet` 对象。
+
+## 诊断日志
+
+抓取时输出两条日志（stderr）：
+
+1. **过滤前**: HomeTimeline 总条数 + author 分布（top 20）  
+   → 用于诊断：「目标账号未出现在 following feed」vs「author 解析挂了全变 unknown」
+
+2. **过滤后**: 匹配目标账号的帖子数
+
+示例：
+
+```
+[x-fetch] HomeTimeline: 38 tweets, author distribution (top 20): {"BBCChinese": 3, "Reuters": 2, "elonmusk": 5, "OpenAI": 3, "unknown": 1, ...}
+[x-fetch] Filtered to 5 posts from target accounts: ['BBCChinese', 'Reuters', 'FT', 'TechCrunch']
+```
+
+若过滤后为 0 且 `"unknown"` 占比高 → author 解析问题；  
+若过滤后为 0 且无 `"unknown"` → 当前账号的 following feed 中暂无目标账号帖子。
 
 ## 模式
 
@@ -107,6 +149,12 @@ sqlite3 data/archive.sqlite3 "SELECT COUNT(*) FROM x_posts"  # 应显示 79+
 git checkout main
 ```
 
+## 测试
+
+- `tests/test_x_posts.py`: mock/dedupe/soft-fail 测试
+- `tests/test_x_http_client.py`: author 解析 + TweetWithVisibilityResults unwrap 单元测试（无网络，模拟真实 GraphQL 形状）
+- `tests/test_x_import.py`: JSONL import 测试
+
 ## 参考实现
 
 严格遵循 [x-crawler](https://github.com/wjzdw007/x-crawler) 的认证与抓取模式：
@@ -132,3 +180,10 @@ X 抓取失败**不会**阻断 RSS daily-fetch：
 - **后备路径**：Grok Bot MCP（需额外配置，docs only）
 
 推荐使用 HTTP API 路径，更轻量且无 MCP 依赖。
+
+## 限制
+
+- **不支持搜索**: 本配置仅按账号过滤，不做关键词搜索
+- **不使用 UserTweets**: 保持 HomeTimeline/following + filter 路径（CEO 决定）
+- **依赖 following**: 若登录账号未 follow 目标账号，或目标账号未在当前 HomeTimeline 窗口（~40 条），过滤结果为空
+- **QueryId 稳定性**: 当前使用 x-crawler 的真实 queryId；若 X 更新 API，需更新该 ID

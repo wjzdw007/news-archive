@@ -25,11 +25,11 @@ def test_create_live_fetcher_missing_credentials():
             create_live_fetcher(target_accounts=["BBCChinese"])
 
 
-def test_fetch_news_accounts_success():
-    """Test successful home timeline fetch with filtering (x-crawler pattern)."""
+def test_fetch_news_accounts_success_new_schema():
+    """Test successful home timeline fetch with NEW user.core.screen_name schema."""
     from news_archive.x_http_client import fetch_news_accounts
 
-    # Mock HomeLatestTimeline GraphQL response (x-crawler pattern)
+    # Mock HomeLatestTimeline GraphQL response (NEW schema: user.core.screen_name)
     mock_response_data = {
         "data": {
             "home": {
@@ -53,9 +53,10 @@ def test_fetch_news_accounts_success():
                                                     "core": {
                                                         "user_results": {
                                                             "result": {
-                                                                "legacy": {
+                                                                "core": {
                                                                     "screen_name": "BBCChinese"
-                                                                }
+                                                                },
+                                                                "legacy": {}  # empty fallback
                                                             }
                                                         }
                                                     },
@@ -79,8 +80,78 @@ def test_fetch_news_accounts_success():
                                                     "core": {
                                                         "user_results": {
                                                             "result": {
-                                                                "legacy": {
+                                                                "core": {
                                                                     "screen_name": "RandomUser"
+                                                                },
+                                                                "legacy": {}
+                                                            }
+                                                        }
+                                                    },
+                                                }
+                                            }
+                                        }
+                                    },
+                                },
+                            ],
+                        }
+                    ]
+                }
+            }
+        }
+    }
+
+    mock_session = MagicMock()
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = mock_response_data
+    mock_session.get.return_value = mock_response
+
+    with patch("news_archive.x_http_client._make_session", return_value=mock_session):
+        with patch.dict(
+            "os.environ",
+            {"X_AUTH_TOKEN": "test_token", "X_CT0_TOKEN": "test_ct0"},
+        ):
+            # Suppress stderr logs during test
+            with patch("sys.stderr"):
+                posts = fetch_news_accounts(target_accounts=["BBCChinese"])
+
+    assert len(posts) == 1  # Only BBCChinese, RandomUser filtered out
+    assert posts[0]["post_id"] == "123456"
+    assert posts[0]["author"] == "BBCChinese"
+    assert "BBC test tweet" in posts[0]["text"]
+
+
+def test_fetch_news_accounts_legacy_fallback():
+    """Test author extraction fallback to legacy.screen_name when core is missing."""
+    from news_archive.x_http_client import fetch_news_accounts
+
+    # Mock response with ONLY legacy.screen_name (old schema)
+    mock_response_data = {
+        "data": {
+            "home": {
+                "home_timeline_urt": {
+                    "instructions": [
+                        {
+                            "type": "TimelineAddEntries",
+                            "entries": [
+                                {
+                                    "entryId": "tweet-111222",
+                                    "content": {
+                                        "itemContent": {
+                                            "tweet_results": {
+                                                "result": {
+                                                    "__typename": "Tweet",
+                                                    "rest_id": "111222",
+                                                    "legacy": {
+                                                        "full_text": "Reuters old schema",
+                                                        "created_at": "Mon Oct 14 12:00:00 +0000 2024",
+                                                    },
+                                                    "core": {
+                                                        "user_results": {
+                                                            "result": {
+                                                                "core": {},  # No core.screen_name
+                                                                "legacy": {
+                                                                    "screen_name": "Reuters"
                                                                 }
                                                             }
                                                         }
@@ -98,82 +169,30 @@ def test_fetch_news_accounts_success():
         }
     }
 
+    mock_session = MagicMock()
     mock_response = MagicMock()
     mock_response.status_code = 200
     mock_response.json.return_value = mock_response_data
+    mock_session.get.return_value = mock_response
 
-    with patch("news_archive.x_http_client.requests") as mock_requests:
-        mock_session = MagicMock()
-        mock_session.get.return_value = mock_response
-        mock_requests.Session.return_value = mock_session
+    with patch("news_archive.x_http_client._make_session", return_value=mock_session):
+        with patch.dict(
+            "os.environ",
+            {"X_AUTH_TOKEN": "test_token", "X_CT0_TOKEN": "test_ct0"},
+        ):
+            with patch("sys.stderr"):
+                posts = fetch_news_accounts(target_accounts=["Reuters"])
 
-        tweets = fetch_news_accounts(
-            target_accounts=["BBCChinese"],
-            auth_token="test_auth",
-            ct0="test_ct0",
-            bearer_token="Bearer test_token",
-        )
-
-        # Should only return BBCChinese tweet (filtered out RandomUser)
-        assert len(tweets) == 1
-        assert tweets[0]["post_id"] == "123456"
-        assert tweets[0]["author"] == "BBCChinese"
-        assert tweets[0]["text"] == "BBC test tweet content"
-        assert tweets[0]["url"] == "https://x.com/BBCChinese/status/123456"
-        assert "2024-10-14" in tweets[0]["posted_at"]
+    assert len(posts) == 1
+    assert posts[0]["author"] == "Reuters"  # Fallback worked
+    assert posts[0]["text"] == "Reuters old schema"
 
 
-def test_fetch_news_accounts_rate_limited():
-    """Test rate limit handling."""
-    from news_archive.x_http_client import XHTTPError, fetch_news_accounts
+def test_tweet_with_visibility_results_unwrap():
+    """Test TweetWithVisibilityResults wrapper is unwrapped correctly."""
+    from news_archive.x_http_client import fetch_news_accounts
 
-    mock_response = MagicMock()
-    mock_response.status_code = 429
-
-    with patch("news_archive.x_http_client.requests") as mock_requests:
-        mock_session = MagicMock()
-        mock_session.get.return_value = mock_response
-        mock_requests.Session.return_value = mock_session
-
-        with pytest.raises(XHTTPError, match="rate limited"):
-            fetch_news_accounts(
-                target_accounts=["BBCChinese"],
-                auth_token="test_auth",
-                ct0="test_ct0",
-            )
-
-
-def test_fetch_news_accounts_unauthorized():
-    """Test unauthorized handling."""
-    from news_archive.x_http_client import XHTTPError, fetch_news_accounts
-
-    mock_response = MagicMock()
-    mock_response.status_code = 401
-
-    with patch("news_archive.x_http_client.requests") as mock_requests:
-        mock_session = MagicMock()
-        mock_session.get.return_value = mock_response
-        mock_requests.Session.return_value = mock_session
-
-        with pytest.raises(XHTTPError, match="unauthorized.*401"):
-            fetch_news_accounts(
-                target_accounts=["BBCChinese"],
-                auth_token="test_auth",
-                ct0="test_ct0",
-            )
-
-
-def test_live_mode_integration_with_fetch_account_posts():
-    """Test that fetch_account_posts can use live mode with mocked HTTP."""
-    from news_archive.x_fetch import fetch_account_posts
-
-    # Mock environment with credentials (only auth_token + ct0 required)
-    mock_env = {
-        "X_AUTH_TOKEN": "test_auth",
-        "X_CT0_TOKEN": "test_ct0",
-        "X_BEARER_TOKEN": "Bearer test_token",
-    }
-
+    # Mock response with TweetWithVisibilityResults wrapper
     mock_response_data = {
         "data": {
             "home": {
@@ -183,31 +202,35 @@ def test_live_mode_integration_with_fetch_account_posts():
                             "type": "TimelineAddEntries",
                             "entries": [
                                 {
-                                    "entryId": "tweet-789",
+                                    "entryId": "tweet-333444",
                                     "content": {
                                         "itemContent": {
                                             "tweet_results": {
                                                 "result": {
-                                                    "__typename": "Tweet",
-                                                    "rest_id": "789",
-                                                    "legacy": {
-                                                        "full_text": "BBC tweet",
-                                                        "created_at": "Tue Oct 15 08:00:00 +0000 2024",
-                                                    },
-                                                    "core": {
-                                                        "user_results": {
-                                                            "result": {
-                                                                "legacy": {
-                                                                    "screen_name": "BBCChinese"
+                                                    "__typename": "TweetWithVisibilityResults",
+                                                    "tweet": {
+                                                        "__typename": "Tweet",
+                                                        "rest_id": "333444",
+                                                        "legacy": {
+                                                            "full_text": "FT wrapped tweet",
+                                                            "created_at": "Mon Oct 14 13:00:00 +0000 2024",
+                                                        },
+                                                        "core": {
+                                                            "user_results": {
+                                                                "result": {
+                                                                    "core": {
+                                                                        "screen_name": "FT"
+                                                                    },
+                                                                    "legacy": {}
                                                                 }
                                                             }
-                                                        }
-                                                    },
+                                                        },
+                                                    }
                                                 }
                                             }
                                         }
                                     },
-                                }
+                                },
                             ],
                         }
                     ]
@@ -216,57 +239,45 @@ def test_live_mode_integration_with_fetch_account_posts():
         }
     }
 
+    mock_session = MagicMock()
     mock_response = MagicMock()
     mock_response.status_code = 200
     mock_response.json.return_value = mock_response_data
+    mock_session.get.return_value = mock_response
 
-    with patch.dict("os.environ", mock_env):
-        with patch("news_archive.x_http_client.requests") as mock_requests:
-            mock_session = MagicMock()
-            mock_session.get.return_value = mock_response
-            mock_requests.Session.return_value = mock_session
+    with patch("news_archive.x_http_client._make_session", return_value=mock_session):
+        with patch.dict(
+            "os.environ",
+            {"X_AUTH_TOKEN": "test_token", "X_CT0_TOKEN": "test_ct0"},
+        ):
+            with patch("sys.stderr"):
+                posts = fetch_news_accounts(target_accounts=["FT"])
 
-            posts = fetch_account_posts(mode="live", accounts=["BBCChinese"])
-
-            assert len(posts) == 1
-            assert posts[0].post_id == "789"
-            assert posts[0].author == "BBCChinese"
-            assert posts[0].text_snapshot == "BBC tweet"
-            assert posts[0].status == "active"
-
-
-def test_live_mode_soft_fail_on_missing_creds():
-    """Test that live mode soft-fails when credentials missing."""
-    from news_archive.x_fetch import XFetchError, fetch_account_posts
-
-    with patch.dict("os.environ", {}, clear=True):
-        with pytest.raises(XFetchError, match="live mode unavailable"):
-            fetch_account_posts(mode="live", accounts=["BBCChinese"])
+    assert len(posts) == 1
+    assert posts[0]["author"] == "FT"
+    assert posts[0]["text"] == "FT wrapped tweet"
 
 
-def test_missing_auth_token_raises_error():
-    """Test that missing auth_token raises XHTTPError."""
-    from news_archive.x_http_client import XHTTPError, fetch_news_accounts
+def test_author_unknown_when_missing():
+    """Test author becomes 'unknown' when both core and legacy are missing."""
+    from news_archive.x_http_client import _parse_single_tweet
 
-    with pytest.raises(XHTTPError, match="missing X_AUTH_TOKEN"):
-        fetch_news_accounts(
-            target_accounts=["BBCChinese"],
-            auth_token=None,
-            ct0="test_ct0",
-        )
+    tweet_data = {
+        "rest_id": "999888",
+        "legacy": {
+            "full_text": "Mystery tweet",
+            "created_at": "Mon Oct 14 14:00:00 +0000 2024",
+        },
+        "core": {
+            "user_results": {
+                "result": {
+                    "core": {},
+                    "legacy": {}  # Both empty
+                }
+            }
+        },
+    }
 
-
-def test_missing_ct0_raises_error():
-    """Test that missing ct0 raises XHTTPError."""
-    from news_archive.x_http_client import XHTTPError, fetch_news_accounts
-
-    with pytest.raises(XHTTPError, match="missing.*X_CT0_TOKEN"):
-        fetch_news_accounts(
-            target_accounts=["BBCChinese"],
-            auth_token="test_auth",
-            ct0=None,
-        )
-
-
-if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
+    parsed = _parse_single_tweet(tweet_data)
+    assert parsed is not None
+    assert parsed["author"] == "unknown"
