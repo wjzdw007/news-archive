@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新闻存档</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>新闻存档</h1>
+        </header>
+        
+        <nav class="tabs">
+            <button class="tab-button active" data-tab="news">新闻</button>
+            <button class="tab-button" data-tab="topics">专题</button>
+            <button class="tab-button" data-tab="x">X</button>
+        </nav>
+        
+        <main>
+            <!-- 新闻 Tab -->
+            <div id="news-tab" class="tab-content active">
+                <div id="news-list" class="list-container">
+                    <div class="loading">加载中...</div>
+                </div>
+                <div id="news-detail" class="detail-container" style="display: none;">
+                    <button class="back-button" onclick="closeDetail()">← 返回列表</button>
+                    <article id="article-content"></article>
+                </div>
+            </div>
+            
+            <!-- 专题 Tab -->
+            <div id="topics-tab" class="tab-content">
+                <div id="topics-list" class="list-container">
+                    <div class="loading">加载中...</div>
+                </div>
+                <div id="topic-detail" class="detail-container" style="display: none;">
+                    <button class="back-button" onclick="closeTopicDetail()">← 返回列表</button>
+                    <article id="topic-content"></article>
+                </div>
+            </div>
+            
+            <!-- X Tab -->
+            <div id="x-tab" class="tab-content">
+                <div id="x-list" class="list-container">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>只读新闻存档 · 数据来自 RSS 订阅</p>
+        </footer>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

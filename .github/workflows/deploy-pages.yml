@@ -1,0 +1,85 @@
+name: deploy-pages
+
+on:
+  push:
+    branches:
+      - main
+  # Triggered after daily-fetch completes
+  workflow_run:
+    workflows: ["daily-fetch"]
+    types:
+      - completed
+  # Manual trigger
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Prevent concurrent deployments
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch SQLite from data branch
+        id: fetch-db
+        run: |
+          set -euo pipefail
+          mkdir -p data
+          
+          # Try to fetch the data branch and extract archive.sqlite3
+          if git fetch origin data:data 2>/dev/null; then
+            echo "Data branch exists, attempting to restore archive.sqlite3..."
+            if git show data:data/archive.sqlite3 > data/archive.sqlite3 2>/dev/null; then
+              echo "found=true" >> "$GITHUB_OUTPUT"
+              echo "✓ Restored archive.sqlite3 from data branch"
+              ls -lh data/archive.sqlite3
+            else
+              echo "found=false" >> "$GITHUB_OUTPUT"
+              echo "⚠ Data branch exists but no archive.sqlite3 found"
+            fi
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            echo "⚠ No data branch found (first run OK)"
+          fi
+
+      - name: Export site data
+        run: |
+          python scripts/export_site_data.py
+
+      - name: Copy static files
+        run: |
+          mkdir -p _site
+          cp -r site/* _site/
+          echo "✓ Static site prepared"
+          ls -la _site/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
