@@ -46,7 +46,8 @@ CREATE TABLE IF NOT EXISTS daily_briefs (
     model TEXT NOT NULL DEFAULT '',
     lede TEXT NOT NULL DEFAULT '',
     sections_json TEXT NOT NULL,
-    error TEXT
+    error TEXT,
+    input_fingerprint TEXT NOT NULL DEFAULT ''
 );
 """
 
@@ -94,10 +95,20 @@ class Store:
                 model TEXT NOT NULL DEFAULT '',
                 lede TEXT NOT NULL DEFAULT '',
                 sections_json TEXT NOT NULL,
-                error TEXT
+                error TEXT,
+                input_fingerprint TEXT NOT NULL DEFAULT ''
             )
             """
         )
+        daily_cols = {
+            row["name"]
+            for row in self._conn.execute("PRAGMA table_info(daily_briefs)").fetchall()
+        }
+        if daily_cols and "input_fingerprint" not in daily_cols:
+            self._conn.execute(
+                "ALTER TABLE daily_briefs ADD COLUMN input_fingerprint "
+                "TEXT NOT NULL DEFAULT ''"
+            )
 
     def upsert(self, article: Article) -> bool:
         """Insert if URL is new. Returns True when inserted.
@@ -322,8 +333,8 @@ class Store:
 
     def get_daily_brief(self, date: str) -> dict | None:
         row = self._conn.execute(
-            "SELECT date, generated_at, status, model, lede, sections_json, error "
-            "FROM daily_briefs WHERE date = ?",
+            "SELECT date, generated_at, status, model, lede, sections_json, error, "
+            "input_fingerprint FROM daily_briefs WHERE date = ?",
             (date,),
         ).fetchone()
         if row is None:
@@ -332,8 +343,8 @@ class Store:
 
     def get_daily_briefs(self) -> list[dict]:
         rows = self._conn.execute(
-            "SELECT date, generated_at, status, model, lede, sections_json, error "
-            "FROM daily_briefs ORDER BY date DESC"
+            "SELECT date, generated_at, status, model, lede, sections_json, error, "
+            "input_fingerprint FROM daily_briefs ORDER BY date DESC"
         ).fetchall()
         return [self._parse_daily_brief_row(row) for row in rows]
 
@@ -357,6 +368,7 @@ class Store:
             brief.get("lede") or "",
             sections_json,
             brief.get("error"),
+            brief.get("input_fingerprint") or "",
             date,
         )
         if existing:
@@ -364,7 +376,7 @@ class Store:
                 """
                 UPDATE daily_briefs SET
                     generated_at = ?, status = ?, model = ?, lede = ?,
-                    sections_json = ?, error = ?
+                    sections_json = ?, error = ?, input_fingerprint = ?
                 WHERE date = ?
                 """,
                 payload,
@@ -374,8 +386,9 @@ class Store:
         self._conn.execute(
             """
             INSERT INTO daily_briefs
-                (generated_at, status, model, lede, sections_json, error, date)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+                (generated_at, status, model, lede, sections_json, error,
+                 input_fingerprint, date)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
             payload,
         )

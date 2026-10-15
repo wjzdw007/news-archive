@@ -7,6 +7,7 @@ fetch/deploy.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -164,7 +165,7 @@ def x_posts_for_day(
 ) -> list[dict[str, Any]]:
     """Active same-day X posts (Asia/Shanghai from posted_at), public fields only.
 
-    Sorted stably so a future input_fingerprint can hash this selected set.
+    Sorted stably; `input_fingerprint` hashes this selected set.
     """
     allowed = {a.lstrip("@").lower() for a in (accounts or X_NEWS_ACCOUNTS)}
     out: list[dict[str, Any]] = []
@@ -190,16 +191,55 @@ def daily_brief_fingerprint_input(
     date: str,
     x_posts: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    """Shanghai-day selected set a future input_fingerprint can hash.
+    """Shanghai-day selected set hashed by `input_fingerprint`.
 
-    Includes RSS public articles and X public posts. Does not compute a hash
-    (fingerprint-skip/regen stays in a separate PR).
+    Includes RSS public articles and X public posts (author, truncated
+    text_snapshot, url, posted_at). Same-day X add/remove/edit changes this.
     """
     return {
         "date": date,
         "articles": articles_for_day(articles, date),
         "x_posts": x_posts_for_day(x_posts or [], date),
     }
+
+
+def input_fingerprint(
+    articles: list[dict[str, Any]],
+    x_posts: list[dict[str, Any]] | None = None,
+) -> str:
+    """Stable hash of selected RSS + X sets the daily brief is built from.
+
+    RSS: url + title/summary/source (same fields as `_prompt_sections`).
+    X: public selected set from `x_posts_for_day` / `daily_brief_fingerprint_input`.
+    """
+    article_rows = [
+        {
+            "url": article.get("url") or "",
+            "title": article.get("title") or "",
+            "summary": article.get("summary") or "",
+            "source": article.get("source") or "",
+        }
+        for article in articles
+    ]
+    article_rows.sort(key=lambda row: row["url"])
+    x_rows = [public_x_post(post) for post in (x_posts or [])]
+    x_rows.sort(key=lambda row: (row["url"], row["posted_at"], row["author"]))
+    blob = json.dumps(
+        {"articles": article_rows, "x_posts": x_rows},
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    )
+    return hashlib.sha256(blob.encode("utf-8")).hexdigest()
+
+
+def day_input_fingerprint(
+    articles: list[dict[str, Any]],
+    date: str,
+    x_posts: list[dict[str, Any]] | None = None,
+) -> str:
+    selected = daily_brief_fingerprint_input(articles, date, x_posts)
+    return input_fingerprint(selected["articles"], selected["x_posts"])
 
 
 def is_x_section(section: dict[str, Any] | None) -> bool:
@@ -673,23 +713,32 @@ def generate_daily_brief(
     ok: LLM returned a usable brief (RSS links from grouping; X links from x_posts)
     Same-day X posts become at most one 「X 动态」 section (omitted when none).
     """
-    day_articles = articles_for_day(articles, date)
-    day_x = x_posts_for_day(x_posts or [], date)
+    selected = daily_brief_fingerprint_input(articles, date, x_posts)
+    day_articles = selected["articles"]
+    day_x = selected["x_posts"]
+    fingerprint = input_fingerprint(day_articles, day_x)
+
+    def _with_fp(brief: dict[str, Any]) -> dict[str, Any]:
+        brief["input_fingerprint"] = fingerprint
+        return brief
+
     if not day_articles and not day_x:
-        return empty_brief(date, now=now, model=model)
+        return _with_fp(empty_brief(date, now=now, model=model))
 
     if missing_config or llm_fn is None:
-        return failed_brief(
-            date,
-            error=f"missing {API_KEY_ENV} or {API_BASE_ENV}",
-            now=now,
-            model=model,
+        return _with_fp(
+            failed_brief(
+                date,
+                error=f"missing {API_KEY_ENV} or {API_BASE_ENV}",
+                now=now,
+                model=model,
+            )
         )
 
     grouped = group_sections(day_articles)
     x_section = build_x_section(day_x)
     if not grouped and not x_section:
-        return empty_brief(date, now=now, model=model)
+        return _with_fp(empty_brief(date, now=now, model=model))
 
     prompt_grouped = list(grouped)
     if x_section:
@@ -698,12 +747,16 @@ def generate_daily_brief(
     try:
         llm_payload = llm_fn(prompt_grouped)
     except Exception as exc:
-        return failed_brief(
-            date, error=redact_secrets(str(exc)), now=now, model=model
+        return _with_fp(
+            failed_brief(
+                date, error=redact_secrets(str(exc)), now=now, model=model
+            )
         )
 
     if not isinstance(llm_payload, dict):
-        return failed_brief(date, error="LLM returned non-object JSON", now=now, model=model)
+        return _with_fp(
+            failed_brief(date, error="LLM returned non-object JSON", now=now, model=model)
+        )
 
     lede = clip_lede(llm_payload.get("lede"))
     sections = merge_llm_sections(grouped, llm_payload)
@@ -714,20 +767,24 @@ def generate_daily_brief(
         if x_pub.get("bullets") or x_pub.get("links"):
             sections.append(x_pub)
     if not lede and not sections:
-        return failed_brief(date, error="LLM returned empty brief", now=now, model=model)
+        return _with_fp(
+            failed_brief(date, error="LLM returned empty brief", now=now, model=model)
+        )
     if not lede:
         titles = [s["title"] for s in sections[:3] if s.get("title")]
         lede = clip_lede("；".join(titles))
 
-    return {
-        "date": date,
-        "generated_at": (now or datetime.now(timezone.utc)).astimezone(timezone.utc).isoformat(),
-        "status": "ok",
-        "model": model or resolve_model(),
-        "lede": lede,
-        "sections": sections,
-        "error": None,
-    }
+    return _with_fp(
+        {
+            "date": date,
+            "generated_at": (now or datetime.now(timezone.utc)).astimezone(timezone.utc).isoformat(),
+            "status": "ok",
+            "model": model or resolve_model(),
+            "lede": lede,
+            "sections": sections,
+            "error": None,
+        }
+    )
 
 
 def make_llm_fn(config: dict[str, str]) -> LlmFn:

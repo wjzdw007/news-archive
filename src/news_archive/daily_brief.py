@@ -11,13 +11,13 @@ from pathlib import Path
 from .daily_briefs import (
     API_BASE_ENV,
     API_KEY_ENV,
+    day_input_fingerprint,
     generate_daily_brief,
     last_n_shanghai_dates,
     make_llm_fn,
     redact_secrets,
     resolve_llm_config,
     resolve_model,
-    shanghai_calendar_date,
 )
 from .store import Store
 
@@ -26,9 +26,15 @@ def generate_for_dates(
     store: Store,
     dates: list[str],
     *,
-    force_today: str | None = None,
+    llm_fn=None,
+    model: str | None = None,
+    missing_config: bool | None = None,
 ) -> list[dict]:
-    """Generate briefs for dates. Missing key / LLM errors write failed/empty."""
+    """Generate briefs for dates. Missing key / LLM errors write failed/empty.
+
+    Skip LLM (`kept_ok`) when an existing row is status=ok and the day's
+    selected RSS + X fingerprint is unchanged — including today.
+    """
     articles = store.get_articles_for_daily_brief()
     try:
         x_posts = store.get_x_posts_for_daily_brief()
@@ -36,18 +42,32 @@ def generate_for_dates(
         # X Tab / x-fetch soft-fail: missing table or read error omits X, RSS still runs.
         x_posts = []
     config = resolve_llm_config()
-    llm_fn = make_llm_fn(config) if config else None
-    model = config["model"] if config else resolve_model()
-    missing_config = config is None
+    if llm_fn is None:
+        llm_fn = make_llm_fn(config) if config else None
+        if missing_config is None:
+            missing_config = config is None
+    elif missing_config is None:
+        missing_config = False
+    if not model:
+        model = config["model"] if config else resolve_model()
     api_key = (config or {}).get("api_key") or ""
-    today = force_today or shanghai_calendar_date()
     results: list[dict] = []
 
     for date in dates:
+        fingerprint = day_input_fingerprint(articles, date, x_posts)
         existing = store.get_daily_brief(date)
-        # Always refresh today; keep historical ok rows; retry failed/empty.
-        if existing and existing.get("status") == "ok" and date != today:
-            results.append({"date": date, "action": "kept_ok", "status": "ok"})
+        if (
+            existing
+            and existing.get("status") == "ok"
+            and (existing.get("input_fingerprint") or "") == fingerprint
+        ):
+            results.append(
+                {
+                    "date": date,
+                    "action": "kept_ok",
+                    "status": "ok",
+                }
+            )
             continue
         try:
             brief = generate_daily_brief(
@@ -67,6 +87,7 @@ def generate_for_dates(
                 "lede": "",
                 "sections": [],
                 "error": redact_secrets(str(exc), api_key),
+                "input_fingerprint": fingerprint,
             }
         action = store.upsert_daily_brief(brief)
         results.append(

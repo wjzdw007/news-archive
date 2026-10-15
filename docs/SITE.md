@@ -38,7 +38,8 @@
    - `status=failed`：降级文案「当日摘要生成失败」（不打断 Pages）
    - **新闻 Tab 不插日报 banner**
    - RSS 子弹从 title + summary 生成；**禁止**读/写 `content_snapshot`；公开 JSON 无 Cookie / Authorization / `post_id`
-   - 公开导出：`site/data/daily_briefs.json`（无 `content_snapshot`、无内部 error）
+   - `input_fingerprint` 含当日 RSS 所选集合 **和** X selected set；同日 X 增删改会强制重生成（不是 kept_ok）
+   - 公开导出：`site/data/daily_briefs.json`（无 `content_snapshot`、无内部 error、无 `input_fingerprint`）
 
 ### 约束
 
@@ -150,7 +151,8 @@ news-archive/
 
 ```
 [daily-fetch] → (optional daily_brief via DAILY_BRIEF_API_KEY + DAILY_BRIEF_API_BASE;
-                     model default deepseek/deepseek-flash, override DAILY_BRIEF_MODEL)
+                     model default deepseek/deepseek-flash, override DAILY_BRIEF_MODEL;
+                     skip LLM when ok + selected RSS+X fingerprint unchanged, including today)
                      ↓
               data branch (archive.sqlite3)
                      ↓
