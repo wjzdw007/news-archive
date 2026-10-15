@@ -148,7 +148,8 @@ news-archive/
 
 ```
 [daily-fetch] → (optional daily_brief via DAILY_BRIEF_API_KEY + DAILY_BRIEF_API_BASE;
-                     model default deepseek/deepseek-flash, override DAILY_BRIEF_MODEL)
+                     model default deepseek/deepseek-flash, override DAILY_BRIEF_MODEL;
+                     skip LLM when ok + selected-article fingerprint unchanged, including today)
                      ↓
               data branch (archive.sqlite3)
                      ↓
