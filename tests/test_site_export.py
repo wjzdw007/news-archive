@@ -543,7 +543,7 @@ def test_export_daily_briefs():
                 "date": "2026-10-15",
                 "generated_at": "2026-10-15T12:00:00+00:00",
                 "status": "ok",
-                "model": "deepseek-v3",
+                "model": "deepseek/deepseek-flash",
                 "lede": "多源关注航天发射。",
                 "sections": [
                     {
@@ -636,7 +636,7 @@ def test_export_daily_briefs_omits_content_snapshot_and_error():
                 "date": "2026-10-15",
                 "generated_at": "2026-10-15T12:00:00+00:00",
                 "status": "ok",
-                "model": "deepseek-v3",
+                "model": "deepseek/deepseek-flash",
                 "lede": "可见导语。",
                 "sections": [
                     {

@@ -13,6 +13,8 @@ from news_archive.daily_briefs import (
     API_BASE_ENV,
     API_KEY_ENV,
     DAILY_BRIEF_ARTICLE_FIELDS,
+    DEFAULT_MODEL,
+    MODEL_ENV,
     OTHER_TITLE,
     SECTIONS_MAX,
     articles_for_day,
@@ -20,6 +22,7 @@ from news_archive.daily_briefs import (
     group_sections,
     redact_secrets,
     resolve_llm_config,
+    resolve_model,
     shanghai_calendar_date,
 )
 from news_archive.schema import Article
@@ -157,7 +160,24 @@ def test_resolve_llm_config_requires_key_and_base():
     assert cfg is not None
     assert cfg["base_url"] == "https://api.lkeap.cloud.tencent.com/plan/v3"
     assert cfg["api_key"] == "sk-test"
+    assert cfg["model"] == "deepseek/deepseek-flash"
     assert "openai.com" not in cfg["base_url"]
+
+
+def test_resolve_model_defaults_and_env_override():
+    assert DEFAULT_MODEL == "deepseek/deepseek-flash"
+    assert resolve_model({}) == "deepseek/deepseek-flash"
+    assert resolve_model({MODEL_ENV: "   "}) == "deepseek/deepseek-flash"
+    assert resolve_model({MODEL_ENV: "  other/custom-id  "}) == "other/custom-id"
+    cfg = resolve_llm_config(
+        {
+            API_KEY_ENV: "sk-test",
+            API_BASE_ENV: "https://api.lkeap.cloud.tencent.com/plan/v3",
+            MODEL_ENV: "custom/override",
+        }
+    )
+    assert cfg is not None
+    assert cfg["model"] == "custom/override"
 
 
 def test_redact_secrets_never_keeps_values():
@@ -177,6 +197,16 @@ def test_model_error_status_failed():
     assert brief["status"] == "failed"
     assert brief["lede"] == ""
     assert "500" in (brief.get("error") or "")
+
+
+def test_ok_brief_records_default_model_when_unspecified():
+    saved_env = _clear_brief_env()
+    try:
+        brief = generate_daily_brief([_art()], "2026-10-15", llm_fn=_ok_llm)
+        assert brief["status"] == "ok"
+        assert brief["model"] == "deepseek/deepseek-flash"
+    finally:
+        _restore_brief_env(saved_env)
 
 
 def test_ok_brief_from_title_summary_only():
@@ -266,7 +296,7 @@ def test_store_daily_brief_query_omits_snapshot():
 
 def _clear_brief_env() -> dict[str, str]:
     saved = {}
-    for name in (API_KEY_ENV, API_BASE_ENV, "OPENAI_API_KEY", "OPENAI_BASE_URL"):
+    for name in (API_KEY_ENV, API_BASE_ENV, MODEL_ENV, "OPENAI_API_KEY", "OPENAI_BASE_URL"):
         if name in os.environ:
             saved[name] = os.environ.pop(name)
     return saved
@@ -334,6 +364,8 @@ def test_workflow_wires_daily_brief_secrets_soft_fail():
     assert "news_archive.daily_brief" in yml
     assert "secrets.DAILY_BRIEF_API_KEY" in yml
     assert "secrets.DAILY_BRIEF_API_BASE" in yml
+    assert "secrets.DAILY_BRIEF_MODEL" not in yml
+    assert "deepseek/deepseek-flash" in yml
     assert "continue-on-error: true" in yml
     assert "OPENAI_API_KEY" not in yml
     assert "X_BEARER" not in yml
@@ -347,7 +379,7 @@ def test_model_error_redacts_secret_values():
         raise RuntimeError(f"401 Authorization: Bearer {planted}")
 
     brief = generate_daily_brief(
-        [_art()], "2026-10-15", llm_fn=boom, model="deepseek-v3"
+        [_art()], "2026-10-15", llm_fn=boom, model="deepseek/deepseek-flash"
     )
     blob = json.dumps(brief, ensure_ascii=False)
     assert planted not in blob
@@ -416,6 +448,7 @@ if __name__ == "__main__":
     test_empty_day_status_empty()
     test_missing_key_status_failed()
     test_model_error_status_failed()
+    test_ok_brief_records_default_model_when_unspecified()
     test_ok_brief_from_title_summary_only()
     test_store_daily_brief_query_omits_snapshot()
     test_cli_missing_key_exits_zero_and_writes_failed()
@@ -423,6 +456,7 @@ if __name__ == "__main__":
     test_cli_never_fails_on_corrupt_handler()
     test_workflow_wires_daily_brief_secrets_soft_fail()
     test_resolve_llm_config_requires_key_and_base()
+    test_resolve_model_defaults_and_env_override()
     test_redact_secrets_never_keeps_values()
     test_model_error_redacts_secret_values()
     test_cli_stdout_never_prints_secret_values()
