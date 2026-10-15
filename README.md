@@ -26,6 +26,53 @@
 - 存储：SQLite（可导出 JSONL）
 - X 帖子：P1（按 post id 去重 + 快照），不挡本轮 RSS 底座
 
+## 持久化存储（Data Branch）
+
+`archive.sqlite3` 通过 **专用 `data` 分支** 实现跨 Actions 运行持久化：
+
+- **`data` 分支**（orphan branch）：仅存放 `data/archive.sqlite3` 和 `data/LAST_RUN.json`（最后一次运行元数据）
+- **`main` 分支**：仅存代码，`.gitignore` 已排除 `*.sqlite3`
+- **Artifacts**：每次运行同时上传 sqlite + jsonl + run-stats 作为 90 天备份（`news-archive-{run_id}`）
+
+### 工作流程（Workflow）
+
+1. **恢复数据库**：每次运行开始前，从 `data` 分支 checkout `data/archive.sqlite3`（若分支/文件不存在，则从空数据库开始 — 首次运行 OK）
+2. **抓取去重**：运行抓取 → URL 去重 → 入库（`store.upsert()` 自动跳过已存在 URL）
+3. **验收检查**：P0 验收 + 高频去重测试通过
+4. **持久化回写**：成功后将更新的 `archive.sqlite3` 和 `LAST_RUN.json` commit 并 push 回 `data` 分支
+   - 冲突处理：`git pull --rebase` + 最多重试 3 次
+   - **禁止 force-push**：保留并发运行的提交历史
+   - 持续冲突 → 失败（红），需人工介入
+5. **备份上传**：上传 artifact（独立于 data 分支，保留 90 天）
+
+### 标记失效 URL（Gone Status）
+
+链接失效后，使用 `mark_gone` 工具标记 URL 而非删除记录：
+
+```bash
+# 标记单个 URL
+PYTHONPATH=src python -m news_archive.mark_gone \
+  --db data/archive.sqlite3 \
+  --url "https://example.com/article"
+
+# 标记多个 URL
+PYTHONPATH=src python -m news_archive.mark_gone \
+  --db data/archive.sqlite3 \
+  --url "https://example.com/1" \
+  --url "https://example.com/2"
+
+# 预览（不实际修改）
+PYTHONPATH=src python -m news_archive.mark_gone \
+  --db data/archive.sqlite3 \
+  --url "https://example.com/article" \
+  --dry-run
+```
+
+**注意**：
+- `mark_gone` 可以直接操作 `data` 分支上的数据库（checkout `data` 分支后运行）
+- 失效状态（`status='gone'`）会持久化到 `data` 分支
+- `store.upsert()` 保留已存在记录的 `status`（gone 不会被重新激活）
+
 ## 用法
 
 ```bash
@@ -55,7 +102,10 @@ python -m news_archive --db data/archive.sqlite3 --export-jsonl data/archive.jso
 - 聚合/专题：P1 `topic_id` 弱聚合 → P2 综述；本轮不做
 - 注：讨论里的 `*/6 * * * *` 是每 6 分钟，按「4 小时一轮」落地为 `0 */4 * * *`
 - 失败即红：任一源报错或入库后库为空 → job 失败
-- 数据：`data/archive.sqlite3` + `archive.jsonl` 走 **artifact**（保留 90 天），不往主分支狂推大文件
+- 数据持久化：
+  - **`data` 分支**：存放跨运行持久化的 `archive.sqlite3`（增量去重的关键）
+  - **Artifacts**：每次运行额外上传 `data/archive.sqlite3` + `archive.jsonl` + `run-stats.json`（保留 90 天备份）
+- 权限：workflow 需要 `contents: write` 以便 push 到 `data` 分支
 - 仓库默认 **private**（`content_snapshot` 有版权风险）；要开源再单独评估可公开字段
 - X 帖子仍为 P1，不在本 workflow
 

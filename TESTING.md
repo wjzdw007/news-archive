@@ -98,6 +98,30 @@
 - 定时：`0 */4 * * *`（UTC 每 4 小时）
 - 手动：`workflow_dispatch`
 
+**数据持久化（Data Branch）**：
+
+每次运行自动从 `data` 分支恢复并回写 `archive.sqlite3`：
+
+1. **恢复阶段**（fetch 前）：
+   - `git fetch origin data:data`
+   - `git show data:data/archive.sqlite3 > data/archive.sqlite3`
+   - 若 `data` 分支或文件不存在 → 从空数据库开始（首次运行正常）
+
+2. **验证阶段**（fetch + P0 验收 + 高频去重）
+
+3. **持久化阶段**（验证成功后）：
+   - Checkout `data` 分支（不存在则创建 orphan branch）
+   - 将更新的 `data/archive.sqlite3` 和 `data/LAST_RUN.json` commit 并 push
+   - 冲突处理：`git pull --rebase origin data` + 最多重试 3 次
+   - 持续冲突 → 失败（红），需人工介入
+
+4. **备份上传**：上传 Artifacts（独立于 data 分支，保留 90 天）
+
+**关键约束**：
+- **禁止 force-push**：并发运行时保留所有提交历史
+- **main 分支无大文件**：`.gitignore` 已排除 `*.sqlite3`
+- **Gone 状态持久化**：`status='gone'` 的 URL 在 `data` 分支数据库中保留
+
 **检查步骤**：
 
 #### 1. 运行 P0 验收验证
@@ -150,6 +174,41 @@ PYTHONPATH=src python tests/test_dedup.py
 ```
 
 **注意**：此测试会发起真实的网络请求抓取 RSS feeds，需要网络连接。
+
+### 标记失效 URL
+
+对持久化在 `data` 分支的数据库标记失效链接：
+
+```bash
+# Checkout data 分支
+git fetch origin data:data
+git checkout data
+
+# 标记 URL 为 gone
+PYTHONPATH=src python -m news_archive.mark_gone \
+  --db data/archive.sqlite3 \
+  --url "https://example.com/dead-link"
+
+# 查看预览（dry-run）
+PYTHONPATH=src python -m news_archive.mark_gone \
+  --db data/archive.sqlite3 \
+  --url "https://example.com/link1" \
+  --url "https://example.com/link2" \
+  --dry-run
+
+# Commit 并 push 回 data 分支
+git add data/archive.sqlite3
+git commit -m "Mark gone URLs from manual probe"
+git push origin data
+
+# 返回 main
+git checkout main
+```
+
+**说明**：
+- `mark_gone` 工具直接调用 `Store.mark_gone(url)`，将 `status` 改为 `gone` 而不删除记录
+- Gone 状态会持久化到 `data` 分支，后续运行的 `upsert()` 不会重新激活它
+- 支持 `--dry-run` 预览将要标记的 URL
 
 ---
 

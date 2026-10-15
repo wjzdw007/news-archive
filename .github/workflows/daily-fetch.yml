@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: daily-fetch
@@ -20,6 +20,28 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Restore SQLite from data branch
+        id: restore-db
+        run: |
+          set -euo pipefail
+          mkdir -p data
+          
+          # Try to fetch the data branch and extract archive.sqlite3
+          if git fetch origin data:data 2>/dev/null; then
+            echo "Data branch exists, attempting to restore archive.sqlite3..."
+            if git show data:data/archive.sqlite3 > data/archive.sqlite3 2>/dev/null; then
+              echo "restored=true" >> "$GITHUB_OUTPUT"
+              echo "✓ Restored archive.sqlite3 from data branch"
+              ls -lh data/archive.sqlite3
+            else
+              echo "restored=false" >> "$GITHUB_OUTPUT"
+              echo "⚠ Data branch exists but no archive.sqlite3 found, starting fresh"
+            fi
+          else
+            echo "restored=false" >> "$GITHUB_OUTPUT"
+            echo "⚠ No data branch found, starting fresh DB (first run OK)"
+          fi
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -49,6 +71,69 @@ jobs:
       - name: Test high-frequency dedup
         run: |
           PYTHONPATH=src python tests/test_dedup.py
+
+      - name: Persist SQLite to data branch
+        if: success()
+        run: |
+          set -euo pipefail
+          
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Try to checkout data branch, or create it as orphan if it doesn't exist
+          if git fetch origin data:data 2>/dev/null; then
+            git checkout data
+          else
+            echo "Creating new orphan data branch..."
+            git checkout --orphan data
+            git rm -rf . 2>/dev/null || true
+            mkdir -p data
+          fi
+          
+          # Copy the updated archive.sqlite3
+          cp "$GITHUB_WORKSPACE/data/archive.sqlite3" data/archive.sqlite3
+          
+          # Create run metadata
+          cat > data/LAST_RUN.json <<EOF
+          {
+            "run_id": "${{ github.run_id }}",
+            "run_number": ${{ github.run_number }},
+            "run_attempt": ${{ github.run_attempt }},
+            "sha": "${{ github.sha }}",
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "workflow": "${{ github.workflow }}"
+          }
+          EOF
+          
+          # Stage and commit
+          git add data/archive.sqlite3 data/LAST_RUN.json
+          
+          # Check if there are changes to commit
+          if git diff --cached --quiet; then
+            echo "No changes to persist (DB unchanged)"
+          else
+            git commit -m "Archive update from run ${{ github.run_id }}"
+            
+            # Push with retry on conflict
+            for attempt in 1 2 3; do
+              if git push origin data; then
+                echo "✓ Successfully pushed to data branch"
+                break
+              else
+                if [ $attempt -lt 3 ]; then
+                  echo "⚠ Push failed (attempt $attempt/3), pulling and retrying..."
+                  git pull --rebase origin data
+                else
+                  echo "❌ Failed to push after 3 attempts - concurrent update conflict"
+                  exit 1
+                fi
+              fi
+            done
+          fi
+          
+          # Return to original branch
+          git checkout "${{ github.ref_name }}"
 
       - name: Upload archive artifact
         if: always() && hashFiles('data/archive.sqlite3') != ''
