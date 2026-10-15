@@ -110,6 +110,53 @@ class Store:
                 "TEXT NOT NULL DEFAULT ''"
             )
 
+    def get_articles_for_enrich(self) -> list[dict]:
+        """Private rows for thin-summary enrichment (includes content_snapshot)."""
+        rows = self._conn.execute(
+            """
+            SELECT url, title, summary, content_snapshot, status
+            FROM articles
+            ORDER BY fetched_at DESC, url
+            """
+        ).fetchall()
+        return [dict(row) for row in rows]
+
+    def get_article(self, url: str) -> dict | None:
+        """Single private row (includes content_snapshot). Tests / enrich only."""
+        row = self._conn.execute(
+            "SELECT * FROM articles WHERE url = ?", (url,)
+        ).fetchone()
+        return dict(row) if row else None
+
+    def update_enrichment(
+        self,
+        url: str,
+        *,
+        content_snapshot: str | None = None,
+        summary: str | None = None,
+    ) -> bool:
+        """Write private snapshot and/or derived public summary after page fetch.
+
+        Only sets columns the caller passes; never changes status / topic_id.
+        """
+        assignments: list[str] = []
+        values: list[object] = []
+        if content_snapshot is not None:
+            assignments.append("content_snapshot = ?")
+            values.append(content_snapshot)
+        if summary is not None:
+            assignments.append("summary = ?")
+            values.append(summary)
+        if not assignments:
+            return False
+        values.append(url)
+        cur = self._conn.execute(
+            f"UPDATE articles SET {', '.join(assignments)} WHERE url = ?",
+            values,
+        )
+        self._conn.commit()
+        return cur.rowcount == 1
+
     def upsert(self, article: Article) -> bool:
         """Insert if URL is new. Returns True when inserted.
 

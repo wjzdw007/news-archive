@@ -21,7 +21,8 @@
 `title` / `published_at` / `url` / `summary` / `source` / `fetched_at` / `content_snapshot` / `status`
 
 - 主键 / 去重键：`url`
-- `content_snapshot`：入库时快照（优先 RSS `content:encoded`，否则 summary），链接失效后本地仍可读
+- `content_snapshot`：私有全文快照（优先 RSS `content:encoded`；摘要空或 <80 字时抓取原文页写入纯文本）。公开站点从不导出此字段
+- 公开 `summary`：纯文本，最多 280 字；优先从快照派生，否则用 RSS 摘要
 - `status`：`active` | `gone`（后续探测不可达时标记，不删记录）
 - 存储：SQLite（可导出 JSONL）
 - X 帖子：P1（按 post id 去重 + 快照），不挡本轮 RSS 底座

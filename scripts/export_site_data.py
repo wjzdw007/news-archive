@@ -52,6 +52,8 @@ _DAILY_BRIEF_EXPORT_FIELDS = (
 )
 
 _TAG_RE = re.compile(r"<[^>]+>", re.DOTALL)
+# Public Pages summary cap (Unicode chars). Full text stays in private DB.
+PUBLIC_SUMMARY_MAX = 280
 
 
 def article_list_time(article: dict) -> str:
@@ -79,11 +81,22 @@ def strip_html(text: str | None) -> str | None:
     return cleaned or None
 
 
+def cap_public_summary(text: str | None) -> str | None:
+    """Plain-text public summary, never longer than 280 Unicode chars."""
+    cleaned = strip_html(text)
+    if cleaned is None:
+        return None
+    if len(cleaned) > PUBLIC_SUMMARY_MAX:
+        return cleaned[:PUBLIC_SUMMARY_MAX]
+    return cleaned
+
+
 def export_articles(conn: sqlite3.Connection, output_path: Path) -> int:
     """Export articles sorted by published_at desc (fallback fetched_at).
 
     Omits content_snapshot (copyright / public-repo product lock).
-    Strips HTML from summary so list/detail never show literal <p> tags.
+    Strips HTML from summary and caps at 280 chars so Pages never shows
+    full article text (even when the private snapshot is long).
     """
     conn.row_factory = sqlite3.Row
     cursor = conn.execute(
@@ -96,7 +109,7 @@ def export_articles(conn: sqlite3.Connection, output_path: Path) -> int:
     articles = []
     for row in cursor.fetchall():
         article = {field: row[field] for field in _ARTICLE_EXPORT_FIELDS}
-        article["summary"] = strip_html(article.get("summary"))
+        article["summary"] = cap_public_summary(article.get("summary"))
         articles.append(article)
 
     articles.sort(key=article_list_time, reverse=True)
