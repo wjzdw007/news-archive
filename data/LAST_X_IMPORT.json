@@ -1,6 +1,13 @@
 {
-  "persisted_at": "2026-10-15T06:29:44.302908+00:00",
-  "reason": "x-jsonl-import-handoff",
+  "persisted_at": "2026-10-15T06:32:24.029794+00:00",
+  "reason": "bot-side-x-mcp-fetch",
+  "source": "x MCP get_users_by_usernames + get_users_posts",
   "articles": 409,
-  "x_posts": 79
+  "x_posts": 79,
+  "by_author": {
+    "BBCChinese": 19,
+    "FT": 20,
+    "Reuters": 20,
+    "TechCrunch": 20
+  }
 }
