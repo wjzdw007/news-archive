@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+# CEO 2026-10-15: try 0.7 (was 0.8); revert this constant to roll back.
+DEFAULT_SIMILARITY_THRESHOLD = 0.7
+DEFAULT_WINDOW_HOURS = 6.0
+
 import re
 import uuid
 from datetime import datetime, timedelta, timezone
@@ -74,8 +78,8 @@ def within_time_window(
 def should_merge(
     article1: dict[str, Any],
     article2: dict[str, Any],
-    similarity_threshold: float = 0.8,
-    window_hours: float = 6.0,
+    similarity_threshold: float = DEFAULT_SIMILARITY_THRESHOLD,
+    window_hours: float = DEFAULT_WINDOW_HOURS,
 ) -> bool:
     """Determine if two articles should share the same topic_id.
     
@@ -111,8 +115,8 @@ def should_merge(
 
 def assign_topic_ids(
     articles: list[dict[str, Any]],
-    similarity_threshold: float = 0.8,
-    window_hours: float = 6.0,
+    similarity_threshold: float = DEFAULT_SIMILARITY_THRESHOLD,
+    window_hours: float = DEFAULT_WINDOW_HOURS,
 ) -> list[dict[str, Any]]:
     """Assign topic_id to articles using greedy clustering.
     
