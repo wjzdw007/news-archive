@@ -67,10 +67,13 @@ jobs:
         run: |
           PYTHONPATH=src python -m news_archive.validate \
             --db data/archive.sqlite3 \
-            --stats data/run-stats.json
+            --stats data/run-stats.json \
+            --output-meta data/validation-meta.json
 
       - name: Persist SQLite to data branch
-        if: steps.validate.outcome == 'success'
+        # CRITICAL: Persist runs if fetch succeeded, even if latency validation failed
+        # This ensures incremental data is never lost due to SLA violations
+        if: always() && steps.fetch.outcome == 'success' && hashFiles('data/archive.sqlite3') != ''
         run: |
           set -euo pipefail
           
@@ -95,7 +98,20 @@ jobs:
           # Copy from temp location to data branch
           cp "$RUNNER_TEMP/archive.sqlite3" data/archive.sqlite3
           
-          # Create run metadata
+          # Copy validation metadata for consecutive latency check
+          if [ -f "$RUNNER_TEMP/validation-meta.json" ]; then
+            cp "$RUNNER_TEMP/validation-meta.json" "$RUNNER_TEMP/validation-meta-backup.json"
+          fi
+          
+          # Read latency_sla_passed from validation metadata
+          LATENCY_PASSED="null"
+          if [ -f "$GITHUB_WORKSPACE/data/validation-meta.json" ]; then
+            # Copy to temp before switching branches
+            cp "$GITHUB_WORKSPACE/data/validation-meta.json" "$RUNNER_TEMP/validation-meta.json"
+            LATENCY_PASSED=$(cat "$RUNNER_TEMP/validation-meta.json" | python3 -c "import sys, json; print(json.dumps(json.load(sys.stdin).get('latency_sla_passed', None)))" 2>/dev/null || echo "null")
+          fi
+          
+          # Create run metadata with latency SLA status for consecutive check
           cat > data/LAST_RUN.json <<EOF
           {
             "run_id": "${{ github.run_id }}",
@@ -103,7 +119,8 @@ jobs:
             "run_attempt": ${{ github.run_attempt }},
             "sha": "${{ github.sha }}",
             "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "workflow": "${{ github.workflow }}"
+            "workflow": "${{ github.workflow }}",
+            "latency_sla_passed": ${LATENCY_PASSED}
           }
           EOF
           
