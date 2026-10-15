@@ -60,15 +60,28 @@
 - **只检查本次运行新插入的文章**（通过最新的 `fetched_at` 时间戳识别）
 - 排除：`published_at` 缺失或解析失败的文章（不计入失败）
 - 排除：发布时间 >24 小时的旧文章（再版内容）
-- ❌ 超过 **10%** 的文章延迟 >4h → 失败（红）
-- ✅ ≤10% 文章超时 → 通过
+- 超过 **10%** 的文章延迟 >4h 视为单轮违反 SLA
+
+**连续检测策略**（产品决策 after run #5）：
+- **单轮或个位数超窗** → ⚠️ **WARN**（打印警告，不红灯，exit 0，允许 run 继续）
+- **连续两轮整体超时** → ❌ **FAIL**（红灯，exit 1，阻塞流水线）
+- ✅ 当前轮通过 → **PASS**（清除连续失败计数）
+
+**连续检测机制**：
+1. 每次运行在 `data/LAST_RUN.json` 中记录 `latency_sla_passed: true/false`
+2. 下一轮从 `data` 分支读取上一轮状态（通过 `git show data:data/LAST_RUN.json`）
+3. 当前轮失败时：
+   - 若上一轮也失败 → **连续失败** → exit 1（红灯）
+   - 若上一轮通过 → **单轮失败** → exit 0（警告但通过）
 
 **说明**：
 - **首次运行回填旧文章不在检查范围内**：首次全量抓取 RSS 源时，历史存量文章（如一周前发布的）会显示较大延迟，但这是预期行为。延迟 SLA 只衡量增量新内容的时效性。
 - 10% 阈值允许偶发的调度延迟（GitHub Actions cron 漂移、源更新时间不均等）
-- 若需要更严格的 SLA，可降低阈值或实施「连续两轮超时 → 红」策略（需持久化前轮统计，P1 优先级）
+- 连续检测避免误报：单次网络波动/调度漂移不会红灯，只有持续问题才会告警
 
-**实施**：`validate.py::check_fetch_latency()`
+**实施**：`validate.py::check_fetch_latency()` + `validate.py::load_previous_run_meta()`
+
+**详细策略文档**：参见 [docs/SLA.md](docs/SLA.md)
 
 ---
 
@@ -124,7 +137,12 @@
 - **禁止 force-push**：并发运行时保留所有提交历史
 - **main 分支无大文件**：`.gitignore` 已排除 `*.sqlite3`
 - **Gone 状态持久化**：`status='gone'` 的 URL 在 `data` 分支数据库中保留
-- **持久化优先**：数据库持久化在 P0 验收通过后立即执行，不等待后续单元测试（如 `test_dedup.py`），确保即使非关键测试失败也能创建/更新 `data` 分支
+- **Persist 与 SLA 解耦**（产品决策 after run #5）：
+  - Persist 步骤条件改为 `if: always() && steps.fetch.outcome == 'success' && hashFiles('data/archive.sqlite3') != ''`
+  - **只要 fetch 成功就执行 Persist**，不依赖 validate 结果
+  - 即使 latency 连续两轮失败（导致 validate 红灯），增量数据仍会写回 `data` 分支
+  - 原因：Run #5 因单条 Al Jazeera 文章 ~8.3h 超时导致 validate 失败，5 条新插入的文章未能持久化（丢增量不可接受）
+- **持久化优先**：数据库持久化在 fetch 成功后立即执行，不等待后续单元测试（如 `test_dedup.py`），确保即使非关键测试失败也能创建/更新 `data` 分支
 
 **检查步骤**：
 
@@ -144,14 +162,19 @@
 #### 2. 持久化数据库
 ```yaml
 - name: Persist SQLite to data branch
-  if: steps.validate.outcome == 'success'
+  # CRITICAL: Persist runs if fetch succeeded, even if latency validation failed
+  if: always() && steps.fetch.outcome == 'success' && hashFiles('data/archive.sqlite3') != ''
   run: |
     # ... 详见完整 workflow
 ```
 
-- **仅在 P0 验收通过后执行**
-- 先于单元测试运行，确保验收通过的数据立即持久化
+- **解耦策略（产品决策 after run #5）**：
+  - 只要 fetch 成功就执行 Persist，**不依赖 validate 结果**
+  - 即使 latency SLA 连续失败（红灯），增量数据仍会写回 `data` 分支
+  - 避免 Run #5 问题：latency 失败导致 5 条新插入文章未持久化
+- 先于单元测试运行，确保 fetch 成功的数据立即持久化
 - 单元测试失败不会阻止数据库更新
+- 将 `validation-meta.json` 中的 `latency_sla_passed` 字段写入 `LAST_RUN.json`，供下一轮连续检测使用
 
 #### 3. 测试高频去重
 ```yaml
@@ -253,9 +276,84 @@ gh run view <run-id> --log-failed
 
 ---
 
+## 测试 Latency SLA 连续检测
+
+### 模拟单轮失败（应该 WARN 但通过）
+
+```bash
+# 准备：创建一个模拟的上一轮通过状态
+mkdir -p /tmp/test-sla
+cat > /tmp/test-sla/prev-run.json <<'EOF'
+{
+  "run_id": "12345",
+  "timestamp": "2026-10-15T00:00:00Z",
+  "latency_sla_passed": true
+}
+EOF
+
+# 初始化临时 git repo 用于测试
+cd /tmp/test-sla
+git init
+git checkout --orphan data
+git config user.name "test"
+git config user.email "test@example.com"
+mkdir -p data
+cp prev-run.json data/LAST_RUN.json
+git add data/LAST_RUN.json
+git commit -m "Previous run passed"
+
+# 创建一个会触发 latency 失败的测试数据库
+# （需要手动构造一个包含超时文章的 sqlite3，或修改 validate.py 临时降低阈值）
+# 此处省略具体数据库构造步骤
+
+# 运行验证（应该打印 WARN 但 exit 0）
+PYTHONPATH=src python -m news_archive.validate \
+  --db /tmp/test-sla/test.sqlite3 \
+  --output-meta /tmp/test-sla/validation-meta.json
+
+echo "Exit code: $?"  # 应该是 0
+cat /tmp/test-sla/validation-meta.json  # latency_sla_passed 应该是 false
+```
+
+### 模拟连续两轮失败（应该 FAIL）
+
+```bash
+# 准备：创建一个模拟的上一轮失败状态
+cat > /tmp/test-sla/prev-run-failed.json <<'EOF'
+{
+  "run_id": "12346",
+  "timestamp": "2026-10-15T04:00:00Z",
+  "latency_sla_passed": false
+}
+EOF
+
+cd /tmp/test-sla
+git checkout data
+cp prev-run-failed.json data/LAST_RUN.json
+git add data/LAST_RUN.json
+git commit -m "Previous run failed latency"
+
+# 运行验证（应该 FAIL 并 exit 1）
+PYTHONPATH=src python -m news_archive.validate \
+  --db /tmp/test-sla/test.sqlite3 \
+  --output-meta /tmp/test-sla/validation-meta.json
+
+echo "Exit code: $?"  # 应该是 1（连续失败）
+```
+
+### CI 中观察
+
+1. 手动触发 workflow 两次，故意让某个源延迟 >4h（可临时修改代码模拟）
+2. 第一次：应该看到 `⚠ WARN: ... Single-round violation (not consecutive)`，job 通过（绿灯）
+3. 第二次：应该看到 `FAIL: TWO CONSECUTIVE ROUNDS exceeded latency SLA`，job 失败（红灯）
+4. 检查 `data` 分支的 `LAST_RUN.json`，确认两次都记录了 `latency_sla_passed: false`
+5. 第三次：如果 latency 恢复正常，应该通过并重置连续计数
+
+---
+
 ## 未来改进（P1/P2）
 
-- [ ] **连续两轮超时 → 红**：持久化前轮时效统计到 artifact，实现更严格 SLA
+- [x] **连续两轮超时 → 红**：通过 `data/LAST_RUN.json` 持久化前轮时效统计，已实现
 - [ ] **逐源时效监控**：按源拆分时效检查，精准定位慢源
 - [ ] **自动降级**：连续失败的源自动标记为 `degraded`，不阻塞整体流水线
 - [ ] **Slack/邮件告警**：失败时发送通知

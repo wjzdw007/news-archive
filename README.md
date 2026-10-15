@@ -98,12 +98,15 @@ python -m news_archive --db data/archive.sqlite3 --export-jsonl data/archive.jso
 
 - Workflow: `.github/workflows/daily-fetch.yml`
 - 定时：`0 */4 * * *`（UTC，每 4 小时），也可手动 `workflow_dispatch`
-- P0 时效：`published_at → fetched_at` ≤ 4h（允许调度漂移；连续两轮超时再红）
+- P0 时效：`published_at → fetched_at` ≤ 4h（单轮超时→警告；**连续两轮超时→红灯**）
+  - 详见 [docs/SLA.md](docs/SLA.md)
 - 聚合/专题：P1 `topic_id` 弱聚合 → P2 综述；本轮不做
 - 注：讨论里的 `*/6 * * * *` 是每 6 分钟，按「4 小时一轮」落地为 `0 */4 * * *`
-- 失败即红：任一源报错或入库后库为空 → job 失败
-- 数据持久化：
-  - **`data` 分支**：存放跨运行持久化的 `archive.sqlite3`（增量去重的关键）
+- 失败条件：任一源报错、入库后库为空、或连续两轮 latency 超时 → job 失败
+- **数据持久化与 SLA 解耦**：
+  - Persist 步骤只依赖 fetch 成功，**不受 latency 验证失败影响**
+  - 即使 latency 连续失败（红灯），增量数据仍会写回 `data` 分支（丢数据不可接受）
+  - **`data` 分支**：存放跨运行持久化的 `archive.sqlite3` 和 `LAST_RUN.json`（含 `latency_sla_passed` 状态用于连续检测）
   - **Artifacts**：每次运行额外上传 `data/archive.sqlite3` + `archive.jsonl` + `run-stats.json`（保留 90 天备份）
 - 权限：workflow 需要 `contents: write` 以便 push 到 `data` 分支
 - 仓库默认 **private**（`content_snapshot` 有版权风险）；要开源再单独评估可公开字段

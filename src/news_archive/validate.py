@@ -151,24 +151,32 @@ def check_source_incremental(
 def check_fetch_latency(
     conn: sqlite3.Connection,
     run_stats: dict[str, Any] | None = None,
-) -> tuple[bool, str]:
+    previous_run_meta: dict[str, Any] | None = None,
+) -> tuple[bool, str, bool]:
     """Check fetch latency SLA: published_at → fetched_at should be ≤ 4 hours.
     
     Strategy: Check only articles inserted during THIS run (incremental inserts).
     Identifies this run's articles by finding the most recent fetched_at timestamp.
     Fail if >10% of articles with parseable published_at exceed 4h latency.
     
+    Consecutive failure policy:
+    - Single round or small violation count → WARN (soft), return True
+    - TWO consecutive rounds both failed → FAIL (hard), return False
+    
     Rationale: First-run backfills of old stock items (e.g., week-old RSS feeds)
     would show high latency by design. We only measure freshness on new incremental
     content, not historical imports.
     
-    Returns (passed, message).
+    Returns (passed, message, sla_violated).
+    - passed: whether to pass this check (may be True even if SLA violated, for single round)
+    - message: human-readable result
+    - sla_violated: whether >10% threshold was actually exceeded (for metadata tracking)
     """
     # Determine if this run inserted any articles
     inserted = run_stats.get("inserted", 0) if run_stats else 0
     
     if inserted == 0:
-        return True, "PASS: No new articles inserted this run (nothing to check)"
+        return True, "PASS: No new articles inserted this run (nothing to check)", False
     
     # Find the most recent fetched_at timestamp (this run's batch)
     latest_fetch_cursor = conn.execute(
@@ -177,7 +185,7 @@ def check_fetch_latency(
     latest_fetch_at = latest_fetch_cursor.fetchone()[0]
     
     if not latest_fetch_at:
-        return True, "PASS: No articles in database"
+        return True, "PASS: No articles in database", False
     
     # Query articles from this run's batch only
     cursor = conn.execute(
@@ -192,7 +200,7 @@ def check_fetch_latency(
     rows = cursor.fetchall()
     
     if not rows:
-        return True, "PASS: No articles from this run to check"
+        return True, "PASS: No articles from this run to check", False
     
     violations = []
     skipped_no_published = 0
@@ -233,11 +241,11 @@ def check_fetch_latency(
             skip_msg.append(f"{skipped_parse_error} parse errors")
         if skipped_old:
             skip_msg.append(f"{skipped_old} >24h old")
-        return True, f"PASS: No checkable articles this run ({', '.join(skip_msg)})"
+        return True, f"PASS: No checkable articles this run ({', '.join(skip_msg)})", False
     
     violation_rate = (len(violations) / checked) * 100
     
-    # Fail if >10% exceed SLA
+    # Check if >10% exceed SLA
     if violation_rate > 10.0:
         # Show worst 3 violations
         worst = sorted(violations, key=lambda x: x[2], reverse=True)[:3]
@@ -245,11 +253,33 @@ def check_fetch_latency(
             f"{pub} → {fetch} ({lat:.1f}h) [{url}]"
             for pub, fetch, lat, url in worst
         ]
-        msg = (
-            f"FAIL: {len(violations)}/{checked} ({violation_rate:.1f}%) articles "
-            f"from this run exceed 4h SLA. Examples:\n  " + "\n  ".join(examples)
+        
+        # Check consecutive failure: did previous run also fail latency?
+        prev_failed = (
+            previous_run_meta 
+            and previous_run_meta.get("latency_sla_passed") is False
         )
-        return False, msg
+        
+        if prev_failed:
+            # TWO consecutive rounds failed → FAIL (hard)
+            msg = (
+                f"FAIL: TWO CONSECUTIVE ROUNDS exceeded latency SLA.\n"
+                f"  This run: {len(violations)}/{checked} ({violation_rate:.1f}%) articles exceed 4h.\n"
+                f"  Previous run also failed latency check.\n"
+                f"  Examples from this run:\n    " + "\n    ".join(examples)
+            )
+            return False, msg, True  # Failed, and SLA violated
+        else:
+            # Single round failure → WARN (soft), do not fail
+            msg = (
+                f"WARN: {len(violations)}/{checked} ({violation_rate:.1f}%) articles "
+                f"from this run exceed 4h SLA. Examples:\n  " + "\n  ".join(examples) +
+                f"\n  ⚠ Single-round violation (not consecutive) - NOT failing the run."
+            )
+            print(f"\n{'='*60}", file=sys.stderr)
+            print("WARNING: Latency SLA violated but NOT failing (single round)", file=sys.stderr)
+            print(f"{'='*60}\n", file=sys.stderr)
+            return True, msg, True  # Soft pass, but SLA violated
     
     msg = (
         f"PASS: {checked - len(violations)}/{checked} articles within 4h SLA. "
@@ -265,16 +295,41 @@ def check_fetch_latency(
     if skip_details:
         msg += f" Skipped: {', '.join(skip_details)}."
     
-    return True, msg
+    return True, msg, False  # Passed, SLA not violated
+
+
+def load_previous_run_meta() -> dict[str, Any] | None:
+    """Try to load previous run metadata from data branch LAST_RUN.json.
+    
+    Returns None if not available or parse fails.
+    """
+    try:
+        # Try git show to read from data branch without checking it out
+        import subprocess
+        result = subprocess.run(
+            ["git", "show", "data:data/LAST_RUN.json"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        if result.returncode == 0:
+            return json.loads(result.stdout)
+    except Exception as e:
+        print(f"Info: Could not load previous run meta from data branch: {e}", file=sys.stderr)
+    return None
 
 
 def validate(
     db_path: Path,
     stats_path: Path | None = None,
+    output_meta_path: Path | None = None,
 ) -> int:
     """Run all P0 acceptance checks.
     
     Returns 0 on success, 1 on failure.
+    
+    If output_meta_path is provided, writes validation metadata JSON including
+    latency_sla_passed for use by next run's consecutive check.
     """
     if not db_path.exists():
         print("FAIL: Database file does not exist:", db_path, file=sys.stderr)
@@ -289,19 +344,24 @@ def validate(
         except (json.JSONDecodeError, OSError) as e:
             print(f"Warning: Could not parse stats file: {e}", file=sys.stderr)
     
-    checks = [
+    # Load previous run metadata for consecutive latency check
+    previous_run_meta = load_previous_run_meta()
+    
+    # Run checks: regular checks return (passed, message), latency returns (passed, message, sla_violated)
+    regular_checks = [
         ("Duplicate URLs", lambda: check_duplicate_urls(conn)),
         ("Required Fields", lambda: check_required_fields(conn)),
         ("Source Incremental", lambda: check_source_incremental(conn, run_stats)),
-        ("Fetch Latency SLA", lambda: check_fetch_latency(conn, run_stats)),
     ]
     
     results = []
     all_passed = True
+    latency_sla_passed = True  # Track for output meta
     
     print("=== P0 Acceptance Validation ===\n")
     
-    for name, check_fn in checks:
+    # Run regular checks
+    for name, check_fn in regular_checks:
         passed, message = check_fn()
         results.append((name, passed, message))
         all_passed = all_passed and passed
@@ -310,7 +370,29 @@ def validate(
         print(f"[{status}] {name}")
         print(f"    {message}\n")
     
+    # Run latency check (returns 3-tuple)
+    latency_passed, latency_message, sla_violated = check_fetch_latency(conn, run_stats, previous_run_meta)
+    results.append(("Fetch Latency SLA", latency_passed, latency_message))
+    all_passed = all_passed and latency_passed
+    latency_sla_passed = not sla_violated  # True if SLA not violated
+    
+    status = "✓" if latency_passed else "✗"
+    print(f"[{status}] Fetch Latency SLA")
+    print(f"    {latency_message}\n")
+    
     conn.close()
+    
+    # Write validation metadata for next run's consecutive check
+    if output_meta_path:
+        try:
+            meta = {
+                "latency_sla_passed": latency_sla_passed,
+                "all_checks_passed": all_passed,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            }
+            output_meta_path.write_text(json.dumps(meta, indent=2))
+        except Exception as e:
+            print(f"Warning: Could not write validation meta: {e}", file=sys.stderr)
     
     if all_passed:
         print("=== All P0 acceptance checks PASSED ===")
@@ -338,9 +420,14 @@ def main(argv: list[str] | None = None) -> int:
         default=Path("data/run-stats.json"),
         help="Optional run stats JSON for source checks",
     )
+    parser.add_argument(
+        "--output-meta",
+        type=Path,
+        help="Output validation metadata JSON (for consecutive latency check)",
+    )
     
     args = parser.parse_args(argv)
-    return validate(args.db, args.stats)
+    return validate(args.db, args.stats, args.output_meta)
 
 
 if __name__ == "__main__":
