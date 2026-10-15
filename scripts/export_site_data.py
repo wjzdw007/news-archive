@@ -2,7 +2,7 @@
 """Export SQLite archive to JSON for static site consumption.
 
 Reads from archive.sqlite3 and generates:
-- site/data/articles.json (sorted by fetched_at desc)
+- site/data/articles.json (sorted by published_at desc, fallback fetched_at)
 - site/data/topics.json (only topics with status=ok briefs)
 - site/data/x_posts.json (display fields only; no post_id / cookies / headers)
 
@@ -43,6 +43,21 @@ _X_POST_EXPORT_FIELDS = (
 _TAG_RE = re.compile(r"<[^>]+>", re.DOTALL)
 
 
+def article_list_time(article: dict) -> str:
+    """News list SORT and displayed time: published_at, else fetched_at.
+
+    Missing / null / empty published_at falls back to fetched_at so a
+    late-fetched old article does not jump to the top of the public list.
+    """
+    published = article.get("published_at")
+    if isinstance(published, str) and published.strip():
+        return published.strip()
+    fetched = article.get("fetched_at")
+    if isinstance(fetched, str):
+        return fetched.strip()
+    return fetched or ""
+
+
 def strip_html(text: str | None) -> str | None:
     """Unescape entities and strip tags for list/detail summary text."""
     if text is None:
@@ -54,7 +69,7 @@ def strip_html(text: str | None) -> str | None:
 
 
 def export_articles(conn: sqlite3.Connection, output_path: Path) -> int:
-    """Export articles sorted by fetched_at desc.
+    """Export articles sorted by published_at desc (fallback fetched_at).
 
     Omits content_snapshot (copyright / public-repo product lock).
     Strips HTML from summary so list/detail never show literal <p> tags.
@@ -65,7 +80,6 @@ def export_articles(conn: sqlite3.Connection, output_path: Path) -> int:
         SELECT url, title, published_at, summary, source, fetched_at,
                status, topic_id
         FROM articles
-        ORDER BY fetched_at DESC
         """
     )
     articles = []
@@ -73,6 +87,8 @@ def export_articles(conn: sqlite3.Connection, output_path: Path) -> int:
         article = {field: row[field] for field in _ARTICLE_EXPORT_FIELDS}
         article["summary"] = strip_html(article.get("summary"))
         articles.append(article)
+
+    articles.sort(key=article_list_time, reverse=True)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("w", encoding="utf-8") as f:
