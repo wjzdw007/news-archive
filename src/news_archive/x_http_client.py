@@ -85,7 +85,7 @@ def _make_session(
 
 def _fetch_home_timeline_raw(
     session: Any,
-    timeline_type: str = "recommended",
+    timeline_type: str = "following",
     max_results: int = 20,
 ) -> dict[str, Any]:
     """Fetch home timeline via X GraphQL API (x-crawler pattern).
@@ -298,7 +298,7 @@ def fetch_news_accounts(
     ct0: str | None = None,
     bearer_token: str | None = None,
     csrf_token: str | None = None,
-    timeline_type: str = "recommended",
+    timeline_type: str = "following",
     max_results: int = 40,
 ) -> list[dict[str, Any]]:
     """Fetch recent tweets from home timeline, filter to target accounts.
@@ -312,7 +312,7 @@ def fetch_news_accounts(
         ct0: X ct0 cookie (env: X_CT0_TOKEN, required)
         bearer_token: Authorization header (env: X_BEARER_TOKEN, optional but recommended)
         csrf_token: X-Csrf-Token header (env: X_CSRF_TOKEN, optional, defaults to ct0)
-        timeline_type: "recommended" or "following" (default: "recommended")
+        timeline_type: "recommended" or "following" (default: "following")
         max_results: Max tweets to fetch before filtering (default 40 to get enough after filter)
     
     Returns:
@@ -383,7 +383,7 @@ def create_live_fetcher(target_accounts: list[str]) -> Any:
         # Return only posts from this specific username
         all_posts = fetch_news_accounts(
             target_accounts=target_accounts,
-            timeline_type="recommended",
+            timeline_type="following",
             max_results=40,  # Fetch enough to get posts from all accounts
         )
         # Filter to this specific username for fetch_account_posts loop
