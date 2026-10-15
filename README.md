@@ -37,9 +37,15 @@ python -m news_archive --db data/archive.sqlite3 --export-jsonl data/archive.jso
 
 ## 验收（测试侧）
 
-- 每日各源是否有增量
-- 重复率（同 URL 不应二次插入）
-- 字段空值率（尤其 `title` / `url`）
+**P0 验收标准**已集成到 CI 流水线，详见 [TESTING.md](TESTING.md)：
+
+1. **增量抓取**：各源产出内容，无源失败
+2. **URL 去重**：数据库中无重复 URL
+3. **字段完整性**：`title`/`url`/`source`/`fetched_at`/`status` 非空；`content_snapshot` 或 `summary` 至少一个有值
+4. **抓取时效 SLA**：`published_at → fetched_at` ≤ 4h（允许 ≤10% 超时）
+5. **高频去重**：连续两次抓取不产生重复
+
+任一检查失败 → **workflow 失败（红）**
 
 ## GitHub Actions（P0）
 
