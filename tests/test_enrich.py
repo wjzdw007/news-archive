@@ -18,7 +18,12 @@ from unittest.mock import patch
 
 import httpx
 
+from datetime import datetime, timedelta, timezone
+
 from news_archive.enrich import (
+    CONSECUTIVE_FAIL_LIMIT,
+    COOLDOWN_HOURS,
+    MAX_HTTP_PER_RUN,
     MIN_USABLE_SUMMARY,
     PUBLIC_SUMMARY_MAX,
     derive_public_summary,
@@ -26,7 +31,9 @@ from news_archive.enrich import (
     html_to_text,
     is_usable_snapshot,
     needs_summary_fill,
+    render_job_summary,
     should_fetch_page,
+    write_job_summary,
 )
 from news_archive.schema import Article
 from news_archive.store import Store
@@ -79,6 +86,7 @@ def _article(
     snapshot: str | None = None,
     status: str = "active",
     source: str = "people_finance",
+    fetched_at: str = "2026-10-15T10:00:00Z",
 ) -> Article:
     return Article(
         url=url,
@@ -86,7 +94,7 @@ def _article(
         published_at="2026-10-15T08:00:00Z",
         summary=summary,
         source=source,
-        fetched_at="2026-10-15T10:00:00Z",
+        fetched_at=fetched_at,
         content_snapshot=snapshot,
         status=status,  # type: ignore[arg-type]
     )
@@ -510,6 +518,325 @@ def test_cli_enrich_exception_does_not_fail_job():
         assert rc == 0
 
 
+def _nyt_urls(n: int) -> list[str]:
+    return [f"https://www.nytimes.com/2026/10/16/world/story-{i}.html" for i in range(n)]
+
+
+def _people_urls(n: int) -> list[str]:
+    return [
+        f"https://finance.people.com.cn/n1/2026/1016/c1004-{40400000 + i}.html"
+        for i in range(n)
+    ]
+
+
+def test_nyt_three_403s_stops_source_others_still_fetch():
+    """NYT 403 ×3 in one run → stop NYT; other sources still HTTP; total ≤40."""
+    assert MAX_HTTP_PER_RUN == 40
+    nyt_urls = _nyt_urls(8)
+    people_urls = _people_urls(3)
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "archive.sqlite3"
+        store = Store(db_path)
+        # Newer fetched_at so NYT is processed first (the live budget-burn case).
+        for url in nyt_urls:
+            store.upsert(
+                _article(
+                    url,
+                    summary=_long_summary(),
+                    source="nyt_world",
+                    fetched_at="2026-10-16T12:00:00Z",
+                )
+            )
+        for url in people_urls:
+            store.upsert(
+                _article(
+                    url,
+                    summary=None,
+                    source="people_finance",
+                    fetched_at="2026-10-16T10:00:00Z",
+                )
+            )
+        mapping: dict[str, _FakeResponse | Exception] = {
+            url: _FakeResponse(403, "Forbidden") for url in nyt_urls
+        }
+        mapping.update({url: _FakeResponse(200, PEOPLE_HTML) for url in people_urls})
+        client = _RecordingClient(mapping)
+
+        stats = enrich_store(store, client=client, sleep_fn=lambda _s: None)
+
+        nyt_calls = [u for u in client.calls if u in nyt_urls]
+        people_calls = [u for u in client.calls if u in people_urls]
+        assert len(nyt_calls) == CONSECUTIVE_FAIL_LIMIT
+        assert len(people_calls) == len(people_urls)
+        assert len(client.calls) <= MAX_HTTP_PER_RUN
+        assert stats["http_used"] == CONSECUTIVE_FAIL_LIMIT + len(people_urls)
+        assert stats["soft_failed"] == CONSECUTIVE_FAIL_LIMIT
+        assert stats["fetched"] == len(people_urls)
+        assert stats["by_source"]["nyt_world"]["stopped"] is True
+        assert stats["by_source"]["nyt_world"]["soft_fail"] == CONSECUTIVE_FAIL_LIMIT
+        assert stats["by_source"]["nyt_world"]["success"] == 0
+        assert stats["by_source"]["people_finance"]["stopped"] is False
+        assert stats["by_source"]["people_finance"]["success"] == len(people_urls)
+        assert stats["coverage"]["usable_snapshots"] == len(people_urls)
+        assert stats["coverage"]["active_articles"] == len(nyt_urls) + len(people_urls)
+
+        backoff = store.get_enrich_backoff()
+        assert "nyt_world" in backoff
+        assert "people_finance" not in backoff
+        for url in nyt_urls:
+            assert not store.get_article(url)["content_snapshot"]
+        for url in people_urls:
+            assert store.get_article(url)["content_snapshot"]
+
+        out_path = Path(tmpdir) / "articles.json"
+        exported = _export_articles_json(db_path, out_path)
+        raw = out_path.read_text(encoding="utf-8")
+        assert "content_snapshot" not in raw
+        assert all("content_snapshot" not in item for item in exported)
+        store.close()
+
+
+def test_backoff_cooldown_persists_six_hours_then_expires():
+    """Tripped source stays dequeued for 6h (sqlite run state), then retries."""
+    nyt_urls = _nyt_urls(4)
+    people_url = _people_urls(1)[0]
+    now = datetime(2026, 10, 16, 4, 0, tzinfo=timezone.utc)
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "archive.sqlite3"
+        store = Store(db_path)
+        for url in nyt_urls:
+            store.upsert(
+                _article(
+                    url,
+                    summary=_long_summary(),
+                    source="nyt_world",
+                    fetched_at="2026-10-16T12:00:00Z",
+                )
+            )
+        store.upsert(
+            _article(
+                people_url,
+                summary=None,
+                source="people_finance",
+                fetched_at="2026-10-16T10:00:00Z",
+            )
+        )
+        mapping: dict[str, _FakeResponse | Exception] = {
+            url: _FakeResponse(403, "Forbidden") for url in nyt_urls
+        }
+        mapping[people_url] = _FakeResponse(200, PEOPLE_HTML)
+        client = _RecordingClient(mapping)
+
+        first = enrich_store(
+            store, client=client, sleep_fn=lambda _s: None, now_fn=lambda: now
+        )
+        assert first["by_source"]["nyt_world"]["stopped"] is True
+        until_raw = store.get_enrich_backoff()["nyt_world"]
+        until = datetime.fromisoformat(until_raw)
+        assert until == now + timedelta(hours=COOLDOWN_HOURS)
+
+        calls_after_first = list(client.calls)
+        second = enrich_store(
+            store, client=client, sleep_fn=lambda _s: None, now_fn=lambda: now
+        )
+        assert client.calls == calls_after_first
+        assert second["by_source"]["nyt_world"]["in_cooldown"] is True
+        assert second["by_source"]["nyt_world"]["success"] == 0
+        assert sum(1 for u in client.calls if u in nyt_urls) == CONSECUTIVE_FAIL_LIMIT
+
+        for url in nyt_urls:
+            mapping[url] = _FakeResponse(200, PEOPLE_HTML)
+        expired = now + timedelta(hours=COOLDOWN_HOURS, seconds=1)
+        third = enrich_store(
+            store, client=client, sleep_fn=lambda _s: None, now_fn=lambda: expired
+        )
+        assert any(u in nyt_urls for u in client.calls[len(calls_after_first) :])
+        assert third["fetched"] >= 1
+        store.close()
+
+
+def test_http_budget_stays_at_40_when_nyt_would_burn_it():
+    """Without backoff NYT would consume all 40; with backoff others still fetch."""
+    nyt_urls = _nyt_urls(45)
+    people_urls = _people_urls(5)
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "archive.sqlite3"
+        store = Store(db_path)
+        for url in nyt_urls:
+            store.upsert(
+                _article(
+                    url,
+                    summary=_long_summary(),
+                    source="nyt_world",
+                    fetched_at="2026-10-16T12:00:00Z",
+                )
+            )
+        for url in people_urls:
+            store.upsert(
+                _article(
+                    url,
+                    summary=None,
+                    source="people_finance",
+                    fetched_at="2026-10-16T10:00:00Z",
+                )
+            )
+        mapping: dict[str, _FakeResponse | Exception] = {
+            url: _FakeResponse(403, "Forbidden") for url in nyt_urls
+        }
+        mapping.update({url: _FakeResponse(200, PEOPLE_HTML) for url in people_urls})
+        client = _RecordingClient(mapping)
+        stats = enrich_store(store, client=client, sleep_fn=lambda _s: None)
+
+        assert len(client.calls) <= MAX_HTTP_PER_RUN
+        assert stats["http_used"] <= MAX_HTTP_PER_RUN
+        nyt_calls = [u for u in client.calls if u in set(nyt_urls)]
+        assert len(nyt_calls) == CONSECUTIVE_FAIL_LIMIT
+        assert set(u for u in client.calls if u in people_urls) == set(people_urls)
+        assert stats["fetched"] == len(people_urls)
+        store.close()
+
+
+def test_mixed_403_429_timeout_trips_backoff():
+    nyt_urls = _nyt_urls(3)
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "archive.sqlite3"
+        store = Store(db_path)
+        for url in nyt_urls:
+            store.upsert(_article(url, summary=_long_summary(), source="nyt_world"))
+        extra = "https://www.nytimes.com/2026/10/16/world/story-extra.html"
+        store.upsert(_article(extra, summary=_long_summary(), source="nyt_world"))
+        client = _RecordingClient(
+            {
+                nyt_urls[0]: _FakeResponse(403, "no"),
+                nyt_urls[1]: _FakeResponse(429, "slow"),
+                nyt_urls[2]: httpx.TimeoutException("timed out"),
+                extra: _FakeResponse(200, PEOPLE_HTML),
+            }
+        )
+        stats = enrich_store(store, client=client, sleep_fn=lambda _s: None)
+        assert extra not in client.calls
+        assert stats["by_source"]["nyt_world"]["stopped"] is True
+        assert extra not in [u for u in client.calls]
+        store.close()
+
+
+def test_job_summary_coverage_board_omits_snapshot_body():
+    """Job Summary has totals + per-source backoff; never leaks snapshot text."""
+    nyt_urls = _nyt_urls(3)
+    people_url = _people_urls(1)[0]
+    secret = "央行发布三季度金融统计数据"
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "archive.sqlite3"
+        store = Store(db_path)
+        for url in nyt_urls:
+            store.upsert(
+                _article(
+                    url,
+                    summary=_long_summary(),
+                    source="nyt_world",
+                    fetched_at="2026-10-16T12:00:00Z",
+                )
+            )
+        store.upsert(
+            _article(
+                people_url,
+                summary=None,
+                source="people_finance",
+                fetched_at="2026-10-16T10:00:00Z",
+            )
+        )
+        mapping: dict[str, _FakeResponse | Exception] = {
+            url: _FakeResponse(403, "Forbidden") for url in nyt_urls
+        }
+        mapping[people_url] = _FakeResponse(200, PEOPLE_HTML)
+        client = _RecordingClient(mapping)
+        stats = enrich_store(store, client=client, sleep_fn=lambda _s: None)
+
+        md = render_job_summary(stats)
+        assert "## Enrich coverage board" in md
+        assert f"**candidates:** {stats['candidates']}" in md
+        assert f"**fetched (ok):** {stats['fetched']}" in md
+        assert f"**soft_failed:** {stats['soft_failed']}" in md
+        assert f"**skipped:** {stats['skipped']}" in md
+        assert "| nyt_world |" in md
+        assert "| people_finance |" in md
+        assert "stopped (backoff)" in md
+        assert "yes" in md
+        assert "usable `content_snapshot`" in md
+        assert f"{stats['coverage']['usable_snapshots']} / {stats['coverage']['active_articles']}" in md
+        assert secret not in md
+        assert "Paywall" not in md
+        assert people_url not in md
+        assert nyt_urls[0] not in md
+
+        summary_path = Path(tmpdir) / "step-summary.md"
+        write_job_summary(stats, path=summary_path)
+        written = summary_path.read_text(encoding="utf-8")
+        assert written in {md, md + "\n"}
+        assert secret not in written
+        index_html = (ROOT / "site" / "index.html").read_text(encoding="utf-8")
+        app_js = (ROOT / "site" / "app.js").read_text(encoding="utf-8")
+        assert 'id="stats-tab"' not in index_html
+        assert "/stats" not in app_js
+
+        out_path = Path(tmpdir) / "articles.json"
+        exported = _export_articles_json(db_path, out_path)
+        raw = out_path.read_text(encoding="utf-8")
+        assert "content_snapshot" not in raw
+        assert all("content_snapshot" not in item for item in exported)
+        store.close()
+
+
+def test_cli_writes_job_summary_and_stays_green_on_nyt_backoff():
+    nyt_urls = _nyt_urls(3)
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "archive.sqlite3"
+        summary_path = Path(tmpdir) / "GITHUB_STEP_SUMMARY.md"
+        store = Store(db_path)
+        for url in nyt_urls:
+            store.upsert(_article(url, summary=_long_summary(), source="nyt_world"))
+        store.upsert(_article(PEOPLE_URL, title="央行", summary=None))
+        store.close()
+
+        client = _RecordingClient(
+            {
+                **{url: _FakeResponse(403, "Forbidden") for url in nyt_urls},
+                PEOPLE_URL: _FakeResponse(200, PEOPLE_HTML),
+            }
+        )
+
+        def fake_fetch_all(_sources):
+            return {
+                "nyt_world": [
+                    _article(url, summary=_long_summary(), source="nyt_world")
+                    for url in nyt_urls
+                ],
+                "people_finance": [
+                    _article(PEOPLE_URL, title="央行", summary=None)
+                ],
+            }
+
+        with (
+            patch("news_archive.cli.fetch_all", side_effect=fake_fetch_all),
+            patch("news_archive.enrich.httpx.Client", return_value=client),
+            patch("news_archive.enrich.ENRICH_DELAY_S", 0),
+            patch.dict("os.environ", {"GITHUB_STEP_SUMMARY": str(summary_path)}, clear=False),
+        ):
+            from news_archive.cli import main
+
+            rc = main(["--db", str(db_path), "--json"])
+
+        assert rc == 0
+        assert summary_path.exists()
+        body = summary_path.read_text(encoding="utf-8")
+        assert "Enrich coverage board" in body
+        assert "nyt_world" in body
+        assert "stopped (backoff)" in body
+        store = Store(db_path)
+        assert store.get_enrich_backoff().get("nyt_world")
+        store.close()
+
+
 if __name__ == "__main__":
     test_html_to_text_strips_people_cn_chrome()
     test_needs_summary_fill_triggers()
@@ -526,4 +853,10 @@ if __name__ == "__main__":
     test_max_http_stockpiles_across_runs()
     test_derive_public_summary_prefers_snapshot()
     test_cli_enrich_exception_does_not_fail_job()
+    test_nyt_three_403s_stops_source_others_still_fetch()
+    test_backoff_cooldown_persists_six_hours_then_expires()
+    test_http_budget_stays_at_40_when_nyt_would_burn_it()
+    test_mixed_403_429_timeout_trips_backoff()
+    test_job_summary_coverage_board_omits_snapshot_body()
+    test_cli_writes_job_summary_and_stays_green_on_nyt_backoff()
     print("✓ All enrich tests passed")

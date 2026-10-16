@@ -13,7 +13,7 @@ from .briefs import (
     topics_needing_briefs,
 )
 from .clustering import assign_topic_ids
-from .enrich import enrich_store
+from .enrich import enrich_store, write_job_summary
 from .fetch import fetch_all
 from .sources import SOURCES
 from .store import Store
@@ -64,6 +64,13 @@ def main(argv: list[str] | None = None) -> int:
     # it when empty/<80. Soft-fail — never fail the RSS job.
     try:
         stats["enrich"] = enrich_store(store)
+        try:
+            write_job_summary(stats["enrich"])  # type: ignore[arg-type]
+        except Exception as summary_exc:  # noqa: BLE001 — never fail fetch
+            print(
+                f"enrich summary soft-fail: {type(summary_exc).__name__}",
+                file=sys.stderr,
+            )
     except Exception as exc:  # noqa: BLE001 — isolate from persist / clustering
         stats["enrich_error"] = type(exc).__name__
         print(f"enrich soft-fail (job continues): {type(exc).__name__}", file=sys.stderr)

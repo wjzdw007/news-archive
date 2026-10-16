@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from datetime import datetime, timezone
 from pathlib import Path
 
 from .schema import Article
@@ -48,6 +49,12 @@ CREATE TABLE IF NOT EXISTS daily_briefs (
     sections_json TEXT NOT NULL,
     error TEXT,
     input_fingerprint TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS enrich_backoff (
+    source TEXT PRIMARY KEY,
+    until_utc TEXT NOT NULL,
+    updated_at TEXT NOT NULL
 );
 """
 
@@ -109,17 +116,48 @@ class Store:
                 "ALTER TABLE daily_briefs ADD COLUMN input_fingerprint "
                 "TEXT NOT NULL DEFAULT ''"
             )
+        self._conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS enrich_backoff (
+                source TEXT PRIMARY KEY,
+                until_utc TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+            """
+        )
 
     def get_articles_for_enrich(self) -> list[dict]:
         """Private rows for archive-first snapshot enrich (includes content_snapshot)."""
         rows = self._conn.execute(
             """
-            SELECT url, title, summary, content_snapshot, status
+            SELECT url, title, summary, content_snapshot, status, source
             FROM articles
             ORDER BY fetched_at DESC, url
             """
         ).fetchall()
         return [dict(row) for row in rows]
+
+    def get_enrich_backoff(self) -> dict[str, str]:
+        """Persisted per-source enrich cooldown: source -> until_utc ISO string."""
+        rows = self._conn.execute(
+            "SELECT source, until_utc FROM enrich_backoff"
+        ).fetchall()
+        return {row["source"]: row["until_utc"] for row in rows}
+
+    def upsert_enrich_backoff(self, source: str, until_utc: str) -> None:
+        """Record a 6h (or caller-chosen) enrich cooldown for `source`."""
+        now = datetime.now(timezone.utc).isoformat()
+        self._conn.execute(
+            """
+            INSERT INTO enrich_backoff (source, until_utc, updated_at)
+            VALUES (?, ?, ?)
+            ON CONFLICT(source) DO UPDATE SET
+                until_utc = excluded.until_utc,
+                updated_at = excluded.updated_at
+            """,
+            (source, until_utc, now),
+        )
+        self._conn.commit()
 
     def get_article(self, url: str) -> dict | None:
         """Single private row (includes content_snapshot). Tests / enrich only."""

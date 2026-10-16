@@ -57,6 +57,9 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p data
+          # CLI writes the enrich coverage board to GITHUB_STEP_SUMMARY
+          # (totals / per-source backoff / private snapshot coverage).
+          # Public Pages/JSON never get content_snapshot or a /stats page.
           PYTHONPATH=src python -m news_archive \
             --db data/archive.sqlite3 \
             --export-jsonl data/archive.jsonl \
