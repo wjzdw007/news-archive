@@ -958,7 +958,10 @@ def test_x_links_cap_eight_and_bullets_cap_three():
             "WSJ",
             "BBCWorld",
             "NPR",
-        ][i % 10]
+            "nytimes",
+            "TheEconomist",
+            "SCMPNews",
+        ][i % 13]
         posts.append(
             _x(
                 author=author,

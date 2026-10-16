@@ -16,4 +16,7 @@ X_NEWS_ACCOUNTS: list[str] = [
     "WSJ",
     "BBCWorld",
     "NPR",
+    "nytimes",
+    "TheEconomist",
+    "SCMPNews",
 ]
