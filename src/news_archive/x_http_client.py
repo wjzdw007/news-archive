@@ -3,7 +3,7 @@
 Strictly follows x-crawler patterns:
 - HomeLatestTimeline GraphQL endpoint (query id from x-crawler)
 - Auth via cookies (auth_token, ct0) + headers (Authorization Bearer, X-Csrf-Token)
-- Fetch home timeline, then filter to target accounts (BBCChinese, Reuters, FT, TechCrunch)
+- Fetch home timeline, then filter to target accounts (X_NEWS_ACCOUNTS: BBCChinese, Reuters, FT, TechCrunch, Tesla, elonmusk, AP)
 - Soft-fails on missing credentials or network errors.
 
 Reference: https://github.com/wjzdw007/x-crawler (crawler.py)
@@ -319,7 +319,7 @@ def fetch_news_accounts(
     """Fetch recent tweets from home timeline, filter to target accounts.
     
     This is the x-crawler pattern: fetch HomeLatestTimeline/HomeTimeline,
-    then filter to the accounts we care about (BBCChinese, Reuters, FT, TechCrunch).
+    then filter to the accounts we care about (X_NEWS_ACCOUNTS).
     
     Args:
         target_accounts: List of usernames to filter (e.g. ["BBCChinese", "Reuters"])

@@ -81,7 +81,16 @@ def test_5_no_keyword_search_in_news_config():
     from news_archive import x_config
 
     assert hasattr(x_config, "X_NEWS_ACCOUNTS")
-    assert "BBCChinese" in x_config.X_NEWS_ACCOUNTS
+    for handle in (
+        "BBCChinese",
+        "Reuters",
+        "FT",
+        "TechCrunch",
+        "Tesla",
+        "elonmusk",
+        "AP",
+    ):
+        assert handle in x_config.X_NEWS_ACCOUNTS
     # guard: no queries list for full-site search in this slice
     assert not hasattr(x_config, "X_QUERIES") or not getattr(x_config, "X_QUERIES")
     print("✓ 5 account-only config")
