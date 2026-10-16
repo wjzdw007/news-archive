@@ -12,11 +12,14 @@
     "NPR",
     "nytimes",
     "TheEconomist",
-    "SCMPNews"
+    "SCMPNews",
+    "Bloomberg",
+    "WIRED",
+    "AFP"
   ],
   "mode": "live",
-  "inserted": 7,
+  "inserted": 5,
   "gone": 0,
-  "seen": 8,
+  "seen": 6,
   "status": "ok"
 }
