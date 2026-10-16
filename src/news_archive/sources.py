@@ -198,6 +198,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="economist_china",
+        name="The Economist China",
+        feed_url="https://www.economist.com/china/rss.xml",
+        category="国际·中国",
+        role="primary",
+    ),
+    Source(
+        id="bbc_asia",
+        name="BBC Asia",
+        feed_url="https://feeds.bbci.co.uk/news/world/asia/rss.xml",
+        category="国际·亚太",
+        role="primary",
+    ),
+    Source(
+        id="verge",
+        name="The Verge",
+        feed_url="https://www.theverge.com/rss/index.xml",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
