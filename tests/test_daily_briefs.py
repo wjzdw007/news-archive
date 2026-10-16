@@ -947,7 +947,18 @@ def test_rss_sections_remain_when_x_present():
 def test_x_links_cap_eight_and_bullets_cap_three():
     posts = []
     for i in range(10):
-        author = ["FT", "Reuters", "BBCChinese", "TechCrunch", "Tesla", "elonmusk", "AP"][i % 7]
+        author = [
+            "FT",
+            "Reuters",
+            "BBCChinese",
+            "TechCrunch",
+            "Tesla",
+            "elonmusk",
+            "AP",
+            "WSJ",
+            "BBCWorld",
+            "NPR",
+        ][i % 10]
         posts.append(
             _x(
                 author=author,
