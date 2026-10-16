@@ -4,9 +4,7 @@
 name: kick-daily-fetch
 
 on:
-  push:
-    branches:
-      - cursor/dispatch-daily-fetch-dbd6
+  # Push trigger removed so later helper commits do not re-dispatch daily-fetch.
   workflow_dispatch:
 
 permissions:

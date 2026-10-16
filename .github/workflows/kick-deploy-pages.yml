@@ -1,0 +1,26 @@
+# One-shot helper: dispatch deploy-pages on main after daily-fetch.
+# Cloud Agent tokens cannot workflow_dispatch (403, needs actions:write).
+name: kick-deploy-pages
+
+on:
+  push:
+    branches:
+      - cursor/dispatch-daily-fetch-dbd6
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Dispatch deploy-pages on main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh workflow run deploy-pages.yml --repo "${GITHUB_REPOSITORY}" --ref main
+          echo "Dispatched deploy-pages.yml on main"
