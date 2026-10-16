@@ -3,7 +3,7 @@
 Strictly follows x-crawler patterns:
 - HomeLatestTimeline GraphQL endpoint (query id from x-crawler)
 - Auth via cookies (auth_token, ct0) + headers (Authorization Bearer, X-Csrf-Token)
-- Fetch home timeline, then filter to target accounts (X_NEWS_ACCOUNTS: BBCChinese, Reuters, FT, TechCrunch, Tesla, elonmusk, AP, WSJ, BBCWorld, NPR, nytimes, TheEconomist, SCMPNews, Bloomberg, WIRED, AFP, CNBC, AJEnglish, Nature)
+- Fetch home timeline, then filter to target accounts (X_NEWS_ACCOUNTS: BBCChinese, Reuters, FT, TechCrunch, Tesla, elonmusk, AP, WSJ, BBCWorld, NPR, nytimes, TheEconomist, SCMPNews, Bloomberg, WIRED, AFP, CNBC, AJEnglish, Nature, SkyNews, ABC, CBSNews)
 - Soft-fails on missing credentials or network errors.
 
 Reference: https://github.com/wjzdw007/x-crawler (crawler.py)

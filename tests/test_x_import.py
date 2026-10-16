@@ -36,6 +36,9 @@ _WHITELIST_ACCOUNTS = [
     "CNBC",
     "AJEnglish",
     "Nature",
+    "SkyNews",
+    "ABC",
+    "CBSNews",
 ]
 
 
@@ -57,7 +60,7 @@ def test_import_whitelist_accounts_nonempty_snapshot():
         _write_jsonl(jl, rows)
         store = XStore(db)
         stats = import_jsonl(store, jl)
-        assert stats["inserted"] == 19
+        assert stats["inserted"] == 22
         for author in _WHITELIST_ACCOUNTS:
             row = store.get(f"id-{author}-1")
             assert row and row["text_snapshot"]
