@@ -233,6 +233,13 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="japan_times",
+        name="Japan Times",
+        feed_url="https://www.japantimes.co.jp/feed/",
+        category="国际·亚太",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
