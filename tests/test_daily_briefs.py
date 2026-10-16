@@ -967,7 +967,10 @@ def test_x_links_cap_eight_and_bullets_cap_three():
             "CNBC",
             "AJEnglish",
             "Nature",
-        ][i % 19]
+            "SkyNews",
+            "ABC",
+            "CBSNews",
+        ][i % 22]
         posts.append(
             _x(
                 author=author,
