@@ -93,6 +93,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="scmp",
+        name="SCMP",
+        feed_url="https://www.scmp.com/rss/2/feed",
+        category="国际·亚太",
+        role="primary",
+    ),
+    Source(
+        id="mit_tr",
+        name="MIT Technology Review",
+        feed_url="https://www.technologyreview.com/feed/",
+        category="硬科技",
+        role="primary",
+    ),
+    Source(
+        id="bbc_world",
+        name="BBC World",
+        feed_url="https://feeds.bbci.co.uk/news/world/rss.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
