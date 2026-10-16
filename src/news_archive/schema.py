@@ -7,6 +7,21 @@ from typing import Any, Literal
 
 Status = Literal["active", "gone"]
 
+# Public Pages / validate contract: summary is at most 280 Unicode chars.
+PUBLIC_SUMMARY_MAX = 280
+
+
+def title_as_summary(title: str | None) -> str | None:
+    """Trimmed title used when RSS description is empty. Never exceeds 280 chars."""
+    if title is None:
+        return None
+    text = str(title).strip()
+    if not text:
+        return None
+    if len(text) > PUBLIC_SUMMARY_MAX:
+        return text[:PUBLIC_SUMMARY_MAX]
+    return text
+
 
 @dataclass(frozen=True)
 class Article:
