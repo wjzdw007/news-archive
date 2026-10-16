@@ -13,6 +13,17 @@ import httpx
 from .schema import Article
 from .sources import Source
 
+# Solidot (and some other feeds) 403 bare curl / empty-UA clients. A browser
+# UA is sent for all RSS HTTP so live CI does not come back empty.
+RSS_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/120.0.0.0 Safari/537.36"
+    ),
+    "Accept": "application/rss+xml, application/xml, text/xml, */*",
+}
+
 
 def _to_iso(value: object) -> str | None:
     if value is None:
@@ -55,11 +66,7 @@ def _content_snapshot(entry: dict) -> str | None:
 
 def fetch_source(source: Source, *, timeout: float = 30.0) -> list[Article]:
     fetched_at = datetime.now(timezone.utc).isoformat()
-    headers = {
-        "User-Agent": "news-archive/0.1 (+https://localhost; daily archive bot)",
-        "Accept": "application/rss+xml, application/xml, text/xml, */*",
-    }
-    with httpx.Client(timeout=timeout, follow_redirects=True, headers=headers) as client:
+    with httpx.Client(timeout=timeout, follow_redirects=True, headers=RSS_HEADERS) as client:
         resp = client.get(source.feed_url)
         resp.raise_for_status()
         raw = resp.content

@@ -114,6 +114,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="scmp_asia",
+        name="SCMP Asia",
+        feed_url="https://www.scmp.com/rss/3/feed",
+        category="国际·亚太",
+        role="primary",
+    ),
+    Source(
+        id="solidot",
+        name="Solidot",
+        feed_url="https://www.solidot.org/index.rss",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="bbc_technology",
+        name="BBC Technology",
+        feed_url="https://feeds.bbci.co.uk/news/technology/rss.xml",
+        category="硬科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
