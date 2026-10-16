@@ -964,7 +964,10 @@ def test_x_links_cap_eight_and_bullets_cap_three():
             "Bloomberg",
             "WIRED",
             "AFP",
-        ][i % 16]
+            "CNBC",
+            "AJEnglish",
+            "Nature",
+        ][i % 19]
         posts.append(
             _x(
                 author=author,
