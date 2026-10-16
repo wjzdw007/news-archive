@@ -13,4 +13,7 @@ X_NEWS_ACCOUNTS: list[str] = [
     "Tesla",
     "elonmusk",
     "AP",
+    "WSJ",
+    "BBCWorld",
+    "NPR",
 ]
