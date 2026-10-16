@@ -219,6 +219,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="axios",
+        name="Axios",
+        feed_url="https://api.axios.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="npr_news",
+        name="NPR News",
+        feed_url="https://feeds.npr.org/1001/rss.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="japan_times",
+        name="Japan Times",
+        feed_url="https://www.japantimes.co.jp/feed/",
+        category="国际·亚太",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

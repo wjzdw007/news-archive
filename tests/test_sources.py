@@ -148,7 +148,32 @@ _CHINA_ASIA_TECH_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 29
+# CEO-approved Axios / NPR / Japan Times RSS primaries (batch8).
+# These three are the new adds. Existing nyt_world / guardian_world stay
+# as original P0 ids (distinct from nyt_business / nyt_technology and
+# guardian_technology). axios uses api.axios.com/feed/ (not
+# www.axios.com/feeds/feed.rss). npr_news is an RSS id, distinct from
+# X handle NPR. japan_times is distinct from scmp_asia / bbc_asia.
+# nikkei_asia / sky_world are not registered (Nikkei is title+link only).
+_AXIOS_NPR_JAPAN_PRIMARY = {
+    "axios": {
+        "name": "Axios",
+        "feed_url": "https://api.axios.com/feed/",
+        "category": "综合",
+    },
+    "npr_news": {
+        "name": "NPR News",
+        "feed_url": "https://feeds.npr.org/1001/rss.xml",
+        "category": "综合",
+    },
+    "japan_times": {
+        "name": "Japan Times",
+        "feed_url": "https://www.japantimes.co.jp/feed/",
+        "category": "国际·亚太",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 32
 _EXPECTED_CONTROL_COUNT = 1
 
 
@@ -292,6 +317,43 @@ def test_china_asia_tech_primaries_registered():
     )
     assert by_id["verge"].feed_url != by_id["verge_transport"].feed_url
     for source_id, expected in _CHINA_ASIA_TECH_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_axios_npr_japan_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    # Existing original-P0 ids stay; they are not this batch's adds.
+    assert "nyt_world" in by_id
+    assert "nyt_technology" in by_id
+    assert "nyt_business" in by_id
+    assert by_id["nyt_world"].feed_url == (
+        "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"
+    )
+    assert by_id["nyt_world"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["nyt_world"].feed_url != by_id["nyt_business"].feed_url
+    assert "guardian_world" in by_id
+    assert "guardian_technology" in by_id
+    assert by_id["guardian_world"].feed_url == "https://www.theguardian.com/world/rss"
+    assert by_id["guardian_world"].feed_url != by_id["guardian_technology"].feed_url
+    assert "axios" in by_id
+    assert by_id["axios"].feed_url == "https://api.axios.com/feed/"
+    assert by_id["axios"].feed_url != "https://www.axios.com/feeds/feed.rss"
+    assert "npr_news" in by_id
+    assert by_id["npr_news"].id == "npr_news"
+    assert "scmp_asia" in by_id
+    assert "bbc_asia" in by_id
+    assert "japan_times" in by_id
+    assert by_id["japan_times"].feed_url != by_id["scmp_asia"].feed_url
+    assert by_id["japan_times"].feed_url != by_id["bbc_asia"].feed_url
+    # Title+link-only Nikkei RSS is not registered (would skip-insert under #43).
+    assert "nikkei_asia" not in by_id
+    assert "sky_world" not in by_id
+    for source_id, expected in _AXIOS_NPR_JAPAN_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
         assert source.role == "primary"
@@ -445,6 +507,40 @@ def test_china_asia_tech_feeds_live_http_200():
         assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
 
 
+def test_axios_npr_japan_feeds_live_http_200():
+    """Hit the three new feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _AXIOS_NPR_JAPAN_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(body)
+        items = root.findall(".//item")
+        entries = root.findall(".//{http://www.w3.org/2005/Atom}entry")
+        count = len(items) + len(entries)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        if source_id == "japan_times":
+            # #43 thin-skip: empty description would insert 0. Product lock
+            # requires non-empty RSS description/summary on this feed.
+            nonempty = 0
+            for item in items:
+                desc = (item.findtext("description") or "").strip()
+                if desc:
+                    nonempty += 1
+            assert nonempty == len(items), (
+                f"japan_times empty description: {len(items) - nonempty}/{len(items)}"
+            )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -455,10 +551,12 @@ if __name__ == "__main__":
     test_biz_tech_primaries_registered()
     test_biz_science_tech_primaries_registered()
     test_china_asia_tech_primaries_registered()
+    test_axios_npr_japan_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
     test_biz_tech_feeds_live_http_200()
     test_biz_science_tech_feeds_live_http_200()
     test_china_asia_tech_feeds_live_http_200()
+    test_axios_npr_japan_feeds_live_http_200()
     print("✓ source registry tests PASSED")
