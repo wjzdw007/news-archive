@@ -219,6 +219,13 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="axios",
+        name="Axios",
+        feed_url="https://api.axios.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

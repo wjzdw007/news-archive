@@ -148,7 +148,29 @@ _CHINA_ASIA_TECH_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 29
+# CEO-approved world / Axios RSS primaries (batch8).
+# nyt_world remains distinct from nyt_business / nyt_technology;
+# guardian_world remains distinct from guardian_technology;
+# axios uses api.axios.com/feed/ (not www.axios.com/feeds/feed.rss).
+_INTL_AXIOS_PRIMARY = {
+    "nyt_world": {
+        "name": "NYT World",
+        "feed_url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+        "category": "国际",
+    },
+    "axios": {
+        "name": "Axios",
+        "feed_url": "https://api.axios.com/feed/",
+        "category": "综合",
+    },
+    "guardian_world": {
+        "name": "Guardian World",
+        "feed_url": "https://www.theguardian.com/world/rss",
+        "category": "国际",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 30
 _EXPECTED_CONTROL_COUNT = 1
 
 
@@ -292,6 +314,32 @@ def test_china_asia_tech_primaries_registered():
     )
     assert by_id["verge"].feed_url != by_id["verge_transport"].feed_url
     for source_id, expected in _CHINA_ASIA_TECH_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_intl_axios_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "nyt_world" in by_id
+    assert "nyt_technology" in by_id
+    assert "nyt_business" in by_id
+    assert by_id["nyt_world"].feed_url == (
+        "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"
+    )
+    assert by_id["nyt_world"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["nyt_world"].feed_url != by_id["nyt_business"].feed_url
+    assert "guardian_world" in by_id
+    assert "guardian_technology" in by_id
+    assert by_id["guardian_world"].feed_url == "https://www.theguardian.com/world/rss"
+    assert by_id["guardian_world"].feed_url != by_id["guardian_technology"].feed_url
+    assert "axios" in by_id
+    assert by_id["axios"].feed_url == "https://api.axios.com/feed/"
+    assert by_id["axios"].feed_url != "https://www.axios.com/feeds/feed.rss"
+    for source_id, expected in _INTL_AXIOS_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
         assert source.role == "primary"
@@ -445,6 +493,29 @@ def test_china_asia_tech_feeds_live_http_200():
         assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
 
 
+def test_intl_axios_feeds_live_http_200():
+    """Hit the three batch8 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _INTL_AXIOS_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(body)
+        items = root.findall(".//item")
+        entries = root.findall(".//{http://www.w3.org/2005/Atom}entry")
+        count = len(items) + len(entries)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -455,10 +526,12 @@ if __name__ == "__main__":
     test_biz_tech_primaries_registered()
     test_biz_science_tech_primaries_registered()
     test_china_asia_tech_primaries_registered()
+    test_intl_axios_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
     test_biz_tech_feeds_live_http_200()
     test_biz_science_tech_feeds_live_http_200()
     test_china_asia_tech_feeds_live_http_200()
+    test_intl_axios_feeds_live_http_200()
     print("✓ source registry tests PASSED")
