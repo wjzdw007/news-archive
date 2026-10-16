@@ -6,11 +6,14 @@
     "TechCrunch",
     "Tesla",
     "elonmusk",
-    "AP"
+    "AP",
+    "WSJ",
+    "BBCWorld",
+    "NPR"
   ],
   "mode": "live",
-  "inserted": 2,
+  "inserted": 6,
   "gone": 0,
-  "seen": 2,
+  "seen": 6,
   "status": "ok"
 }
