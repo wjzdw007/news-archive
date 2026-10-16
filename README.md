@@ -25,7 +25,7 @@
 
 - 主键 / 去重键：`url`
 - `content_snapshot`：私有全文快照（优先 RSS `content:encoded`；http(s) 且 `status != gone`、快照空或过短/壳导航文本时抓取原文页写入纯文本）。公开站点从不导出此字段。已有可用快照不重抓。不扩展到 X 帖（仍仅 `text_snapshot`）
-- 原文补抓：每轮最多 40 次 HTTP。同一源连续 3 次 403/429/timeout 则本轮停止该源，并在 sqlite `enrich_backoff` 写入 6 小时冷却（随 `data` 分支持久化）。daily-fetch 成功时把覆盖率写到 Actions Job Summary，不公开 `/stats` 页
+- 原文补抓：每轮最多 40 次 HTTP。403/429/timeout/空 body 时按源再试 1–2 个备用入口（`nyt_world`：AMP / mobile.nytimes.com；`ftchinese`：m.ftchinese.com / AMP），成功则写入私有 snapshot；全部失败才按**篇**计入连续失败（不是按每次 GET）。同一源连续 3 篇 403/429/timeout 则本轮停止该源，并在 sqlite `enrich_backoff` 写入 6 小时冷却（随 `data` 分支持久化）。daily-fetch 成功时把覆盖率写到 Actions Job Summary，不公开 `/stats` 页
 - 公开 `summary`：纯文本，最多 280 字；已合格（≥80）则保留；空或 <80 时从快照派生 ≤280
 - `status`：`active` | `gone`（后续探测不可达时标记，不删记录）
 - 存储：SQLite（可导出 JSONL）

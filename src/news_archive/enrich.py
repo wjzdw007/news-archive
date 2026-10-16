@@ -12,9 +12,14 @@ Soft-fail per article: paywall / anti-bot / timeout / non-2xx must not
 fail the main RSS/X fetch job. Logs host + reason only (no secrets).
 X posts are out of scope this cut (text_snapshot only).
 
+On 403 / 429 / timeout / empty body, try a small per-source list of
+alternate entry points (AMP / mobile / www) before counting the article
+as a hard soft-fail. Each GET still counts toward the run HTTP budget.
+
 Per-source backoff: ≥3 consecutive HTTP 403 / 429 / timeout in one run
-stops enqueueing that source for the rest of the run and writes a 6-hour
-cooldown into sqlite (persisted on the data branch with archive.sqlite3).
+(counted per article, not per alternate GET) stops enqueueing that source
+for the rest of the run and writes a 6-hour cooldown into sqlite
+(persisted on the data branch with archive.sqlite3).
 """
 
 from __future__ import annotations
@@ -32,6 +37,11 @@ from urllib.parse import urlparse
 
 import httpx
 
+from .enrich_alternates import (
+    MAX_ALTERNATES_PER_ARTICLE,
+    RETRYABLE_FOR_ALTERNATES,
+    alternate_urls_for,
+)
 from .store import Store
 
 MIN_USABLE_SUMMARY = 80
@@ -277,6 +287,48 @@ def fetch_page_text(url: str, client: httpx.Client) -> PageFetch:
     return PageFetch(text=text, status=resp.status_code)
 
 
+def try_fetch_article(
+    url: str,
+    source: str,
+    client: httpx.Client,
+    *,
+    http_used: int,
+    max_http: int,
+    sleep: Callable[[float], None],
+) -> tuple[PageFetch | None, PageFetch | None, int]:
+    """GET primary URL, then up to MAX_ALTERNATES_PER_ARTICLE same-site fallbacks.
+
+    Alternates are attempted only after 403 / 429 / timeout / empty_body.
+    Each GET increments `http_used` and is skipped once the run budget is gone.
+
+    Returns (final_outcome, primary_outcome, new_http_used). Snapshot storage
+    always keys off the original article URL, not the alternate that succeeded.
+    """
+    alts = alternate_urls_for(url=url, source=source)[:MAX_ALTERNATES_PER_ARTICLE]
+    candidates = [url, *alts]
+    primary: PageFetch | None = None
+    outcome: PageFetch | None = None
+    for index, candidate in enumerate(candidates):
+        if http_used >= max_http:
+            break
+        if http_used:
+            sleep(ENRICH_DELAY_S)
+        http_used += 1
+        outcome = fetch_page_text(candidate, client)
+        if index == 0:
+            primary = outcome
+        if outcome.ok:
+            if index > 0:
+                print(
+                    f"enrich recovered host={_safe_host(candidate)} via=alternate",
+                    file=sys.stderr,
+                )
+            break
+        if outcome.reason not in RETRYABLE_FOR_ALTERNATES:
+            break
+    return outcome, primary, http_used
+
+
 def _trip_backoff(
     store: Store,
     source: str,
@@ -374,9 +426,12 @@ def enrich_store(
 
     Caps HTTP at max_http per run (~0.5s delay) so the stockpile drains
     across cron runs. 403/paywall/timeout leave the row retryable later.
+    Hard sources may spend 1 primary + ≤2 alternate GETs per article.
 
     Per source: ≥3 consecutive 403/429/timeout in this run → stop enqueueing
     that source for the rest of the run and persist a 6-hour cooldown.
+    Consecutive failures are counted per article (after alternates exhaust),
+    not per individual GET.
 
     Returns counters for run-stats (no URLs, no secrets, no snapshot bodies).
     """
@@ -460,14 +515,21 @@ def enrich_store(
                     bucket["skipped"] += 1
                     continue
 
-                if http_used:
-                    sleep(ENRICH_DELAY_S)
-                http_used += 1
-                outcome = fetch_page_text(url, client)
-                if not outcome.ok:
+                outcome, primary_outcome, http_used = try_fetch_article(
+                    url,
+                    source,
+                    client,
+                    http_used=http_used,
+                    max_http=max_http,
+                    sleep=sleep,
+                )
+                if outcome is None or not outcome.ok:
                     stats["soft_failed"] += 1
                     bucket["soft_fail"] += 1
-                    if outcome.is_backoff_failure:
+                    # Classify backoff from the primary GET so alternates are a
+                    # recovery path only: all-fail still counts as one streak hit.
+                    fail = primary_outcome or outcome
+                    if fail is not None and fail.is_backoff_failure:
                         consecutive[source] = consecutive.get(source, 0) + 1
                         if consecutive[source] >= CONSECUTIVE_FAIL_LIMIT:
                             stopped_sources.add(source)
