@@ -966,7 +966,7 @@ def test_x_links_cap_eight_and_bullets_cap_three():
             "AFP",
             "CNBC",
             "AJEnglish",
-            "guardian",
+            "Nature",
         ][i % 19]
         posts.append(
             _x(

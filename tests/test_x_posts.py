@@ -100,7 +100,7 @@ def test_5_no_keyword_search_in_news_config():
         "AFP",
         "CNBC",
         "AJEnglish",
-        "guardian",
+        "Nature",
     ]
     assert x_config.X_NEWS_ACCOUNTS == expected
     assert len(x_config.X_NEWS_ACCOUNTS) == 19

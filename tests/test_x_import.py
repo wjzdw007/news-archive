@@ -35,7 +35,7 @@ _WHITELIST_ACCOUNTS = [
     "AFP",
     "CNBC",
     "AJEnglish",
-    "guardian",
+    "Nature",
 ]
 
 

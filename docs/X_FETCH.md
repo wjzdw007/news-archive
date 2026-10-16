@@ -18,7 +18,7 @@ X/Twitter 帖子抓取功能支持两种模式，**严格遵循 [x-crawler](http
 
 3. **抓取逻辑**（x-crawler `crawler.py` crawl_daily_posts + save_by_user_daily）：
    - 抓取 home timeline（推荐/关注流）
-   - 过滤出目标账号帖子：`BBCChinese`, `Reuters`, `FT`, `TechCrunch`, `Tesla`, `elonmusk`, `AP`, `WSJ`, `BBCWorld`, `NPR`, `nytimes`, `TheEconomist`, `SCMPNews`, `Bloomberg`, `WIRED`, `AFP`, `CNBC`, `AJEnglish`, `guardian`
+   - 过滤出目标账号帖子：`BBCChinese`, `Reuters`, `FT`, `TechCrunch`, `Tesla`, `elonmusk`, `AP`, `WSJ`, `BBCWorld`, `NPR`, `nytimes`, `TheEconomist`, `SCMPNews`, `Bloomberg`, `WIRED`, `AFP`, `CNBC`, `AJEnglish`, `Nature`
    - 去重并持久化到 SQLite
 
 ## Author 字段解析
@@ -58,7 +58,7 @@ X 已将 `screen_name` 从 `user_results.result.legacy.screen_name` 迁移到 **
 
 ```
 [x-fetch] HomeTimeline: 38 tweets, author distribution (top 20): {"BBCChinese": 3, "Reuters": 2, "elonmusk": 5, "OpenAI": 3, "unknown": 1, ...}
-[x-fetch] Filtered to 5 posts from target accounts: ['BBCChinese', 'Reuters', 'FT', 'TechCrunch', 'Tesla', 'elonmusk', 'AP', 'WSJ', 'BBCWorld', 'NPR', 'nytimes', 'TheEconomist', 'SCMPNews', 'Bloomberg', 'WIRED', 'AFP', 'CNBC', 'AJEnglish', 'guardian']
+[x-fetch] Filtered to 5 posts from target accounts: ['BBCChinese', 'Reuters', 'FT', 'TechCrunch', 'Tesla', 'elonmusk', 'AP', 'WSJ', 'BBCWorld', 'NPR', 'nytimes', 'TheEconomist', 'SCMPNews', 'Bloomberg', 'WIRED', 'AFP', 'CNBC', 'AJEnglish', 'Nature']
 ```
 
 若过滤后为 0 且 `"unknown"` 占比高 → author 解析问题；  
@@ -164,7 +164,7 @@ git checkout main
 
 **关键差异**：
 - x-crawler 从 `user_prompt_templates.json` 读取关注用户列表
-- news-archive 硬编码新闻账号白名单：`BBCChinese`, `Reuters`, `FT`, `TechCrunch`, `Tesla`, `elonmusk`, `AP`, `WSJ`, `BBCWorld`, `NPR`, `nytimes`, `TheEconomist`, `SCMPNews`, `Bloomberg`, `WIRED`, `AFP`, `CNBC`, `AJEnglish`, `guardian`
+- news-archive 硬编码新闻账号白名单：`BBCChinese`, `Reuters`, `FT`, `TechCrunch`, `Tesla`, `elonmusk`, `AP`, `WSJ`, `BBCWorld`, `NPR`, `nytimes`, `TheEconomist`, `SCMPNews`, `Bloomberg`, `WIRED`, `AFP`, `CNBC`, `AJEnglish`, `Nature`
 
 ## Soft-Fail 设计
 
@@ -185,5 +185,5 @@ X 抓取失败**不会**阻断 RSS daily-fetch：
 
 - **不支持搜索**: 本配置仅按账号过滤，不做关键词搜索
 - **不使用 UserTweets**: 保持 HomeTimeline/following + filter 路径（CEO 决定）
-- **依赖 following**: Cookie 登录账号须 Follow 白名单 handle（`BBCChinese`, `Reuters`, `FT`, `TechCrunch`, `Tesla`, `elonmusk`, `AP`, `WSJ`, `BBCWorld`, `NPR`, `nytimes`, `TheEconomist`, `SCMPNews`, `Bloomberg`, `WIRED`, `AFP`, `CNBC`, `AJEnglish`, `guardian`），HomeLatestTimeline / following 才能看到它们（运维说明，不是代码 Secret）。未 follow，或目标账号未在当前 HomeTimeline 窗口（~40 条），过滤结果为空。白名单变大后窗口更挤；某账号本页 0 条是 WARN，不是改路径的理由
+- **依赖 following**: Cookie 登录账号须 Follow 白名单 handle（`BBCChinese`, `Reuters`, `FT`, `TechCrunch`, `Tesla`, `elonmusk`, `AP`, `WSJ`, `BBCWorld`, `NPR`, `nytimes`, `TheEconomist`, `SCMPNews`, `Bloomberg`, `WIRED`, `AFP`, `CNBC`, `AJEnglish`, `Nature`），HomeLatestTimeline / following 才能看到它们（运维说明，不是代码 Secret）。未 follow，或目标账号未在当前 HomeTimeline 窗口（~40 条），过滤结果为空。白名单变大后窗口更挤；某账号本页 0 条是 WARN，不是改路径的理由
 - **QueryId 稳定性**: 当前使用 x-crawler 的真实 queryId；若 X 更新 API，需更新该 ID

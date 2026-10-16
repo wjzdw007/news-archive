@@ -24,5 +24,5 @@ X_NEWS_ACCOUNTS: list[str] = [
     "AFP",
     "CNBC",
     "AJEnglish",
-    "guardian",
+    "Nature",
 ]
