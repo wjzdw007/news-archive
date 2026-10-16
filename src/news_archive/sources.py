@@ -177,6 +177,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="nyt_business",
+        name="NYT Business",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/Business.xml",
+        category="财经",
+        role="primary",
+    ),
+    Source(
+        id="bbc_science",
+        name="BBC Science",
+        feed_url="https://feeds.bbci.co.uk/news/science_and_environment/rss.xml",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="techcrunch",
+        name="TechCrunch",
+        feed_url="https://feeds.feedburner.com/TechCrunch",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

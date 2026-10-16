@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（23 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 + 1 官方对照）
+## P0 源（26 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -29,6 +29,9 @@
 | `bbc_business` | BBC Business | https://feeds.bbci.co.uk/news/business/rss.xml | primary |
 | `guardian_technology` | Guardian Technology | https://www.theguardian.com/uk/technology/rss | primary |
 | `ars_technica` | Ars Technica | https://feeds.arstechnica.com/arstechnica/index | primary |
+| `nyt_business` | NYT Business | https://rss.nytimes.com/services/xml/rss/nyt/Business.xml | primary |
+| `bbc_science` | BBC Science | https://feeds.bbci.co.uk/news/science_and_environment/rss.xml | primary |
+| `techcrunch` | TechCrunch | https://feeds.feedburner.com/TechCrunch | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
