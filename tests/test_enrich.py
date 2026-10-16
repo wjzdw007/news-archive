@@ -356,7 +356,9 @@ def test_simulated_403_soft_fails_row_but_fetch_job_stays_green():
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = Path(tmpdir) / "archive.sqlite3"
         store = Store(db_path)
-        store.upsert(_article(PAYWALL_URL, title="付费墙稿", summary="", source="ftchinese"))
+        store.upsert(
+            _article(PAYWALL_URL, title="付费墙稿", summary="付费墙RSS摘要", source="ftchinese")
+        )
         store.upsert(
             _article(
                 PEOPLE_URL,
@@ -378,7 +380,7 @@ def test_simulated_403_soft_fails_row_but_fetch_job_stays_green():
             PEOPLE_URL, title="央行发布三季度金融统计数据", summary=None
         )
         thin_paywall = _article(
-            PAYWALL_URL, title="付费墙稿", summary="", source="ftchinese"
+            PAYWALL_URL, title="付费墙稿", summary="付费墙RSS摘要", source="ftchinese"
         )
 
         def fake_fetch_all(_sources):

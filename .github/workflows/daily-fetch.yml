@@ -177,6 +177,10 @@ jobs:
         run: |
           PYTHONPATH=src python tests/test_enrich.py
 
+      - name: Test thin RSS skip (Required Fields)
+        run: |
+          PYTHONPATH=src python tests/test_required_fields.py
+
       - name: Upload archive artifact
         if: always() && hashFiles('data/archive.sqlite3') != ''
         uses: actions/upload-artifact@v4

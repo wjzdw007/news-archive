@@ -64,6 +64,44 @@ def _content_snapshot(entry: dict) -> str | None:
     return _clean_text(entry.get("summary") or entry.get("description"))
 
 
+def article_from_entry(
+    entry: dict,
+    source: Source,
+    fetched_at: str,
+) -> Article | None:
+    """Normalize one RSS entry.
+
+    Thin items (title but no description/summary/content:encoded body) are
+    skipped — do not fill summary from title. True both-empty is also skipped.
+    """
+    url = _clean_text(entry.get("link") or entry.get("id"))
+    title = _clean_text(entry.get("title"))
+    summary = _clean_text(entry.get("summary") or entry.get("description"))
+    snapshot = _content_snapshot(entry)
+    if not url:
+        return None
+    if not title:
+        return None
+    if not summary and not snapshot:
+        return None
+    published = _to_iso(
+        entry.get("published_parsed")
+        or entry.get("updated_parsed")
+        or entry.get("published")
+        or entry.get("updated")
+    )
+    return Article(
+        title=title,
+        published_at=published,
+        url=url,
+        summary=summary,
+        source=source.id,
+        fetched_at=fetched_at,
+        content_snapshot=snapshot,
+        status="active",
+    )
+
+
 def fetch_source(source: Source, *, timeout: float = 30.0) -> list[Article]:
     fetched_at = datetime.now(timezone.utc).isoformat()
     with httpx.Client(timeout=timeout, follow_redirects=True, headers=RSS_HEADERS) as client:
@@ -74,30 +112,9 @@ def fetch_source(source: Source, *, timeout: float = 30.0) -> list[Article]:
     parsed = feedparser.parse(raw)
     articles: list[Article] = []
     for entry in parsed.entries:
-        url = _clean_text(entry.get("link") or entry.get("id"))
-        title = _clean_text(entry.get("title"))
-        if not url or not title:
-            continue
-        summary = _clean_text(entry.get("summary") or entry.get("description"))
-        snapshot = _content_snapshot(entry)
-        published = _to_iso(
-            entry.get("published_parsed")
-            or entry.get("updated_parsed")
-            or entry.get("published")
-            or entry.get("updated")
-        )
-        articles.append(
-            Article(
-                title=title,
-                published_at=published,
-                url=url,
-                summary=summary,
-                source=source.id,
-                fetched_at=fetched_at,
-                content_snapshot=snapshot,
-                status="active",
-            )
-        )
+        article = article_from_entry(entry, source, fetched_at)
+        if article is not None:
+            articles.append(article)
     return articles
 
 
