@@ -261,6 +261,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="dw_en",
+        name="Deutsche Welle (EN)",
+        feed_url="https://rss.dw.com/rdf/rss-en-all",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="rfi_en",
+        name="RFI English",
+        feed_url="https://www.rfi.fr/en/rss",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="bbc_europe",
+        name="BBC Europe",
+        feed_url="https://feeds.bbci.co.uk/news/world/europe/rss.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

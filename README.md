@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（35 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（38 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -41,6 +41,9 @@
 | `sky_world` | Sky News World | https://feeds.skynews.com/feeds/rss/world.xml | primary |
 | `lemonde` | Le Monde | https://www.lemonde.fr/rss/une.xml | primary |
 | `cbs_news` | CBS News | https://www.cbsnews.com/latest/rss/main | primary |
+| `dw_en` | Deutsche Welle (EN) | https://rss.dw.com/rdf/rss-en-all | primary |
+| `rfi_en` | RFI English | https://www.rfi.fr/en/rss | primary |
+| `bbc_europe` | BBC Europe | https://feeds.bbci.co.uk/news/world/europe/rss.xml | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
