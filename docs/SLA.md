@@ -2,9 +2,10 @@
 
 ## Latency SLA（P0）
 
-- 指标仍是本轮增量的 published_at → fetched_at ≤ 4h（缺 published_at / >24h 旧稿跳过）
+- 指标仍是本轮增量的 published_at → fetched_at ≤ 4h（缺 published_at / >24h 旧稿 / 品牌新源首次入库回填跳过）
 - 单轮或个位数超窗 → 告警，不红灯、不挡 run
 - 连续两轮整体超时 → 红灯
+- 单轮 WARN 仍把 `latency_sla_passed` 记为 false，好让下一轮**已有源**的真实超时硬失败；新源首次回填不进分母，也不会单独把该标志打成 false
 
 ## Persist 与 SLA 解耦
 
