@@ -7,6 +7,8 @@ import tempfile
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from news_archive.sources import SOURCES
+
 
 def create_test_db_with_violations(db_path: Path, violation_hours: list[float]) -> None:
     """Create a test database with articles that have specified latency violations.
@@ -56,8 +58,7 @@ def create_test_db_with_violations(db_path: Path, violation_hours: list[float]) 
         )
     
     # Add at least one article for each configured source to pass Source Incremental check
-    sources = ['36kr', 'tmtpost', 'geekpark', 'ftchinese', 'bbc_zh_simp', 
-               'guardian_world', 'nyt_world', 'aljazeera', 'people_finance']
+    sources = [s.id for s in SOURCES]
     for j, source in enumerate(sources):
         # Use older fetched_at so they don't interfere with latency check
         old_fetched_at = fetched_at - timedelta(days=1)
