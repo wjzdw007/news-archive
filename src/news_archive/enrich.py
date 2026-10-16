@@ -355,7 +355,37 @@ def _trip_backoff(
     )
 
 
-def render_job_summary(enrich_stats: dict[str, Any]) -> str:
+def _source_label(source: str | None) -> str:
+    return source or "—"
+
+
+def render_diversity_summary(diversity: dict[str, Any]) -> str:
+    """Markdown for display-window same-source max (primary) + raw diagnostic."""
+    window = int(diversity.get("window") or 50)
+    cap = int(diversity.get("cap") or 6)
+    size = int(diversity.get("display_window_size") or 0)
+    display_max = int(diversity.get("display_max") or 0)
+    display_src = _source_label(diversity.get("display_max_source"))
+    raw_max = int(diversity.get("raw_max") or 0)
+    raw_src = _source_label(diversity.get("raw_max_source"))
+    return "\n".join(
+        [
+            "### News list diversity (display-window)",
+            "",
+            f"- **display-window same-source max:** {display_max} (`{display_src}`) "
+            f"in top {window} (NEWS_SOURCE_CAP={cap}; window size {size})",
+            f"- raw published_at-order front-{window} max: {raw_max} (`{raw_src}`) "
+            f"— diagnostic only; not the display gate",
+            "",
+        ]
+    )
+
+
+def render_job_summary(
+    enrich_stats: dict[str, Any],
+    *,
+    diversity: dict[str, Any] | None = None,
+) -> str:
     """Markdown coverage board for GITHUB_STEP_SUMMARY. No article body text."""
     coverage = enrich_stats.get("coverage") or {}
     usable = int(coverage.get("usable_snapshots") or 0)
@@ -393,18 +423,23 @@ def render_job_summary(enrich_stats: dict[str, Any]) -> str:
             "",
         ]
     )
+    board = diversity if diversity is not None else enrich_stats.get("diversity")
+    if board:
+        lines.append(render_diversity_summary(board))
     return "\n".join(lines)
 
 
 def write_job_summary(
     enrich_stats: dict[str, Any],
     path: str | Path | None = None,
+    *,
+    diversity: dict[str, Any] | None = None,
 ) -> None:
     """Append coverage board to GITHUB_STEP_SUMMARY (or `path` in tests)."""
     target = path if path is not None else os.environ.get("GITHUB_STEP_SUMMARY")
     if not target:
         return
-    text = render_job_summary(enrich_stats)
+    text = render_job_summary(enrich_stats, diversity=diversity)
     out = Path(target)
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("a", encoding="utf-8") as handle:

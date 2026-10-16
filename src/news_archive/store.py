@@ -137,6 +137,16 @@ class Store:
         ).fetchall()
         return [dict(row) for row in rows]
 
+    def get_articles_for_news_list(self) -> list[dict]:
+        """Public list fields for News Tab display-window stats (no snapshots)."""
+        rows = self._conn.execute(
+            """
+            SELECT url, title, published_at, summary, source, fetched_at, status
+            FROM articles
+            """
+        ).fetchall()
+        return [dict(row) for row in rows]
+
     def get_enrich_backoff(self) -> dict[str, str]:
         """Persisted per-source enrich cooldown: source -> until_utc ISO string."""
         rows = self._conn.execute(
