@@ -18,11 +18,14 @@
     "AFP",
     "CNBC",
     "AJEnglish",
-    "Nature"
+    "Nature",
+    "SkyNews",
+    "ABC",
+    "CBSNews"
   ],
   "mode": "live",
-  "inserted": 5,
+  "inserted": 15,
   "gone": 0,
-  "seen": 7,
+  "seen": 20,
   "status": "ok"
 }
