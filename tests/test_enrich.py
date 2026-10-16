@@ -35,6 +35,10 @@ from news_archive.enrich import (
     should_fetch_page,
     write_job_summary,
 )
+from news_archive.enrich_alternates import (
+    MAX_ALTERNATES_PER_ARTICLE,
+    alternate_urls_for,
+)
 from news_archive.schema import Article
 from news_archive.store import Store
 from news_archive.x_store import XStore
@@ -69,7 +73,9 @@ class _RecordingClient:
 
     def get(self, url: str, **_kwargs):
         self.calls.append(url)
-        item = self.mapping[url]
+        item = self.mapping.get(url)
+        if item is None:
+            return _FakeResponse(403, "unmapped")
         if isinstance(item, Exception):
             raise item
         return item
@@ -522,6 +528,11 @@ def _nyt_urls(n: int) -> list[str]:
     return [f"https://www.nytimes.com/2026/10/16/world/story-{i}.html" for i in range(n)]
 
 
+def _http_for_article(url: str, source: str) -> int:
+    """Primary GET + configured alternates (budget cost of one hard-source miss)."""
+    return 1 + len(alternate_urls_for(url=url, source=source))
+
+
 def _people_urls(n: int) -> list[str]:
     return [
         f"https://finance.people.com.cn/n1/2026/1016/c1004-{40400000 + i}.html"
@@ -569,7 +580,10 @@ def test_nyt_three_403s_stops_source_others_still_fetch():
         assert len(nyt_calls) == CONSECUTIVE_FAIL_LIMIT
         assert len(people_calls) == len(people_urls)
         assert len(client.calls) <= MAX_HTTP_PER_RUN
-        assert stats["http_used"] == CONSECUTIVE_FAIL_LIMIT + len(people_urls)
+        nyt_http = CONSECUTIVE_FAIL_LIMIT * _http_for_article(nyt_urls[0], "nyt_world")
+        assert stats["http_used"] == nyt_http + len(people_urls)
+        # Alternates were attempted (AMP / mobile) but still only 3 articles.
+        assert any(".amp.html" in u or "mobile.nytimes.com" in u for u in client.calls)
         assert stats["soft_failed"] == CONSECUTIVE_FAIL_LIMIT
         assert stats["fetched"] == len(people_urls)
         assert stats["by_source"]["nyt_world"]["stopped"] is True
@@ -837,6 +851,190 @@ def test_cli_writes_job_summary_and_stays_green_on_nyt_backoff():
         store.close()
 
 
+def test_nyt_alternate_urls_are_amp_then_mobile():
+    url = "https://www.nytimes.com/2026/10/16/world/story-0.html"
+    alts = alternate_urls_for(url=url, source="nyt_world")
+    assert MAX_ALTERNATES_PER_ARTICLE == 2
+    assert alts == [
+        "https://www.nytimes.com/2026/10/16/world/story-0.amp.html",
+        "https://mobile.nytimes.com/2026/10/16/world/story-0.html",
+    ]
+    assert url not in alts
+    # Host fallback when source id is missing.
+    assert alternate_urls_for(url=url, source="unknown") == alts
+    already_amp = "https://www.nytimes.com/2026/10/16/world/story-0.amp.html"
+    amp_alts = alternate_urls_for(url=already_amp, source="nyt_world")
+    assert already_amp not in amp_alts
+    assert amp_alts == ["https://mobile.nytimes.com/2026/10/16/world/story-0.amp.html"]
+
+
+def test_ftchinese_alternate_urls_are_mobile_then_amp():
+    url = "https://www.ftchinese.com/story/001104123"
+    alts = alternate_urls_for(url=url, source="ftchinese")
+    assert alts == [
+        "https://m.ftchinese.com/story/001104123",
+        "https://www.ftchinese.com/amp/story/001104123",
+    ]
+    assert url not in alts
+    assert len(alts) <= MAX_ALTERNATES_PER_ARTICLE
+    mobile = "https://m.ftchinese.com/story/001104123"
+    assert alternate_urls_for(url=mobile, source="ftchinese") == [
+        "https://m.ftchinese.com/amp/story/001104123",
+    ]
+
+
+def test_unknown_source_has_no_alternates():
+    url = "https://finance.people.com.cn/n1/2026/1015/c1004-40399999.html"
+    assert alternate_urls_for(url=url, source="people_finance") == []
+    assert alternate_urls_for(url=url, source="unknown") == []
+    assert alternate_urls_for(url="https://example.com/story", source="36kr") == []
+
+
+def test_nyt_primary_403_alternate_succeeds_stores_snapshot():
+    """Primary 403 → AMP 200 → private snapshot stored; public JSON omits it."""
+    url = "https://www.nytimes.com/2026/10/16/world/story-alt.html"
+    amp = "https://www.nytimes.com/2026/10/16/world/story-alt.amp.html"
+    mobile = "https://mobile.nytimes.com/2026/10/16/world/story-alt.html"
+    assert alternate_urls_for(url=url, source="nyt_world") == [amp, mobile]
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "archive.sqlite3"
+        store = Store(db_path)
+        store.upsert(
+            _article(url, title="World story", summary=_long_summary(), source="nyt_world")
+        )
+        client = _RecordingClient(
+            {
+                url: _FakeResponse(403, "Forbidden"),
+                amp: _FakeResponse(200, PEOPLE_HTML),
+                mobile: _FakeResponse(200, PEOPLE_HTML),
+            }
+        )
+        stats = enrich_store(store, client=client, sleep_fn=lambda _s: None)
+
+        assert client.calls == [url, amp]
+        assert mobile not in client.calls
+        assert stats["fetched"] == 1
+        assert stats["soft_failed"] == 0
+        assert stats["by_source"]["nyt_world"]["success"] == 1
+        assert stats["by_source"]["nyt_world"]["stopped"] is False
+        assert stats["http_used"] == 2
+        assert not store.get_enrich_backoff()
+
+        row = store.get_article(url)
+        assert row is not None
+        snapshot = row["content_snapshot"]
+        assert snapshot
+        assert "央行发布三季度金融统计数据" in snapshot
+        assert is_usable_snapshot(snapshot)
+
+        out_path = Path(tmpdir) / "articles.json"
+        exported = _export_articles_json(db_path, out_path)
+        raw = out_path.read_text(encoding="utf-8")
+        assert "content_snapshot" not in raw
+        assert "content_snapshot" not in exported[0]
+        assert "央行发布三季度金融统计数据" not in raw
+        assert len(exported[0]["summary"]) <= PUBLIC_SUMMARY_MAX
+        store.close()
+
+
+def test_ftchinese_empty_body_alternate_succeeds_stores_snapshot():
+    """Desktop 200 + empty body → m.ftchinese.com body stored under original URL."""
+    url = "https://www.ftchinese.com/story/001104999"
+    mobile = "https://m.ftchinese.com/story/001104999"
+    amp = "https://www.ftchinese.com/amp/story/001104999"
+    assert alternate_urls_for(url=url, source="ftchinese") == [mobile, amp]
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "archive.sqlite3"
+        store = Store(db_path)
+        store.upsert(_article(url, title="FT稿", summary=None, source="ftchinese"))
+        client = _RecordingClient(
+            {
+                url: _FakeResponse(200, "   "),
+                mobile: _FakeResponse(200, PEOPLE_HTML),
+            }
+        )
+        stats = enrich_store(store, client=client, sleep_fn=lambda _s: None)
+
+        assert client.calls == [url, mobile]
+        assert amp not in client.calls
+        assert stats["fetched"] == 1
+        assert stats["soft_failed"] == 0
+        row = store.get_article(url)
+        assert row is not None
+        assert is_usable_snapshot(row["content_snapshot"])
+        assert "央行发布三季度金融统计数据" in row["content_snapshot"]
+        summary = row["summary"]
+        assert summary
+        assert MIN_USABLE_SUMMARY <= len(html_to_text(summary)) <= PUBLIC_SUMMARY_MAX
+
+        out_path = Path(tmpdir) / "articles.json"
+        exported = _export_articles_json(db_path, out_path)
+        raw = out_path.read_text(encoding="utf-8")
+        assert "content_snapshot" not in raw
+        assert "content_snapshot" not in exported[0]
+        store.close()
+
+
+def test_all_alternates_fail_counts_one_backoff_per_article():
+    """Primary+alts all 403 → one streak hit per article; 3 articles trip backoff."""
+    nyt_urls = _nyt_urls(4)
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "archive.sqlite3"
+        store = Store(db_path)
+        for url in nyt_urls:
+            store.upsert(_article(url, summary=_long_summary(), source="nyt_world"))
+        client = _RecordingClient(
+            {url: _FakeResponse(403, "Forbidden") for url in nyt_urls}
+        )
+        stats = enrich_store(store, client=client, sleep_fn=lambda _s: None)
+
+        per_article = _http_for_article(nyt_urls[0], "nyt_world")
+        assert per_article == 1 + MAX_ALTERNATES_PER_ARTICLE
+        assert stats["soft_failed"] == CONSECUTIVE_FAIL_LIMIT
+        assert stats["http_used"] == CONSECUTIVE_FAIL_LIMIT * per_article
+        assert stats["by_source"]["nyt_world"]["stopped"] is True
+        assert stats["by_source"]["nyt_world"]["soft_fail"] == CONSECUTIVE_FAIL_LIMIT
+        # Fourth article never enqueued.
+        assert nyt_urls[3] not in client.calls
+        assert store.get_enrich_backoff().get("nyt_world")
+        for url in nyt_urls:
+            assert not store.get_article(url)["content_snapshot"]
+        store.close()
+
+
+def test_alternates_stop_when_http_budget_exhausted():
+    """Do not burn remaining budget on a third GET for one article when max_http=2."""
+    url_a = "https://www.nytimes.com/2026/10/16/world/story-a.html"
+    url_b = "https://www.nytimes.com/2026/10/16/world/story-b.html"
+    amp_a = "https://www.nytimes.com/2026/10/16/world/story-a.amp.html"
+    mobile_a = "https://mobile.nytimes.com/2026/10/16/world/story-a.html"
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "archive.sqlite3"
+        store = Store(db_path)
+        store.upsert(_article(url_a, summary=_long_summary(), source="nyt_world"))
+        store.upsert(_article(url_b, summary=_long_summary(), source="nyt_world"))
+        client = _RecordingClient(
+            {
+                url_a: _FakeResponse(403, "no"),
+                amp_a: _FakeResponse(403, "no"),
+                mobile_a: _FakeResponse(200, PEOPLE_HTML),
+                url_b: _FakeResponse(200, PEOPLE_HTML),
+            }
+        )
+        stats = enrich_store(
+            store, client=client, sleep_fn=lambda _s: None, max_http=2
+        )
+        assert client.calls == [url_a, amp_a]
+        assert mobile_a not in client.calls
+        assert url_b not in client.calls
+        assert stats["http_used"] == 2
+        assert stats["soft_failed"] == 1
+        assert stats["fetched"] == 0
+        assert not store.get_article(url_a)["content_snapshot"]
+        assert not store.get_article(url_b)["content_snapshot"]
+        store.close()
+
+
 if __name__ == "__main__":
     test_html_to_text_strips_people_cn_chrome()
     test_needs_summary_fill_triggers()
@@ -859,4 +1057,11 @@ if __name__ == "__main__":
     test_mixed_403_429_timeout_trips_backoff()
     test_job_summary_coverage_board_omits_snapshot_body()
     test_cli_writes_job_summary_and_stays_green_on_nyt_backoff()
+    test_nyt_alternate_urls_are_amp_then_mobile()
+    test_ftchinese_alternate_urls_are_mobile_then_amp()
+    test_unknown_source_has_no_alternates()
+    test_nyt_primary_403_alternate_succeeds_stores_snapshot()
+    test_ftchinese_empty_body_alternate_succeeds_stores_snapshot()
+    test_all_alternates_fail_counts_one_backoff_per_article()
+    test_alternates_stop_when_http_budget_exhausted()
     print("✓ All enrich tests passed")
