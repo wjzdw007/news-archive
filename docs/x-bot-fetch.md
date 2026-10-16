@@ -3,7 +3,7 @@
 GitHub Actions **cannot** call Grok Bot `x` MCP. This path runs on a Bot (程序老王), not in CI.
 
 ## Steps
-1. `get_users_by_usernames` with `BBCChinese,Reuters,FT,TechCrunch,Tesla,elonmusk,AP,WSJ,BBCWorld,NPR,nytimes,TheEconomist,SCMPNews` → numeric ids
+1. `get_users_by_usernames` with `BBCChinese,Reuters,FT,TechCrunch,Tesla,elonmusk,AP,WSJ,BBCWorld,NPR,nytimes,TheEconomist,SCMPNews,Bloomberg,WIRED,AFP` → numeric ids
 2. Per id: `get_users_posts` with `max_results=20`, `exclude=retweets,replies`
 3. Map: `id`→`post_id`, username→`author`, `url`, `text`→`text_snapshot`, `created_at`→`posted_at`
 4. Write JSONL, then:
