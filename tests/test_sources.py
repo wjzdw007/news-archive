@@ -176,8 +176,8 @@ _AXIOS_NPR_JAPAN_PRIMARY = {
 # CEO-approved Sky / Le Monde / CBS RSS primaries (batch9).
 # These three are the new adds. sky_world is distinct from bbc_world;
 # lemonde is a new FR front-page feed; cbs_news is an RSS id, distinct
-# from X handle CBSNews. bbc_europe is not registered (no backup).
-# nikkei_asia stays unregistered (title+link only).
+# from X handle CBSNews. bbc_europe is batch10 (primary, not a backup).
+# nikkei_asia stays unregistered (title+link only). abc_news unused backup.
 _SKY_LEMONDE_CBS_PRIMARY = {
     "sky_world": {
         "name": "Sky News World",
@@ -196,8 +196,57 @@ _SKY_LEMONDE_CBS_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 35
+# CEO-approved DW / RFI / BBC Europe RSS primaries (batch10).
+# These three are the new adds. dw_en is DW English all-news RDF (dense
+# ~100+; NEWS_SOURCE_CAP display stays 6 — no CAP code change). rfi_en
+# is RFI English. bbc_europe ≠ bbc_world / bbc_asia / bbc_zh_simp (now a
+# primary, not an unused backup). abc_news is not registered (unused
+# backup). nikkei_asia stays unregistered (title+link only).
+_DW_RFI_BBC_EUROPE_PRIMARY = {
+    "dw_en": {
+        "name": "Deutsche Welle (EN)",
+        "feed_url": "https://rss.dw.com/rdf/rss-en-all",
+        "category": "国际",
+    },
+    "rfi_en": {
+        "name": "RFI English",
+        "feed_url": "https://www.rfi.fr/en/rss",
+        "category": "国际",
+    },
+    "bbc_europe": {
+        "name": "BBC Europe",
+        "feed_url": "https://feeds.bbci.co.uk/news/world/europe/rss.xml",
+        "category": "国际",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 38
 _EXPECTED_CONTROL_COUNT = 1
+
+# RSS 1.0 / RDF (dw_en) and Atom fallbacks for live XML probes.
+_RSS10_ITEM = "{http://purl.org/rss/1.0/}item"
+_RSS10_DESC = "{http://purl.org/rss/1.0/}description"
+_ATOM_ENTRY = "{http://www.w3.org/2005/Atom}entry"
+_ATOM_SUMMARY = "{http://www.w3.org/2005/Atom}summary"
+
+
+def _feed_items(root: ET.Element) -> list[ET.Element]:
+    items = root.findall(".//item")
+    if items:
+        return items
+    rdf_items = root.findall(f".//{_RSS10_ITEM}")
+    if rdf_items:
+        return rdf_items
+    return root.findall(f".//{_ATOM_ENTRY}")
+
+
+def _item_description(item: ET.Element) -> str:
+    return (
+        (item.findtext("description") or "").strip()
+        or (item.findtext(_RSS10_DESC) or "").strip()
+        or (item.findtext("summary") or "").strip()
+        or (item.findtext(_ATOM_SUMMARY) or "").strip()
+    )
 
 
 def test_source_ids_unique():
@@ -394,10 +443,36 @@ def test_sky_lemonde_cbs_primaries_registered():
     assert by_id["lemonde"].feed_url == "https://www.lemonde.fr/rss/une.xml"
     assert "cbs_news" in by_id
     assert by_id["cbs_news"].id == "cbs_news"
-    # No backup Europe feed; this batch is RSS-only (X CBSNews/SkyNews untouched).
-    assert "bbc_europe" not in by_id
+    # This batch is RSS-only (X CBSNews/SkyNews untouched). Unused backups stay out.
+    assert "abc_news" not in by_id
     assert "nikkei_asia" not in by_id
     for source_id, expected in _SKY_LEMONDE_CBS_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_dw_rfi_bbc_europe_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "bbc_world" in by_id
+    assert "bbc_asia" in by_id
+    assert "bbc_zh_simp" in by_id
+    assert "bbc_europe" in by_id
+    assert by_id["bbc_world"].feed_url == "https://feeds.bbci.co.uk/news/world/rss.xml"
+    assert by_id["bbc_europe"].feed_url != by_id["bbc_world"].feed_url
+    assert by_id["bbc_europe"].feed_url != by_id["bbc_asia"].feed_url
+    assert by_id["bbc_europe"].feed_url != by_id["bbc_zh_simp"].feed_url
+    assert "dw_en" in by_id
+    assert by_id["dw_en"].feed_url == "https://rss.dw.com/rdf/rss-en-all"
+    assert "rfi_en" in by_id
+    assert by_id["rfi_en"].feed_url == "https://www.rfi.fr/en/rss"
+    # Unused backup / title+link-only feeds stay unregistered.
+    assert "abc_news" not in by_id
+    assert "nikkei_asia" not in by_id
+    for source_id, expected in _DW_RFI_BBC_EUROPE_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
         assert source.role == "primary"
@@ -618,6 +693,37 @@ def test_sky_lemonde_cbs_feeds_live_http_200():
         )
 
 
+def test_dw_rfi_bbc_europe_feeds_live_http_200():
+    """Hit the three new feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _DW_RFI_BBC_EUROPE_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(body)
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # #43 thin-skip: empty description would insert 0. Product lock
+        # requires non-empty RSS description/summary on these feeds.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -630,6 +736,7 @@ if __name__ == "__main__":
     test_china_asia_tech_primaries_registered()
     test_axios_npr_japan_primaries_registered()
     test_sky_lemonde_cbs_primaries_registered()
+    test_dw_rfi_bbc_europe_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -638,4 +745,5 @@ if __name__ == "__main__":
     test_china_asia_tech_feeds_live_http_200()
     test_axios_npr_japan_feeds_live_http_200()
     test_sky_lemonde_cbs_feeds_live_http_200()
+    test_dw_rfi_bbc_europe_feeds_live_http_200()
     print("✓ source registry tests PASSED")
