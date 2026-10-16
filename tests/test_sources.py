@@ -148,22 +148,18 @@ _CHINA_ASIA_TECH_PRIMARY = {
     },
 }
 
-# CEO-approved Axios / Nikkei / NPR RSS primaries (batch8).
-# These three are the new adds. Existing nyt_world / guardian_world stay
+# CEO-approved Axios / NPR RSS primaries (batch8).
+# These two are the new adds. Existing nyt_world / guardian_world stay
 # as original P0 ids (distinct from nyt_business / nyt_technology and
 # guardian_technology). axios uses api.axios.com/feed/ (not
-# www.axios.com/feeds/feed.rss). nikkei_asia is distinct from
-# scmp_asia / bbc_asia. npr_news is an RSS id, distinct from X handle NPR.
-_AXIOS_NIKKEI_NPR_PRIMARY = {
+# www.axios.com/feeds/feed.rss). npr_news is an RSS id, distinct from
+# X handle NPR. nikkei_asia is not registered: its RSS is title+link
+# only, which #43 thin-skip would insert as 0.
+_AXIOS_NPR_PRIMARY = {
     "axios": {
         "name": "Axios",
         "feed_url": "https://api.axios.com/feed/",
         "category": "综合",
-    },
-    "nikkei_asia": {
-        "name": "Nikkei Asia",
-        "feed_url": "https://asia.nikkei.com/rss/feed/nar",
-        "category": "国际·亚太",
     },
     "npr_news": {
         "name": "NPR News",
@@ -172,15 +168,8 @@ _AXIOS_NIKKEI_NPR_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 32
+_EXPECTED_PRIMARY_COUNT = 31
 _EXPECTED_CONTROL_COUNT = 1
-
-
-def _feed_entry_count(root: ET.Element) -> int:
-    """RSS 2.0 <item>, RSS 1.0 RDF namespaced item, or Atom <entry>."""
-    items = root.findall(".//{*}item")
-    entries = root.findall(".//{http://www.w3.org/2005/Atom}entry")
-    return len(items) + len(entries)
 
 
 def test_source_ids_unique():
@@ -331,7 +320,7 @@ def test_china_asia_tech_primaries_registered():
         assert source.category == expected["category"]
 
 
-def test_axios_nikkei_npr_primaries_registered():
+def test_axios_npr_primaries_registered():
     by_id = {s.id: s for s in SOURCES}
     # Existing original-P0 ids stay; they are not this batch's adds.
     assert "nyt_world" in by_id
@@ -349,14 +338,11 @@ def test_axios_nikkei_npr_primaries_registered():
     assert "axios" in by_id
     assert by_id["axios"].feed_url == "https://api.axios.com/feed/"
     assert by_id["axios"].feed_url != "https://www.axios.com/feeds/feed.rss"
-    assert "scmp_asia" in by_id
-    assert "bbc_asia" in by_id
-    assert "nikkei_asia" in by_id
-    assert by_id["nikkei_asia"].feed_url != by_id["scmp_asia"].feed_url
-    assert by_id["nikkei_asia"].feed_url != by_id["bbc_asia"].feed_url
     assert "npr_news" in by_id
     assert by_id["npr_news"].id == "npr_news"
-    for source_id, expected in _AXIOS_NIKKEI_NPR_PRIMARY.items():
+    # Title+link-only Nikkei RSS is not registered (would skip-insert under #43).
+    assert "nikkei_asia" not in by_id
+    for source_id, expected in _AXIOS_NPR_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
         assert source.role == "primary"
@@ -510,10 +496,10 @@ def test_china_asia_tech_feeds_live_http_200():
         assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
 
 
-def test_axios_nikkei_npr_feeds_live_http_200():
-    """Hit the three new feeds with the same headers fetch_source sends (not stubs)."""
+def test_axios_npr_feeds_live_http_200():
+    """Hit the two new feeds with the same headers fetch_source sends (not stubs)."""
     by_id = {s.id: s for s in SOURCES}
-    for source_id in _AXIOS_NIKKEI_NPR_PRIMARY:
+    for source_id in _AXIOS_NPR_PRIMARY:
         source = by_id[source_id]
         request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
         try:
@@ -527,7 +513,9 @@ def test_axios_nikkei_npr_feeds_live_http_200():
         assert status == 200, f"{source_id} HTTP {status}"
         assert body, f"{source_id} empty body"
         root = ET.fromstring(body)
-        count = _feed_entry_count(root)
+        items = root.findall(".//item")
+        entries = root.findall(".//{http://www.w3.org/2005/Atom}entry")
+        count = len(items) + len(entries)
         assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
 
 
@@ -541,12 +529,12 @@ if __name__ == "__main__":
     test_biz_tech_primaries_registered()
     test_biz_science_tech_primaries_registered()
     test_china_asia_tech_primaries_registered()
-    test_axios_nikkei_npr_primaries_registered()
+    test_axios_npr_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
     test_biz_tech_feeds_live_http_200()
     test_biz_science_tech_feeds_live_http_200()
     test_china_asia_tech_feeds_live_http_200()
-    test_axios_nikkei_npr_feeds_live_http_200()
+    test_axios_npr_feeds_live_http_200()
     print("✓ source registry tests PASSED")

@@ -226,13 +226,6 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
-        id="nikkei_asia",
-        name="Nikkei Asia",
-        feed_url="https://asia.nikkei.com/rss/feed/nar",
-        category="国际·亚太",
-        role="primary",
-    ),
-    Source(
         id="npr_news",
         name="NPR News",
         feed_url="https://feeds.npr.org/1001/rss.xml",

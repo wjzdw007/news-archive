@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（32 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（31 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -36,7 +36,6 @@
 | `bbc_asia` | BBC Asia | https://feeds.bbci.co.uk/news/world/asia/rss.xml | primary |
 | `verge` | The Verge | https://www.theverge.com/rss/index.xml | primary |
 | `axios` | Axios | https://api.axios.com/feed/ | primary |
-| `nikkei_asia` | Nikkei Asia | https://asia.nikkei.com/rss/feed/nar | primary |
 | `npr_news` | NPR News | https://feeds.npr.org/1001/rss.xml | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
