@@ -15,11 +15,14 @@
     "SCMPNews",
     "Bloomberg",
     "WIRED",
-    "AFP"
+    "AFP",
+    "CNBC",
+    "AJEnglish",
+    "Nature"
   ],
   "mode": "live",
   "inserted": 5,
   "gone": 0,
-  "seen": 6,
+  "seen": 7,
   "status": "ok"
 }
