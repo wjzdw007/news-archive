@@ -16,12 +16,23 @@ def _write_jsonl(path: Path, rows: list[dict]) -> None:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
 
-def test_import_four_accounts_nonempty_snapshot():
+_WHITELIST_ACCOUNTS = [
+    "BBCChinese",
+    "Reuters",
+    "FT",
+    "TechCrunch",
+    "Tesla",
+    "elonmusk",
+    "AP",
+]
+
+
+def test_import_whitelist_accounts_nonempty_snapshot():
     with tempfile.TemporaryDirectory() as tmp:
         db = Path(tmp) / "a.sqlite3"
         jl = Path(tmp) / "x.jsonl"
         rows = []
-        for author in ["BBCChinese", "Reuters", "FT", "TechCrunch"]:
+        for author in _WHITELIST_ACCOUNTS:
             rows.append(
                 {
                     "post_id": f"id-{author}-1",
@@ -34,12 +45,12 @@ def test_import_four_accounts_nonempty_snapshot():
         _write_jsonl(jl, rows)
         store = XStore(db)
         stats = import_jsonl(store, jl)
-        assert stats["inserted"] == 4
-        for author in ["BBCChinese", "Reuters", "FT", "TechCrunch"]:
+        assert stats["inserted"] == 7
+        for author in _WHITELIST_ACCOUNTS:
             row = store.get(f"id-{author}-1")
             assert row and row["text_snapshot"]
         store.close()
-    print("✓ 1 four accounts import")
+    print("✓ 1 whitelist accounts import")
 
 
 def test_dedupe_same_post_id():
@@ -110,7 +121,7 @@ def test_import_failure_soft_cli():
 
 
 if __name__ == "__main__":
-    test_import_four_accounts_nonempty_snapshot()
+    test_import_whitelist_accounts_nonempty_snapshot()
     test_dedupe_same_post_id()
     test_mark_gone_keeps_snapshot()
     test_import_failure_soft_cli()

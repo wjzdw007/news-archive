@@ -32,7 +32,7 @@
 4. **日报** (`#daily`)
    - 默认上海日历「今天」；可切换近 7 日
    - `status=ok`：导语 + RSS 最多 8 个分组（优先已有 `topic_id`；未归类最多一个「其它」）
-   - 当日 `x_posts`（`status=active`，既有 4 个账号）按上海日历 `posted_at` 进入独立分组 **「X 动态」**（`topic_id` 固定 `"x-daily"`，不并入 RSS 聚类）；无当日 X 帖则整节省略（不是 failed）
+   - 当日 `x_posts`（`status=active`，白名单 `BBCChinese` / `Reuters` / `FT` / `TechCrunch` / `Tesla` / `elonmusk` / `AP`）按上海日历 `posted_at` 进入独立分组 **「X 动态」**（`topic_id` 固定 `"x-daily"`，不并入 RSS 聚类）；无当日 X 帖则整节省略（不是 failed）
    - 「X 动态」子弹 1–3 条（跨账号综述，不是一帖一条）；`links` ≤8，`source` 为作者；LLM/展示只用 `author` / `text_snapshot` / `url` / `posted_at`（截断后的 `text_snapshot` 来自 SQLite，不调 GraphQL / X API）
    - `status=empty` 或无记录：空态「当日暂无摘要」
    - `status=failed`：降级文案「当日摘要生成失败」（不打断 Pages）
