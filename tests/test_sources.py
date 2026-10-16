@@ -154,7 +154,7 @@ _CHINA_ASIA_TECH_PRIMARY = {
 # guardian_technology). axios uses api.axios.com/feed/ (not
 # www.axios.com/feeds/feed.rss). npr_news is an RSS id, distinct from
 # X handle NPR. japan_times is distinct from scmp_asia / bbc_asia.
-# nikkei_asia / sky_world are not registered (Nikkei is title+link only).
+# nikkei_asia is not registered (title+link only). sky_world is batch9.
 _AXIOS_NPR_JAPAN_PRIMARY = {
     "axios": {
         "name": "Axios",
@@ -173,7 +173,30 @@ _AXIOS_NPR_JAPAN_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 32
+# CEO-approved Sky / Le Monde / CBS RSS primaries (batch9).
+# These three are the new adds. sky_world is distinct from bbc_world;
+# lemonde is a new FR front-page feed; cbs_news is an RSS id, distinct
+# from X handle CBSNews. bbc_europe is not registered (no backup).
+# nikkei_asia stays unregistered (title+link only).
+_SKY_LEMONDE_CBS_PRIMARY = {
+    "sky_world": {
+        "name": "Sky News World",
+        "feed_url": "https://feeds.skynews.com/feeds/rss/world.xml",
+        "category": "国际",
+    },
+    "lemonde": {
+        "name": "Le Monde",
+        "feed_url": "https://www.lemonde.fr/rss/une.xml",
+        "category": "国际",
+    },
+    "cbs_news": {
+        "name": "CBS News",
+        "feed_url": "https://www.cbsnews.com/latest/rss/main",
+        "category": "综合",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 35
 _EXPECTED_CONTROL_COUNT = 1
 
 
@@ -352,8 +375,29 @@ def test_axios_npr_japan_primaries_registered():
     assert by_id["japan_times"].feed_url != by_id["bbc_asia"].feed_url
     # Title+link-only Nikkei RSS is not registered (would skip-insert under #43).
     assert "nikkei_asia" not in by_id
-    assert "sky_world" not in by_id
     for source_id, expected in _AXIOS_NPR_JAPAN_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_sky_lemonde_cbs_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "bbc_world" in by_id
+    assert "sky_world" in by_id
+    assert by_id["bbc_world"].feed_url == "https://feeds.bbci.co.uk/news/world/rss.xml"
+    assert by_id["sky_world"].feed_url != by_id["bbc_world"].feed_url
+    assert "lemonde" in by_id
+    assert by_id["lemonde"].feed_url == "https://www.lemonde.fr/rss/une.xml"
+    assert "cbs_news" in by_id
+    assert by_id["cbs_news"].id == "cbs_news"
+    # No backup Europe feed; this batch is RSS-only (X CBSNews/SkyNews untouched).
+    assert "bbc_europe" not in by_id
+    assert "nikkei_asia" not in by_id
+    for source_id, expected in _SKY_LEMONDE_CBS_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
         assert source.role == "primary"
@@ -541,6 +585,39 @@ def test_axios_npr_japan_feeds_live_http_200():
             )
 
 
+def test_sky_lemonde_cbs_feeds_live_http_200():
+    """Hit the three new feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _SKY_LEMONDE_CBS_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(body)
+        items = root.findall(".//item")
+        entries = root.findall(".//{http://www.w3.org/2005/Atom}entry")
+        count = len(items) + len(entries)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # #43 thin-skip: empty description would insert 0. Product lock
+        # requires non-empty RSS description/summary on these feeds.
+        nonempty = 0
+        for item in items:
+            desc = (item.findtext("description") or "").strip()
+            if desc:
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -552,6 +629,7 @@ if __name__ == "__main__":
     test_biz_science_tech_primaries_registered()
     test_china_asia_tech_primaries_registered()
     test_axios_npr_japan_primaries_registered()
+    test_sky_lemonde_cbs_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -559,4 +637,5 @@ if __name__ == "__main__":
     test_biz_science_tech_feeds_live_http_200()
     test_china_asia_tech_feeds_live_http_200()
     test_axios_npr_japan_feeds_live_http_200()
+    test_sky_lemonde_cbs_feeds_live_http_200()
     print("✓ source registry tests PASSED")
