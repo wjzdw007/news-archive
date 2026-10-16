@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -84,6 +85,19 @@ def main(argv: list[str] | None = None) -> int:
     except Exception as exc:  # noqa: BLE001 — isolate from persist / clustering
         stats["enrich_error"] = type(exc).__name__
         print(f"enrich soft-fail (job continues): {type(exc).__name__}", file=sys.stderr)
+
+    # After enrich / before validate: drop stuck both-empty active rows
+    # (e.g. nyt_business live-blog already on the data branch). Idempotent.
+    purged = store.purge_both_empty_active()
+    stats["purged_both_empty"] = purged
+    print(f"purged_both_empty={purged}", file=sys.stderr)
+    summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary_path:
+        out = Path(summary_path)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        with out.open("a", encoding="utf-8") as handle:
+            handle.write("\n## Thin-row heal\n\n")
+            handle.write(f"- **deleted both-empty active rows:** {purged}\n")
 
     # Recluster: clear topic_ids not covered by an ok brief, then assign
     cleared = store.clear_topic_ids_without_ok_brief()

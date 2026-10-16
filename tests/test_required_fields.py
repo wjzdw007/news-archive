@@ -110,8 +110,8 @@ def test_nonempty_rss_description_still_inserts():
     print("✓ normal description still inserts (summary ≤280, not title)")
 
 
-def test_required_fields_stays_zero_tolerance_for_both_empty():
-    """Hard gate is unchanged: a pre-existing both-empty row still fails."""
+def test_purge_deletes_titled_both_empty_then_required_fields_pass():
+    """Pre-seeded titled both-empty row is deleted; Required Fields then passes."""
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = Path(tmpdir) / "archive.sqlite3"
         store = Store(db_path)
@@ -131,7 +131,15 @@ def test_required_fields_stays_zero_tolerance_for_both_empty():
                 snapshot="Private body",
             )
         )
-        store.close()
+        store.upsert(
+            _article(
+                "https://example.com/gone",
+                title="Gone title-only",
+                summary=None,
+                snapshot=None,
+                status="gone",
+            )
+        )
 
         conn = sqlite3.connect(db_path)
         passed, message = check_required_fields(conn)
@@ -139,8 +147,28 @@ def test_required_fields_stays_zero_tolerance_for_both_empty():
         assert passed is False
         assert "content_snapshot+summary both empty: 1/" in message
 
-        clean = Path(tmpdir) / "clean.sqlite3"
-        store = Store(clean)
+        deleted = store.purge_both_empty_active()
+        assert deleted == 1
+        assert store.get_article(_NYT_LIVE_URL) is None
+        kept = store.get_article("https://example.com/ok")
+        assert kept is not None
+        assert kept["summary"] == "Has a teaser"
+        gone = store.get_article("https://example.com/gone")
+        assert gone is not None
+        assert gone["status"] == "gone"
+        store.close()
+
+        conn = sqlite3.connect(db_path)
+        passed, message = check_required_fields(conn)
+        conn.close()
+        assert passed is True, message
+        assert "both empty" not in message
+        print("✓ purge deletes titled both-empty; normal rows kept; Required Fields PASS")
+
+
+def test_purge_on_clean_db_deletes_zero():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        store = Store(Path(tmpdir) / "archive.sqlite3")
         store.upsert(
             _article(
                 "https://example.com/ok",
@@ -149,13 +177,13 @@ def test_required_fields_stays_zero_tolerance_for_both_empty():
                 snapshot="Private body",
             )
         )
+        assert store.purge_both_empty_active() == 0
+        assert store.purge_both_empty_active() == 0
+        row = store.get_article("https://example.com/ok")
         store.close()
-        conn = sqlite3.connect(clean)
-        passed, message = check_required_fields(conn)
-        conn.close()
-        assert passed is True, message
-        assert "both empty" not in message
-        print("✓ Required Fields stays zero-tolerance; skip-only does not fill")
+        assert row is not None
+        assert row["summary"] == "Has a teaser"
+        print("✓ heal on clean DB deletes 0 (idempotent)")
 
 
 def test_public_export_omits_snapshot_and_caps_summary():
@@ -202,7 +230,8 @@ if __name__ == "__main__":
         test_empty_description_with_title_is_skipped()
         test_true_both_empty_without_title_is_skipped()
         test_nonempty_rss_description_still_inserts()
-        test_required_fields_stays_zero_tolerance_for_both_empty()
+        test_purge_deletes_titled_both_empty_then_required_fields_pass()
+        test_purge_on_clean_db_deletes_zero()
         test_public_export_omits_snapshot_and_caps_summary()
         print("\n" + "=" * 70)
         print("ALL TESTS PASSED ✓")

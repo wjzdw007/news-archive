@@ -232,6 +232,23 @@ class Store:
         self._conn.commit()
         return cur.rowcount == 1
 
+    def purge_both_empty_active(self) -> int:
+        """One-shot heal: delete active rows missing both summary and snapshot.
+
+        Idempotent: clean DBs delete 0. Does not fill summary from title.
+        Leaves gone rows and any row that still has summary or snapshot.
+        """
+        cur = self._conn.execute(
+            """
+            DELETE FROM articles
+            WHERE status = 'active'
+              AND (summary IS NULL OR trim(summary) = '')
+              AND (content_snapshot IS NULL OR trim(content_snapshot) = '')
+            """
+        )
+        self._conn.commit()
+        return cur.rowcount
+
     def mark_gone(self, url: str) -> bool:
         cur = self._conn.execute(
             "UPDATE articles SET status = 'gone' WHERE url = ? AND status != 'gone'",
