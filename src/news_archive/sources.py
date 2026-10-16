@@ -1,4 +1,4 @@
-"""P0 sources: non-official primary + international + 1 official control."""
+"""P0 sources: non-official primary + international + EV/hard-tech + 1 official control."""
 
 from __future__ import annotations
 
@@ -69,6 +69,27 @@ SOURCES: tuple[Source, ...] = (
         name="Al Jazeera",
         feed_url="https://www.aljazeera.com/xml/rss/all.xml",
         category="国际",
+        role="primary",
+    ),
+    Source(
+        id="electrek",
+        name="Electrek",
+        feed_url="https://electrek.co/feed/",
+        category="汽车·EV",
+        role="primary",
+    ),
+    Source(
+        id="insideevs",
+        name="InsideEVs",
+        feed_url="https://insideevs.com/rss/news/all/",
+        category="汽车·EV",
+        role="primary",
+    ),
+    Source(
+        id="verge_transport",
+        name="The Verge Transportation",
+        feed_url="https://www.theverge.com/rss/transportation/index.xml",
+        category="硬科技·出行",
         role="primary",
     ),
     Source(
