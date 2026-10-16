@@ -21,11 +21,14 @@
     "Nature",
     "SkyNews",
     "ABC",
-    "CBSNews"
+    "CBSNews",
+    "axios",
+    "NikkeiAsia",
+    "politico"
   ],
   "mode": "live",
-  "inserted": 15,
+  "inserted": 13,
   "gone": 0,
-  "seen": 20,
+  "seen": 17,
   "status": "ok"
 }
