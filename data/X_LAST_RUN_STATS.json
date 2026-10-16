@@ -9,11 +9,14 @@
     "AP",
     "WSJ",
     "BBCWorld",
-    "NPR"
+    "NPR",
+    "nytimes",
+    "TheEconomist",
+    "SCMPNews"
   ],
   "mode": "live",
-  "inserted": 4,
+  "inserted": 7,
   "gone": 0,
-  "seen": 4,
+  "seen": 8,
   "status": "ok"
 }
