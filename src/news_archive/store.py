@@ -7,7 +7,7 @@ import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .schema import Article, title_as_summary
+from .schema import Article
 
 SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS articles (
@@ -231,36 +231,6 @@ class Store:
         )
         self._conn.commit()
         return cur.rowcount == 1
-
-    def fill_empty_summaries_from_title(self) -> int:
-        """Heal active both-empty rows that still have a title.
-
-        Fills summary from the trimmed title (≤280). Does not delete titled
-        rows. Next daily-fetch self-heals the data-branch live-blog orphan.
-        Required Fields stays zero-tolerance for whatever remains both-empty.
-        """
-        rows = self._conn.execute(
-            """
-            SELECT url, title FROM articles
-            WHERE status = 'active'
-              AND (content_snapshot IS NULL OR trim(content_snapshot) = '')
-              AND (summary IS NULL OR trim(summary) = '')
-              AND title IS NOT NULL AND trim(title) != ''
-            """
-        ).fetchall()
-        filled = 0
-        for row in rows:
-            summary = title_as_summary(row["title"])
-            if not summary:
-                continue
-            self._conn.execute(
-                "UPDATE articles SET summary = ? WHERE url = ?",
-                (summary, row["url"]),
-            )
-            filled += 1
-        if filled:
-            self._conn.commit()
-        return filled
 
     def mark_gone(self, url: str) -> bool:
         cur = self._conn.execute(

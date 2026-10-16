@@ -85,13 +85,6 @@ def main(argv: list[str] | None = None) -> int:
         stats["enrich_error"] = type(exc).__name__
         print(f"enrich soft-fail (job continues): {type(exc).__name__}", file=sys.stderr)
 
-    # Heal titled rows that landed both-empty (empty RSS description +
-    # enrich backoff). Do not delete them; fill summary from title (≤280).
-    healed = store.fill_empty_summaries_from_title()
-    stats["healed_empty_summaries"] = healed
-    if healed:
-        print(f"healed_empty_summaries={healed} (title fallback)", file=sys.stderr)
-
     # Recluster: clear topic_ids not covered by an ok brief, then assign
     cleared = store.clear_topic_ids_without_ok_brief()
     stats["recluster_cleared"] = cleared

@@ -1,4 +1,4 @@
-"""Empty RSS description must not hard-fail daily-fetch Required Fields."""
+"""Thin RSS items are skipped so Required Fields is not failed by title-only rows."""
 
 from __future__ import annotations
 
@@ -10,10 +10,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from news_archive.fetch import article_from_entry
-from news_archive.schema import PUBLIC_SUMMARY_MAX, Article, title_as_summary
+from news_archive.schema import Article
 from news_archive.sources import Source
 from news_archive.store import Store
 from news_archive.validate import check_required_fields
+
+PUBLIC_SUMMARY_MAX = 280
 
 _NYT_LIVE_URL = (
     "https://www.nytimes.com/live/2026/10/14/business/"
@@ -54,8 +56,8 @@ def _article(
     )
 
 
-def test_empty_rss_description_falls_back_to_title():
-    """Ingest: empty RSS description / summary → public summary is title (≤280)."""
+def test_empty_description_with_title_is_skipped():
+    """Thin: has title, empty RSS body → skip insert; summary is never title."""
     entry = {
         "link": _NYT_LIVE_URL,
         "title": _NYT_LIVE_TITLE,
@@ -63,39 +65,14 @@ def test_empty_rss_description_falls_back_to_title():
         "description": "   ",
     }
     article = article_from_entry(entry, _NYT_BUSINESS, _now())
-    assert article is not None
-    assert article.summary == _NYT_LIVE_TITLE
-    assert article.content_snapshot is None
-    assert len(article.summary) <= PUBLIC_SUMMARY_MAX
-    print("✓ ingest empty RSS description → summary becomes title (≤280)")
+    assert article is None
 
-
-def test_empty_rss_description_truncates_long_title():
-    title = "甲" * 400
-    entry = {
-        "link": "https://example.com/long-title-only",
-        "title": title,
-        "summary": None,
-        "description": None,
-    }
-    article = article_from_entry(entry, _NYT_BUSINESS, _now())
-    assert article is not None
-    assert article.summary == "甲" * PUBLIC_SUMMARY_MAX
-    assert len(article.summary) == PUBLIC_SUMMARY_MAX
-    print("✓ ingest empty description + long title → summary capped at 280")
-
-
-def test_nonempty_rss_description_is_kept():
-    entry = {
-        "link": "https://example.com/has-desc",
-        "title": "Headline",
-        "summary": "RSS teaser that should stay.",
-    }
-    article = article_from_entry(entry, _NYT_BUSINESS, _now())
-    assert article is not None
-    assert article.summary == "RSS teaser that should stay."
-    assert len(article.summary) <= PUBLIC_SUMMARY_MAX
-    print("✓ ingest keeps a real RSS description (≤280)")
+    with tempfile.TemporaryDirectory() as tmpdir:
+        store = Store(Path(tmpdir) / "archive.sqlite3")
+        # Ingest path never produces an Article; nothing is upserted.
+        assert store.get_article(_NYT_LIVE_URL) is None
+        store.close()
+    print("✓ empty description + title is skipped; summary never = title")
 
 
 def test_true_both_empty_without_title_is_skipped():
@@ -110,18 +87,31 @@ def test_true_both_empty_without_title_is_skipped():
     print("✓ true both-empty (no title, no body) is skipped")
 
 
-def test_missing_title_is_not_inserted_even_with_description():
+def test_nonempty_rss_description_still_inserts():
     entry = {
-        "link": "https://example.com/body-only",
-        "title": "",
-        "summary": "Has a teaser but no title.",
+        "link": "https://example.com/has-desc",
+        "title": "Headline",
+        "summary": "RSS teaser that should stay.",
     }
-    assert article_from_entry(entry, _NYT_BUSINESS, _now()) is None
-    print("✓ missing title is skipped (title is required)")
+    article = article_from_entry(entry, _NYT_BUSINESS, _now())
+    assert article is not None
+    assert article.summary == "RSS teaser that should stay."
+    assert article.summary != article.title
+    assert len(article.summary) <= PUBLIC_SUMMARY_MAX
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "archive.sqlite3"
+        store = Store(db_path)
+        assert store.upsert(article)
+        row = store.get_article(article.url)
+        store.close()
+        assert row is not None
+        assert row["summary"] == "RSS teaser that should stay."
+    print("✓ normal description still inserts (summary ≤280, not title)")
 
 
-def test_required_fields_fails_on_both_empty_then_passes_after_heal():
-    """Validate stays zero-tolerance; self-heal fills title so the check can pass."""
+def test_required_fields_stays_zero_tolerance_for_both_empty():
+    """Hard gate is unchanged: a pre-existing both-empty row still fails."""
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = Path(tmpdir) / "archive.sqlite3"
         store = Store(db_path)
@@ -149,53 +139,26 @@ def test_required_fields_fails_on_both_empty_then_passes_after_heal():
         assert passed is False
         assert "content_snapshot+summary both empty: 1/" in message
 
-        store = Store(db_path)
-        healed = store.fill_empty_summaries_from_title()
-        assert healed == 1
-        row = store.get_article(_NYT_LIVE_URL)
-        assert row is not None
-        assert row["summary"] == _NYT_LIVE_TITLE
-        assert row["content_snapshot"] is None
-        assert len(row["summary"]) <= PUBLIC_SUMMARY_MAX
+        clean = Path(tmpdir) / "clean.sqlite3"
+        store = Store(clean)
+        store.upsert(
+            _article(
+                "https://example.com/ok",
+                title="Normal story",
+                summary="Has a teaser",
+                snapshot="Private body",
+            )
+        )
         store.close()
-
-        conn = sqlite3.connect(db_path)
+        conn = sqlite3.connect(clean)
         passed, message = check_required_fields(conn)
         conn.close()
         assert passed is True, message
         assert "both empty" not in message
-        print("✓ Required Fields fails on both-empty, passes after title heal")
+        print("✓ Required Fields stays zero-tolerance; skip-only does not fill")
 
 
-def test_heal_does_not_overwrite_existing_summary_or_gone():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        db_path = Path(tmpdir) / "archive.sqlite3"
-        store = Store(db_path)
-        store.upsert(
-            _article(
-                "https://example.com/keep",
-                title="Keep title",
-                summary="Keep summary",
-                snapshot=None,
-            )
-        )
-        store.upsert(
-            _article(
-                "https://example.com/gone",
-                title="Gone title",
-                summary=None,
-                snapshot=None,
-                status="gone",
-            )
-        )
-        assert store.fill_empty_summaries_from_title() == 0
-        assert store.get_article("https://example.com/keep")["summary"] == "Keep summary"
-        assert store.get_article("https://example.com/gone")["summary"] is None
-        store.close()
-        print("✓ heal skips rows that already have summary, and gone rows")
-
-
-def test_public_export_omits_snapshot_and_caps_healed_summary():
+def test_public_export_omits_snapshot_and_caps_summary():
     """Public articles.json still omits content_snapshot; summary ≤280."""
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from export_site_data import export_articles
@@ -206,9 +169,9 @@ def test_public_export_omits_snapshot_and_caps_healed_summary():
         store = Store(db_path)
         article = article_from_entry(
             {
-                "link": "https://example.com/title-only",
-                "title": "乙" * 400,
-                "summary": "",
+                "link": "https://example.com/has-desc",
+                "title": "Headline",
+                "summary": "乙" * 400,
             },
             _NYT_BUSINESS,
             _now(),
@@ -228,31 +191,19 @@ def test_public_export_omits_snapshot_and_caps_healed_summary():
         assert "content_snapshot" not in exported[0]
         assert exported[0]["summary"] == "乙" * PUBLIC_SUMMARY_MAX
         assert len(exported[0]["summary"]) <= PUBLIC_SUMMARY_MAX
-        print("✓ public export omits content_snapshot; healed summary ≤280")
-
-
-def test_title_as_summary_helper():
-    assert title_as_summary("  hi  ") == "hi"
-    assert title_as_summary("   ") is None
-    assert title_as_summary(None) is None
-    assert title_as_summary("x" * 281) == "x" * PUBLIC_SUMMARY_MAX
-    print("✓ title_as_summary trims and caps at 280")
+        print("✓ public export omits content_snapshot; summary ≤280")
 
 
 if __name__ == "__main__":
     print("\n" + "=" * 70)
-    print("Testing empty-summary title fallback / Required Fields")
+    print("Testing thin RSS skip / Required Fields")
     print("=" * 70)
     try:
-        test_empty_rss_description_falls_back_to_title()
-        test_empty_rss_description_truncates_long_title()
-        test_nonempty_rss_description_is_kept()
+        test_empty_description_with_title_is_skipped()
         test_true_both_empty_without_title_is_skipped()
-        test_missing_title_is_not_inserted_even_with_description()
-        test_required_fields_fails_on_both_empty_then_passes_after_heal()
-        test_heal_does_not_overwrite_existing_summary_or_gone()
-        test_public_export_omits_snapshot_and_caps_healed_summary()
-        test_title_as_summary_helper()
+        test_nonempty_rss_description_still_inserts()
+        test_required_fields_stays_zero_tolerance_for_both_empty()
+        test_public_export_omits_snapshot_and_caps_summary()
         print("\n" + "=" * 70)
         print("ALL TESTS PASSED ✓")
         print("=" * 70)

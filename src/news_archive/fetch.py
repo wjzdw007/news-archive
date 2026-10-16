@@ -10,7 +10,7 @@ from typing import Iterable
 import feedparser
 import httpx
 
-from .schema import Article, title_as_summary
+from .schema import Article
 from .sources import Source
 
 # Solidot (and some other feeds) 403 bare curl / empty-UA clients. A browser
@@ -71,8 +71,8 @@ def article_from_entry(
 ) -> Article | None:
     """Normalize one RSS entry.
 
-    Title + empty RSS description → public summary from trimmed title (≤280).
-    No usable title and no body (summary/description/content:encoded) → skip.
+    Thin items (title but no description/summary/content:encoded body) are
+    skipped — do not fill summary from title. True both-empty is also skipped.
     """
     url = _clean_text(entry.get("link") or entry.get("id"))
     title = _clean_text(entry.get("title"))
@@ -80,12 +80,8 @@ def article_from_entry(
     snapshot = _content_snapshot(entry)
     if not url:
         return None
-    if not title and not summary and not snapshot:
-        return None
     if not title:
         return None
-    if not summary:
-        summary = title_as_summary(title)
     if not summary and not snapshot:
         return None
     published = _to_iso(

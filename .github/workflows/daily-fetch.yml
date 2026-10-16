@@ -177,7 +177,7 @@ jobs:
         run: |
           PYTHONPATH=src python tests/test_enrich.py
 
-      - name: Test empty-summary title fallback (Required Fields)
+      - name: Test thin RSS skip (Required Fields)
         run: |
           PYTHONPATH=src python tests/test_required_fields.py
 
