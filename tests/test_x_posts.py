@@ -104,9 +104,12 @@ def test_5_no_keyword_search_in_news_config():
         "SkyNews",
         "ABC",
         "CBSNews",
+        "axios",
+        "NikkeiAsia",
+        "politico",
     ]
     assert x_config.X_NEWS_ACCOUNTS == expected
-    assert len(x_config.X_NEWS_ACCOUNTS) == 22
+    assert len(x_config.X_NEWS_ACCOUNTS) == 25
     # guard: no queries list for full-site search in this slice
     assert not hasattr(x_config, "X_QUERIES") or not getattr(x_config, "X_QUERIES")
     print("✓ 5 account-only config")
