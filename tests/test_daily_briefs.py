@@ -970,7 +970,10 @@ def test_x_links_cap_eight_and_bullets_cap_three():
             "SkyNews",
             "ABC",
             "CBSNews",
-        ][i % 22]
+            "axios",
+            "NikkeiAsia",
+            "politico",
+        ][i % 25]
         posts.append(
             _x(
                 author=author,
