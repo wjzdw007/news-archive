@@ -240,6 +240,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="sky_world",
+        name="Sky News World",
+        feed_url="https://feeds.skynews.com/feeds/rss/world.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="lemonde",
+        name="Le Monde",
+        feed_url="https://www.lemonde.fr/rss/une.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="cbs_news",
+        name="CBS News",
+        feed_url="https://www.cbsnews.com/latest/rss/main",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

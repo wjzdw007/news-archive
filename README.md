@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（32 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（35 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -38,6 +38,9 @@
 | `axios` | Axios | https://api.axios.com/feed/ | primary |
 | `npr_news` | NPR News | https://feeds.npr.org/1001/rss.xml | primary |
 | `japan_times` | Japan Times | https://www.japantimes.co.jp/feed/ | primary |
+| `sky_world` | Sky News World | https://feeds.skynews.com/feeds/rss/world.xml | primary |
+| `lemonde` | Le Monde | https://www.lemonde.fr/rss/une.xml | primary |
+| `cbs_news` | CBS News | https://www.cbsnews.com/latest/rss/main | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
