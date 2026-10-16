@@ -31,10 +31,12 @@ from news_archive.enrich import (
     html_to_text,
     is_usable_snapshot,
     needs_summary_fill,
+    render_diversity_summary,
     render_job_summary,
     should_fetch_page,
     write_job_summary,
 )
+from news_archive.news_display import display_window_diversity
 from news_archive.enrich_alternates import (
     MAX_ALTERNATES_PER_ARTICLE,
     alternate_urls_for,
@@ -801,6 +803,44 @@ def test_job_summary_coverage_board_omits_snapshot_body():
         store.close()
 
 
+def test_job_summary_primary_source_max_is_display_window_not_raw():
+    """Primary diversity line is display-window max; raw front-50 is diagnostic only."""
+    articles = json.loads((FIXTURES / "news_source_diversity.json").read_text(encoding="utf-8"))
+    diversity = display_window_diversity(articles)
+    assert diversity["display_max"] == 6
+    assert diversity["display_max_source"] == "36kr"
+    assert diversity["raw_max"] == 20
+    assert diversity["raw_max"] > diversity["display_max"]
+
+    md = render_job_summary(
+        {
+            "candidates": 0,
+            "fetched": 0,
+            "soft_failed": 0,
+            "skipped": 0,
+            "by_source": {},
+            "coverage": {"usable_snapshots": 0, "active_articles": 0},
+        },
+        diversity=diversity,
+    )
+    section = render_diversity_summary(diversity)
+    assert "### News list diversity (display-window)" in md
+    assert section in md
+    assert "**display-window same-source max:** 6 (`36kr`)" in md
+    assert "NEWS_SOURCE_CAP=6" in md
+    assert "raw published_at-order front-50 max: 20 (`36kr`)" in md
+    assert "not the display gate" in md
+    primary_at = md.index("**display-window same-source max:**")
+    raw_at = md.index("raw published_at-order front-50 max:")
+    assert primary_at < raw_at
+    # Bare/raw 20 must not be the primary bold number (false 'gate broken' alarm).
+    assert "**display-window same-source max:** 20" not in md
+    assert "content_snapshot" not in section
+    for article in articles:
+        assert article["url"] not in md
+        assert article["title"] not in md
+
+
 def test_cli_writes_job_summary_and_stays_green_on_nyt_backoff():
     nyt_urls = _nyt_urls(3)
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -846,6 +886,9 @@ def test_cli_writes_job_summary_and_stays_green_on_nyt_backoff():
         assert "Enrich coverage board" in body
         assert "nyt_world" in body
         assert "stopped (backoff)" in body
+        assert "display-window same-source max" in body
+        assert "NEWS_SOURCE_CAP=6" in body
+        assert "not the display gate" in body
         store = Store(db_path)
         assert store.get_enrich_backoff().get("nyt_world")
         store.close()
@@ -1056,6 +1099,7 @@ if __name__ == "__main__":
     test_http_budget_stays_at_40_when_nyt_would_burn_it()
     test_mixed_403_429_timeout_trips_backoff()
     test_job_summary_coverage_board_omits_snapshot_body()
+    test_job_summary_primary_source_max_is_display_window_not_raw()
     test_cli_writes_job_summary_and_stays_green_on_nyt_backoff()
     test_nyt_alternate_urls_are_amp_then_mobile()
     test_ftchinese_alternate_urls_are_mobile_then_amp()

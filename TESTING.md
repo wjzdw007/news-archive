@@ -227,7 +227,7 @@ PYTHONPATH=src python tests/test_enrich.py
 - people.cn 空摘要 fixture：入库后有 `content_snapshot`，公开 summary 80–280 字（回归）
 - 单源连续 3 次 HTTP 403/429/timeout：该源本轮停止 enqueue，写入 6 小时 cooldown（sqlite `enrich_backoff`，随 `data` 分支持久化）；其它源仍可抓；HTTP ≤40
 - 难抓源备用入口：primary 403/429/timeout/空 body → 按源尝试 ≤2 个 AMP/mobile 备用 URL；备用成功则入库 snapshot（公开 JSON 仍无 `content_snapshot`）；全部失败才按篇计入 backoff；每篇备用 GET 计入同一 40 次 HTTP 预算
-- daily-fetch 成功时写 GitHub Actions Job Summary（candidates / fetched / soft_failed / skipped + 分源 backoff + 私有 snapshot 覆盖率）；不新增公开 `/stats` 页，公开 JSON 仍无 `content_snapshot`
+- daily-fetch 成功时写 GitHub Actions Job Summary（candidates / fetched / soft_failed / skipped + 分源 backoff + 私有 snapshot 覆盖率 + News Tab **display-window** same-source max，算法与 `site/app.js` 的 `NEWS_SOURCE_CAP=6` 一致；raw `published_at` 前 50 仅作诊断，不是展示门禁）；不新增公开 `/stats` 页，公开 JSON 仍无 `content_snapshot`
 
 ### 标记失效 URL
 

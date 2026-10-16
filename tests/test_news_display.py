@@ -11,6 +11,13 @@ import subprocess
 from collections import Counter
 from pathlib import Path
 
+from news_archive.news_display import (
+    NEWS_DISPLAY_WINDOW as PY_WINDOW,
+    NEWS_SOURCE_CAP as PY_CAP,
+    build_news_display_model,
+    display_window_diversity,
+)
+
 ROOT = Path(__file__).parent.parent
 FIXTURES = Path(__file__).parent / "fixtures"
 APP_JS = ROOT / "site" / "app.js"
@@ -230,6 +237,44 @@ def test_non_flash_priority_for_source_cap():
     assert overflow_regular == squeezed_regular
 
 
+def test_python_display_window_matches_js_and_reports_capped_max():
+    """Job Summary helper must use the same cap/window as site/app.js."""
+    assert PY_WINDOW == WINDOW == 50
+    assert PY_CAP == CAP == 6
+    app_js = APP_JS.read_text(encoding="utf-8")
+    assert "const NEWS_DISPLAY_WINDOW = 50;" in app_js
+    assert "const NEWS_SOURCE_CAP = 6;" in app_js
+
+    articles = _load_fixture("news_source_diversity.json")
+    js = _eval_fixture(articles)
+    py_model = build_news_display_model(articles)
+    stats = display_window_diversity(articles)
+
+    assert [item["url"] for item in py_model["top"]] == [item["url"] for item in js["top"]]
+    assert stats["window"] == WINDOW
+    assert stats["cap"] == CAP
+    assert stats["display_window_size"] == WINDOW
+    assert stats["display_max"] == CAP
+    assert stats["display_max_source"] == "36kr"
+    assert stats["raw_max"] == 20
+    assert stats["raw_max_source"] == "36kr"
+    assert stats["display_max"] < stats["raw_max"]
+    assert stats["display_max"] == max(_source_counts(js["top"]).values())
+    assert max(_source_counts(js["displayOrder"][:WINDOW]).values()) <= CAP
+
+
+def test_python_display_window_non_flash_priority_matches_js():
+    articles = _load_fixture("news_newsflashes_priority.json")
+    js = _eval_fixture(articles)
+    py_model = build_news_display_model(articles)
+    stats = display_window_diversity(articles)
+    assert [item["url"] for item in py_model["top"]] == [item["url"] for item in js["top"]]
+    assert stats["display_max"] <= CAP
+    top_kr = [item for item in py_model["top"] if item["source"] == "36kr"]
+    assert len(top_kr) == CAP
+    assert all("newsflashes" not in item["url"] for item in top_kr)
+
+
 def test_newsflash_detector_and_badge_rules():
     helpers = _extract_news_display_helpers()
     script = helpers + """
@@ -262,5 +307,7 @@ if __name__ == "__main__":
     test_live_any_source_at_most_six_in_first_50()
     test_newsflashes_fold_and_badge_fixture()
     test_non_flash_priority_for_source_cap()
+    test_python_display_window_matches_js_and_reports_capped_max()
+    test_python_display_window_non_flash_priority_matches_js()
     test_newsflash_detector_and_badge_rules()
     print("✓ All news display tests passed")

@@ -15,6 +15,7 @@ from .briefs import (
 from .clustering import assign_topic_ids
 from .enrich import enrich_store, write_job_summary
 from .fetch import fetch_all
+from .news_display import display_window_diversity
 from .sources import SOURCES
 from .store import Store
 
@@ -65,7 +66,16 @@ def main(argv: list[str] | None = None) -> int:
     try:
         stats["enrich"] = enrich_store(store)
         try:
-            write_job_summary(stats["enrich"])  # type: ignore[arg-type]
+            diversity = None
+            try:
+                diversity = display_window_diversity(store.get_articles_for_news_list())
+                stats["display_diversity"] = diversity
+            except Exception as div_exc:  # noqa: BLE001 — board still writes enrich
+                print(
+                    f"enrich summary diversity soft-fail: {type(div_exc).__name__}",
+                    file=sys.stderr,
+                )
+            write_job_summary(stats["enrich"], diversity=diversity)  # type: ignore[arg-type]
         except Exception as summary_exc:  # noqa: BLE001 — never fail fetch
             print(
                 f"enrich summary soft-fail: {type(summary_exc).__name__}",
