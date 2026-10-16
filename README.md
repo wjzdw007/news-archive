@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（17 主力含国际 / 亚太 / EV / 硬科技 + 1 官方对照）
+## P0 源（20 主力含国际 / 亚太 / 中国 / EV / 硬科技 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -23,6 +23,9 @@
 | `scmp_asia` | SCMP Asia | https://www.scmp.com/rss/3/feed | primary |
 | `solidot` | Solidot | https://www.solidot.org/index.rss | primary |
 | `bbc_technology` | BBC Technology | https://feeds.bbci.co.uk/news/technology/rss.xml | primary |
+| `scmp_china` | SCMP China | https://www.scmp.com/rss/4/feed | primary |
+| `nyt_technology` | NYT Technology | https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml | primary |
+| `ifanr` | 爱范儿 | https://www.ifanr.com/feed | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema

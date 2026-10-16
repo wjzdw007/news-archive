@@ -135,6 +135,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="scmp_china",
+        name="SCMP China",
+        feed_url="https://www.scmp.com/rss/4/feed",
+        category="国际·中国",
+        role="primary",
+    ),
+    Source(
+        id="nyt_technology",
+        name="NYT Technology",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",
+        category="硬科技",
+        role="primary",
+    ),
+    Source(
+        id="ifanr",
+        name="爱范儿",
+        feed_url="https://www.ifanr.com/feed",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
