@@ -233,10 +233,11 @@ class Store:
         return cur.rowcount == 1
 
     def fill_empty_summaries_from_title(self) -> int:
-        """Heal active rows missing both summary and snapshot when title exists.
+        """Heal active both-empty rows that still have a title.
 
-        Next daily-fetch self-heals data-branch orphans without manual SQL.
-        Does not raise the Required Fields null-rate tolerance.
+        Fills summary from the trimmed title (≤280). Does not delete titled
+        rows. Next daily-fetch self-heals the data-branch live-blog orphan.
+        Required Fields stays zero-tolerance for whatever remains both-empty.
         """
         rows = self._conn.execute(
             """

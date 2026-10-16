@@ -94,7 +94,30 @@ def test_nonempty_rss_description_is_kept():
     article = article_from_entry(entry, _NYT_BUSINESS, _now())
     assert article is not None
     assert article.summary == "RSS teaser that should stay."
-    print("✓ ingest keeps a real RSS description")
+    assert len(article.summary) <= PUBLIC_SUMMARY_MAX
+    print("✓ ingest keeps a real RSS description (≤280)")
+
+
+def test_true_both_empty_without_title_is_skipped():
+    """No usable title and no summary/description → do not insert."""
+    entry = {
+        "link": "https://example.com/no-title-no-body",
+        "title": "   ",
+        "summary": "",
+        "description": None,
+    }
+    assert article_from_entry(entry, _NYT_BUSINESS, _now()) is None
+    print("✓ true both-empty (no title, no body) is skipped")
+
+
+def test_missing_title_is_not_inserted_even_with_description():
+    entry = {
+        "link": "https://example.com/body-only",
+        "title": "",
+        "summary": "Has a teaser but no title.",
+    }
+    assert article_from_entry(entry, _NYT_BUSINESS, _now()) is None
+    print("✓ missing title is skipped (title is required)")
 
 
 def test_required_fields_fails_on_both_empty_then_passes_after_heal():
@@ -224,6 +247,8 @@ if __name__ == "__main__":
         test_empty_rss_description_falls_back_to_title()
         test_empty_rss_description_truncates_long_title()
         test_nonempty_rss_description_is_kept()
+        test_true_both_empty_without_title_is_skipped()
+        test_missing_title_is_not_inserted_even_with_description()
         test_required_fields_fails_on_both_empty_then_passes_after_heal()
         test_heal_does_not_overwrite_existing_summary_or_gone()
         test_public_export_omits_snapshot_and_caps_healed_summary()

@@ -69,15 +69,25 @@ def article_from_entry(
     source: Source,
     fetched_at: str,
 ) -> Article | None:
-    """Normalize one RSS entry. Empty description falls back to title (≤280)."""
+    """Normalize one RSS entry.
+
+    Title + empty RSS description → public summary from trimmed title (≤280).
+    No usable title and no body (summary/description/content:encoded) → skip.
+    """
     url = _clean_text(entry.get("link") or entry.get("id"))
     title = _clean_text(entry.get("title"))
-    if not url or not title:
-        return None
     summary = _clean_text(entry.get("summary") or entry.get("description"))
+    snapshot = _content_snapshot(entry)
+    if not url:
+        return None
+    if not title and not summary and not snapshot:
+        return None
+    if not title:
+        return None
     if not summary:
         summary = title_as_summary(title)
-    snapshot = _content_snapshot(entry)
+    if not summary and not snapshot:
+        return None
     published = _to_iso(
         entry.get("published_parsed")
         or entry.get("updated_parsed")

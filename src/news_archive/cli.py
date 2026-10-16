@@ -85,9 +85,8 @@ def main(argv: list[str] | None = None) -> int:
         stats["enrich_error"] = type(exc).__name__
         print(f"enrich soft-fail (job continues): {type(exc).__name__}", file=sys.stderr)
 
-    # Self-heal rows that landed with both summary and snapshot empty
-    # (empty RSS description + enrich backoff / budget). Title is already
-    # required at ingest; public summary stays ≤280.
+    # Heal titled rows that landed both-empty (empty RSS description +
+    # enrich backoff). Do not delete them; fill summary from title (≤280).
     healed = store.fill_empty_summaries_from_title()
     stats["healed_empty_summaries"] = healed
     if healed:
