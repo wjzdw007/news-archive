@@ -156,6 +156,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="bbc_business",
+        name="BBC Business",
+        feed_url="https://feeds.bbci.co.uk/news/business/rss.xml",
+        category="财经",
+        role="primary",
+    ),
+    Source(
+        id="guardian_technology",
+        name="Guardian Technology",
+        feed_url="https://www.theguardian.com/uk/technology/rss",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="ars_technica",
+        name="Ars Technica",
+        feed_url="https://feeds.arstechnica.com/arstechnica/index",
+        category="硬科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

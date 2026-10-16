@@ -85,7 +85,27 @@ _CHINA_TECH_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 20
+# CEO-approved business / tech RSS primaries
+# (bbc_business ≠ bbc_world/bbc_technology/bbc_zh_simp; guardian_technology ≠ guardian_world).
+_BIZ_TECH_PRIMARY = {
+    "bbc_business": {
+        "name": "BBC Business",
+        "feed_url": "https://feeds.bbci.co.uk/news/business/rss.xml",
+        "category": "财经",
+    },
+    "guardian_technology": {
+        "name": "Guardian Technology",
+        "feed_url": "https://www.theguardian.com/uk/technology/rss",
+        "category": "科技",
+    },
+    "ars_technica": {
+        "name": "Ars Technica",
+        "feed_url": "https://feeds.arstechnica.com/arstechnica/index",
+        "category": "硬科技",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 23
 _EXPECTED_CONTROL_COUNT = 1
 
 
@@ -144,6 +164,28 @@ def test_asia_tech_primaries_registered():
     assert by_id["bbc_technology"].feed_url != by_id["bbc_world"].feed_url
     assert by_id["bbc_technology"].feed_url != by_id["bbc_zh_simp"].feed_url
     for source_id, expected in _ASIA_TECH_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_biz_tech_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "bbc_world" in by_id
+    assert "bbc_technology" in by_id
+    assert "bbc_zh_simp" in by_id
+    assert "bbc_business" in by_id
+    assert by_id["bbc_business"].feed_url != by_id["bbc_world"].feed_url
+    assert by_id["bbc_business"].feed_url != by_id["bbc_technology"].feed_url
+    assert by_id["bbc_business"].feed_url != by_id["bbc_zh_simp"].feed_url
+    assert "guardian_world" in by_id
+    assert "guardian_technology" in by_id
+    assert by_id["guardian_world"].feed_url == "https://www.theguardian.com/world/rss"
+    assert by_id["guardian_technology"].feed_url != by_id["guardian_world"].feed_url
+    for source_id, expected in _BIZ_TECH_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
         assert source.role == "primary"
@@ -228,6 +270,29 @@ def test_china_tech_feeds_live_http_200():
         assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
 
 
+def test_biz_tech_feeds_live_http_200():
+    """Hit the three new feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _BIZ_TECH_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(body)
+        items = root.findall(".//item")
+        entries = root.findall(".//{http://www.w3.org/2005/Atom}entry")
+        count = len(items) + len(entries)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -235,7 +300,9 @@ if __name__ == "__main__":
     test_intl_hardtech_primaries_registered()
     test_asia_tech_primaries_registered()
     test_china_tech_primaries_registered()
+    test_biz_tech_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
+    test_biz_tech_feeds_live_http_200()
     print("✓ source registry tests PASSED")
