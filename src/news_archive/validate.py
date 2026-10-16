@@ -148,6 +148,25 @@ def check_source_incremental(
     return True, f"PASS: All {len(source_ids)} sources have content. Total articles: {total}"
 
 
+def _latency_skip_details(
+    skipped_no_published: int,
+    skipped_parse_error: int,
+    skipped_old: int,
+    skipped_first_ingest: int,
+) -> list[str]:
+    """Human-readable skip counts for latency SLA messages."""
+    details: list[str] = []
+    if skipped_no_published:
+        details.append(f"{skipped_no_published} no published_at")
+    if skipped_parse_error:
+        details.append(f"{skipped_parse_error} parse errors")
+    if skipped_old:
+        details.append(f"{skipped_old} republished (>24h old)")
+    if skipped_first_ingest:
+        details.append(f"{skipped_first_ingest} first-ingest backfill")
+    return details
+
+
 def check_fetch_latency(
     conn: sqlite3.Connection,
     run_stats: dict[str, Any] | None = None,
@@ -162,10 +181,16 @@ def check_fetch_latency(
     Consecutive failure policy:
     - Single round or small violation count → WARN (soft), return True
     - TWO consecutive rounds both failed → FAIL (hard), return False
+    - Soft WARN still returns sla_violated=True so LAST_RUN records
+      latency_sla_passed=false; a second genuine violation then hard-fails.
     
     Rationale: First-run backfills of old stock items (e.g., week-old RSS feeds)
     would show high latency by design. We only measure freshness on new incremental
-    content, not historical imports.
+    content, not historical imports. Brand-new sources are the same class of
+    backfill: if a source has no row with fetched_at older than this run's
+    latest_fetch_at, those first-ingest articles are excluded from the SLA
+    denominator (same spirit as the >24h skip). Established sources keep the
+    4h / >10% / consecutive policy unchanged.
     
     Returns (passed, message, sla_violated).
     - passed: whether to pass this check (may be True even if SLA violated, for single round)
@@ -190,7 +215,7 @@ def check_fetch_latency(
     # Query articles from this run's batch only
     cursor = conn.execute(
         """
-        SELECT published_at, fetched_at, url
+        SELECT published_at, fetched_at, url, source
         FROM articles 
         WHERE fetched_at = ?
         """,
@@ -202,12 +227,36 @@ def check_fetch_latency(
     if not rows:
         return True, "PASS: No articles from this run to check", False
     
+    # A source is first-ingest this run if it has no row older than this batch.
+    first_ingest_sources = {
+        row[0]
+        for row in conn.execute(
+            """
+            SELECT DISTINCT a.source
+            FROM articles a
+            WHERE a.fetched_at = ?
+              AND NOT EXISTS (
+                  SELECT 1 FROM articles b
+                  WHERE b.source = a.source
+                    AND b.fetched_at < ?
+              )
+            """,
+            (latest_fetch_at, latest_fetch_at),
+        )
+    }
+    
     violations = []
     skipped_no_published = 0
     skipped_parse_error = 0
     skipped_old = 0
+    skipped_first_ingest = 0
     
     for row in rows:
+        # Brand-new source first ingest = backfill; exclude from SLA denominator.
+        if row[3] in first_ingest_sources:
+            skipped_first_ingest += 1
+            continue
+        
         # Skip if published_at is missing (don't count as failure)
         if not row[0] or row[0].strip() == "":
             skipped_no_published += 1
@@ -231,17 +280,25 @@ def check_fetch_latency(
         if age_at_fetch > 4.0:
             violations.append((row[0], row[1], age_at_fetch, row[2]))
     
-    checked = len(rows) - skipped_no_published - skipped_parse_error - skipped_old
+    checked = (
+        len(rows)
+        - skipped_no_published
+        - skipped_parse_error
+        - skipped_old
+        - skipped_first_ingest
+    )
+    skip_details = _latency_skip_details(
+        skipped_no_published,
+        skipped_parse_error,
+        skipped_old,
+        skipped_first_ingest,
+    )
+    inline_skip = f" Skipped: {', '.join(skip_details)}." if skip_details else ""
+    block_skip = f"\n  Skipped: {', '.join(skip_details)}." if skip_details else ""
     
     if checked == 0:
-        skip_msg = []
-        if skipped_no_published:
-            skip_msg.append(f"{skipped_no_published} missing published_at")
-        if skipped_parse_error:
-            skip_msg.append(f"{skipped_parse_error} parse errors")
-        if skipped_old:
-            skip_msg.append(f"{skipped_old} >24h old")
-        return True, f"PASS: No checkable articles this run ({', '.join(skip_msg)})", False
+        skip_msg = ", ".join(skip_details) if skip_details else "nothing checkable"
+        return True, f"PASS: No checkable articles this run ({skip_msg})", False
     
     violation_rate = (len(violations) / checked) * 100
     
@@ -267,14 +324,17 @@ def check_fetch_latency(
                 f"  This run: {len(violations)}/{checked} ({violation_rate:.1f}%) articles exceed 4h.\n"
                 f"  Previous run also failed latency check.\n"
                 f"  Examples from this run:\n    " + "\n    ".join(examples)
+                + block_skip
             )
             return False, msg, True  # Failed, and SLA violated
         else:
-            # Single round failure → WARN (soft), do not fail
+            # Single round failure → WARN (soft), do not fail.
+            # sla_violated remains True so a second real violation hard-fails.
             msg = (
                 f"WARN: {len(violations)}/{checked} ({violation_rate:.1f}%) articles "
                 f"from this run exceed 4h SLA. Examples:\n  " + "\n  ".join(examples) +
                 f"\n  ⚠ Single-round violation (not consecutive) - NOT failing the run."
+                + block_skip
             )
             print(f"\n{'='*60}", file=sys.stderr)
             print("WARNING: Latency SLA violated but NOT failing (single round)", file=sys.stderr)
@@ -284,16 +344,8 @@ def check_fetch_latency(
     msg = (
         f"PASS: {checked - len(violations)}/{checked} articles within 4h SLA. "
         f"{len(violations)} violations ({violation_rate:.1f}%) below 10% threshold."
+        + inline_skip
     )
-    skip_details = []
-    if skipped_no_published:
-        skip_details.append(f"{skipped_no_published} no published_at")
-    if skipped_parse_error:
-        skip_details.append(f"{skipped_parse_error} parse errors")
-    if skipped_old:
-        skip_details.append(f"{skipped_old} republished (>24h old)")
-    if skip_details:
-        msg += f" Skipped: {', '.join(skip_details)}."
     
     return True, msg, False  # Passed, SLA not violated
 
@@ -374,6 +426,7 @@ def validate(
     latency_passed, latency_message, sla_violated = check_fetch_latency(conn, run_stats, previous_run_meta)
     results.append(("Fetch Latency SLA", latency_passed, latency_message))
     all_passed = all_passed and latency_passed
+    # Intentional: soft WARN still stores false so the next real violation hard-fails.
     latency_sla_passed = not sla_violated  # True if SLA not violated
     
     status = "✓" if latency_passed else "✗"

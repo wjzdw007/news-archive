@@ -10,12 +10,40 @@ from pathlib import Path
 from news_archive.sources import SOURCES
 
 
-def create_test_db_with_violations(db_path: Path, violation_hours: list[float]) -> None:
+def _insert_article(
+    conn: sqlite3.Connection,
+    *,
+    url: str,
+    title: str,
+    published_at: str,
+    fetched_at: str,
+    source: str,
+) -> None:
+    conn.execute(
+        """
+        INSERT INTO articles (url, title, published_at, fetched_at, source, summary, content_snapshot, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (url, title, published_at, fetched_at, source, "Summary", "Content", "active"),
+    )
+
+
+def create_test_db_with_violations(
+    db_path: Path,
+    violation_hours: list[float],
+    *,
+    source: str = "test_source",
+    established: bool = True,
+    extra_this_run: list[tuple[float, str]] | None = None,
+) -> None:
     """Create a test database with articles that have specified latency violations.
     
     Args:
         db_path: Path to create the SQLite database
         violation_hours: List of hours for each article's latency (e.g., [8.5, 9.0, 2.0])
+        source: Source id for the primary this-run batch
+        established: If True, seed a prior row so `source` is not first-ingest
+        extra_this_run: Additional (hours, source_id) rows sharing this run's fetched_at
     """
     conn = sqlite3.connect(db_path)
     
@@ -36,48 +64,56 @@ def create_test_db_with_violations(db_path: Path, violation_hours: list[float]) 
     # Use a fixed fetched_at time for all articles
     fetched_at = datetime.now(timezone.utc)
     fetched_at_str = fetched_at.isoformat()
+    old_fetched_at = fetched_at - timedelta(days=1)
     
     # Insert articles with specified latency
     for i, hours in enumerate(violation_hours):
         published_at = fetched_at - timedelta(hours=hours)
-        conn.execute(
-            """
-            INSERT INTO articles (url, title, published_at, fetched_at, source, summary, content_snapshot, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                f"https://example.com/article-{i}",
-                f"Test Article {i}",
-                published_at.isoformat(),
-                fetched_at_str,
-                "test_source",
-                f"Summary {i}",
-                f"Content {i}",
-                "active",
-            ),
+        _insert_article(
+            conn,
+            url=f"https://example.com/article-{i}",
+            title=f"Test Article {i}",
+            published_at=published_at.isoformat(),
+            fetched_at=fetched_at_str,
+            source=source,
+        )
+    
+    if extra_this_run:
+        for i, (hours, extra_source) in enumerate(extra_this_run):
+            published_at = fetched_at - timedelta(hours=hours)
+            _insert_article(
+                conn,
+                url=f"https://example.com/extra-{extra_source}-{i}",
+                title=f"Extra {extra_source} Article {i}",
+                published_at=published_at.isoformat(),
+                fetched_at=fetched_at_str,
+                source=extra_source,
+            )
+    
+    if established:
+        # Prior row so this source is established (not first-ingest backfill)
+        prior_published = old_fetched_at - timedelta(hours=2)
+        _insert_article(
+            conn,
+            url=f"https://example.com/prior-{source}",
+            title=f"Prior {source} Article",
+            published_at=prior_published.isoformat(),
+            fetched_at=old_fetched_at.isoformat(),
+            source=source,
         )
     
     # Add at least one article for each configured source to pass Source Incremental check
     sources = [s.id for s in SOURCES]
-    for j, source in enumerate(sources):
+    for j, configured_source in enumerate(sources):
         # Use older fetched_at so they don't interfere with latency check
-        old_fetched_at = fetched_at - timedelta(days=1)
         old_published_at = old_fetched_at - timedelta(hours=2)
-        conn.execute(
-            """
-            INSERT INTO articles (url, title, published_at, fetched_at, source, summary, content_snapshot, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                f"https://example.com/old-{source}-{j}",
-                f"Old {source} Article",
-                old_published_at.isoformat(),
-                old_fetched_at.isoformat(),
-                source,
-                f"Old summary from {source}",
-                f"Old content from {source}",
-                "active",
-            ),
+        _insert_article(
+            conn,
+            url=f"https://example.com/old-{configured_source}-{j}",
+            title=f"Old {configured_source} Article",
+            published_at=old_published_at.isoformat(),
+            fetched_at=old_fetched_at.isoformat(),
+            source=configured_source,
         )
     
     conn.commit()
@@ -297,6 +333,128 @@ def test_pass_after_previous_failure():
         print("\n✓ TEST 3 PASSED: Passed after previous failure, reset consecutive count")
 
 
+def test_new_source_first_ingest_not_hard_fail():
+    """New-source first ingest in the 4–24h window must not hard-fail SLA."""
+    print("\n" + "="*70)
+    print("TEST 4: New source first-ingest 4-24h stock (should PASS, not hard-fail)")
+    print("="*70)
+    
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmpdir = Path(tmpdir)
+        
+        # Prior run failed — the incident pattern (soft WARN then new-source backfill)
+        setup_git_with_last_run(tmpdir, latency_passed=False)
+        
+        db_path = tmpdir / "test.sqlite3"
+        # 13 articles aged ~17h: would be 100% SLA violations if counted
+        first_ingest_hours = [17.0 + (i * 0.1) for i in range(13)]
+        create_test_db_with_violations(
+            db_path,
+            first_ingest_hours,
+            source="new_rss_source",
+            established=False,
+        )
+        
+        stats_path = tmpdir / "stats.json"
+        create_stats_json(stats_path, len(first_ingest_hours))
+        meta_path = tmpdir / "validation-meta.json"
+        
+        result = subprocess.run(
+            [
+                "python3", "-m", "news_archive.validate",
+                "--db", str(db_path),
+                "--stats", str(stats_path),
+                "--output-meta", str(meta_path),
+            ],
+            cwd=tmpdir,
+            env={"PYTHONPATH": str(Path(__file__).parent.parent / "src")},
+            capture_output=True,
+            text=True,
+        )
+        
+        print("STDOUT:")
+        print(result.stdout)
+        print("\nSTDERR:")
+        print(result.stderr)
+        print(f"\nExit code: {result.returncode}")
+        
+        assert result.returncode == 0, (
+            f"Expected exit 0 (new-source backfill skipped), got {result.returncode}"
+        )
+        assert "TWO CONSECUTIVE ROUNDS" not in result.stdout
+        assert "TWO CONSECUTIVE ROUNDS" not in result.stderr
+        combined = result.stdout + result.stderr
+        assert "first-ingest backfill" in combined, "Expected first-ingest skip in message"
+        assert "13 first-ingest backfill" in combined
+        
+        meta = json.loads(meta_path.read_text())
+        assert meta["latency_sla_passed"] is True, (
+            "First-ingest-only backfill must not mark latency_sla_passed=false"
+        )
+        
+        print("\n✓ TEST 4 PASSED: New source first-ingest skipped, did not hard-fail")
+
+
+def test_new_source_does_not_mask_established_consecutive_fail():
+    """Established-source consecutive violations still hard-fail beside new-source stock."""
+    print("\n" + "="*70)
+    print("TEST 5: Established consecutive violations still FAIL (new-source stock ignored)")
+    print("="*70)
+    
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmpdir = Path(tmpdir)
+        
+        setup_git_with_last_run(tmpdir, latency_passed=False)
+        
+        db_path = tmpdir / "test.sqlite3"
+        established_hours = [8.5, 9.0] + [2.0] * 13  # 2/15 = 13.3% > 10%
+        new_source_hours = [(17.5, "new_rss_source")] * 13
+        create_test_db_with_violations(
+            db_path,
+            established_hours,
+            source="test_source",
+            established=True,
+            extra_this_run=new_source_hours,
+        )
+        
+        stats_path = tmpdir / "stats.json"
+        create_stats_json(stats_path, len(established_hours) + len(new_source_hours))
+        meta_path = tmpdir / "validation-meta.json"
+        
+        result = subprocess.run(
+            [
+                "python3", "-m", "news_archive.validate",
+                "--db", str(db_path),
+                "--stats", str(stats_path),
+                "--output-meta", str(meta_path),
+            ],
+            cwd=tmpdir,
+            env={"PYTHONPATH": str(Path(__file__).parent.parent / "src")},
+            capture_output=True,
+            text=True,
+        )
+        
+        print("STDOUT:")
+        print(result.stdout)
+        print("\nSTDERR:")
+        print(result.stderr)
+        print(f"\nExit code: {result.returncode}")
+        
+        assert result.returncode == 1, (
+            f"Expected exit 1 (established consecutive fail), got {result.returncode}"
+        )
+        combined = result.stdout + result.stderr
+        assert "TWO CONSECUTIVE ROUNDS" in combined
+        assert "13 first-ingest backfill" in combined, "New-source rows should still be skipped"
+        # Denominator is established rows only (15), not 15+13
+        assert "2/15" in combined
+        
+        meta = json.loads(meta_path.read_text())
+        assert meta["latency_sla_passed"] is False
+        
+        print("\n✓ TEST 5 PASSED: Established consecutive fail unchanged by new-source stock")
+
+
 if __name__ == "__main__":
     print("\n" + "="*70)
     print("Testing Latency SLA Consecutive Failure Detection")
@@ -306,6 +464,8 @@ if __name__ == "__main__":
         test_single_round_violation()
         test_consecutive_violation()
         test_pass_after_previous_failure()
+        test_new_source_first_ingest_not_hard_fail()
+        test_new_source_does_not_mask_established_consecutive_fail()
         
         print("\n" + "="*70)
         print("ALL TESTS PASSED ✓")
