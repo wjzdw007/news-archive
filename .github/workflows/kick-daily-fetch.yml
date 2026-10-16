@@ -1,0 +1,27 @@
+# One-shot helper: Cloud Agent tokens cannot workflow_dispatch (need actions:write).
+# Pushing this branch runs this workflow, which uses GITHUB_TOKEN to dispatch
+# daily-fetch.yml on main.
+name: kick-daily-fetch
+
+on:
+  push:
+    branches:
+      - cursor/dispatch-daily-fetch-dbd6
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Dispatch daily-fetch on main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh workflow run daily-fetch.yml --repo "${GITHUB_REPOSITORY}" --ref main
+          echo "Dispatched daily-fetch.yml on main"
