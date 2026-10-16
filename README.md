@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（11 主力含国际 / EV / 硬科技出行 + 1 官方对照）
+## P0 源（14 主力含国际 / 亚太 / EV / 硬科技 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -17,6 +17,9 @@
 | `electrek` | Electrek | https://electrek.co/feed/ | primary |
 | `insideevs` | InsideEVs | https://insideevs.com/rss/news/all/ | primary |
 | `verge_transport` | The Verge Transportation | https://www.theverge.com/rss/transportation/index.xml | primary |
+| `scmp` | SCMP | https://www.scmp.com/rss/2/feed | primary |
+| `mit_tr` | MIT Technology Review | https://www.technologyreview.com/feed/ | primary |
+| `bbc_world` | BBC World | https://feeds.bbci.co.uk/news/world/rss.xml | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
