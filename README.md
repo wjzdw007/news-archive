@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（38 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（41 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -44,6 +44,9 @@
 | `dw_en` | Deutsche Welle (EN) | https://rss.dw.com/rdf/rss-en-all | primary |
 | `rfi_en` | RFI English | https://www.rfi.fr/en/rss | primary |
 | `bbc_europe` | BBC Europe | https://feeds.bbci.co.uk/news/world/europe/rss.xml | primary |
+| `abc_news` | ABC News | https://abcnews.go.com/abcnews/topstories | primary |
+| `bbc_us_canada` | BBC US & Canada | https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml | primary |
+| `wired` | WIRED | https://www.wired.com/feed/rss | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
