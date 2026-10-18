@@ -14,6 +14,7 @@ from news_archive.daily_brief import main as daily_brief_main
 from news_archive.daily_briefs import (
     API_BASE_ENV,
     API_KEY_ENV,
+    BRIEF_CALIBRATION,
     DAILY_BRIEF_ARTICLE_FIELDS,
     DAILY_BRIEF_X_FIELDS,
     DEFAULT_MODEL,
@@ -30,10 +31,13 @@ from news_archive.daily_briefs import (
     generate_daily_brief,
     group_sections,
     input_fingerprint,
+    is_soft_x_post,
+    last_n_shanghai_dates,
     redact_secrets,
     resolve_llm_config,
     resolve_model,
     shanghai_calendar_date,
+    stories_should_merge,
     x_posts_for_day,
 )
 from news_archive.schema import Article
@@ -1186,6 +1190,236 @@ def test_cli_same_day_x_writes_section():
         _restore_brief_env(saved_env)
 
 
+def _phone(i: int, **kwargs) -> dict:
+    payload = dict(
+        url=f"https://www.36kr.com/p/{i}",
+        topic_id=f"tech-{i}",
+        title=f"新款手机{i}发布会看点足够长了",
+        summary=f"新款手机{i}的发布会看点足够长的句子。",
+        source="36kr",
+    )
+    payload.update(kwargs)
+    return _art(**payload)
+
+
+def _kolkata(**kwargs) -> dict:
+    payload = dict(
+        url="https://www.theguardian.com/world/kolkata-stampede",
+        topic_id="t-kolkata",
+        title="Kolkata stampede kills 40 at railway station",
+        summary="A stampede at a Kolkata railway station killed at least 40 people.",
+        source="guardian_world",
+    )
+    payload.update(kwargs)
+    return _art(**payload)
+
+
+def test_hard_news_outranks_soft_tech_clusters():
+    """Singleton hard news must keep a section when 36kr clusters fill the day."""
+    articles = [_phone(i) for i in range(10)]
+    articles.append(_kolkata())
+    sections = group_sections(articles)
+    assert len(sections) <= SECTIONS_MAX
+    titles = [section["title"] for section in sections]
+    assert any("Kolkata" in title or "stampede" in title.lower() for title in titles)
+    assert "Kolkata" in sections[0]["title"] or "stampede" in sections[0]["title"].lower()
+    assert OTHER_TITLE not in titles
+
+
+def test_untopicd_hard_news_not_buried_in_other():
+    """Kolkata without topic_id must not disappear into 「其它」 with gadget fluff."""
+    articles = [_phone(i) for i in range(9)]
+    articles.append(_kolkata(topic_id=None, url="https://www.theguardian.com/world/kolkata-2"))
+    articles.append(
+        _art(
+            url="https://www.36kr.com/p/other",
+            topic_id=None,
+            title="一则未归类消费短讯足够长",
+            summary="市场情绪平稳，指数小幅波动。",
+            source="36kr",
+        )
+    )
+    sections = group_sections(articles)
+    other = [section for section in sections if section["title"] == OTHER_TITLE]
+    hard = [
+        section
+        for section in sections
+        if "Kolkata" in section["title"] or "stampede" in section["title"].lower()
+    ]
+    assert len(hard) == 1
+    assert other
+    assert all(
+        "theguardian.com" not in (link["url"] or "")
+        for section in other
+        for link in section["links"]
+    )
+
+
+def test_same_story_sections_merge_across_topic_ids():
+    articles = [
+        _kolkata(),
+        _art(
+            url="https://www.nytimes.com/world/kolkata-stampede",
+            topic_id="t-kolkata-nyt",
+            title="Kolkata stampede: 40 dead in station crush",
+            summary="At least 40 people died in a crush at a Kolkata station.",
+            source="nyt_world",
+        ),
+        _art(
+            url="https://feeds.bbci.co.uk/zhongwen/kolkata",
+            topic_id="t-kolkata-zh",
+            title="加尔各答火车站踩踏已造成多人死亡",
+            summary="印度加尔各答发生踩踏事故，已造成多人死亡。",
+            source="bbc_zh_simp",
+        ),
+        _phone(1),
+    ]
+    sections = group_sections(articles)
+    story = [
+        section
+        for section in sections
+        if "Kolkata" in section["title"]
+        or "stampede" in section["title"].lower()
+        or "加尔各答" in section["title"]
+        or "踩踏" in section["title"]
+    ]
+    assert len(story) == 1
+    assert len(story[0]["links"]) == 3
+    assert not stories_should_merge(
+        [_art(title="China earthquake kills 12", source="nyt_world", summary="Quake in western China.")],
+        [_art(title="Japan earthquake kills 12", source="guardian_world", summary="Quake in southern Japan.")],
+    )
+
+
+def test_soft_x_authors_excluded_from_brief_selection():
+    posts = [
+        _x(),
+        _x(
+            author="Tesla",
+            url="https://x.com/Tesla/status/9",
+            text_snapshot="Model Y refresh just launched worldwide today.",
+        ),
+        _x(
+            author="elonmusk",
+            url="https://x.com/elonmusk/status/8",
+            text_snapshot="Congrats to the team on the launch.",
+        ),
+        _x(
+            author="Reuters",
+            url="https://x.com/Reuters/status/7",
+            text_snapshot="Kolkata stampede kills dozens at a railway station.",
+        ),
+    ]
+    assert is_soft_x_post(posts[1])
+    assert is_soft_x_post(posts[2])
+    assert not is_soft_x_post(posts[0])
+    day = x_posts_for_day(posts, "2026-10-15")
+    authors = {post["author"] for post in day}
+    assert authors == {"FT", "Reuters"}
+    assert day_input_fingerprint([_art()], "2026-10-15", posts) == day_input_fingerprint(
+        [_art()], "2026-10-15", [posts[0], posts[3]]
+    )
+
+
+def test_soft_x_only_day_is_empty_not_ok():
+    brief = generate_daily_brief(
+        [],
+        "2026-10-15",
+        x_posts=[
+            _x(
+                author="Tesla",
+                url="https://x.com/Tesla/status/9",
+                text_snapshot="Model Y refresh just launched worldwide today.",
+            )
+        ],
+        llm_fn=_ok_llm,
+        model="gpt-4o-mini",
+    )
+    assert brief["status"] == "empty"
+    assert brief["sections"] == []
+
+
+def test_serious_tech_archive_kept_when_hard_news_fills():
+    """Reserve slots so MIT/Ars archive stock is not dropped by 8 world singletons."""
+    articles = []
+    for i in range(8):
+        articles.append(
+            _art(
+                url=f"https://www.theguardian.com/world/story-{i}",
+                topic_id=f"world-{i}",
+                title=f"European coalition talks continue in capital {i}",
+                summary=f"Coalition talks in capital {i} continued without a deal.",
+                source="guardian_world",
+            )
+        )
+    articles.append(
+        _art(
+            url="https://www.technologyreview.com/chip",
+            topic_id="t-chip",
+            title="MIT chip architecture cuts AI energy use",
+            summary="A new chip design cuts the energy used by large training runs.",
+            source="mit_tr",
+        )
+    )
+    articles.append(
+        _art(
+            url="https://arstechnica.com/chip",
+            topic_id="t-ars",
+            title="Ars: new chip architecture breakthrough lands",
+            summary="Researchers described a chip architecture that lowers training energy.",
+            source="ars_technica",
+        )
+    )
+    sections = group_sections(articles)
+    sources = {
+        link["source"]
+        for section in sections
+        for link in section["links"]
+    }
+    assert "mit_tr" in sources or "ars_technica" in sources
+    assert any("European coalition" in section["title"] for section in sections)
+
+
+def test_calibration_does_not_widen_shanghai_day():
+    """Adjacent Shanghai days stay out; last_n default remains 7."""
+    articles = [
+        _kolkata(
+            url="https://www.theguardian.com/world/kolkata-14",
+            published_at="2026-10-13T16:30:00Z",  # Shanghai 14th
+            fetched_at="2026-10-14T03:00:00+00:00",
+        ),
+        _kolkata(
+            url="https://www.theguardian.com/world/kolkata-15",
+            published_at="2026-10-14T16:30:00Z",  # Shanghai 15th
+        ),
+    ]
+    day = articles_for_day(articles, "2026-10-15")
+    assert {article["url"] for article in day} == {
+        "https://www.theguardian.com/world/kolkata-15"
+    }
+    assert last_n_shanghai_dates.__defaults__[0] == 7
+    assert BRIEF_CALIBRATION == "hard-news-v1"
+
+
+def test_ok_brief_prompt_includes_hard_news_when_tech_crowds():
+    captured = []
+
+    def llm(grouped):
+        captured.append(grouped)
+        return _ok_llm(grouped)
+
+    articles = [_phone(i) for i in range(9)]
+    articles.append(_kolkata())
+    brief = generate_daily_brief(
+        articles, "2026-10-15", llm_fn=llm, model="gpt-4o-mini"
+    )
+    assert brief["status"] == "ok"
+    prompt_blob = json.dumps(captured, ensure_ascii=False)
+    assert "Kolkata" in prompt_blob or "stampede" in prompt_blob.lower()
+    assert "content_snapshot" not in prompt_blob
+    assert SECRET_SNAPSHOT not in json.dumps(brief, ensure_ascii=False)
+
+
 if __name__ == "__main__":
     test_shanghai_date_uses_calendar_not_utc()
     test_articles_for_day_published_at_fallback_fetched_at()
@@ -1225,4 +1459,12 @@ if __name__ == "__main__":
     test_store_x_query_missing_table_soft_empty()
     test_daily_brief_does_not_call_x_api()
     test_cli_same_day_x_writes_section()
+    test_hard_news_outranks_soft_tech_clusters()
+    test_untopicd_hard_news_not_buried_in_other()
+    test_same_story_sections_merge_across_topic_ids()
+    test_soft_x_authors_excluded_from_brief_selection()
+    test_soft_x_only_day_is_empty_not_ok()
+    test_serious_tech_archive_kept_when_hard_news_fills()
+    test_calibration_does_not_widen_shanghai_day()
+    test_ok_brief_prompt_includes_hard_news_when_tech_crowds()
     print("✓ All daily brief tests passed")
