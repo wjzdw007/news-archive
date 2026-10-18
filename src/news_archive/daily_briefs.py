@@ -16,6 +16,8 @@ from typing import Any, Callable
 from zoneinfo import ZoneInfo
 
 from .briefs import extract_bullets, is_noise_bullet
+from .clustering import jaccard_similarity, normalize_title
+from .sources import SOURCES
 from .x_config import X_NEWS_ACCOUNTS
 
 try:
@@ -62,6 +64,135 @@ OTHER_TITLE = "其它"
 X_SECTION_TITLE = "X 动态"
 # Documented constant (not an RSS cluster id). Avoids colliding with 「其它」(null).
 X_SECTION_TOPIC_ID = "x-daily"
+# Bust kept_ok once so ranking/merge/X-filter calibration regenerates ok rows.
+BRIEF_CALIBRATION = "hard-news-v1"
+# Leave room in the 8-section cap for archive tech / 其它 when hard news is plentiful.
+HARD_SECTION_RESERVE = 2
+
+_SOURCE_CATEGORY = {source.id: source.category for source in SOURCES}
+
+# Personality / company accounts stay on the X tab; they crowd the brief.
+_SOFT_X_AUTHORS = frozenset({"tesla", "elonmusk"})
+_X_WIRE_AUTHORS = frozenset(
+    {
+        "reuters",
+        "ap",
+        "afp",
+        "bbcworld",
+        "bbcchinese",
+        "nytimes",
+        "wsj",
+        "ft",
+        "theeconomist",
+        "scmpnews",
+        "ajenglish",
+        "skynews",
+        "npr",
+        "bloomberg",
+        "cbsnews",
+        "abc",
+        "axios",
+        "politico",
+        "nikkeiasia",
+        "nature",
+    }
+)
+_SOFT_X_PROMO_RE = re.compile(
+    r"(?i)\b(just launched|congrats(?: to)?|follow us|subscribe now|giveaway)\b"
+)
+_HARD_NEWS_RE = re.compile(
+    r"(?i)("
+    r"\b(?:stampede|earthquake|aftershock|tsunami|typhoon|hurricane|cyclone|"
+    r"wildfire|floods?|landslide|explosion|airstrike|air strike|missile|"
+    r"ceasefire|sanctions?|coup|massacre|hostage|shooting|terrorist|"
+    r"invasion|casualt(?:y|ies)|killed|killing|deaths?)\b|"
+    r"踩踏|地震|海啸|台风|飓风|洪水|山火|爆炸|空袭|导弹|停火|制裁|"
+    r"政变|屠杀|人质|枪击|恐袭|入侵|遇难|死亡"
+    r")"
+)
+_STORY_STOPWORDS = frozenset(
+    {
+        "after",
+        "from",
+        "with",
+        "that",
+        "this",
+        "have",
+        "been",
+        "were",
+        "will",
+        "over",
+        "more",
+        "than",
+        "into",
+        "just",
+        "about",
+        "could",
+        "would",
+        "today",
+        "yesterday",
+        "latest",
+        "update",
+        "news",
+        "says",
+        "said",
+        "report",
+        "reports",
+        "live",
+        "video",
+        "watch",
+        "least",
+        "dozens",
+        "people",
+        "kills",
+        "killed",
+        "dead",
+        "death",
+        "dies",
+        "died",
+        "toll",
+        "rising",
+        "rises",
+        "amid",
+        "near",
+        "south",
+        "north",
+        "east",
+        "west",
+        "world",
+        "china",
+        "chinese",
+        "india",
+        "indian",
+        "japan",
+        "japanese",
+        "russia",
+        "russian",
+        "united",
+        "states",
+        "officials",
+        "announced",
+        "breaking",
+    }
+)
+# Event-type aliases (not distinctive on their own). CJK/EN same-story merge.
+_EVENT_ALIASES: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("stampede", ("crush", "踩踏")),
+    ("earthquake", ("quake", "地震")),
+    ("typhoon", ("hurricane", "cyclone", "台风", "飓风")),
+    ("explosion", ("blast", "爆炸")),
+    ("ceasefire", ("truce", "停火")),
+    ("protest", ("protests", "抗议")),
+    ("election", ("elections", "选举")),
+    ("sanction", ("sanctions", "制裁")),
+)
+# Place / entity aliases (distinctive). Thin list; expand only when a split story lands.
+_ENTITY_ALIASES: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("kolkata", ("calcutta", "加尔各答")),
+    ("spacex", ("space x",)),
+)
+_GENERIC_EVENT_TOKENS = frozenset(canonical for canonical, _alts in _EVENT_ALIASES)
+_BRIEF_STORY_JACCARD = 0.32
 
 LlmFn = Callable[[list[dict[str, Any]]], dict[str, Any]]
 
@@ -158,6 +289,19 @@ def x_post_shanghai_date(post: dict[str, Any]) -> str | None:
     return dt.astimezone(SHANGHAI_TZ).date().isoformat()
 
 
+def is_soft_x_post(post: dict[str, Any]) -> bool:
+    """True for personality/promo X noise that should not enter the daily brief."""
+    author = (post.get("author") or "").strip().lstrip("@").lower()
+    if author in _SOFT_X_AUTHORS:
+        return True
+    text = (post.get("text_snapshot") or "").strip()
+    if not text:
+        return True
+    if _SOFT_X_PROMO_RE.search(text) and not _HARD_NEWS_RE.search(text):
+        return True
+    return False
+
+
 def x_posts_for_day(
     posts: list[dict[str, Any]],
     date: str,
@@ -165,7 +309,8 @@ def x_posts_for_day(
 ) -> list[dict[str, Any]]:
     """Active same-day X posts (Asia/Shanghai from posted_at), public fields only.
 
-    Sorted stably; `input_fingerprint` hashes this selected set.
+    Soft X (Tesla / elonmusk / promo) is dropped here so brief selection and
+    `input_fingerprint` stay aligned. Wire accounts sort first.
     """
     allowed = {a.lstrip("@").lower() for a in (accounts or X_NEWS_ACCOUNTS)}
     out: list[dict[str, Any]] = []
@@ -181,8 +326,17 @@ def x_posts_for_day(
         pub = public_x_post({**post, "author": author})
         if not pub["url"] and not pub["text_snapshot"]:
             continue
+        if is_soft_x_post(pub):
+            continue
         out.append(pub)
-    out.sort(key=lambda p: (p.get("posted_at") or "", p.get("url") or "", p.get("author") or ""))
+    out.sort(
+        key=lambda p: (
+            0 if (p.get("author") or "").strip().lstrip("@").lower() in _X_WIRE_AUTHORS else 1,
+            p.get("posted_at") or "",
+            p.get("url") or "",
+            p.get("author") or "",
+        )
+    )
     return out
 
 
@@ -225,7 +379,7 @@ def input_fingerprint(
     x_rows = [public_x_post(post) for post in (x_posts or [])]
     x_rows.sort(key=lambda row: (row["url"], row["posted_at"], row["author"]))
     blob = json.dumps(
-        {"articles": article_rows, "x_posts": x_rows},
+        {"articles": article_rows, "v": BRIEF_CALIBRATION, "x_posts": x_rows},
         ensure_ascii=False,
         separators=(",", ":"),
         sort_keys=True,
@@ -360,13 +514,179 @@ def llm_x_section(llm_payload: dict[str, Any] | None) -> dict[str, Any] | None:
     return titled
 
 
-def _earliest_title(articles: list[dict[str, Any]]) -> str:
-    def key(article: dict[str, Any]) -> str:
-        return article_list_time(article) or "9999"
+def source_category(source: str | None) -> str:
+    return _SOURCE_CATEGORY.get((source or "").strip(), "")
 
-    ordered = sorted(articles, key=key)
+
+def article_news_tier(article: dict[str, Any]) -> int:
+    """0 = hard news, 1 = serious tech/finance archive, 2 = soft tech/other."""
+    title = article.get("title") or ""
+    summary = article.get("summary") or ""
+    if _HARD_NEWS_RE.search(f"{title} {summary}"):
+        return 0
+    category = source_category(article.get("source"))
+    if category.startswith(("国际", "综合")):
+        return 0
+    if category.startswith(("财经", "官方", "硬科技", "科学")):
+        return 1
+    return 2
+
+
+def article_brief_weight(article: dict[str, Any]) -> int:
+    category = source_category(article.get("source"))
+    if category.startswith(("国际", "综合")):
+        weight = 8
+    elif category.startswith(("财经", "官方")):
+        weight = 6
+    elif category.startswith(("硬科技", "科学")):
+        weight = 5
+    elif category.startswith(("科技", "汽车")):
+        weight = 2
+    else:
+        weight = 3
+    title = article.get("title") or ""
+    summary = article.get("summary") or ""
+    if _HARD_NEWS_RE.search(f"{title} {summary}"):
+        weight += 10
+    return weight
+
+
+def _order_articles(articles: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return sorted(
+        articles,
+        key=lambda article: (
+            -article_brief_weight(article),
+            article_list_time(article) or "",
+            article.get("url") or "",
+        ),
+    )
+
+
+def _preferred_title(articles: list[dict[str, Any]]) -> str:
+    ordered = _order_articles(articles)
     title = (ordered[0].get("title") or "untitled").strip() if ordered else "untitled"
     return title[:80]
+
+
+def _earliest_title(articles: list[dict[str, Any]]) -> str:
+    return _preferred_title(articles)
+
+
+def _article_story_text(article: dict[str, Any]) -> str:
+    title = article.get("title") or ""
+    summary = (article.get("summary") or "")[:80]
+    return f"{title} {summary}".strip()
+
+
+def story_tokens(text: str) -> set[str]:
+    raw = text or ""
+    low = raw.lower()
+    tokens = {word for word in re.findall(r"[a-z]{4,}", low) if word not in _STORY_STOPWORDS}
+    alt_forms: set[str] = set()
+    for canonical, alts in _EVENT_ALIASES + _ENTITY_ALIASES:
+        matched = canonical in tokens or canonical in low
+        for alt in alts:
+            alt_low = alt.lower()
+            if alt in raw or alt_low in low:
+                matched = True
+            if alt.isascii():
+                alt_forms.add(alt_low.replace(" ", ""))
+        if matched:
+            tokens.add(canonical)
+    tokens -= alt_forms
+    tokens -= _STORY_STOPWORDS
+    return tokens
+
+
+def stories_should_merge(
+    articles_a: list[dict[str, Any]], articles_b: list[dict[str, Any]]
+) -> bool:
+    """Same-story merge for one Shanghai day. Does not widen the calendar window."""
+    for left in articles_a:
+        for right in articles_b:
+            title_a = left.get("title") or ""
+            title_b = right.get("title") or ""
+            shared = story_tokens(_article_story_text(left)) & story_tokens(
+                _article_story_text(right)
+            )
+            if len(shared) >= 2:
+                return True
+            similarity = jaccard_similarity(normalize_title(title_a), normalize_title(title_b))
+            distinctive = {token for token in shared if token not in _GENERIC_EVENT_TOKENS}
+            if distinctive and similarity >= _BRIEF_STORY_JACCARD:
+                return True
+    return False
+
+
+def _group_tier(articles: list[dict[str, Any]]) -> int:
+    return min((article_news_tier(article) for article in articles), default=2)
+
+
+def _group_rank_key(articles: list[dict[str, Any]]) -> tuple:
+    score = sum(article_brief_weight(article) for article in articles)
+    n_sources = len({article.get("source") or "" for article in articles})
+    earliest = min((article_list_time(article) or "9999") for article in articles)
+    return (_group_tier(articles), -score, -n_sources, -len(articles), earliest)
+
+
+def _synthetic_hard_topic_id(articles: list[dict[str, Any]]) -> str:
+    url = (_order_articles(articles)[0].get("url") or "x") if articles else "x"
+    return "hard-" + hashlib.sha256(url.encode("utf-8")).hexdigest()[:12]
+
+
+def _merge_story_groups(
+    groups: list[tuple[str | None, list[dict[str, Any]]]],
+) -> list[tuple[str | None, list[dict[str, Any]]]]:
+    """Greedy same-story merge across topic_id. Same-source pairs may merge."""
+    if len(groups) < 2:
+        return groups
+    ordered = sorted(groups, key=lambda item: _group_rank_key(item[1]))
+    merged: list[tuple[str | None, list[dict[str, Any]]]] = []
+    for topic_id, articles in ordered:
+        attached = False
+        for index, (keep_id, keep_articles) in enumerate(merged):
+            if stories_should_merge(keep_articles, articles):
+                if _group_rank_key(articles) < _group_rank_key(keep_articles):
+                    merged[index] = (topic_id, keep_articles + articles)
+                else:
+                    keep_articles.extend(articles)
+                    merged[index] = (keep_id, keep_articles)
+                attached = True
+                break
+        if not attached:
+            merged.append((topic_id, list(articles)))
+    return merged
+
+
+def _allocate_section_groups(
+    groups: list[tuple[str | None, list[dict[str, Any]]]],
+    budget: int,
+) -> list[tuple[str | None, list[dict[str, Any]]]]:
+    """Rank hard news first; reserve slots for archive tech when present."""
+    if budget <= 0 or not groups:
+        return []
+    ranked = sorted(groups, key=lambda item: _group_rank_key(item[1]))
+    hard = [item for item in ranked if _group_tier(item[1]) == 0]
+    rest = [item for item in ranked if _group_tier(item[1]) != 0]
+    reserved = min(HARD_SECTION_RESERVE, len(rest), budget)
+    hard_budget = budget - reserved
+    picked = hard[:hard_budget]
+    picked.extend(rest[: budget - len(picked)])
+    if len(picked) < budget:
+        picked_ids = {id(item) for item in picked}
+        picked.extend(item for item in hard[hard_budget:] if id(item) not in picked_ids)
+    return picked[:budget]
+
+
+def _build_section(topic_id: str | None, articles: list[dict[str, Any]]) -> dict[str, Any]:
+    ordered = _order_articles(articles)
+    return {
+        "topic_id": topic_id,
+        "title": _preferred_title(ordered),
+        "bullets": bullets_from_title_summary(ordered),
+        "links": links_from_articles(ordered),
+        "articles": ordered,
+    }
 
 
 def bullets_from_title_summary(
@@ -397,7 +717,7 @@ def links_from_articles(
 ) -> list[dict[str, str]]:
     links: list[dict[str, str]] = []
     seen: set[str] = set()
-    for article in articles:
+    for article in _order_articles(articles):
         url = (article.get("url") or "").strip()
         if not url or url in seen:
             continue
@@ -415,46 +735,70 @@ def links_from_articles(
 
 
 def group_sections(articles: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Group by topic_id; untopic'd articles become at most one 「其它」 section."""
+    """Group by topic_id, merge same-story clusters, rank hard news first.
+
+    Untopic'd hard news becomes its own section (not buried in 「其它」).
+    Soft untopic'd items remain at most one 「其它」 section, always last.
+    """
     by_topic: dict[str, list[dict[str, Any]]] = {}
-    other: list[dict[str, Any]] = []
+    untopic: list[dict[str, Any]] = []
     for article in articles:
         topic_id = article.get("topic_id")
         if isinstance(topic_id, str) and topic_id.strip():
             by_topic.setdefault(topic_id.strip(), []).append(article)
         else:
-            other.append(article)
+            untopic.append(article)
 
-    ranked = sorted(
-        by_topic.items(),
-        key=lambda item: (
-            -len(item[1]),
-            min((article_list_time(a) or "9999") for a in item[1]),
-        ),
-    )
+    groups: list[tuple[str | None, list[dict[str, Any]]]] = [
+        (topic_id, group) for topic_id, group in by_topic.items()
+    ]
+
+    leftover_untopic: list[dict[str, Any]] = []
+    for article in untopic:
+        attached = False
+        for _topic_id, group in groups:
+            if stories_should_merge(group, [article]):
+                group.append(article)
+                attached = True
+                break
+        if not attached:
+            leftover_untopic.append(article)
+
+    groups = _merge_story_groups(groups)
+
+    hard_untopic: list[dict[str, Any]] = []
+    soft_other: list[dict[str, Any]] = []
+    for article in leftover_untopic:
+        if article_news_tier(article) == 0:
+            hard_untopic.append(article)
+        else:
+            soft_other.append(article)
+
+    hard_clusters: list[tuple[str | None, list[dict[str, Any]]]] = []
+    for article in hard_untopic:
+        placed = False
+        for _topic_id, cluster in hard_clusters:
+            if stories_should_merge(cluster, [article]):
+                cluster.append(article)
+                placed = True
+                break
+        if not placed:
+            hard_clusters.append((_synthetic_hard_topic_id([article]), [article]))
+    groups.extend(hard_clusters)
+
+    other = soft_other
     topic_budget = SECTIONS_MAX - (1 if other else 0)
-    sections: list[dict[str, Any]] = []
-    for topic_id, group in ranked[: max(0, topic_budget)]:
-        sections.append(
-            {
-                "topic_id": topic_id,
-                "title": _earliest_title(group),
-                "bullets": bullets_from_title_summary(group),
-                "links": links_from_articles(group),
-                "articles": group,
-            }
-        )
+    selected = _allocate_section_groups(groups, max(0, topic_budget))
+
+    sections: list[dict[str, Any]] = [
+        _build_section(topic_id, group) for topic_id, group in selected
+    ]
     if other:
-        sections.append(
-            {
-                "topic_id": None,
-                "title": OTHER_TITLE,
-                "bullets": bullets_from_title_summary(other),
-                "links": links_from_articles(other),
-                "articles": other,
-            }
-        )
-    return [s for s in sections if s.get("bullets") or s.get("links")][:SECTIONS_MAX]
+        sections.append(_build_section(None, other))
+        sections[-1]["title"] = OTHER_TITLE
+    return [
+        section for section in sections if section.get("bullets") or section.get("links")
+    ][:SECTIONS_MAX]
 
 
 def clip_lede(text: str | None) -> str:
@@ -623,12 +967,15 @@ def openai_complete(
                 "You write a concise Chinese daily news brief. Reply with JSON only: "
                 '{"lede":"...","sections":[{"topic_id":null,"title":"...","bullets":["..."]}]}'
                 " Use ONLY the given titles and summaries for RSS; do not invent facts. "
+                "Prioritize hard news (disasters, geopolitics, conflict, elections) over product "
+                "launches and social chatter. Keep one section per story; do not split the same event. "
                 f"lede ≤{LEDE_MAX} chars. ≤{SECTIONS_MAX} RSS sections, 1–{BULLETS_MAX} bullets each. "
-                f"Keep the given topic_id values. Untopic'd RSS items stay in one section titled {OTHER_TITLE}. "
+                f"Keep the given topic_id values. Untopic'd soft RSS items stay in one section titled {OTHER_TITLE}. "
                 f"If a section titled {X_SECTION_TITLE} is present, keep that exact title and "
                 f'topic_id "{X_SECTION_TOPIC_ID}"; write 1–{BULLETS_MAX} bullets as multi-account '
                 "highlights (not one bullet per post); use ONLY that section's author, "
-                "text_snapshot, url, posted_at. Do not merge X posts into RSS topic_id clusters."
+                "text_snapshot, url, posted_at. Treat that X section as supplementary, not the lead, "
+                "when RSS hard news is present. Do not merge X posts into RSS topic_id clusters."
             ),
         },
         {
