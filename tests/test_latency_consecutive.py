@@ -8,6 +8,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from news_archive.sources import SOURCES
+from news_archive.validate import check_fetch_latency
 
 
 def _insert_article(
@@ -455,6 +456,165 @@ def test_new_source_does_not_mask_established_consecutive_fail():
         print("\n✓ TEST 5 PASSED: Established consecutive fail unchanged by new-source stock")
 
 
+def _assert_latency_check(
+    db_path: Path,
+    *,
+    inserted: int,
+    prev_passed: bool,
+) -> tuple[bool, str, bool]:
+    """Call check_fetch_latency directly (unit, no CLI / git)."""
+    conn = sqlite3.connect(db_path)
+    try:
+        return check_fetch_latency(
+            conn,
+            run_stats={"inserted": inserted},
+            previous_run_meta={"latency_sla_passed": prev_passed},
+        )
+    finally:
+        conn.close()
+
+
+def test_small_sample_prev_failed_is_soft_warn():
+    """checked=3 + previous latency_sla_passed=false → WARN, job green, trap not armed."""
+    print("\n" + "="*70)
+    print("TEST 6: Small sample (checked=3) with prev failed (should WARN, job green)")
+    print("="*70)
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmpdir = Path(tmpdir)
+
+        # Direct unit check: 2/3 = 66% would exceed 10%, but N<10 must not hard-fail.
+        db_path = tmpdir / "unit.sqlite3"
+        hours = [8.5, 9.0, 2.0]
+        create_test_db_with_violations(db_path, hours)
+
+        passed, message, sla_violated = _assert_latency_check(
+            db_path, inserted=len(hours), prev_passed=False
+        )
+        print("unit passed:", passed)
+        print("unit sla_violated:", sla_violated)
+        print("unit message:\n", message)
+
+        assert passed is True, "Small-N must not hard-fail even if previous run failed"
+        assert sla_violated is False, (
+            "Small-N must not arm consecutive trap (sla_violated stays false)"
+        )
+        assert "WARN:" in message
+        assert "checked < 10" in message
+        assert "TWO CONSECUTIVE ROUNDS" not in message
+
+        # Job-level: validate CLI exit 0 (green) even with LAST_RUN latency_sla_passed=false
+        setup_git_with_last_run(tmpdir, latency_passed=False)
+        cli_db = tmpdir / "cli.sqlite3"
+        create_test_db_with_violations(cli_db, hours)
+        stats_path = tmpdir / "stats.json"
+        create_stats_json(stats_path, len(hours))
+        meta_path = tmpdir / "validation-meta.json"
+
+        result = subprocess.run(
+            [
+                "python3", "-m", "news_archive.validate",
+                "--db", str(cli_db),
+                "--stats", str(stats_path),
+                "--output-meta", str(meta_path),
+            ],
+            cwd=tmpdir,
+            env={"PYTHONPATH": str(Path(__file__).parent.parent / "src")},
+            capture_output=True,
+            text=True,
+        )
+
+        print("STDOUT:")
+        print(result.stdout)
+        print("\nSTDERR:")
+        print(result.stderr)
+        print(f"\nExit code: {result.returncode}")
+
+        assert result.returncode == 0, (
+            f"Expected exit 0 (job green on small-N), got {result.returncode}"
+        )
+        combined = result.stdout + result.stderr
+        assert "WARN:" in combined
+        assert "TWO CONSECUTIVE ROUNDS" not in combined
+        assert "checked < 10" in combined
+
+        meta = json.loads(meta_path.read_text())
+        assert meta["latency_sla_passed"] is True, (
+            "Small-N WARN must not write latency_sla_passed=false "
+            "(that would arm the next run's consecutive hard-fail)"
+        )
+        assert meta["all_checks_passed"] is True
+
+        print("\n✓ TEST 6 PASSED: checked=3 + prev failed → soft WARN, job green, trap not armed")
+
+
+def test_large_n_prev_failed_still_hard_fail():
+    """checked>=10 + prev failed + >10% still consecutive hard FAIL."""
+    print("\n" + "="*70)
+    print("TEST 7: Large sample (checked=10) with prev failed and >10% (should FAIL)")
+    print("="*70)
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmpdir = Path(tmpdir)
+
+        # Boundary: checked=10, 2/10=20% > 10%, previous failed → hard fail
+        db_path = tmpdir / "unit.sqlite3"
+        hours = [8.5, 9.0] + [2.0] * 8
+        create_test_db_with_violations(db_path, hours)
+
+        passed, message, sla_violated = _assert_latency_check(
+            db_path, inserted=len(hours), prev_passed=False
+        )
+        print("unit passed:", passed)
+        print("unit sla_violated:", sla_violated)
+        print("unit message:\n", message)
+
+        assert passed is False, "checked>=10 + prev failed + >10% must hard-fail"
+        assert sla_violated is True
+        assert "TWO CONSECUTIVE ROUNDS" in message
+        assert "2/10" in message
+
+        setup_git_with_last_run(tmpdir, latency_passed=False)
+        cli_db = tmpdir / "cli.sqlite3"
+        create_test_db_with_violations(cli_db, hours)
+        stats_path = tmpdir / "stats.json"
+        create_stats_json(stats_path, len(hours))
+        meta_path = tmpdir / "validation-meta.json"
+
+        result = subprocess.run(
+            [
+                "python3", "-m", "news_archive.validate",
+                "--db", str(cli_db),
+                "--stats", str(stats_path),
+                "--output-meta", str(meta_path),
+            ],
+            cwd=tmpdir,
+            env={"PYTHONPATH": str(Path(__file__).parent.parent / "src")},
+            capture_output=True,
+            text=True,
+        )
+
+        print("STDOUT:")
+        print(result.stdout)
+        print("\nSTDERR:")
+        print(result.stderr)
+        print(f"\nExit code: {result.returncode}")
+
+        assert result.returncode == 1, (
+            f"Expected exit 1 (hard fail on large-N consecutive), got {result.returncode}"
+        )
+        combined = result.stdout + result.stderr
+        assert "FAIL:" in combined
+        assert "TWO CONSECUTIVE ROUNDS" in combined
+        assert "2/10" in combined
+
+        meta = json.loads(meta_path.read_text())
+        assert meta["latency_sla_passed"] is False
+        assert meta["all_checks_passed"] is False
+
+        print("\n✓ TEST 7 PASSED: checked=10 + prev failed + >10% → still hard FAIL")
+
+
 if __name__ == "__main__":
     print("\n" + "="*70)
     print("Testing Latency SLA Consecutive Failure Detection")
@@ -466,6 +626,8 @@ if __name__ == "__main__":
         test_pass_after_previous_failure()
         test_new_source_first_ingest_not_hard_fail()
         test_new_source_does_not_mask_established_consecutive_fail()
+        test_small_sample_prev_failed_is_soft_warn()
+        test_large_n_prev_failed_still_hard_fail()
         
         print("\n" + "="*70)
         print("ALL TESTS PASSED ✓")

@@ -179,10 +179,14 @@ def check_fetch_latency(
     Fail if >10% of articles with parseable published_at exceed 4h latency.
     
     Consecutive failure policy:
-    - Single round or small violation count → WARN (soft), return True
-    - TWO consecutive rounds both failed → FAIL (hard), return False
-    - Soft WARN still returns sla_violated=True so LAST_RUN records
-      latency_sla_passed=false; a second genuine violation then hard-fails.
+    - Single round or small sample (checked < 10) → WARN (soft), return True
+    - TWO consecutive large-N rounds (checked >= 10, >10%) both failed → FAIL
+    - Large-N soft WARN still returns sla_violated=True so LAST_RUN records
+      latency_sla_passed=false; a second genuine large-N violation then hard-fails
+    - Small-N (checked < 10) never hard-fails, even if previous_run_meta has
+      latency_sla_passed=false. sla_violated is False so a tiny sample cannot
+      arm the consecutive trap for the next run. CEO: small samples must not
+      flip the job red.
     
     Rationale: First-run backfills of old stock items (e.g., week-old RSS feeds)
     would show high latency by design. We only measure freshness on new incremental
@@ -195,7 +199,8 @@ def check_fetch_latency(
     Returns (passed, message, sla_violated).
     - passed: whether to pass this check (may be True even if SLA violated, for single round)
     - message: human-readable result
-    - sla_violated: whether >10% threshold was actually exceeded (for metadata tracking)
+    - sla_violated: True only for large-N (checked >= 10) >10% breaches, so
+      LAST_RUN can arm consecutive hard-fail. Small-N breaches return False.
     """
     # Determine if this run inserted any articles
     inserted = run_stats.get("inserted", 0) if run_stats else 0
@@ -311,6 +316,25 @@ def check_fetch_latency(
             for pub, fetch, lat, url in worst
         ]
         
+        # Small-N: WARN only. Never consecutive hard-fail, and do not arm
+        # latency_sla_passed=false for the next run (tiny samples must not
+        # flip this job — or the next large-N job — red).
+        if checked < 10:
+            msg = (
+                f"WARN: {len(violations)}/{checked} ({violation_rate:.1f}%) articles "
+                f"from this run exceed 4h SLA. Examples:\n  " + "\n  ".join(examples) +
+                f"\n  ⚠ Small sample (checked < 10) — WARN only; not arming consecutive hard-fail."
+                + block_skip
+            )
+            print(f"\n{'='*60}", file=sys.stderr)
+            print(
+                "WARNING: Latency SLA violated but NOT failing "
+                "(small sample checked < 10)",
+                file=sys.stderr,
+            )
+            print(f"{'='*60}\n", file=sys.stderr)
+            return True, msg, False  # Job green; do not arm consecutive trap
+
         # Check consecutive failure: did previous run also fail latency?
         prev_failed = (
             previous_run_meta 
@@ -318,7 +342,7 @@ def check_fetch_latency(
         )
         
         if prev_failed:
-            # TWO consecutive rounds failed → FAIL (hard)
+            # TWO consecutive large-N rounds failed → FAIL (hard)
             msg = (
                 f"FAIL: TWO CONSECUTIVE ROUNDS exceeded latency SLA.\n"
                 f"  This run: {len(violations)}/{checked} ({violation_rate:.1f}%) articles exceed 4h.\n"
@@ -329,7 +353,7 @@ def check_fetch_latency(
             return False, msg, True  # Failed, and SLA violated
         else:
             # Single round failure → WARN (soft), do not fail.
-            # sla_violated remains True so a second real violation hard-fails.
+            # sla_violated remains True so a second real large-N violation hard-fails.
             msg = (
                 f"WARN: {len(violations)}/{checked} ({violation_rate:.1f}%) articles "
                 f"from this run exceed 4h SLA. Examples:\n  " + "\n  ".join(examples) +
@@ -426,7 +450,8 @@ def validate(
     latency_passed, latency_message, sla_violated = check_fetch_latency(conn, run_stats, previous_run_meta)
     results.append(("Fetch Latency SLA", latency_passed, latency_message))
     all_passed = all_passed and latency_passed
-    # Intentional: soft WARN still stores false so the next real violation hard-fails.
+    # Large-N soft WARN stores false so the next real large-N violation hard-fails.
+    # Small-N returns sla_violated=False, so a tiny sample cannot arm that trap.
     latency_sla_passed = not sla_violated  # True if SLA not violated
     
     status = "✓" if latency_passed else "✗"
