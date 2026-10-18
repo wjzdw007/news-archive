@@ -2,16 +2,23 @@
 
 from __future__ import annotations
 
+import sys
+import time
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from time import struct_time
-from typing import Iterable
+from typing import Callable, Iterable
 
 import feedparser
 import httpx
 
 from .schema import Article
 from .sources import Source
+
+# One RSS timeout must not drop the whole daily archive write. Retry the same
+# source twice more (3 attempts total), then let fetch_all isolate the failure.
+RSS_FETCH_ATTEMPTS = 3
+RSS_RETRY_BACKOFF_S = 1.0
 
 # Solidot (and some other feeds) 403 bare curl / empty-UA clients. A browser
 # UA is sent for all RSS HTTP so live CI does not come back empty.
@@ -102,12 +109,52 @@ def article_from_entry(
     )
 
 
-def fetch_source(source: Source, *, timeout: float = 30.0) -> list[Article]:
+def _get_feed_bytes(
+    source: Source,
+    *,
+    timeout: float,
+    sleep_fn: Callable[[float], None] | None = None,
+) -> bytes:
+    """GET the RSS body, retrying transient HTTP timeouts.
+
+    Retries httpx.TimeoutException (ReadTimeout / ConnectTimeout / "The read
+    operation timed out" and similar). HTTP 4xx/5xx and other errors are not
+    retried here; fetch_all still isolates them per source.
+    """
+    sleeper = time.sleep if sleep_fn is None else sleep_fn
+    last_exc: httpx.TimeoutException | None = None
+    for attempt in range(1, RSS_FETCH_ATTEMPTS + 1):
+        try:
+            with httpx.Client(
+                timeout=timeout,
+                follow_redirects=True,
+                headers=RSS_HEADERS,
+            ) as client:
+                resp = client.get(source.feed_url)
+                resp.raise_for_status()
+                return resp.content
+        except httpx.TimeoutException as exc:
+            last_exc = exc
+            print(
+                f"WARN {source.id}: RSS timeout attempt {attempt}/{RSS_FETCH_ATTEMPTS}: {exc}",
+                file=sys.stderr,
+            )
+            if attempt < RSS_FETCH_ATTEMPTS:
+                sleeper(RSS_RETRY_BACKOFF_S * attempt)
+                continue
+            raise
+    assert last_exc is not None  # pragma: no cover — loop always returns or raises
+    raise last_exc
+
+
+def fetch_source(
+    source: Source,
+    *,
+    timeout: float = 30.0,
+    sleep_fn: Callable[[float], None] | None = None,
+) -> list[Article]:
     fetched_at = datetime.now(timezone.utc).isoformat()
-    with httpx.Client(timeout=timeout, follow_redirects=True, headers=RSS_HEADERS) as client:
-        resp = client.get(source.feed_url)
-        resp.raise_for_status()
-        raw = resp.content
+    raw = _get_feed_bytes(source, timeout=timeout, sleep_fn=sleep_fn)
 
     parsed = feedparser.parse(raw)
     articles: list[Article] = []

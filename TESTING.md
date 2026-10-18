@@ -9,7 +9,7 @@
 **要求**：每个已配置的源应当定期产出新内容或在库中有存量文章。
 
 **检查逻辑**：
-- ❌ 任一源在抓取过程中报错 → 失败（红）
+- ⚠️ 单个源抓取超时/按源隔离的异常（`fetch_all` 已隔离；超时会再试 2 次）→ **WARN**，CLI exit 0，不红灯、不挡 Persist
 - ❌ 数据库完全为空 → 失败（红）
 - ❌ 本轮 0 条插入 **且** 任一源返回 0 条 → 失败（红）
 - ❌ 任一已配置源在数据库中历史总数为 0 → 失败（红）
@@ -232,6 +232,16 @@ PYTHONPATH=src python tests/test_enrich.py
 - 难抓源备用入口：primary 403/429/timeout/空 body → 按源尝试 ≤2 个 AMP/mobile 备用 URL；备用成功则入库 snapshot（公开 JSON 仍无 `content_snapshot`）；全部失败才按篇计入 backoff；每篇备用 GET 计入同一 40 次 HTTP 预算
 - daily-fetch 成功时写 GitHub Actions Job Summary（candidates / fetched / soft_failed / skipped + 分源 backoff + 私有 snapshot 覆盖率 + News Tab **display-window** same-source max，算法与 `site/app.js` 的 `NEWS_SOURCE_CAP=6` 一致；raw `published_at` 前 50 仅作诊断，不是展示门禁）；不新增公开 `/stats` 页，公开 JSON 仍无 `content_snapshot`
 
+### RSS 源超时重试与 soft-fail（保 Persist）
+```bash
+PYTHONPATH=src python tests/test_fetch_soft_fail.py
+```
+
+- 单源 HTTP read/connect timeout：同一源最多再试 2 次（共 3 次），短 backoff；第二次成功则照常插入
+- 3 次仍超时：记入 `stats["errors"]`，打印 WARN，CLI **exit 0**（不挡 P0 验收与 Persist）
+- 其它源仍写入 SQLite / JSONL（mock httpx，不打 live people.com.cn）
+- `check_source_incremental` 对 per-source fetch error 只 WARN，不红灯；库空 / 某源历史 0 条仍失败
+
 ### 标记失效 URL
 
 对持久化在 `data` 分支的数据库标记失效链接：
@@ -275,7 +285,7 @@ git checkout main
 
 | 失败检查 | 可能原因 | 处理建议 |
 |---------|---------|---------|
-| Source Incremental | 源 RSS feed 不可达、返回 404/500 | 检查源健康状况；临时移除问题源或等待恢复 |
+| Source Incremental | 库完全为空，或已配置源历史总数为 0 | 单源超时是 WARN（会重试 2 次后 soft-fail）；检查是否从未成功入库 |
 | Duplicate URLs | `upsert()` 逻辑错误、并发写入 | 检查 `store.py` 的 `INSERT OR IGNORE` 逻辑 |
 | Required Fields | 上游 RSS 缺失 `<title>` / `<link>` | 检查 `fetch.py` 解析逻辑；过滤不完整条目 |
 | Fetch Latency | 调度延迟 >4h、源发布延迟、时区解析错误 | 检查 Actions 运行历史；验证 `published_at` 解析 |

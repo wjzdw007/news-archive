@@ -98,17 +98,24 @@ def check_source_incremental(
     """Check that sources are producing content.
     
     Fail if:
-    - Any source had a fetch error (from run_stats)
     - Overall DB is empty
     - Zero inserts this run AND any source returned 0 items
-    
+    - Any configured source has 0 total articles in DB
+
+    Per-source fetch errors in run_stats (timeouts / isolated exceptions) are
+    WARN only — same soft-fail as CLI exit 0 — so one flaky RSS feed cannot
+    red-light P0 incremental and skip later daily-fetch steps.
+
     Returns (passed, message).
     """
-    # Check for source errors from run stats
+    # Isolated per-source fetch errors: WARN, do not fail the check.
     if run_stats and run_stats.get("errors"):
         errors = run_stats["errors"]
-        msg = f"FAIL: {len(errors)} source(s) had fetch errors: {list(errors.keys())}"
-        return False, msg
+        print(
+            f"WARN: {len(errors)} source(s) had fetch errors "
+            f"(soft-fail; Persist continues): {list(errors.keys())}",
+            file=sys.stderr,
+        )
     
     # Check overall DB not empty
     total = conn.execute("SELECT COUNT(*) FROM articles").fetchone()[0]
@@ -144,8 +151,11 @@ def check_source_incremental(
     if empty_sources:
         msg = f"FAIL: {len(empty_sources)} configured source(s) have 0 total articles in DB: {empty_sources}"
         return False, msg
-    
-    return True, f"PASS: All {len(source_ids)} sources have content. Total articles: {total}"
+
+    extra = ""
+    if run_stats and run_stats.get("errors"):
+        extra = f" Soft-failed this run: {list(run_stats['errors'].keys())}."
+    return True, f"PASS: All {len(source_ids)} sources have content. Total articles: {total}.{extra}"
 
 
 def _latency_skip_details(

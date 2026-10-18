@@ -48,7 +48,14 @@ def main(argv: list[str] | None = None) -> int:
     stats: dict[str, object] = {"sources": {}, "inserted": 0, "seen": 0, "errors": {}}
     for source_id, payload in results.items():
         if isinstance(payload, Exception):
+            # Per-source isolation in fetch_all: record + WARN, never hard-fail
+            # the CLI. A single flaky feed (e.g. people.com.cn read timeout)
+            # must not skip Persist of the sources that did succeed.
             stats["errors"][source_id] = str(payload)  # type: ignore[index]
+            print(
+                f"WARN {source_id}: RSS source soft-fail (job continues): {payload}",
+                file=sys.stderr,
+            )
             continue
         inserted = 0
         for article in payload:
@@ -161,11 +168,13 @@ def main(argv: list[str] | None = None) -> int:
         for sid, detail in stats["sources"].items():  # type: ignore[union-attr]
             print(f"  {sid}: fetched={detail['fetched']} inserted={detail['inserted']}")
         for sid, err in stats["errors"].items():  # type: ignore[union-attr]
-            print(f"  ERROR {sid}: {err}", file=sys.stderr)
+            print(f"  WARN {sid}: {err}", file=sys.stderr)
         if export_count is not None:
             print(f"exported={export_count} -> {args.export_jsonl}")
 
-    return 1 if stats["errors"] else 0
+    # Isolated per-source fetch exceptions are soft-fail (enrich-style):
+    # exit 0 so GitHub Actions still runs P0 acceptance + Persist.
+    return 0
 
 
 if __name__ == "__main__":
