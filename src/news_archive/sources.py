@@ -513,6 +513,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="guardian_world_africa",
+        name="Guardian World Africa",
+        feed_url="https://www.theguardian.com/world/africa/rss",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="guardian_politics",
+        name="Guardian Politics",
+        feed_url="https://www.theguardian.com/politics/rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="bbc_wales",
+        name="BBC Wales",
+        feed_url="https://feeds.bbci.co.uk/news/wales/rss.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
