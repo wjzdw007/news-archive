@@ -303,6 +303,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="npr_world",
+        name="NPR World",
+        feed_url="https://feeds.npr.org/1004/rss.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="guardian_us",
+        name="Guardian US",
+        feed_url="https://www.theguardian.com/us-news/rss",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="bbc_middle_east",
+        name="BBC Middle East",
+        feed_url="https://feeds.bbci.co.uk/news/world/middle_east/rss.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
