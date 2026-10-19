@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（71 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（74 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -77,6 +77,9 @@
 | `guardian_society` | Guardian Society | https://www.theguardian.com/society/rss | primary |
 | `bbc_scotland` | BBC Scotland | https://feeds.bbci.co.uk/news/scotland/rss.xml | primary |
 | `guardian_cities` | Guardian Cities | https://www.theguardian.com/cities/rss | primary |
+| `guardian_world_africa` | Guardian World Africa | https://www.theguardian.com/world/africa/rss | primary |
+| `guardian_politics` | Guardian Politics | https://www.theguardian.com/politics/rss | primary |
+| `bbc_wales` | BBC Wales | https://feeds.bbci.co.uk/news/wales/rss.xml | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
