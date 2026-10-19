@@ -387,6 +387,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="guardian_science",
+        name="Guardian Science",
+        feed_url="https://www.theguardian.com/science/rss",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="bbc_china",
+        name="BBC China",
+        feed_url="https://feeds.bbci.co.uk/news/world/asia/china/rss.xml",
+        category="国际·中国",
+        role="primary",
+    ),
+    Source(
+        id="guardian_australia",
+        name="Guardian Australia",
+        feed_url="https://www.theguardian.com/australia-news/rss",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

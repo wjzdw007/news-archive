@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（53 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（56 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -59,6 +59,9 @@
 | `bbc_health` | BBC Health | https://feeds.bbci.co.uk/news/health/rss.xml | primary |
 | `nyt_health` | NYT Health | https://rss.nytimes.com/services/xml/rss/nyt/Health.xml | primary |
 | `straitstimes_world` | Straits Times World | https://www.straitstimes.com/news/world/rss.xml | primary |
+| `guardian_science` | Guardian Science | https://www.theguardian.com/science/rss | primary |
+| `bbc_china` | BBC China | https://feeds.bbci.co.uk/news/world/asia/china/rss.xml | primary |
+| `guardian_australia` | Guardian Australia | https://www.theguardian.com/australia-news/rss | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
