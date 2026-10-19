@@ -597,6 +597,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="csmonitor_world",
+        name="Christian Science Monitor World",
+        feed_url="https://rss.csmonitor.com/feeds/world",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="latimes_world",
+        name="LA Times World",
+        feed_url="https://www.latimes.com/world-nation/rss2.0.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="hindu_international",
+        name="The Hindu International",
+        feed_url="https://www.thehindu.com/news/international/feeder/default.rss",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
