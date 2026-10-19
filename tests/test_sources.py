@@ -336,8 +336,8 @@ _BBC_LATAM_NYT_CLIMATE_GUARDIAN_BIZ_PRIMARY = {
 # nyt_health ≠ nyt_world / nyt_technology / nyt_business / nyt_science /
 # nyt_climate. straitstimes_world is a new World feed, distinct from
 # bbc_world / guardian_world / nyt_world / sky_world / japan_times.
-# guardian_science / bbc_china stay unregistered (unused backups; all
-# three CEO-lock primaries passed smoke). nikkei_asia stays
+# guardian_science / bbc_china / guardian_australia are batch16
+# (primaries, not unused backups). nikkei_asia stays
 # unregistered (title+link only). NEWS_SOURCE_CAP display stays 6 —
 # no CAP code change. No X this batch.
 _BBC_HEALTH_NYT_HEALTH_ST_WORLD_PRIMARY = {
@@ -358,7 +358,35 @@ _BBC_HEALTH_NYT_HEALTH_ST_WORLD_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 53
+# CEO-approved Guardian Science / BBC China / Guardian Australia RSS
+# primaries (batch16). These three are the new adds. guardian_science ≠
+# bbc_science / nyt_science / guardian_environment / guardian_world /
+# guardian_technology / guardian_us / guardian_business. bbc_china ≠
+# bbc_world / bbc_asia / bbc_zh_simp / scmp_china / economist_china.
+# guardian_australia ≠ guardian_world / guardian_us / guardian_science
+# / japan_times / bbc_asia. bbc_education / guardian_americas stay
+# unregistered (unused backups; all three CEO-lock primaries passed
+# smoke). nikkei_asia stays unregistered (title+link only).
+# NEWS_SOURCE_CAP display stays 6 — no CAP code change. No X this batch.
+_GUARDIAN_SCIENCE_BBC_CHINA_GUARDIAN_AU_PRIMARY = {
+    "guardian_science": {
+        "name": "Guardian Science",
+        "feed_url": "https://www.theguardian.com/science/rss",
+        "category": "科学",
+    },
+    "bbc_china": {
+        "name": "BBC China",
+        "feed_url": "https://feeds.bbci.co.uk/news/world/asia/china/rss.xml",
+        "category": "国际·中国",
+    },
+    "guardian_australia": {
+        "name": "Guardian Australia",
+        "feed_url": "https://www.theguardian.com/australia-news/rss",
+        "category": "国际",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 56
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en) and Atom fallbacks for live XML probes.
@@ -832,11 +860,58 @@ def test_bbc_health_nyt_health_st_world_primaries_registered():
     assert by_id["straitstimes_world"].feed_url != by_id["nyt_world"].feed_url
     assert by_id["straitstimes_world"].feed_url != by_id["sky_world"].feed_url
     assert by_id["straitstimes_world"].feed_url != by_id["japan_times"].feed_url
-    # Unused backups / title+link-only feeds stay unregistered.
-    assert "guardian_science" not in by_id
-    assert "bbc_china" not in by_id
+    # Title+link-only Nikkei RSS is not registered (would skip-insert under #43).
     assert "nikkei_asia" not in by_id
     for source_id, expected in _BBC_HEALTH_NYT_HEALTH_ST_WORLD_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_guardian_science_bbc_china_guardian_au_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "bbc_science" in by_id
+    assert "nyt_science" in by_id
+    assert "guardian_environment" in by_id
+    assert "guardian_world" in by_id
+    assert "guardian_technology" in by_id
+    assert "guardian_us" in by_id
+    assert "guardian_business" in by_id
+    assert "guardian_science" in by_id
+    assert by_id["guardian_science"].feed_url != by_id["bbc_science"].feed_url
+    assert by_id["guardian_science"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["guardian_science"].feed_url != by_id["guardian_environment"].feed_url
+    assert by_id["guardian_science"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["guardian_science"].feed_url != by_id["guardian_technology"].feed_url
+    assert by_id["guardian_science"].feed_url != by_id["guardian_us"].feed_url
+    assert by_id["guardian_science"].feed_url != by_id["guardian_business"].feed_url
+    assert "bbc_world" in by_id
+    assert "bbc_asia" in by_id
+    assert "bbc_zh_simp" in by_id
+    assert "scmp_china" in by_id
+    assert "economist_china" in by_id
+    assert "bbc_china" in by_id
+    assert by_id["bbc_world"].feed_url == "https://feeds.bbci.co.uk/news/world/rss.xml"
+    assert by_id["bbc_china"].feed_url != by_id["bbc_world"].feed_url
+    assert by_id["bbc_china"].feed_url != by_id["bbc_asia"].feed_url
+    assert by_id["bbc_china"].feed_url != by_id["bbc_zh_simp"].feed_url
+    assert by_id["bbc_china"].feed_url != by_id["scmp_china"].feed_url
+    assert by_id["bbc_china"].feed_url != by_id["economist_china"].feed_url
+    assert "guardian_australia" in by_id
+    assert "japan_times" in by_id
+    assert by_id["guardian_australia"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["guardian_australia"].feed_url != by_id["guardian_us"].feed_url
+    assert by_id["guardian_australia"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["guardian_australia"].feed_url != by_id["japan_times"].feed_url
+    assert by_id["guardian_australia"].feed_url != by_id["bbc_asia"].feed_url
+    # Unused backups / title+link-only feeds stay unregistered.
+    assert "bbc_education" not in by_id
+    assert "guardian_americas" not in by_id
+    assert "nikkei_asia" not in by_id
+    for source_id, expected in _GUARDIAN_SCIENCE_BBC_CHINA_GUARDIAN_AU_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
         assert source.role == "primary"
@@ -1294,6 +1369,49 @@ def test_bbc_health_nyt_health_st_world_feeds_live_http_200():
         )
 
 
+def test_guardian_science_bbc_china_guardian_au_feeds_live_http_200():
+    """Hit the three new feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _GUARDIAN_SCIENCE_BBC_CHINA_GUARDIAN_AU_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(body)
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        for i, item in enumerate(items):
+            title = (item.findtext("title") or "").strip()
+            url = (item.findtext("link") or "").strip()
+            published = (
+                (item.findtext("pubDate") or "").strip()
+                or (item.findtext("published") or "").strip()
+                or (item.findtext("updated") or "").strip()
+            )
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0. Product lock
+        # requires non-empty RSS description/summary on these feeds.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -1312,6 +1430,7 @@ if __name__ == "__main__":
     test_bbc_africa_nyt_science_guardian_env_primaries_registered()
     test_bbc_latam_nyt_climate_guardian_biz_primaries_registered()
     test_bbc_health_nyt_health_st_world_primaries_registered()
+    test_guardian_science_bbc_china_guardian_au_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -1326,4 +1445,5 @@ if __name__ == "__main__":
     test_bbc_africa_nyt_science_guardian_env_feeds_live_http_200()
     test_bbc_latam_nyt_climate_guardian_biz_feeds_live_http_200()
     test_bbc_health_nyt_health_st_world_feeds_live_http_200()
+    test_guardian_science_bbc_china_guardian_au_feeds_live_http_200()
     print("✓ source registry tests PASSED")
