@@ -366,6 +366,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="bbc_health",
+        name="BBC Health",
+        feed_url="https://feeds.bbci.co.uk/news/health/rss.xml",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="nyt_health",
+        name="NYT Health",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/Health.xml",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="straitstimes_world",
+        name="Straits Times World",
+        feed_url="https://www.straitstimes.com/news/world/rss.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
