@@ -566,11 +566,11 @@ _GUARDIAN_SOCIETY_BBC_SCOTLAND_GUARDIAN_CITIES_PRIMARY = {
 # bbc_world / bbc_asia / bbc_europe / bbc_us_canada / bbc_middle_east /
 # bbc_africa / bbc_latin_america / bbc_science / bbc_health /
 # bbc_china / bbc_zh_simp / bbc_education / bbc_uk / bbc_politics /
-# bbc_scotland. bbc_england / nyt_upshot stay unregistered (unused
-# backups; all three CEO-lock primaries passed smoke). nikkei_asia
-# stays unregistered (title+link only). nyt_world_asia stays
-# unregistered (replaced in batch20). NEWS_SOURCE_CAP display stays 6
-# — no CAP code change. No X this batch.
+# bbc_scotland. bbc_england / nyt_upshot / france24_en are batch23
+# (primaries, not unused backups). nikkei_asia stays unregistered
+# (title+link only). nyt_world_asia stays unregistered (replaced in
+# batch20). NEWS_SOURCE_CAP display stays 6 — no CAP code change.
+# No X this batch.
 _GUARDIAN_WORLD_AFRICA_GUARDIAN_POLITICS_BBC_WALES_PRIMARY = {
     "guardian_world_africa": {
         "name": "Guardian World Africa",
@@ -589,7 +589,42 @@ _GUARDIAN_WORLD_AFRICA_GUARDIAN_POLITICS_BBC_WALES_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 74
+# CEO-approved BBC England / NYT The Upshot / France 24 English RSS
+# primaries (batch23). These three are the new adds. bbc_england ≠
+# bbc_world / bbc_asia / bbc_europe / bbc_us_canada / bbc_middle_east /
+# bbc_africa / bbc_latin_america / bbc_science / bbc_health /
+# bbc_china / bbc_zh_simp / bbc_education / bbc_uk / bbc_politics /
+# bbc_scotland / bbc_wales. nyt_upshot ≠ nyt_world / nyt_technology /
+# nyt_business / nyt_science / nyt_climate / nyt_health /
+# nyt_education / nyt_politics / nyt_us / nyt_europe. france24_en
+# uses official English Europe RSS (https://www.france24.com/en/europe/rss)
+# because locked https://www.france24.com/en/rss (and /en/world/rss,
+# which redirects to /en/rss) has empty descriptions on live-blog
+# items. bbc_northern_ireland / guardian_middle_east stay
+# unregistered (unused backups; all three CEO-lock slots passed
+# smoke with official URLs). nikkei_asia stays unregistered
+# (title+link only). nyt_world_asia stays unregistered (replaced in
+# batch20). NEWS_SOURCE_CAP display stays 6 — no CAP code change.
+# No X this batch.
+_BBC_ENGLAND_NYT_UPSHOT_FRANCE24_EN_PRIMARY = {
+    "bbc_england": {
+        "name": "BBC England",
+        "feed_url": "https://feeds.bbci.co.uk/news/england/rss.xml",
+        "category": "综合",
+    },
+    "nyt_upshot": {
+        "name": "NYT The Upshot",
+        "feed_url": "https://rss.nytimes.com/services/xml/rss/nyt/Upshot.xml",
+        "category": "综合",
+    },
+    "france24_en": {
+        "name": "France 24 English",
+        "feed_url": "https://www.france24.com/en/europe/rss",
+        "category": "国际",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 77
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en) and Atom fallbacks for live XML probes.
@@ -1596,12 +1631,87 @@ def test_guardian_world_africa_guardian_politics_bbc_wales_primaries_registered(
     assert by_id["bbc_wales"].feed_url != by_id["bbc_uk"].feed_url
     assert by_id["bbc_wales"].feed_url != by_id["bbc_politics"].feed_url
     assert by_id["bbc_wales"].feed_url != by_id["bbc_scotland"].feed_url
-    # Unused backups / replaced / title+link-only feeds stay unregistered.
-    assert "bbc_england" not in by_id
-    assert "nyt_upshot" not in by_id
+    # Replaced / title+link-only feeds stay unregistered.
+    # bbc_england / nyt_upshot / france24_en are batch23 (primaries,
+    # not unused backups).
     assert "nyt_world_asia" not in by_id
     assert "nikkei_asia" not in by_id
     for source_id, expected in _GUARDIAN_WORLD_AFRICA_GUARDIAN_POLITICS_BBC_WALES_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_bbc_england_nyt_upshot_france24_en_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "bbc_world" in by_id
+    assert "bbc_asia" in by_id
+    assert "bbc_europe" in by_id
+    assert "bbc_us_canada" in by_id
+    assert "bbc_middle_east" in by_id
+    assert "bbc_africa" in by_id
+    assert "bbc_latin_america" in by_id
+    assert "bbc_science" in by_id
+    assert "bbc_health" in by_id
+    assert "bbc_china" in by_id
+    assert "bbc_zh_simp" in by_id
+    assert "bbc_education" in by_id
+    assert "bbc_uk" in by_id
+    assert "bbc_politics" in by_id
+    assert "bbc_scotland" in by_id
+    assert "bbc_wales" in by_id
+    assert "bbc_england" in by_id
+    assert by_id["bbc_world"].feed_url == "https://feeds.bbci.co.uk/news/world/rss.xml"
+    assert by_id["bbc_england"].feed_url != by_id["bbc_world"].feed_url
+    assert by_id["bbc_england"].feed_url != by_id["bbc_asia"].feed_url
+    assert by_id["bbc_england"].feed_url != by_id["bbc_europe"].feed_url
+    assert by_id["bbc_england"].feed_url != by_id["bbc_us_canada"].feed_url
+    assert by_id["bbc_england"].feed_url != by_id["bbc_middle_east"].feed_url
+    assert by_id["bbc_england"].feed_url != by_id["bbc_africa"].feed_url
+    assert by_id["bbc_england"].feed_url != by_id["bbc_latin_america"].feed_url
+    assert by_id["bbc_england"].feed_url != by_id["bbc_science"].feed_url
+    assert by_id["bbc_england"].feed_url != by_id["bbc_health"].feed_url
+    assert by_id["bbc_england"].feed_url != by_id["bbc_china"].feed_url
+    assert by_id["bbc_england"].feed_url != by_id["bbc_zh_simp"].feed_url
+    assert by_id["bbc_england"].feed_url != by_id["bbc_education"].feed_url
+    assert by_id["bbc_england"].feed_url != by_id["bbc_uk"].feed_url
+    assert by_id["bbc_england"].feed_url != by_id["bbc_politics"].feed_url
+    assert by_id["bbc_england"].feed_url != by_id["bbc_scotland"].feed_url
+    assert by_id["bbc_england"].feed_url != by_id["bbc_wales"].feed_url
+    assert "nyt_world" in by_id
+    assert "nyt_technology" in by_id
+    assert "nyt_business" in by_id
+    assert "nyt_science" in by_id
+    assert "nyt_climate" in by_id
+    assert "nyt_health" in by_id
+    assert "nyt_education" in by_id
+    assert "nyt_politics" in by_id
+    assert "nyt_us" in by_id
+    assert "nyt_europe" in by_id
+    assert "nyt_upshot" in by_id
+    assert by_id["nyt_world"].feed_url == "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"
+    assert by_id["nyt_upshot"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["nyt_upshot"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["nyt_upshot"].feed_url != by_id["nyt_business"].feed_url
+    assert by_id["nyt_upshot"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["nyt_upshot"].feed_url != by_id["nyt_climate"].feed_url
+    assert by_id["nyt_upshot"].feed_url != by_id["nyt_health"].feed_url
+    assert by_id["nyt_upshot"].feed_url != by_id["nyt_education"].feed_url
+    assert by_id["nyt_upshot"].feed_url != by_id["nyt_politics"].feed_url
+    assert by_id["nyt_upshot"].feed_url != by_id["nyt_us"].feed_url
+    assert by_id["nyt_upshot"].feed_url != by_id["nyt_europe"].feed_url
+    assert "france24_en" in by_id
+    assert by_id["france24_en"].feed_url == "https://www.france24.com/en/europe/rss"
+    assert by_id["france24_en"].feed_url != "https://www.france24.com/en/rss"
+    # Unused backups / replaced / title+link-only feeds stay unregistered.
+    assert "bbc_northern_ireland" not in by_id
+    assert "guardian_middle_east" not in by_id
+    assert "nyt_world_asia" not in by_id
+    assert "nikkei_asia" not in by_id
+    for source_id, expected in _BBC_ENGLAND_NYT_UPSHOT_FRANCE24_EN_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
         assert source.role == "primary"
@@ -2360,6 +2470,49 @@ def test_guardian_world_africa_guardian_politics_bbc_wales_feeds_live_http_200()
         )
 
 
+def test_bbc_england_nyt_upshot_france24_en_feeds_live_http_200():
+    """Hit the three new feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _BBC_ENGLAND_NYT_UPSHOT_FRANCE24_EN_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(body)
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        for i, item in enumerate(items):
+            title = (item.findtext("title") or "").strip()
+            url = (item.findtext("link") or "").strip()
+            published = (
+                (item.findtext("pubDate") or "").strip()
+                or (item.findtext("published") or "").strip()
+                or (item.findtext("updated") or "").strip()
+            )
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0. Product lock
+        # requires non-empty RSS description/summary on these feeds.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -2385,6 +2538,7 @@ if __name__ == "__main__":
     test_bbc_politics_nyt_europe_guardian_law_primaries_registered()
     test_guardian_society_bbc_scotland_guardian_cities_primaries_registered()
     test_guardian_world_africa_guardian_politics_bbc_wales_primaries_registered()
+    test_bbc_england_nyt_upshot_france24_en_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -2406,4 +2560,5 @@ if __name__ == "__main__":
     test_bbc_politics_nyt_europe_guardian_law_feeds_live_http_200()
     test_guardian_society_bbc_scotland_guardian_cities_feeds_live_http_200()
     test_guardian_world_africa_guardian_politics_bbc_wales_feeds_live_http_200()
+    test_bbc_england_nyt_upshot_france24_en_feeds_live_http_200()
     print("✓ source registry tests PASSED")
