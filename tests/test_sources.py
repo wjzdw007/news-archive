@@ -202,7 +202,7 @@ _SKY_LEMONDE_CBS_PRIMARY = {
 # is RFI English. bbc_europe ≠ bbc_world / bbc_asia / bbc_zh_simp (now a
 # primary, not an unused backup). abc_news is batch11 (primary, not a
 # backup). nikkei_asia stays unregistered (title+link only). npr_world
-# is not registered (unused backup).
+# is batch12 (primary, not an unused backup).
 _DW_RFI_BBC_EUROPE_PRIMARY = {
     "dw_en": {
         "name": "Deutsche Welle (EN)",
@@ -225,9 +225,9 @@ _DW_RFI_BBC_EUROPE_PRIMARY = {
 # These three are the new adds. abc_news is ABC top stories (now a
 # primary, not an unused backup). bbc_us_canada ≠ bbc_world / bbc_asia /
 # bbc_europe / bbc_zh_simp. wired is WIRED magazine RSS, distinct from
-# verge / ars_technica. npr_world is not registered (unused backup).
-# nikkei_asia stays unregistered (title+link only). NEWS_SOURCE_CAP
-# display stays 6 — no CAP code change.
+# verge / ars_technica. npr_world is batch12 (primary, not an unused
+# backup). nikkei_asia stays unregistered (title+link only).
+# NEWS_SOURCE_CAP display stays 6 — no CAP code change.
 _ABC_BBC_US_WIRED_PRIMARY = {
     "abc_news": {
         "name": "ABC News",
@@ -246,7 +246,33 @@ _ABC_BBC_US_WIRED_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 41
+# CEO-approved NPR World / Guardian US / BBC Middle East RSS primaries
+# (batch12). These three are the new adds. npr_world ≠ npr_news (World
+# topic feed vs NPR News). guardian_us ≠ guardian_world /
+# guardian_technology. bbc_middle_east ≠ bbc_world / bbc_asia /
+# bbc_europe / bbc_us_canada / bbc_zh_simp. bbc_africa / nyt_science
+# stay unregistered (unused backups; all three CEO-lock primaries
+# passed smoke). nikkei_asia stays unregistered (title+link only).
+# NEWS_SOURCE_CAP display stays 6 — no CAP code change.
+_NPR_GUARDIAN_US_BBC_ME_PRIMARY = {
+    "npr_world": {
+        "name": "NPR World",
+        "feed_url": "https://feeds.npr.org/1004/rss.xml",
+        "category": "国际",
+    },
+    "guardian_us": {
+        "name": "Guardian US",
+        "feed_url": "https://www.theguardian.com/us-news/rss",
+        "category": "国际",
+    },
+    "bbc_middle_east": {
+        "name": "BBC Middle East",
+        "feed_url": "https://feeds.bbci.co.uk/news/world/middle_east/rss.xml",
+        "category": "国际",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 44
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en) and Atom fallbacks for live XML probes.
@@ -470,7 +496,6 @@ def test_sky_lemonde_cbs_primaries_registered():
     assert "cbs_news" in by_id
     assert by_id["cbs_news"].id == "cbs_news"
     # This batch is RSS-only (X CBSNews/SkyNews untouched). Unused backups stay out.
-    assert "npr_world" not in by_id
     assert "nikkei_asia" not in by_id
     for source_id, expected in _SKY_LEMONDE_CBS_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
@@ -496,7 +521,6 @@ def test_dw_rfi_bbc_europe_primaries_registered():
     assert "rfi_en" in by_id
     assert by_id["rfi_en"].feed_url == "https://www.rfi.fr/en/rss"
     # Unused backup / title+link-only feeds stay unregistered.
-    assert "npr_world" not in by_id
     assert "nikkei_asia" not in by_id
     for source_id, expected in _DW_RFI_BBC_EUROPE_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
@@ -528,9 +552,45 @@ def test_abc_bbc_us_wired_primaries_registered():
     assert by_id["wired"].feed_url != by_id["verge"].feed_url
     assert by_id["wired"].feed_url != by_id["ars_technica"].feed_url
     # Unused backup / title+link-only feeds stay unregistered.
-    assert "npr_world" not in by_id
     assert "nikkei_asia" not in by_id
     for source_id, expected in _ABC_BBC_US_WIRED_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_npr_guardian_us_bbc_me_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "npr_news" in by_id
+    assert "npr_world" in by_id
+    assert by_id["npr_news"].feed_url == "https://feeds.npr.org/1001/rss.xml"
+    assert by_id["npr_world"].feed_url != by_id["npr_news"].feed_url
+    assert "guardian_world" in by_id
+    assert "guardian_technology" in by_id
+    assert "guardian_us" in by_id
+    assert by_id["guardian_world"].feed_url == "https://www.theguardian.com/world/rss"
+    assert by_id["guardian_us"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["guardian_us"].feed_url != by_id["guardian_technology"].feed_url
+    assert "bbc_world" in by_id
+    assert "bbc_asia" in by_id
+    assert "bbc_europe" in by_id
+    assert "bbc_us_canada" in by_id
+    assert "bbc_zh_simp" in by_id
+    assert "bbc_middle_east" in by_id
+    assert by_id["bbc_world"].feed_url == "https://feeds.bbci.co.uk/news/world/rss.xml"
+    assert by_id["bbc_middle_east"].feed_url != by_id["bbc_world"].feed_url
+    assert by_id["bbc_middle_east"].feed_url != by_id["bbc_asia"].feed_url
+    assert by_id["bbc_middle_east"].feed_url != by_id["bbc_europe"].feed_url
+    assert by_id["bbc_middle_east"].feed_url != by_id["bbc_us_canada"].feed_url
+    assert by_id["bbc_middle_east"].feed_url != by_id["bbc_zh_simp"].feed_url
+    # Unused backups / title+link-only feeds stay unregistered.
+    assert "bbc_africa" not in by_id
+    assert "nyt_science" not in by_id
+    assert "nikkei_asia" not in by_id
+    for source_id, expected in _NPR_GUARDIAN_US_BBC_ME_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
         assert source.role == "primary"
@@ -813,6 +873,49 @@ def test_abc_bbc_us_wired_feeds_live_http_200():
         )
 
 
+def test_npr_guardian_us_bbc_me_feeds_live_http_200():
+    """Hit the three new feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _NPR_GUARDIAN_US_BBC_ME_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(body)
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        for i, item in enumerate(items):
+            title = (item.findtext("title") or "").strip()
+            url = (item.findtext("link") or "").strip()
+            published = (
+                (item.findtext("pubDate") or "").strip()
+                or (item.findtext("published") or "").strip()
+                or (item.findtext("updated") or "").strip()
+            )
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0. Product lock
+        # requires non-empty RSS description/summary on these feeds.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -827,6 +930,7 @@ if __name__ == "__main__":
     test_sky_lemonde_cbs_primaries_registered()
     test_dw_rfi_bbc_europe_primaries_registered()
     test_abc_bbc_us_wired_primaries_registered()
+    test_npr_guardian_us_bbc_me_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -837,4 +941,5 @@ if __name__ == "__main__":
     test_sky_lemonde_cbs_feeds_live_http_200()
     test_dw_rfi_bbc_europe_feeds_live_http_200()
     test_abc_bbc_us_wired_feeds_live_http_200()
+    test_npr_guardian_us_bbc_me_feeds_live_http_200()
     print("✓ source registry tests PASSED")
