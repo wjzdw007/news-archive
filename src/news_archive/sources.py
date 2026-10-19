@@ -471,6 +471,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="bbc_politics",
+        name="BBC Politics",
+        feed_url="https://feeds.bbci.co.uk/news/politics/rss.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="nyt_europe",
+        name="NYT Europe",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/Europe.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="nyt_world_asia",
+        name="NYT World Asia",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/AsiaPacific.xml",
+        category="国际·亚太",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
