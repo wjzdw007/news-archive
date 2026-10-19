@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（68 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（71 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -74,6 +74,9 @@
 | `bbc_politics` | BBC Politics | https://feeds.bbci.co.uk/news/politics/rss.xml | primary |
 | `nyt_europe` | NYT Europe | https://rss.nytimes.com/services/xml/rss/nyt/Europe.xml | primary |
 | `guardian_law` | Guardian Law | https://www.theguardian.com/law/rss | primary |
+| `guardian_society` | Guardian Society | https://www.theguardian.com/society/rss | primary |
+| `bbc_scotland` | BBC Scotland | https://feeds.bbci.co.uk/news/scotland/rss.xml | primary |
+| `guardian_cities` | Guardian Cities | https://www.theguardian.com/cities/rss | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
