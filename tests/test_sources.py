@@ -637,11 +637,11 @@ _BBC_ENGLAND_NYT_UPSHOT_FRANCE24_EN_PRIMARY = {
 # guardian_politics / bbc_middle_east. euronews uses locked official
 # English theme RSS https://www.euronews.com/rss?level=theme&name=news
 # (also live-probed https://www.euronews.com/rss; both HTTP 200 with
-# non-empty descriptions — locked URL kept). nyt_africa / smh_world
-# stay unregistered (unused backups; all three CEO-lock ids passed
-# smoke). nikkei_asia stays unregistered (title+link only).
-# nyt_world_asia stays unregistered (replaced in batch20).
-# NEWS_SOURCE_CAP display stays 6 — no CAP code change. No X this batch.
+# non-empty descriptions — locked URL kept). nyt_africa / smh_world /
+# nbc_world are batch25 (primaries, not unused backups). nikkei_asia
+# stays unregistered (title+link only). nyt_world_asia stays
+# unregistered (replaced in batch20). NEWS_SOURCE_CAP display stays
+# 6 — no CAP code change. No X this batch.
 _BBC_NI_GUARDIAN_ME_EURONEWS_PRIMARY = {
     "bbc_northern_ireland": {
         "name": "BBC Northern Ireland",
@@ -660,7 +660,42 @@ _BBC_NI_GUARDIAN_ME_EURONEWS_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 80
+# CEO-approved NYT Africa / SMH World / NBC News World RSS primaries
+# (batch25). These three are the new adds. nyt_africa ≠ nyt_world /
+# nyt_technology / nyt_business / nyt_science / nyt_climate /
+# nyt_health / nyt_education / nyt_politics / nyt_us / nyt_europe /
+# nyt_upshot (Africa.xml is a distinct NYT World subsection; live
+# probe vs public DB was 9/20 already present via nyt_world/nyt_science
+# and 11/20 unique — not the batch20 nyt_world_asia inserted0 case).
+# smh_world uses official SMH RSS dir https://www.smh.com.au/rss/world.xml
+# (https://www.smh.com.au/rssheadlines/world/article/rss.xml redirects
+# to the same URL). nbc_world uses locked
+# https://feeds.nbcnews.com/nbcnews/public/world (official alternate
+# https://feeds.nbcnews.com/feeds/worldnews redirects to the same URL).
+# csmonitor_world / latimes_world stay unregistered (unused backups;
+# all three CEO-lock ids passed live+dedupe). nikkei_asia stays
+# unregistered (title+link only). nyt_world_asia stays unregistered
+# (replaced in batch20). NEWS_SOURCE_CAP display stays 6 — no CAP
+# code change. No X this batch.
+_NYT_AFRICA_SMH_WORLD_NBC_WORLD_PRIMARY = {
+    "nyt_africa": {
+        "name": "NYT Africa",
+        "feed_url": "https://rss.nytimes.com/services/xml/rss/nyt/Africa.xml",
+        "category": "国际",
+    },
+    "smh_world": {
+        "name": "Sydney Morning Herald World",
+        "feed_url": "https://www.smh.com.au/rss/world.xml",
+        "category": "国际",
+    },
+    "nbc_world": {
+        "name": "NBC News World",
+        "feed_url": "https://feeds.nbcnews.com/nbcnews/public/world",
+        "category": "国际",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 83
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en) and Atom fallbacks for live XML probes.
@@ -1834,12 +1869,62 @@ def test_bbc_ni_guardian_me_euronews_primaries_registered():
     assert by_id["euronews"].feed_url != "https://www.euronews.com/rss"
     assert "france24_en" in by_id
     assert by_id["euronews"].feed_url != by_id["france24_en"].feed_url
-    # Unused backups / replaced / title+link-only feeds stay unregistered.
-    assert "nyt_africa" not in by_id
-    assert "smh_world" not in by_id
+    # nyt_africa / smh_world / nbc_world are batch25 (primaries, not
+    # unused backups). Replaced / title+link-only feeds stay unregistered.
     assert "nyt_world_asia" not in by_id
     assert "nikkei_asia" not in by_id
     for source_id, expected in _BBC_NI_GUARDIAN_ME_EURONEWS_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_nyt_africa_smh_world_nbc_world_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "nyt_world" in by_id
+    assert "nyt_technology" in by_id
+    assert "nyt_business" in by_id
+    assert "nyt_science" in by_id
+    assert "nyt_climate" in by_id
+    assert "nyt_health" in by_id
+    assert "nyt_education" in by_id
+    assert "nyt_politics" in by_id
+    assert "nyt_us" in by_id
+    assert "nyt_europe" in by_id
+    assert "nyt_upshot" in by_id
+    assert "nyt_africa" in by_id
+    assert by_id["nyt_world"].feed_url == "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"
+    assert by_id["nyt_africa"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["nyt_africa"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["nyt_africa"].feed_url != by_id["nyt_business"].feed_url
+    assert by_id["nyt_africa"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["nyt_africa"].feed_url != by_id["nyt_climate"].feed_url
+    assert by_id["nyt_africa"].feed_url != by_id["nyt_health"].feed_url
+    assert by_id["nyt_africa"].feed_url != by_id["nyt_education"].feed_url
+    assert by_id["nyt_africa"].feed_url != by_id["nyt_politics"].feed_url
+    assert by_id["nyt_africa"].feed_url != by_id["nyt_us"].feed_url
+    assert by_id["nyt_africa"].feed_url != by_id["nyt_europe"].feed_url
+    assert by_id["nyt_africa"].feed_url != by_id["nyt_upshot"].feed_url
+    assert "smh_world" in by_id
+    assert by_id["smh_world"].feed_url == "https://www.smh.com.au/rss/world.xml"
+    assert by_id["smh_world"].feed_url != (
+        "https://www.smh.com.au/rssheadlines/world/article/rss.xml"
+    )
+    assert "nbc_world" in by_id
+    assert by_id["nbc_world"].feed_url == "https://feeds.nbcnews.com/nbcnews/public/world"
+    assert by_id["nbc_world"].feed_url != "https://feeds.nbcnews.com/feeds/worldnews"
+    assert "straitstimes_world" in by_id
+    assert by_id["smh_world"].feed_url != by_id["straitstimes_world"].feed_url
+    assert by_id["nbc_world"].feed_url != by_id["straitstimes_world"].feed_url
+    # Unused backups / replaced / title+link-only feeds stay unregistered.
+    assert "csmonitor_world" not in by_id
+    assert "latimes_world" not in by_id
+    assert "nyt_world_asia" not in by_id
+    assert "nikkei_asia" not in by_id
+    for source_id, expected in _NYT_AFRICA_SMH_WORLD_NBC_WORLD_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
         assert source.role == "primary"
@@ -2684,6 +2769,49 @@ def test_bbc_ni_guardian_me_euronews_feeds_live_http_200():
         )
 
 
+def test_nyt_africa_smh_world_nbc_world_feeds_live_http_200():
+    """Hit the three new feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _NYT_AFRICA_SMH_WORLD_NBC_WORLD_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(body)
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        for i, item in enumerate(items):
+            title = (item.findtext("title") or "").strip()
+            url = (item.findtext("link") or "").strip()
+            published = (
+                (item.findtext("pubDate") or "").strip()
+                or (item.findtext("published") or "").strip()
+                or (item.findtext("updated") or "").strip()
+            )
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0. Product lock
+        # requires non-empty RSS description/summary on these feeds.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -2711,6 +2839,7 @@ if __name__ == "__main__":
     test_guardian_world_africa_guardian_politics_bbc_wales_primaries_registered()
     test_bbc_england_nyt_upshot_france24_en_primaries_registered()
     test_bbc_ni_guardian_me_euronews_primaries_registered()
+    test_nyt_africa_smh_world_nbc_world_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -2734,4 +2863,5 @@ if __name__ == "__main__":
     test_guardian_world_africa_guardian_politics_bbc_wales_feeds_live_http_200()
     test_bbc_england_nyt_upshot_france24_en_feeds_live_http_200()
     test_bbc_ni_guardian_me_euronews_feeds_live_http_200()
+    test_nyt_africa_smh_world_nbc_world_feeds_live_http_200()
     print("✓ source registry tests PASSED")
