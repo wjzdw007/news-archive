@@ -345,6 +345,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="bbc_latin_america",
+        name="BBC Latin America",
+        feed_url="https://feeds.bbci.co.uk/news/world/latin_america/rss.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="nyt_climate",
+        name="NYT Climate",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/Climate.xml",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="guardian_business",
+        name="Guardian Business",
+        feed_url="https://www.theguardian.com/uk/business/rss",
+        category="财经",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
