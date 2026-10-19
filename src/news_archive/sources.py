@@ -534,6 +534,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="bbc_england",
+        name="BBC England",
+        feed_url="https://feeds.bbci.co.uk/news/england/rss.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="nyt_upshot",
+        name="NYT The Upshot",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/Upshot.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="france24_en",
+        name="France 24 English",
+        feed_url="https://www.france24.com/en/europe/rss",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
