@@ -485,10 +485,10 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
-        id="nyt_world_asia",
-        name="NYT World Asia",
-        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/AsiaPacific.xml",
-        category="国际·亚太",
+        id="guardian_law",
+        name="Guardian Law",
+        feed_url="https://www.theguardian.com/law/rss",
+        category="综合",
         role="primary",
     ),
     Source(
