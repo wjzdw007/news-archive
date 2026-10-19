@@ -408,6 +408,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="bbc_education",
+        name="BBC Education",
+        feed_url="https://feeds.bbci.co.uk/news/education/rss.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="guardian_americas",
+        name="Guardian Americas",
+        feed_url="https://www.theguardian.com/world/americas/rss",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="nyt_education",
+        name="NYT Education",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/Education.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
