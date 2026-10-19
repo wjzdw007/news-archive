@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（44 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（47 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -50,6 +50,9 @@
 | `npr_world` | NPR World | https://feeds.npr.org/1004/rss.xml | primary |
 | `guardian_us` | Guardian US | https://www.theguardian.com/us-news/rss | primary |
 | `bbc_middle_east` | BBC Middle East | https://feeds.bbci.co.uk/news/world/middle_east/rss.xml | primary |
+| `bbc_africa` | BBC Africa | https://feeds.bbci.co.uk/news/world/africa/rss.xml | primary |
+| `nyt_science` | NYT Science | https://rss.nytimes.com/services/xml/rss/nyt/Science.xml | primary |
+| `guardian_environment` | Guardian Environment | https://www.theguardian.com/environment/rss | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
