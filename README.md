@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（77 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（80 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -83,6 +83,9 @@
 | `bbc_england` | BBC England | https://feeds.bbci.co.uk/news/england/rss.xml | primary |
 | `nyt_upshot` | NYT The Upshot | https://rss.nytimes.com/services/xml/rss/nyt/Upshot.xml | primary |
 | `france24_en` | France 24 English | https://www.france24.com/en/europe/rss | primary |
+| `bbc_northern_ireland` | BBC Northern Ireland | https://feeds.bbci.co.uk/news/northern_ireland/rss.xml | primary |
+| `guardian_middle_east` | Guardian Middle East | https://www.theguardian.com/world/middleeast/rss | primary |
+| `euronews` | Euronews English | https://www.euronews.com/rss?level=theme&name=news | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema

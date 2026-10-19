@@ -555,6 +555,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="bbc_northern_ireland",
+        name="BBC Northern Ireland",
+        feed_url="https://feeds.bbci.co.uk/news/northern_ireland/rss.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="guardian_middle_east",
+        name="Guardian Middle East",
+        feed_url="https://www.theguardian.com/world/middleeast/rss",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="euronews",
+        name="Euronews English",
+        feed_url="https://www.euronews.com/rss?level=theme&name=news",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
