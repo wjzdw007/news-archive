@@ -458,7 +458,7 @@ _GUARDIAN_UK_EUROPE_NYT_POLITICS_PRIMARY = {
 # guardian_us / guardian_americas / guardian_science /
 # guardian_australia / guardian_technology / guardian_business /
 # guardian_environment / guardian_europe. bbc_politics / nyt_europe /
-# nyt_world_asia are batch20 (primaries, not unused backups).
+# guardian_law are batch20 (primaries, not unused backups).
 # nikkei_asia stays unregistered (title+link only).
 # NEWS_SOURCE_CAP display stays 6 — no CAP code change. No X this batch.
 _BBC_UK_NYT_US_GUARDIAN_GLOBAL_DEV_PRIMARY = {
@@ -479,21 +479,25 @@ _BBC_UK_NYT_US_GUARDIAN_GLOBAL_DEV_PRIMARY = {
     },
 }
 
-# CEO-approved BBC Politics / NYT Europe / NYT World Asia RSS
-# primaries (batch20). These three are the new adds. bbc_politics ≠
-# bbc_world / bbc_asia / bbc_europe / bbc_us_canada / bbc_middle_east /
-# bbc_africa / bbc_latin_america / bbc_science / bbc_health / bbc_china /
+# CEO-approved BBC Politics / NYT Europe / Guardian Law RSS
+# primaries (batch20). bbc_politics / nyt_europe stay as-is.
+# guardian_law replaces nyt_world_asia after daily-fetch RED
+# (AsiaPacific feed fetched items already in DB — url dedupe,
+# insert 0). bbc_politics ≠ bbc_world / bbc_asia / bbc_europe /
+# bbc_us_canada / bbc_middle_east / bbc_africa /
+# bbc_latin_america / bbc_science / bbc_health / bbc_china /
 # bbc_zh_simp / bbc_education / bbc_uk. nyt_europe ≠ nyt_world /
 # nyt_technology / nyt_business / nyt_science / nyt_climate /
 # nyt_health / nyt_education / nyt_politics / nyt_us / bbc_europe /
-# guardian_europe. nyt_world_asia ≠ nyt_world / nyt_europe / nyt_us /
-# nyt_technology / nyt_business / nyt_science / nyt_climate /
-# nyt_health / nyt_education / nyt_politics / bbc_asia / scmp_asia.
-# guardian_law / guardian_society stay unregistered (unused backups;
-# all three CEO-lock primaries passed smoke). nikkei_asia stays
+# guardian_europe. guardian_law ≠ guardian_world / guardian_uk /
+# guardian_us / guardian_americas / guardian_science /
+# guardian_australia / guardian_technology / guardian_business /
+# guardian_environment / guardian_europe / guardian_global_dev.
+# nyt_world_asia is unregistered (replaced). guardian_society
+# stays unregistered (unused backup). nikkei_asia stays
 # unregistered (title+link only). NEWS_SOURCE_CAP display stays 6 —
 # no CAP code change. No X this batch.
-_BBC_POLITICS_NYT_EUROPE_NYT_WORLD_ASIA_PRIMARY = {
+_BBC_POLITICS_NYT_EUROPE_GUARDIAN_LAW_PRIMARY = {
     "bbc_politics": {
         "name": "BBC Politics",
         "feed_url": "https://feeds.bbci.co.uk/news/politics/rss.xml",
@@ -504,10 +508,10 @@ _BBC_POLITICS_NYT_EUROPE_NYT_WORLD_ASIA_PRIMARY = {
         "feed_url": "https://rss.nytimes.com/services/xml/rss/nyt/Europe.xml",
         "category": "国际",
     },
-    "nyt_world_asia": {
-        "name": "NYT World Asia",
-        "feed_url": "https://rss.nytimes.com/services/xml/rss/nyt/AsiaPacific.xml",
-        "category": "国际·亚太",
+    "guardian_law": {
+        "name": "Guardian Law",
+        "feed_url": "https://www.theguardian.com/law/rss",
+        "category": "综合",
     },
 }
 
@@ -1256,7 +1260,7 @@ def test_bbc_uk_nyt_us_guardian_global_dev_primaries_registered():
         assert source.category == expected["category"]
 
 
-def test_bbc_politics_nyt_europe_nyt_world_asia_primaries_registered():
+def test_bbc_politics_nyt_europe_guardian_law_primaries_registered():
     by_id = {s.id: s for s in SOURCES}
     assert "bbc_world" in by_id
     assert "bbc_asia" in by_id
@@ -1312,25 +1316,34 @@ def test_bbc_politics_nyt_europe_nyt_world_asia_primaries_registered():
     assert by_id["nyt_europe"].feed_url != by_id["nyt_us"].feed_url
     assert by_id["nyt_europe"].feed_url != by_id["bbc_europe"].feed_url
     assert by_id["nyt_europe"].feed_url != by_id["guardian_europe"].feed_url
-    assert "nyt_world_asia" in by_id
-    assert "scmp_asia" in by_id
-    assert by_id["nyt_world_asia"].feed_url != by_id["nyt_world"].feed_url
-    assert by_id["nyt_world_asia"].feed_url != by_id["nyt_europe"].feed_url
-    assert by_id["nyt_world_asia"].feed_url != by_id["nyt_us"].feed_url
-    assert by_id["nyt_world_asia"].feed_url != by_id["nyt_technology"].feed_url
-    assert by_id["nyt_world_asia"].feed_url != by_id["nyt_business"].feed_url
-    assert by_id["nyt_world_asia"].feed_url != by_id["nyt_science"].feed_url
-    assert by_id["nyt_world_asia"].feed_url != by_id["nyt_climate"].feed_url
-    assert by_id["nyt_world_asia"].feed_url != by_id["nyt_health"].feed_url
-    assert by_id["nyt_world_asia"].feed_url != by_id["nyt_education"].feed_url
-    assert by_id["nyt_world_asia"].feed_url != by_id["nyt_politics"].feed_url
-    assert by_id["nyt_world_asia"].feed_url != by_id["bbc_asia"].feed_url
-    assert by_id["nyt_world_asia"].feed_url != by_id["scmp_asia"].feed_url
-    # Unused backups / title+link-only feeds stay unregistered.
-    assert "guardian_law" not in by_id
+    assert "guardian_law" in by_id
+    assert "guardian_world" in by_id
+    assert "guardian_uk" in by_id
+    assert "guardian_us" in by_id
+    assert "guardian_americas" in by_id
+    assert "guardian_science" in by_id
+    assert "guardian_australia" in by_id
+    assert "guardian_technology" in by_id
+    assert "guardian_business" in by_id
+    assert "guardian_environment" in by_id
+    assert "guardian_europe" in by_id
+    assert "guardian_global_dev" in by_id
+    assert by_id["guardian_law"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["guardian_law"].feed_url != by_id["guardian_uk"].feed_url
+    assert by_id["guardian_law"].feed_url != by_id["guardian_us"].feed_url
+    assert by_id["guardian_law"].feed_url != by_id["guardian_americas"].feed_url
+    assert by_id["guardian_law"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["guardian_law"].feed_url != by_id["guardian_australia"].feed_url
+    assert by_id["guardian_law"].feed_url != by_id["guardian_technology"].feed_url
+    assert by_id["guardian_law"].feed_url != by_id["guardian_business"].feed_url
+    assert by_id["guardian_law"].feed_url != by_id["guardian_environment"].feed_url
+    assert by_id["guardian_law"].feed_url != by_id["guardian_europe"].feed_url
+    assert by_id["guardian_law"].feed_url != by_id["guardian_global_dev"].feed_url
+    # Replaced / unused backups / title+link-only feeds stay unregistered.
+    assert "nyt_world_asia" not in by_id
     assert "guardian_society" not in by_id
     assert "nikkei_asia" not in by_id
-    for source_id, expected in _BBC_POLITICS_NYT_EUROPE_NYT_WORLD_ASIA_PRIMARY.items():
+    for source_id, expected in _BBC_POLITICS_NYT_EUROPE_GUARDIAN_LAW_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
         assert source.role == "primary"
@@ -1960,10 +1973,10 @@ def test_bbc_uk_nyt_us_guardian_global_dev_feeds_live_http_200():
         )
 
 
-def test_bbc_politics_nyt_europe_nyt_world_asia_feeds_live_http_200():
+def test_bbc_politics_nyt_europe_guardian_law_feeds_live_http_200():
     """Hit the three new feeds with the same headers fetch_source sends (not stubs)."""
     by_id = {s.id: s for s in SOURCES}
-    for source_id in _BBC_POLITICS_NYT_EUROPE_NYT_WORLD_ASIA_PRIMARY:
+    for source_id in _BBC_POLITICS_NYT_EUROPE_GUARDIAN_LAW_PRIMARY:
         source = by_id[source_id]
         request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
         try:
@@ -2025,7 +2038,7 @@ if __name__ == "__main__":
     test_bbc_edu_guardian_americas_nyt_edu_primaries_registered()
     test_guardian_uk_europe_nyt_politics_primaries_registered()
     test_bbc_uk_nyt_us_guardian_global_dev_primaries_registered()
-    test_bbc_politics_nyt_europe_nyt_world_asia_primaries_registered()
+    test_bbc_politics_nyt_europe_guardian_law_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -2044,5 +2057,5 @@ if __name__ == "__main__":
     test_bbc_edu_guardian_americas_nyt_edu_feeds_live_http_200()
     test_guardian_uk_europe_nyt_politics_feeds_live_http_200()
     test_bbc_uk_nyt_us_guardian_global_dev_feeds_live_http_200()
-    test_bbc_politics_nyt_europe_nyt_world_asia_feeds_live_http_200()
+    test_bbc_politics_nyt_europe_guardian_law_feeds_live_http_200()
     print("✓ source registry tests PASSED")

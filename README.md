@@ -73,7 +73,7 @@
 | `guardian_global_dev` | Guardian Global Development | https://www.theguardian.com/global-development/rss | primary |
 | `bbc_politics` | BBC Politics | https://feeds.bbci.co.uk/news/politics/rss.xml | primary |
 | `nyt_europe` | NYT Europe | https://rss.nytimes.com/services/xml/rss/nyt/Europe.xml | primary |
-| `nyt_world_asia` | NYT World Asia | https://rss.nytimes.com/services/xml/rss/nyt/AsiaPacific.xml | primary |
+| `guardian_law` | Guardian Law | https://www.theguardian.com/law/rss | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
