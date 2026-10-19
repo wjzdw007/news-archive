@@ -576,6 +576,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="nyt_africa",
+        name="NYT Africa",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/Africa.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="smh_world",
+        name="Sydney Morning Herald World",
+        feed_url="https://www.smh.com.au/rss/world.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="nbc_world",
+        name="NBC News World",
+        feed_url="https://feeds.nbcnews.com/nbcnews/public/world",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
