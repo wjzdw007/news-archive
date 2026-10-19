@@ -672,8 +672,8 @@ _BBC_NI_GUARDIAN_ME_EURONEWS_PRIMARY = {
 # to the same URL). nbc_world uses locked
 # https://feeds.nbcnews.com/nbcnews/public/world (official alternate
 # https://feeds.nbcnews.com/feeds/worldnews redirects to the same URL).
-# csmonitor_world / latimes_world stay unregistered (unused backups;
-# all three CEO-lock ids passed live+dedupe). nikkei_asia stays
+# csmonitor_world / latimes_world / hindu_international are batch26
+# (primaries, promoted from unused backups / new). nikkei_asia stays
 # unregistered (title+link only). nyt_world_asia stays unregistered
 # (replaced in batch20). NEWS_SOURCE_CAP display stays 6 — no CAP
 # code change. No X this batch.
@@ -695,7 +695,39 @@ _NYT_AFRICA_SMH_WORLD_NBC_WORLD_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 83
+# CEO-approved Christian Science Monitor World / LA Times World /
+# The Hindu International RSS primaries (batch26). These three are
+# the new adds. csmonitor_world and latimes_world were unused
+# backups in batch25 and are now promoted (they were not already
+# registered). hindu_international is a new source family using the
+# official international section RSS on thehindu.com/rssfeeds
+# (locked URL kept: 1/60 empty <description/> is occasional, not a
+# high empty-desc rate; no other official same-outlet international
+# section is 0-empty — france24 swap not used). cbc_world /
+# cna_asia stay unregistered (unused backups; all three CEO-lock
+# ids passed live+dedupe). nikkei_asia stays unregistered
+# (title+link only). nyt_world_asia stays unregistered (replaced in
+# batch20). NEWS_SOURCE_CAP display stays 6 — no CAP code change.
+# No X this batch.
+_CSMONITOR_LATIMES_HINDU_PRIMARY = {
+    "csmonitor_world": {
+        "name": "Christian Science Monitor World",
+        "feed_url": "https://rss.csmonitor.com/feeds/world",
+        "category": "国际",
+    },
+    "latimes_world": {
+        "name": "LA Times World",
+        "feed_url": "https://www.latimes.com/world-nation/rss2.0.xml",
+        "category": "国际",
+    },
+    "hindu_international": {
+        "name": "The Hindu International",
+        "feed_url": "https://www.thehindu.com/news/international/feeder/default.rss",
+        "category": "国际",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 86
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en) and Atom fallbacks for live XML probes.
@@ -1919,12 +1951,58 @@ def test_nyt_africa_smh_world_nbc_world_primaries_registered():
     assert "straitstimes_world" in by_id
     assert by_id["smh_world"].feed_url != by_id["straitstimes_world"].feed_url
     assert by_id["nbc_world"].feed_url != by_id["straitstimes_world"].feed_url
-    # Unused backups / replaced / title+link-only feeds stay unregistered.
-    assert "csmonitor_world" not in by_id
-    assert "latimes_world" not in by_id
+    # csmonitor_world / latimes_world / hindu_international are
+    # batch26 (primaries, not unused backups). Replaced /
+    # title+link-only feeds stay unregistered.
     assert "nyt_world_asia" not in by_id
     assert "nikkei_asia" not in by_id
     for source_id, expected in _NYT_AFRICA_SMH_WORLD_NBC_WORLD_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_csmonitor_latimes_hindu_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "csmonitor_world" in by_id
+    assert by_id["csmonitor_world"].feed_url == "https://rss.csmonitor.com/feeds/world"
+    assert "latimes_world" in by_id
+    assert by_id["latimes_world"].feed_url == "https://www.latimes.com/world-nation/rss2.0.xml"
+    assert "hindu_international" in by_id
+    assert by_id["hindu_international"].feed_url == (
+        "https://www.thehindu.com/news/international/feeder/default.rss"
+    )
+    assert "guardian_world" in by_id
+    assert "bbc_world" in by_id
+    assert "nyt_world" in by_id
+    assert "aljazeera" in by_id
+    assert "straitstimes_world" in by_id
+    assert "smh_world" in by_id
+    assert "nbc_world" in by_id
+    assert by_id["csmonitor_world"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["csmonitor_world"].feed_url != by_id["bbc_world"].feed_url
+    assert by_id["csmonitor_world"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["latimes_world"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["latimes_world"].feed_url != by_id["bbc_world"].feed_url
+    assert by_id["latimes_world"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["latimes_world"].feed_url != by_id["nbc_world"].feed_url
+    assert by_id["hindu_international"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["hindu_international"].feed_url != by_id["bbc_world"].feed_url
+    assert by_id["hindu_international"].feed_url != by_id["bbc_asia"].feed_url
+    assert by_id["hindu_international"].feed_url != by_id["straitstimes_world"].feed_url
+    assert by_id["hindu_international"].feed_url != by_id["smh_world"].feed_url
+    assert by_id["csmonitor_world"].feed_url != by_id["latimes_world"].feed_url
+    assert by_id["csmonitor_world"].feed_url != by_id["hindu_international"].feed_url
+    assert by_id["latimes_world"].feed_url != by_id["hindu_international"].feed_url
+    # Unused backups / replaced / title+link-only feeds stay unregistered.
+    assert "cbc_world" not in by_id
+    assert "cna_asia" not in by_id
+    assert "nyt_world_asia" not in by_id
+    assert "nikkei_asia" not in by_id
+    for source_id, expected in _CSMONITOR_LATIMES_HINDU_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
         assert source.role == "primary"
@@ -2812,6 +2890,61 @@ def test_nyt_africa_smh_world_nbc_world_feeds_live_http_200():
         )
 
 
+def test_csmonitor_latimes_hindu_feeds_live_http_200():
+    """Hit the three new feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _CSMONITOR_LATIMES_HINDU_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(body)
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        for i, item in enumerate(items):
+            title = (item.findtext("title") or "").strip()
+            url = (item.findtext("link") or "").strip()
+            published = (
+                (item.findtext("pubDate") or "").strip()
+                or (item.findtext("published") or "").strip()
+                or (item.findtext("updated") or "").strip()
+            )
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0. Product lock
+        # requires non-empty RSS description/summary on these feeds.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        if source_id == "hindu_international":
+            # Locked official International RSS has occasional empty
+            # <description/> (~1/60 newsletter-style item). No other
+            # official same-outlet international section is 0-empty.
+            # Empty rate is not high; france24 swap not used. #43
+            # thin-skip drops those items (no title-fill).
+            empty = len(items) - nonempty
+            assert nonempty > 0, f"{source_id} all descriptions empty"
+            assert empty * 10 <= len(items), (
+                f"{source_id} empty description: {empty}/{len(items)}"
+            )
+        else:
+            assert nonempty == len(items), (
+                f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+            )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -2840,6 +2973,7 @@ if __name__ == "__main__":
     test_bbc_england_nyt_upshot_france24_en_primaries_registered()
     test_bbc_ni_guardian_me_euronews_primaries_registered()
     test_nyt_africa_smh_world_nbc_world_primaries_registered()
+    test_csmonitor_latimes_hindu_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -2864,4 +2998,5 @@ if __name__ == "__main__":
     test_bbc_england_nyt_upshot_france24_en_feeds_live_http_200()
     test_bbc_ni_guardian_me_euronews_feeds_live_http_200()
     test_nyt_africa_smh_world_nbc_world_feeds_live_http_200()
+    test_csmonitor_latimes_hindu_feeds_live_http_200()
     print("✓ source registry tests PASSED")

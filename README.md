@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（83 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（86 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -89,6 +89,9 @@
 | `nyt_africa` | NYT Africa | https://rss.nytimes.com/services/xml/rss/nyt/Africa.xml | primary |
 | `smh_world` | Sydney Morning Herald World | https://www.smh.com.au/rss/world.xml | primary |
 | `nbc_world` | NBC News World | https://feeds.nbcnews.com/nbcnews/public/world | primary |
+| `csmonitor_world` | Christian Science Monitor World | https://rss.csmonitor.com/feeds/world | primary |
+| `latimes_world` | LA Times World | https://www.latimes.com/world-nation/rss2.0.xml | primary |
+| `hindu_international` | The Hindu International | https://www.thehindu.com/news/international/feeder/default.rss | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
