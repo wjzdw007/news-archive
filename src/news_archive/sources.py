@@ -618,6 +618,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="cbc_world",
+        name="CBC World",
+        feed_url="https://www.cbc.ca/webfeed/rss/rss-world",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="cna_asia",
+        name="Channel NewsAsia Asia",
+        feed_url="https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml&category=6511",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="elpais_en",
+        name="El País English",
+        feed_url="https://feeds.elpais.com/mrss-s/pages/ep/site/english.elpais.com/portada",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
