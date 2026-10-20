@@ -712,9 +712,91 @@ def test_workflow_wires_daily_brief_secrets_soft_fail():
     assert "secrets.DAILY_BRIEF_MODEL" not in yml
     assert "deepseek/deepseek-flash" in yml
     assert "continue-on-error: true" in yml
+    assert "timeout-minutes: 45" in yml
+    assert "timeout-minutes: 8" in yml
+    assert "--deadline-seconds 300" in yml
+    assert "latency_soft_miss" in yml
     assert "OPENAI_API_KEY" not in yml
     assert "X_BEARER" not in yml
     assert "x_cookie" not in yml.lower()
+
+
+def test_deadline_skips_remaining_days_without_overwrite():
+    """Hung/slow LLM must skip later days and not clobber an existing ok brief."""
+    clock = {"t": 0.0}
+
+    def mono() -> float:
+        return clock["t"]
+
+    def llm(grouped):
+        clock["t"] += 10.0
+        return _ok_llm(grouped)
+
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        _seed_article(store)
+        _seed_article(
+            store,
+            url="https://example.com/day16",
+            published_at="2026-10-16T02:00:00+00:00",
+            fetched_at="2026-10-16T03:00:00+00:00",
+            title="第二天稿件标题足够长",
+            summary="第二天摘要句子足够长了。",
+        )
+        store.upsert_daily_brief(
+            {
+                "date": "2026-10-16",
+                "generated_at": "2026-10-16T04:00:00+00:00",
+                "status": "ok",
+                "model": "deepseek/deepseek-flash",
+                "lede": "已有日报不应被 deadline skip 覆盖。",
+                "sections": [
+                    {"title": "旧", "bullets": ["保留"], "links": [], "topic_id": None}
+                ],
+                "error": None,
+                "input_fingerprint": "keep-me",
+            }
+        )
+        results = generate_for_dates(
+            store,
+            ["2026-10-15", "2026-10-16"],
+            llm_fn=llm,
+            model="deepseek/deepseek-flash",
+            deadline_s=5.0,
+            monotonic=mono,
+        )
+        assert results[0]["status"] == "ok"
+        assert results[0]["action"] in {"inserted", "updated"}
+        assert results[1]["action"] == "skipped_deadline"
+        assert results[1]["status"] == "skipped"
+        assert store.get_daily_brief("2026-10-15")["status"] == "ok"
+        kept = store.get_daily_brief("2026-10-16")
+        assert kept["status"] == "ok"
+        assert kept["lede"] == "已有日报不应被 deadline skip 覆盖。"
+        assert kept["input_fingerprint"] == "keep-me"
+        store.close()
+
+
+def test_cli_deadline_flag_exits_zero():
+    saved_env = _clear_brief_env()
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            db_path = Path(tmp) / "t.sqlite3"
+            Store(db_path).close()
+            rc = daily_brief_main(
+                [
+                    "--db",
+                    str(db_path),
+                    "--days",
+                    "2",
+                    "--deadline-seconds",
+                    "1",
+                    "--json",
+                ]
+            )
+            assert rc == 0
+    finally:
+        _restore_brief_env(saved_env)
 
 
 def test_model_error_redacts_secret_values():
@@ -1435,6 +1517,8 @@ if __name__ == "__main__":
     test_cli_empty_day_exits_zero()
     test_cli_never_fails_on_corrupt_handler()
     test_workflow_wires_daily_brief_secrets_soft_fail()
+    test_deadline_skips_remaining_days_without_overwrite()
+    test_cli_deadline_flag_exits_zero()
     test_resolve_llm_config_requires_key_and_base()
     test_resolve_model_defaults_and_env_override()
     test_redact_secrets_never_keeps_values()

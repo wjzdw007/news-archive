@@ -16,7 +16,11 @@ concurrency:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # 87 sequential RSS sources + enrich + 7-day brief previously hit the 30m
+    # GHA job cap (runs 39243037763 / 39340262352). Fetch now overlaps RSS and
+    # caps the RSS wave; brief has its own step timeout. 45m leaves room for
+    # Persist after a slow enrich without cancelling the job.
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -78,8 +82,11 @@ jobs:
         # empty day write failed|empty and must not break fetch or persist.
         # Model id is code-default deepseek/deepseek-flash (not a Secret);
         # override with env DAILY_BRIEF_MODEL if needed.
+        # Step + CLI deadlines: a hung LLM must not eat the job timeout and
+        # skip Persist (run 39243037763). continue-on-error keeps fetch green.
         if: always() && steps.fetch.outcome == 'success' && hashFiles('data/archive.sqlite3') != ''
         continue-on-error: true
+        timeout-minutes: 8
         env:
           DAILY_BRIEF_API_KEY: ${{ secrets.DAILY_BRIEF_API_KEY }}
           DAILY_BRIEF_API_BASE: ${{ secrets.DAILY_BRIEF_API_BASE }}
@@ -88,6 +95,7 @@ jobs:
           PYTHONPATH=src python -m news_archive.daily_brief \
             --db data/archive.sqlite3 \
             --days 7 \
+            --deadline-seconds 300 \
             --json
 
       - name: Persist SQLite to data branch
@@ -121,10 +129,14 @@ jobs:
           # Copy sqlite from temp to data branch
           cp "$RUNNER_TEMP/archive.sqlite3" data/archive.sqlite3
           
-          # Read latency_sla_passed from TEMP copy (workspace meta is gone after checkout)
+          # Read latency_sla_passed / latency_soft_miss from TEMP copy
+          # (workspace meta is gone after checkout). Single soft miss keeps
+          # passed=true and sets soft_miss so only consecutive large-N reds.
           LATENCY_PASSED="null"
+          LATENCY_SOFT_MISS="false"
           if [ -f "$RUNNER_TEMP/validation-meta.json" ]; then
             LATENCY_PASSED=$(python3 -c "import json; print(json.dumps(json.load(open('$RUNNER_TEMP/validation-meta.json')).get('latency_sla_passed', None)))" 2>/dev/null || echo "null")
+            LATENCY_SOFT_MISS=$(python3 -c "import json; print(json.dumps(bool(json.load(open('$RUNNER_TEMP/validation-meta.json')).get('latency_soft_miss', False))))" 2>/dev/null || echo "false")
           fi
           
           # Create run metadata with latency SLA status for consecutive check
@@ -136,7 +148,8 @@ jobs:
             "sha": "${{ github.sha }}",
             "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
             "workflow": "${{ github.workflow }}",
-            "latency_sla_passed": ${LATENCY_PASSED}
+            "latency_sla_passed": ${LATENCY_PASSED},
+            "latency_soft_miss": ${LATENCY_SOFT_MISS}
           }
           EOF
           
@@ -184,6 +197,10 @@ jobs:
       - name: Test RSS timeout retry + soft-fail (keep persist)
         run: |
           PYTHONPATH=src python tests/test_fetch_soft_fail.py
+
+      - name: Test latency consecutive soft-miss (keep persist green)
+        run: |
+          PYTHONPATH=src python tests/test_latency_consecutive.py
 
       - name: Upload archive artifact
         if: always() && hashFiles('data/archive.sqlite3') != ''

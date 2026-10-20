@@ -18,8 +18,11 @@ from unittest.mock import patch
 import httpx
 
 from news_archive.fetch import (
+    INGEST_CAP_PER_SOURCE,
     RSS_FETCH_ATTEMPTS,
     RSS_RETRY_BACKOFF_S,
+    RSS_TIMEOUT_S,
+    RssFetchDeadlineExceeded,
     fetch_all,
     fetch_source,
 )
@@ -352,6 +355,111 @@ def test_http_status_error_is_not_retried():
     assert client_cls.gets == [ABC_NEWS.feed_url]
 
 
+def _rss_with_n_items(n: int, *, host: str = "electrek.co") -> bytes:
+    items = []
+    for i in range(n):
+        items.append(
+            f"""
+    <item>
+      <title>Dense headline {i}</title>
+      <link>https://{host}/story-{i}</link>
+      <description>Non-empty summary {i} so thin-skip does not apply.</description>
+      <pubDate>Thu, 16 Oct 2026 12:00:00 GMT</pubDate>
+    </item>"""
+        )
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<rss version="2.0"><channel><title>Dense</title>'
+        + "".join(items)
+        + "</channel></rss>"
+    ).encode()
+
+
+ELECTREK = Source(
+    id="electrek",
+    name="Electrek",
+    feed_url="https://electrek.co/feed/",
+    category="汽车·EV",
+    role="primary",
+)
+
+
+def test_dense_source_ingest_cap_keeps_newest_first_slice():
+    """Electrek/36kr-style spike: keep INGEST_CAP_PER_SOURCE items, drop the rest."""
+    n = INGEST_CAP_PER_SOURCE + 5
+    client_cls = _client_factory(
+        {ELECTREK.feed_url: [_FakeResponse(_rss_with_n_items(n))]}
+    )
+    with (
+        patch("news_archive.fetch.httpx.Client", client_cls),
+        patch("news_archive.fetch.time.sleep"),
+    ):
+        articles = fetch_source(ELECTREK)
+    assert len(articles) == INGEST_CAP_PER_SOURCE
+    assert articles[0].url == "https://electrek.co/story-0"
+    assert articles[-1].url == f"https://electrek.co/story-{INGEST_CAP_PER_SOURCE - 1}"
+    print("✓ dense-source ingest cap keeps first N (feed order)")
+
+
+def test_fetch_all_deadline_skips_remaining_sources():
+    """Wall-clock skip: first source fetched, later source soft-fails, no raise."""
+    clock = {"n": 0}
+    # fetch_all: deadline_at = monotonic() + deadline_s
+    # then each _one checks monotonic() >= deadline_at (workers=1, registry order).
+    values = [0.0, 0.0, 100.0]
+
+    def mono() -> float:
+        i = min(clock["n"], len(values) - 1)
+        clock["n"] += 1
+        return values[i]
+
+    client_cls = _client_factory(
+        {
+            ABC_NEWS.feed_url: [_FakeResponse(_ABC_RSS)],
+            WIRED.feed_url: [_FakeResponse(_WIRED_RSS)],
+        }
+    )
+    with (
+        patch("news_archive.fetch.httpx.Client", client_cls),
+        patch("news_archive.fetch.time.sleep"),
+    ):
+        results = fetch_all(
+            [ABC_NEWS, WIRED],
+            max_workers=1,
+            deadline_s=50.0,
+            monotonic=mono,
+        )
+    assert isinstance(results["abc_news"], list)
+    assert results["abc_news"][0].url == "https://abcnews.go.com/story-abc"
+    assert isinstance(results["wired"], RssFetchDeadlineExceeded)
+    assert "deadline" in str(results["wired"]).lower()
+    print("✓ fetch_all deadline skips remaining sources (soft-fail)")
+
+
+def test_fetch_source_uses_short_http_timeout():
+    """Per-attempt timeout is 15s (not 30s) so 3 retries cannot eat the job cap."""
+    seen = []
+
+    class _Client:
+        def __init__(self, *args, **kwargs):
+            seen.append(kwargs.get("timeout"))
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return False
+
+        def get(self, url: str, **_kwargs):
+            return _FakeResponse(_ABC_RSS)
+
+    with patch("news_archive.fetch.httpx.Client", _Client):
+        articles = fetch_source(ABC_NEWS)
+    assert len(articles) == 1
+    assert seen == [RSS_TIMEOUT_S]
+    print("✓ fetch_source HTTP timeout is RSS_TIMEOUT_S")
+
+
 def test_source_incremental_warns_not_fails_on_soft_error():
     """P0 incremental stays green when one source timed out but history exists."""
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -395,5 +503,8 @@ if __name__ == "__main__":
     test_fetch_all_isolates_timeout_without_raising()
     test_fetch_source_retries_connect_timeout_too()
     test_http_status_error_is_not_retried()
+    test_dense_source_ingest_cap_keeps_newest_first_slice()
+    test_fetch_all_deadline_skips_remaining_sources()
+    test_fetch_source_uses_short_http_timeout()
     test_source_incremental_warns_not_fails_on_soft_error()
     print("✓ RSS timeout retry + soft-fail tests PASSED")

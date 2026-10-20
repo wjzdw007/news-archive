@@ -8,7 +8,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from news_archive.sources import SOURCES
-from news_archive.validate import check_fetch_latency
+from news_archive.validate import check_fetch_latency, previous_run_had_latency_miss
 
 
 def _insert_article(
@@ -138,7 +138,12 @@ def create_stats_json(stats_path: Path, inserted: int) -> None:
     stats_path.write_text(json.dumps(stats, indent=2))
 
 
-def setup_git_with_last_run(git_dir: Path, latency_passed: bool) -> None:
+def setup_git_with_last_run(
+    git_dir: Path,
+    latency_passed: bool,
+    *,
+    soft_miss: bool | None = None,
+) -> None:
     """Set up a git repo with a data branch containing LAST_RUN.json."""
     subprocess.run(["git", "init"], cwd=git_dir, check=True, capture_output=True)
     subprocess.run(["git", "config", "user.name", "test"], cwd=git_dir, check=True, capture_output=True)
@@ -153,6 +158,8 @@ def setup_git_with_last_run(git_dir: Path, latency_passed: bool) -> None:
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "latency_sla_passed": latency_passed,
     }
+    if soft_miss is not None:
+        last_run["latency_soft_miss"] = soft_miss
     (data_dir / "LAST_RUN.json").write_text(json.dumps(last_run, indent=2))
     
     subprocess.run(["git", "add", "data/LAST_RUN.json"], cwd=git_dir, check=True, capture_output=True)
@@ -211,9 +218,14 @@ def test_single_round_violation():
         assert "WARN:" in result.stdout, "Expected WARN message in output"
         assert "Single-round violation" in result.stdout, "Expected single-round message"
         
-        # Check metadata
+        # Check metadata: one soft miss must not red persist / arm via passed=false
         meta = json.loads(meta_path.read_text())
-        assert meta["latency_sla_passed"] is False, "Expected latency_sla_passed=false in metadata"
+        assert meta["latency_sla_passed"] is True, (
+            "Single soft miss must keep latency_sla_passed=true (job green on persist)"
+        )
+        assert meta["latency_soft_miss"] is True, (
+            "Single large-N miss must set latency_soft_miss so the next miss can consecutive-fail"
+        )
         
         print("\n✓ TEST 1 PASSED: Single round violation warned but did not fail")
 
@@ -272,6 +284,7 @@ def test_consecutive_violation():
         # Check metadata
         meta = json.loads(meta_path.read_text())
         assert meta["latency_sla_passed"] is False, "Expected latency_sla_passed=false in metadata"
+        assert meta["latency_soft_miss"] is True
         
         print("\n✓ TEST 2 PASSED: Consecutive violation caused hard failure")
 
@@ -330,6 +343,7 @@ def test_pass_after_previous_failure():
         # Check metadata
         meta = json.loads(meta_path.read_text())
         assert meta["latency_sla_passed"] is True, "Expected latency_sla_passed=true in metadata"
+        assert meta["latency_soft_miss"] is False
         
         print("\n✓ TEST 3 PASSED: Passed after previous failure, reset consecutive count")
 
@@ -392,6 +406,7 @@ def test_new_source_first_ingest_not_hard_fail():
         assert meta["latency_sla_passed"] is True, (
             "First-ingest-only backfill must not mark latency_sla_passed=false"
         )
+        assert meta["latency_soft_miss"] is False
         
         print("\n✓ TEST 4 PASSED: New source first-ingest skipped, did not hard-fail")
 
@@ -452,6 +467,7 @@ def test_new_source_does_not_mask_established_consecutive_fail():
         
         meta = json.loads(meta_path.read_text())
         assert meta["latency_sla_passed"] is False
+        assert meta["latency_soft_miss"] is True
         
         print("\n✓ TEST 5 PASSED: Established consecutive fail unchanged by new-source stock")
 
@@ -543,9 +559,28 @@ def test_small_sample_prev_failed_is_soft_warn():
             "Small-N WARN must not write latency_sla_passed=false "
             "(that would arm the next run's consecutive hard-fail)"
         )
+        assert meta["latency_soft_miss"] is False, (
+            "Small-N must not set latency_soft_miss (trap stays unarmed)"
+        )
         assert meta["all_checks_passed"] is True
 
         print("\n✓ TEST 6 PASSED: checked=3 + prev failed → soft WARN, job green, trap not armed")
+
+
+def test_large_n_first_miss_soft_warn_unit():
+    """checked>=10 + prev passed + >10% → WARN, sla_violated True, job still green."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "unit.sqlite3"
+        hours = [8.5, 9.0] + [2.0] * 8
+        create_test_db_with_violations(db_path, hours)
+        passed, message, sla_violated = _assert_latency_check(
+            db_path, inserted=len(hours), prev_passed=True
+        )
+        assert passed is True
+        assert sla_violated is True
+        assert "Single-round violation" in message
+        assert "TWO CONSECUTIVE ROUNDS" not in message
+    print("✓ large-N first miss: passed=True, sla_violated=True")
 
 
 def test_large_n_prev_failed_still_hard_fail():
@@ -610,9 +645,83 @@ def test_large_n_prev_failed_still_hard_fail():
 
         meta = json.loads(meta_path.read_text())
         assert meta["latency_sla_passed"] is False
+        assert meta["latency_soft_miss"] is True
         assert meta["all_checks_passed"] is False
 
         print("\n✓ TEST 7 PASSED: checked=10 + prev failed + >10% → still hard FAIL")
+
+
+def test_previous_run_had_latency_miss_helper():
+    """New soft_miss flag, legacy passed=false, and a clean pass."""
+    assert previous_run_had_latency_miss(None) is False
+    assert previous_run_had_latency_miss({"latency_sla_passed": True}) is False
+    assert previous_run_had_latency_miss(
+        {"latency_sla_passed": True, "latency_soft_miss": False}
+    ) is False
+    assert previous_run_had_latency_miss(
+        {"latency_sla_passed": True, "latency_soft_miss": True}
+    ) is True
+    # Consecutive hard-fail persist still counts as a miss next round.
+    assert previous_run_had_latency_miss(
+        {"latency_sla_passed": False, "latency_soft_miss": True}
+    ) is True
+    # Legacy LAST_RUN (run 39299196711): passed=false, no soft_miss key.
+    assert previous_run_had_latency_miss({"latency_sla_passed": False}) is True
+    # New schema: passed=false without soft_miss should not happen, but if
+    # soft_miss is explicitly false, do not treat as a miss.
+    assert previous_run_had_latency_miss(
+        {"latency_sla_passed": False, "latency_soft_miss": False}
+    ) is False
+    print("✓ previous_run_had_latency_miss helper")
+
+
+def test_consecutive_via_soft_miss_keeps_passed_true_on_first():
+    """Previous latency_sla_passed=true + latency_soft_miss=true → consecutive FAIL."""
+    print("\n" + "="*70)
+    print("TEST 8: Consecutive via latency_soft_miss (previous passed still true)")
+    print("="*70)
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmpdir = Path(tmpdir)
+        setup_git_with_last_run(tmpdir, latency_passed=True, soft_miss=True)
+
+        db_path = tmpdir / "test.sqlite3"
+        hours = [8.5, 9.0] + [2.0] * 13
+        create_test_db_with_violations(db_path, hours)
+        stats_path = tmpdir / "stats.json"
+        create_stats_json(stats_path, len(hours))
+        meta_path = tmpdir / "validation-meta.json"
+
+        result = subprocess.run(
+            [
+                "python3", "-m", "news_archive.validate",
+                "--db", str(db_path),
+                "--stats", str(stats_path),
+                "--output-meta", str(meta_path),
+            ],
+            cwd=tmpdir,
+            env={"PYTHONPATH": str(Path(__file__).parent.parent / "src")},
+            capture_output=True,
+            text=True,
+        )
+
+        print("STDOUT:")
+        print(result.stdout)
+        print("\nSTDERR:")
+        print(result.stderr)
+        print(f"\nExit code: {result.returncode}")
+
+        assert result.returncode == 1, (
+            f"Expected exit 1 (consecutive via soft_miss), got {result.returncode}"
+        )
+        combined = result.stdout + result.stderr
+        assert "TWO CONSECUTIVE ROUNDS" in combined
+
+        meta = json.loads(meta_path.read_text())
+        assert meta["latency_sla_passed"] is False
+        assert meta["latency_soft_miss"] is True
+
+        print("\n✓ TEST 8 PASSED: previous soft_miss + this large-N miss → hard FAIL")
 
 
 if __name__ == "__main__":
@@ -627,7 +736,10 @@ if __name__ == "__main__":
         test_new_source_first_ingest_not_hard_fail()
         test_new_source_does_not_mask_established_consecutive_fail()
         test_small_sample_prev_failed_is_soft_warn()
+        test_large_n_first_miss_soft_warn_unit()
         test_large_n_prev_failed_still_hard_fail()
+        test_previous_run_had_latency_miss_helper()
+        test_consecutive_via_soft_miss_keeps_passed_true_on_first()
         
         print("\n" + "="*70)
         print("ALL TESTS PASSED ✓")
