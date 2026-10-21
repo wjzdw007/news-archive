@@ -97,7 +97,7 @@
 | `elpais_en` | El País English | https://feeds.elpais.com/mrss-s/pages/ep/site/english.elpais.com/portada | primary |
 | `yonhap` | Yonhap English | https://en.yna.co.kr/RSS/news.xml | primary |
 | `anadolu_world` | Anadolu Agency World | https://www.aa.com.tr/en/rss/default?cat=world | primary |
-| `independent_world` | Independent World | https://www.independent.co.uk/news/world/rss | primary |
+| `trt_world` | TRT World | https://www.trtworld.com/feed/rss.xml | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema

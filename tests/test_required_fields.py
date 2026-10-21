@@ -110,6 +110,40 @@ def test_nonempty_rss_description_still_inserts():
     print("✓ normal description still inserts (summary ≤280, not title)")
 
 
+def test_relative_rss_link_is_resolved_against_feed_url():
+    """TRT World emits `/article/...`; public href and enrich need http(s)."""
+    src = Source(
+        id="trt_world",
+        name="TRT World",
+        feed_url="https://www.trtworld.com/feed/rss.xml",
+        category="国际",
+        role="primary",
+    )
+    relative = article_from_entry(
+        {
+            "link": "/article/b00ff1504db7",
+            "title": "Headline",
+            "summary": "RSS teaser that should stay.",
+        },
+        src,
+        _now(),
+    )
+    assert relative is not None
+    assert relative.url == "https://www.trtworld.com/article/b00ff1504db7"
+    absolute = article_from_entry(
+        {
+            "link": "https://www.trtworld.com/article/already-absolute",
+            "title": "Headline",
+            "summary": "RSS teaser that should stay.",
+        },
+        src,
+        _now(),
+    )
+    assert absolute is not None
+    assert absolute.url == "https://www.trtworld.com/article/already-absolute"
+    print("✓ relative RSS link resolves against feed URL; absolute stays")
+
+
 def test_purge_deletes_titled_both_empty_then_required_fields_pass():
     """Pre-seeded titled both-empty row is deleted; Required Fields then passes."""
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -230,6 +264,7 @@ if __name__ == "__main__":
         test_empty_description_with_title_is_skipped()
         test_true_both_empty_without_title_is_skipped()
         test_nonempty_rss_description_still_inserts()
+        test_relative_rss_link_is_resolved_against_feed_url()
         test_purge_deletes_titled_both_empty_then_required_fields_pass()
         test_purge_on_clean_db_deletes_zero()
         test_public_export_omits_snapshot_and_caps_summary()

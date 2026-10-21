@@ -653,9 +653,9 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
-        id="independent_world",
-        name="Independent World",
-        feed_url="https://www.independent.co.uk/news/world/rss",
+        id="trt_world",
+        name="TRT World",
+        feed_url="https://www.trtworld.com/feed/rss.xml",
         category="国际",
         role="primary",
     ),

@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from time import struct_time
 from typing import Callable, Iterable
+from urllib.parse import urljoin, urlparse
 
 import feedparser
 import httpx
@@ -98,6 +99,10 @@ def article_from_entry(
     snapshot = _content_snapshot(entry)
     if not url:
         return None
+    # TRT World (and similar) emit site-relative <link>/<guid>. Resolve
+    # against the feed URL so public "查看原文" and enrich see http(s).
+    if not urlparse(url).scheme:
+        url = urljoin(source.feed_url, url)
     if not title:
         return None
     if not summary and not snapshot:

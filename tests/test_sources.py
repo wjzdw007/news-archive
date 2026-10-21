@@ -739,13 +739,14 @@ _CSMONITOR_LATIMES_HINDU_PRIMARY = {
 # high empty-desc rate; official same-outlet World is 4/20 empty,
 # Latest 12/20, Business 17/20 — no Asia-section 0-empty swap
 # (france24 pattern not used; Singapore 0-empty is a different
-# section). yonhap / anadolu_world / independent_world are batch28
-# (primaries, promoted from unused backup / new). cbs_world stays
-# unregistered (unused backup; known inserted0 vs existing
-# cbs_news). nikkei_asia stays unregistered (title+link only).
-# nyt_world_asia stays unregistered (replaced in batch20).
-# NEWS_SOURCE_CAP display stays 6 — no CAP code change. No X this
-# batch.
+# section). yonhap / anadolu_world / trt_world are batch28
+# (primaries; trt_world replaced independent_world after
+# daily-fetch inserted=0). cbs_world stays unregistered (unused
+# backup; known inserted0 vs existing cbs_news). nikkei_asia
+# stays unregistered (title+link only). nyt_world_asia stays
+# unregistered (replaced in batch20). independent_world stays
+# unregistered (replaced in batch28). NEWS_SOURCE_CAP display
+# stays 6 — no CAP code change. No X this batch.
 _CBC_CNA_ELPAIS_PRIMARY = {
     "cbc_world": {
         "name": "CBC World",
@@ -770,24 +771,29 @@ _CBC_CNA_ELPAIS_PRIMARY = {
     },
 }
 
-# CEO-approved Yonhap English / Anadolu Agency World / Independent
-# World RSS primaries (batch28). These three are the new adds.
-# yonhap was an unused backup in batch27 and is now promoted (it was
-# not already registered). anadolu_world and independent_world are
-# new source families. Locked Yonhap English all-news URL on
-# en.yna.co.kr/RSS kept: 0 empty descriptions (8/100 URGENT /
-# almanac items use stub "(END)" / "Oct. 21" text, not empty; #43
-# thin-skip does not apply). Locked Anadolu official English World
-# category RSS kept: 0 empty descriptions. Locked Independent World
-# section RSS from independent.co.uk/news/world (rel=alternate
-# application/rss+xml) kept: 0 empty descriptions. trt_world /
-# semafor stay unregistered (unused backups; all three CEO-lock ids
-# passed live+dedupe). cbs_world stays unregistered (known
-# inserted0 vs existing cbs_news). nikkei_asia stays unregistered
-# (title+link only). nyt_world_asia stays unregistered (replaced in
-# batch20). NEWS_SOURCE_CAP display stays 6 — no CAP code change.
+# CEO-approved Yonhap English / Anadolu Agency World / TRT World
+# RSS primaries (batch28). yonhap / anadolu_world stay as-is.
+# trt_world replaces independent_world after daily-fetch RED
+# (Independent World fetch error → inserted=0 / 0 rows in DB;
+# CEO knife + thin-source rule). yonhap was an unused backup in
+# batch27 and is now promoted (it was not already registered).
+# anadolu_world is a new source family. Locked Yonhap English
+# all-news URL on en.yna.co.kr/RSS kept: 0 empty descriptions
+# (8/100 URGENT / almanac items use stub "(END)" / "Oct. 21"
+# text, not empty; #43 thin-skip does not apply). Locked Anadolu
+# official English World category RSS kept: 0 empty descriptions.
+# Locked official TRT World RSS https://www.trtworld.com/feed/rss.xml
+# kept: HTTP 200 / 100 items / 0 empty descriptions (relative
+# <link>/<guid> `/article/...` resolved against the feed URL at
+# ingest; no france24 URL swap — empty-desc is 0). 
+# independent_world is unregistered (replaced). semafor stays
+# unregistered (unused backup; default is trt only). cbs_world
+# stays unregistered (known inserted0 vs existing cbs_news).
+# nikkei_asia stays unregistered (title+link only).
+# nyt_world_asia stays unregistered (replaced in batch20).
+# NEWS_SOURCE_CAP display stays 6 — no CAP code change.
 # No X this batch.
-_YONHAP_ANADOLU_INDEPENDENT_PRIMARY = {
+_YONHAP_ANADOLU_TRT_PRIMARY = {
     "yonhap": {
         "name": "Yonhap English",
         "feed_url": "https://en.yna.co.kr/RSS/news.xml",
@@ -798,9 +804,9 @@ _YONHAP_ANADOLU_INDEPENDENT_PRIMARY = {
         "feed_url": "https://www.aa.com.tr/en/rss/default?cat=world",
         "category": "国际",
     },
-    "independent_world": {
-        "name": "Independent World",
-        "feed_url": "https://www.independent.co.uk/news/world/rss",
+    "trt_world": {
+        "name": "TRT World",
+        "feed_url": "https://www.trtworld.com/feed/rss.xml",
         "category": "国际",
     },
 }
@@ -3071,11 +3077,12 @@ def test_cbc_cna_elpais_primaries_registered():
     assert by_id["cbc_world"].feed_url != by_id["cna_asia"].feed_url
     assert by_id["cbc_world"].feed_url != by_id["elpais_en"].feed_url
     assert by_id["cna_asia"].feed_url != by_id["elpais_en"].feed_url
-    # yonhap / anadolu_world / independent_world are batch28
-    # (primaries, not unused backups). Unused backups / replaced /
-    # title+link-only feeds stay unregistered.
+    # yonhap / anadolu_world / trt_world are batch28 (primaries;
+    # trt_world replaced independent_world after daily-fetch
+    # inserted=0). Unused backups / replaced / title+link-only
+    # feeds stay unregistered.
     assert "cbs_world" not in by_id
-    assert "trt_world" not in by_id
+    assert "independent_world" not in by_id
     assert "semafor" not in by_id
     assert "nyt_world_asia" not in by_id
     assert "nikkei_asia" not in by_id
@@ -3144,7 +3151,7 @@ def test_cbc_cna_elpais_feeds_live_http_200():
             )
 
 
-def test_yonhap_anadolu_independent_primaries_registered():
+def test_yonhap_anadolu_trt_primaries_registered():
     by_id = {s.id: s for s in SOURCES}
     assert "yonhap" in by_id
     assert by_id["yonhap"].feed_url == "https://en.yna.co.kr/RSS/news.xml"
@@ -3152,10 +3159,8 @@ def test_yonhap_anadolu_independent_primaries_registered():
     assert by_id["anadolu_world"].feed_url == (
         "https://www.aa.com.tr/en/rss/default?cat=world"
     )
-    assert "independent_world" in by_id
-    assert by_id["independent_world"].feed_url == (
-        "https://www.independent.co.uk/news/world/rss"
-    )
+    assert "trt_world" in by_id
+    assert by_id["trt_world"].feed_url == "https://www.trtworld.com/feed/rss.xml"
     assert "guardian_world" in by_id
     assert "bbc_world" in by_id
     assert "nyt_world" in by_id
@@ -3181,22 +3186,24 @@ def test_yonhap_anadolu_independent_primaries_registered():
     assert by_id["anadolu_world"].feed_url != by_id["bbc_europe"].feed_url
     assert by_id["anadolu_world"].feed_url != by_id["bbc_middle_east"].feed_url
     assert by_id["anadolu_world"].feed_url != by_id["aljazeera"].feed_url
-    assert by_id["independent_world"].feed_url != by_id["guardian_world"].feed_url
-    assert by_id["independent_world"].feed_url != by_id["bbc_world"].feed_url
-    assert by_id["independent_world"].feed_url != by_id["bbc_uk"].feed_url
-    assert by_id["independent_world"].feed_url != by_id["guardian_uk"].feed_url
-    assert by_id["independent_world"].feed_url != by_id["sky_world"].feed_url
+    assert by_id["trt_world"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["trt_world"].feed_url != by_id["bbc_world"].feed_url
+    assert by_id["trt_world"].feed_url != by_id["bbc_middle_east"].feed_url
+    assert by_id["trt_world"].feed_url != by_id["aljazeera"].feed_url
+    assert by_id["trt_world"].feed_url != by_id["anadolu_world"].feed_url
     assert by_id["yonhap"].feed_url != by_id["anadolu_world"].feed_url
-    assert by_id["yonhap"].feed_url != by_id["independent_world"].feed_url
-    assert by_id["anadolu_world"].feed_url != by_id["independent_world"].feed_url
+    assert by_id["yonhap"].feed_url != by_id["trt_world"].feed_url
+    assert by_id["anadolu_world"].feed_url != by_id["trt_world"].feed_url
     # Unused backups / replaced / title+link-only feeds stay unregistered.
+    # independent_world is the daily-fetch RED slot — do not keep live.
     # cbs_world is the known inserted0 vs existing cbs_news — do not add.
+    # semafor stays unused backup (default is trt only).
     assert "cbs_world" not in by_id
-    assert "trt_world" not in by_id
+    assert "independent_world" not in by_id
     assert "semafor" not in by_id
     assert "nyt_world_asia" not in by_id
     assert "nikkei_asia" not in by_id
-    for source_id, expected in _YONHAP_ANADOLU_INDEPENDENT_PRIMARY.items():
+    for source_id, expected in _YONHAP_ANADOLU_TRT_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
         assert source.role == "primary"
@@ -3205,10 +3212,10 @@ def test_yonhap_anadolu_independent_primaries_registered():
         assert source.category == expected["category"]
 
 
-def test_yonhap_anadolu_independent_feeds_live_http_200():
+def test_yonhap_anadolu_trt_feeds_live_http_200():
     """Hit the three new feeds with the same headers fetch_source sends (not stubs)."""
     by_id = {s.id: s for s in SOURCES}
-    for source_id in _YONHAP_ANADOLU_INDEPENDENT_PRIMARY:
+    for source_id in _YONHAP_ANADOLU_TRT_PRIMARY:
         source = by_id[source_id]
         request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
         try:
@@ -3278,7 +3285,7 @@ if __name__ == "__main__":
     test_nyt_africa_smh_world_nbc_world_primaries_registered()
     test_csmonitor_latimes_hindu_primaries_registered()
     test_cbc_cna_elpais_primaries_registered()
-    test_yonhap_anadolu_independent_primaries_registered()
+    test_yonhap_anadolu_trt_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -3305,5 +3312,5 @@ if __name__ == "__main__":
     test_nyt_africa_smh_world_nbc_world_feeds_live_http_200()
     test_csmonitor_latimes_hindu_feeds_live_http_200()
     test_cbc_cna_elpais_feeds_live_http_200()
-    test_yonhap_anadolu_independent_feeds_live_http_200()
+    test_yonhap_anadolu_trt_feeds_live_http_200()
     print("✓ source registry tests PASSED")
