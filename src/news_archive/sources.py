@@ -660,6 +660,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="semafor",
+        name="Semafor",
+        feed_url="https://www.semafor.com/rss.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="france24_asia",
+        name="France 24 Asia",
+        feed_url="https://www.france24.com/en/asia-pacific/rss",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="al_monitor",
+        name="Al-Monitor",
+        feed_url="https://www.al-monitor.com/rss",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

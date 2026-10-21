@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（92 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（95 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -98,6 +98,9 @@
 | `yonhap` | Yonhap English | https://en.yna.co.kr/RSS/news.xml | primary |
 | `anadolu_world` | Anadolu Agency World | https://www.aa.com.tr/en/rss/default?cat=world | primary |
 | `trt_world` | TRT World | https://www.trtworld.com/feed/rss.xml | primary |
+| `semafor` | Semafor | https://www.semafor.com/rss.xml | primary |
+| `france24_asia` | France 24 Asia | https://www.france24.com/en/asia-pacific/rss | primary |
+| `al_monitor` | Al-Monitor | https://www.al-monitor.com/rss | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
