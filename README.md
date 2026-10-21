@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（89 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（92 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -95,6 +95,9 @@
 | `cbc_world` | CBC World | https://www.cbc.ca/webfeed/rss/rss-world | primary |
 | `cna_asia` | Channel NewsAsia Asia | https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml&category=6511 | primary |
 | `elpais_en` | El País English | https://feeds.elpais.com/mrss-s/pages/ep/site/english.elpais.com/portada | primary |
+| `yonhap` | Yonhap English | https://en.yna.co.kr/RSS/news.xml | primary |
+| `anadolu_world` | Anadolu Agency World | https://www.aa.com.tr/en/rss/default?cat=world | primary |
+| `independent_world` | Independent World | https://www.independent.co.uk/news/world/rss | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
