@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 import sys
+import time
 from pathlib import Path
 
 from .briefs import (
@@ -13,7 +14,12 @@ from .briefs import (
     group_active_by_topic,
     topics_needing_briefs,
 )
-from .clustering import assign_topic_ids
+from .clustering import (
+    CLUSTER_DEADLINE_S,
+    CLUSTER_MAX_CANDIDATES,
+    RECLUSTER_LOOKBACK_HOURS,
+    assign_topic_ids,
+)
 from .enrich import enrich_store, write_job_summary
 from .fetch import fetch_all
 from .news_display import display_window_diversity
@@ -43,9 +49,14 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     store = Store(args.db)
+    t0 = time.monotonic()
+    timings: dict[str, float] = {}
     results = fetch_all(SOURCES)
+    timings["rss_s"] = time.monotonic() - t0
+    print(f"INFO fetch_phase rss_s={timings['rss_s']:.1f}", file=sys.stderr)
 
     stats: dict[str, object] = {"sources": {}, "inserted": 0, "seen": 0, "errors": {}}
+    t_upsert = time.monotonic()
     for source_id, payload in results.items():
         if isinstance(payload, Exception):
             # Per-source isolation in fetch_all: record + WARN, never hard-fail
@@ -67,10 +78,13 @@ def main(argv: list[str] | None = None) -> int:
             "inserted": inserted,
         }
         stats["inserted"] = int(stats["inserted"]) + inserted
+    timings["upsert_s"] = time.monotonic() - t_upsert
+    print(f"INFO fetch_phase upsert_s={timings['upsert_s']:.1f}", file=sys.stderr)
 
     # Archive-first: fetch original page into private content_snapshot when
     # the snapshot is missing/unusable. Public summary stays ≤280; only fill
     # it when empty/<80. Soft-fail — never fail the RSS job.
+    t_enrich = time.monotonic()
     try:
         stats["enrich"] = enrich_store(store)
         try:
@@ -92,6 +106,8 @@ def main(argv: list[str] | None = None) -> int:
     except Exception as exc:  # noqa: BLE001 — isolate from persist / clustering
         stats["enrich_error"] = type(exc).__name__
         print(f"enrich soft-fail (job continues): {type(exc).__name__}", file=sys.stderr)
+    timings["enrich_s"] = time.monotonic() - t_enrich
+    print(f"INFO fetch_phase enrich_s={timings['enrich_s']:.1f}", file=sys.stderr)
 
     # After enrich / before validate: drop stuck both-empty active rows
     # (e.g. nyt_business live-blog already on the data branch). Idempotent.
@@ -106,16 +122,47 @@ def main(argv: list[str] | None = None) -> int:
             handle.write("\n## Thin-row heal\n\n")
             handle.write(f"- **deleted both-empty active rows:** {purged}\n")
 
-    # Recluster: clear topic_ids not covered by an ok brief, then assign
-    cleared = store.clear_topic_ids_without_ok_brief()
+    # Recluster only the live window. Clearing every orphan topic_id (most
+    # singletons have no ok brief) made assign_topic_ids O(n²) on the whole
+    # archive and cancelled Fetch at 45m before Persist.
+    t_cluster = time.monotonic()
+    already_open = store.count_active_without_topic()
+    clear_budget = max(0, CLUSTER_MAX_CANDIDATES - already_open)
+    cleared = store.clear_topic_ids_without_ok_brief(
+        lookback_hours=RECLUSTER_LOOKBACK_HOURS,
+        max_clear=clear_budget,
+    )
     stats["recluster_cleared"] = cleared
+    stats["recluster_lookback_hours"] = RECLUSTER_LOOKBACK_HOURS
     articles = store.get_articles_for_clustering()
-    clustered = assign_topic_ids(articles)
-    url_to_topic = {a["url"]: a["topic_id"] for a in clustered if a.get("topic_id")}
+    candidate_urls = {
+        a["url"]
+        for a in articles
+        if a.get("status") == "active" and not a.get("topic_id")
+    }
+    clustered = assign_topic_ids(
+        articles,
+        max_candidates=CLUSTER_MAX_CANDIDATES,
+        deadline_s=CLUSTER_DEADLINE_S,
+    )
+    url_to_topic = {
+        a["url"]: a["topic_id"]
+        for a in clustered
+        if a.get("topic_id") and a["url"] in candidate_urls
+    }
     clustered_count = store.update_topic_ids(url_to_topic)
     stats["clustered"] = clustered_count
+    stats["cluster_candidates"] = len(candidate_urls)
+    timings["cluster_s"] = time.monotonic() - t_cluster
+    print(
+        f"INFO fetch_phase cluster_s={timings['cluster_s']:.1f} "
+        f"cleared={cleared} candidates={len(candidate_urls)} "
+        f"clustered={clustered_count}",
+        file=sys.stderr,
+    )
 
     # P2: multi-source topic briefs (rules-v1); failures never block persist
+    t_briefs = time.monotonic()
     brief_stats = {"generated": 0, "updated": 0, "kept_ok": 0, "failed": 0, "skipped": 0}
     try:
         arts = store.get_articles_for_briefs()
@@ -148,10 +195,18 @@ def main(argv: list[str] | None = None) -> int:
     except Exception as exc:
         stats["brief_error"] = str(exc)
     stats["briefs"] = brief_stats
+    timings["briefs_s"] = time.monotonic() - t_briefs
+    print(f"INFO fetch_phase briefs_s={timings['briefs_s']:.1f}", file=sys.stderr)
 
     export_count = None
+    t_export = time.monotonic()
     if args.export_jsonl:
         export_count = store.export_jsonl(args.export_jsonl)
+    timings["export_s"] = time.monotonic() - t_export
+    timings["total_s"] = time.monotonic() - t0
+    print(f"INFO fetch_phase export_s={timings['export_s']:.1f}", file=sys.stderr)
+    print(f"INFO fetch_phase total_s={timings['total_s']:.1f}", file=sys.stderr)
+    stats["timings"] = {k: round(v, 3) for k, v in timings.items()}
 
     store.close()
 
