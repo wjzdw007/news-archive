@@ -744,6 +744,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="forbes_innovation",
+        name="Forbes Innovation",
+        feed_url="https://www.forbes.com/innovation/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="dw_world",
+        name="Deutsche Welle World",
+        feed_url="https://rss.dw.com/rdf/rss-en-world",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="rfi_americas",
+        name="RFI Americas",
+        feed_url="https://www.rfi.fr/en/tag/latin-america/rss",
+        category="国际·美洲",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
