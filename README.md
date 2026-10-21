@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（98 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（101 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -104,6 +104,9 @@
 | `scmp_business` | SCMP Business | https://www.scmp.com/rss/92/feed | primary |
 | `rfi_asia` | RFI Asia-Pacific | https://www.rfi.fr/en/tag/asia/rss | primary |
 | `theconversation` | The Conversation | https://theconversation.com/articles.atom | primary |
+| `nyt_arts` | NYT Arts | https://rss.nytimes.com/services/xml/rss/nyt/Arts.xml | primary |
+| `guardian_sport` | Guardian Sport | https://www.theguardian.com/sport/rss | primary |
+| `intercept` | The Intercept | https://theintercept.com/feed/ | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
