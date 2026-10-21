@@ -882,7 +882,7 @@ _SEMAFOR_FRANCE24_AMERICAS_MIDDLEEASTEYE_PRIMARY = {
 # "English – The Conversation"; official global/us/au/uk
 # edition atoms also 200 / 0 empty-desc — pick one official
 # id only; preferred articles.atom kept). forbes_innovation
-# stays unregistered (unused backup; mention only).
+# is batch33 (promoted from unused backup).
 # propublica is batch32 (promoted from unused backup).
 # france24_asia / al_monitor stay unregistered (replaced in
 # batch29; not live CAP slots; not registered as backups).
@@ -995,8 +995,8 @@ _NYT_ARTS_GUARDIAN_SPORT_INTERCEPT_PRIMARY = {
 # https://www.propublica.org/feeds/propublica/main
 # (channel title "ProPublica"; preferred live HTTP 200 /
 # 0 empty-desc — one official id only).
-# forbes_innovation / dw_world / rfi_americas stay
-# unregistered (unused backups; mention only).
+# forbes_innovation / dw_world / rfi_americas are
+# batch33 (promoted from unused backups).
 # france24_asia / al_monitor stay unregistered (replaced
 # in batch29; not live CAP slots; not registered as
 # backups). independent_world stays unregistered
@@ -1028,12 +1028,80 @@ _NYT_OPINION_GUARDIAN_FILM_PROPUBLICA_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 104
+# CEO-approved Forbes Innovation / DW World / RFI Americas RSS
+# primaries (batch33). These three are the new adds.
+# forbes_innovation was an unused backup in batch30 / batch32
+# and is now promoted as a primary (it was not already
+# registered; new source family). Locked official
+# https://www.forbes.com/innovation/feed/ (trailing slash;
+# channel title "Forbes - Innovation"; /feed without slash
+# also 200 / same body — preferred trailing slash kept).
+# dw_world is a same-outlet DW English World RDF section
+# distinct from existing dw_en=rss-en-all. Locked official
+# product rdf-en-world
+# https://rss.dw.com/rdf/rss-en-world (channel title
+# "World | Deutsche Welle"). Atom
+# https://rss.dw.com/atom/rss-en-world also 200 / 0
+# empty-desc — pick one official id only; preferred RDF
+# kept. rfi_americas is a same-outlet RFI English Americas
+# section distinct from existing rfi_en=
+# https://www.rfi.fr/en/rss and rfi_asia=
+# https://www.rfi.fr/en/tag/asia/rss. Preferred
+# https://www.rfi.fr/en/americas/rss is HTTP 200 but
+# redirects 1:1 to https://www.rfi.fr/en/international/rss
+# ("World news and headlines - RFI"; same dump as
+# /en/europe|/en/asia-pacific|/en/middle-east) — not an
+# Americas section (not empty, not 403; section-identity
+# failure, same class as rfi_asia). Preferred tag
+# https://www.rfi.fr/en/tag/americas/rss is HTTP 404.
+# Official same-outlet English Americas alternate (match
+# rfi_asia /en/tag/asia/rss):
+# https://www.rfi.fr/en/tag/latin-america/rss (channel
+# title "Latin America: news, podcasts, videos and
+# analysis - RFI"). French /fr/amériques/rss exists but
+# is a different language than rfi_en / the preferred
+# English URL — not used. nyt_movies / guardian_music /
+# guardian_stage stay unregistered (unused backups;
+# mention only). france24_asia / al_monitor stay
+# unregistered (replaced in batch29; not live CAP slots;
+# not registered as backups). independent_world stays
+# unregistered (replaced in batch28; 429). cbs_world
+# stays unregistered (known inserted0 vs existing
+# cbs_news). nikkei / indian_express stay unregistered
+# (empty desc — product skipped). nikkei_asia stays
+# unregistered (title+link only). nyt_world_asia stays
+# unregistered (replaced in batch20). sky_tech /
+# restofworld / ars_science / thehill / politico stay
+# unregistered (not this batch; politico is X-handle
+# only). NEWS_SOURCE_CAP display stays 6 — no CAP code
+# change. No X this batch.
+_FORBES_INNOVATION_DW_WORLD_RFI_AMERICAS_PRIMARY = {
+    "forbes_innovation": {
+        "name": "Forbes Innovation",
+        "feed_url": "https://www.forbes.com/innovation/feed/",
+        "category": "科技",
+    },
+    "dw_world": {
+        "name": "Deutsche Welle World",
+        "feed_url": "https://rss.dw.com/rdf/rss-en-world",
+        "category": "国际",
+    },
+    "rfi_americas": {
+        "name": "RFI Americas",
+        "feed_url": "https://www.rfi.fr/en/tag/latin-america/rss",
+        "category": "国际·美洲",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 107
 _EXPECTED_CONTROL_COUNT = 1
 
-# RSS 1.0 / RDF (dw_en) and Atom fallbacks for live XML probes.
+# RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
 _RSS10_ITEM = "{http://purl.org/rss/1.0/}item"
 _RSS10_DESC = "{http://purl.org/rss/1.0/}description"
+_RSS10_TITLE = "{http://purl.org/rss/1.0/}title"
+_RSS10_LINK = "{http://purl.org/rss/1.0/}link"
+_DC_DATE = "{http://purl.org/dc/elements/1.1/}date"
 _ATOM_NS = "{http://www.w3.org/2005/Atom}"
 _ATOM_ENTRY = f"{_ATOM_NS}entry"
 _ATOM_SUMMARY = f"{_ATOM_NS}summary"
@@ -1075,12 +1143,16 @@ def _item_description(item: ET.Element) -> str:
 def _item_title(item: ET.Element) -> str:
     return (
         (item.findtext("title") or "").strip()
+        or (item.findtext(_RSS10_TITLE) or "").strip()
         or (item.findtext(_ATOM_TITLE) or "").strip()
     )
 
 
 def _item_link(item: ET.Element) -> str:
-    text = (item.findtext("link") or "").strip()
+    text = (
+        (item.findtext("link") or "").strip()
+        or (item.findtext(_RSS10_LINK) or "").strip()
+    )
     if text:
         return text
     alternate = ""
@@ -1105,6 +1177,7 @@ def _item_published(item: ET.Element) -> str:
         (item.findtext("pubDate") or "").strip()
         or (item.findtext("published") or "").strip()
         or (item.findtext("updated") or "").strip()
+        or (item.findtext(_DC_DATE) or "").strip()
         or (item.findtext(_ATOM_PUBLISHED) or "").strip()
         or (item.findtext(_ATOM_UPDATED) or "").strip()
     )
@@ -3691,14 +3764,13 @@ def test_scmp_business_rfi_asia_theconversation_primaries_registered():
     assert by_id["scmp_business"].feed_url != by_id["theconversation"].feed_url
     assert by_id["rfi_asia"].feed_url != by_id["theconversation"].feed_url
     # Unused backups / replaced / title+link-only feeds stay unregistered.
-    # forbes_innovation stays an unused backup — mention only.
+    # forbes_innovation is batch33 (promoted from unused backup).
     # propublica is batch32 (promoted from unused backup).
     # france24_asia / al_monitor are the #91 daily-fetch RED slots —
     # do not keep live (not registered as backups).
     # independent_world is the daily-fetch RED slot — do not keep live.
     # cbs_world is the known inserted0 vs existing cbs_news — do not add.
     # nikkei / indian_express are empty-desc — product skipped.
-    assert "forbes_innovation" not in by_id
     assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
     assert "france24_asia" not in by_id
@@ -3998,17 +4070,15 @@ def test_nyt_opinion_guardian_film_propublica_primaries_registered():
     assert by_id["nyt_opinion"].feed_url != by_id["propublica"].feed_url
     assert by_id["guardian_film"].feed_url != by_id["propublica"].feed_url
     # Unused backups / replaced / title+link-only feeds stay unregistered.
-    # forbes_innovation / dw_world / rfi_americas are unused backups —
-    # mention only. france24_asia / al_monitor are the #91 daily-fetch
-    # RED slots — do not keep live (not registered as backups).
-    # independent_world is the daily-fetch RED slot — do not keep live.
-    # cbs_world is the known inserted0 vs existing cbs_news — do not add.
-    # nikkei / indian_express are empty-desc — product skipped.
-    # sky_tech / restofworld / ars_science / thehill / politico are
-    # not this batch (politico is X-handle only).
-    assert "forbes_innovation" not in by_id
-    assert "dw_world" not in by_id
-    assert "rfi_americas" not in by_id
+    # forbes_innovation / dw_world / rfi_americas are batch33
+    # (promoted from unused backups). france24_asia / al_monitor
+    # are the #91 daily-fetch RED slots — do not keep live (not
+    # registered as backups). independent_world is the daily-fetch
+    # RED slot — do not keep live. cbs_world is the known inserted0
+    # vs existing cbs_news — do not add. nikkei / indian_express
+    # are empty-desc — product skipped. sky_tech / restofworld /
+    # ars_science / thehill / politico are not this batch
+    # (politico is X-handle only).
     assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
     assert "france24_asia" not in by_id
@@ -4072,6 +4142,125 @@ def test_nyt_opinion_guardian_film_propublica_feeds_live_http_200():
         )
 
 
+def test_forbes_innovation_dw_world_rfi_americas_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "forbes_innovation" in by_id
+    assert by_id["forbes_innovation"].feed_url == (
+        "https://www.forbes.com/innovation/feed/"
+    )
+    assert "dw_world" in by_id
+    assert by_id["dw_world"].feed_url == "https://rss.dw.com/rdf/rss-en-world"
+    assert "rfi_americas" in by_id
+    assert by_id["rfi_americas"].feed_url == (
+        "https://www.rfi.fr/en/tag/latin-america/rss"
+    )
+    assert "dw_en" in by_id
+    assert "rfi_en" in by_id
+    assert "rfi_asia" in by_id
+    assert "nyt_opinion" in by_id
+    assert "guardian_film" in by_id
+    assert "propublica" in by_id
+    assert "wired" in by_id
+    assert "mit_tr" in by_id
+    assert "bbc_latin_america" in by_id
+    assert "guardian_americas" in by_id
+    assert "france24_americas" in by_id
+    assert by_id["forbes_innovation"].feed_url != (
+        "https://www.forbes.com/innovation/feed"
+    )
+    assert by_id["dw_world"].feed_url != by_id["dw_en"].feed_url
+    assert by_id["dw_world"].feed_url != "https://rss.dw.com/rdf/rss-en-all"
+    assert by_id["dw_world"].feed_url != "https://rss.dw.com/atom/rss-en-world"
+    assert by_id["rfi_americas"].feed_url != by_id["rfi_en"].feed_url
+    assert by_id["rfi_americas"].feed_url != by_id["rfi_asia"].feed_url
+    assert by_id["rfi_americas"].feed_url != "https://www.rfi.fr/en/rss"
+    assert by_id["rfi_americas"].feed_url != "https://www.rfi.fr/en/americas/rss"
+    assert by_id["rfi_americas"].feed_url != "https://www.rfi.fr/en/international/rss"
+    assert by_id["rfi_americas"].feed_url != "https://www.rfi.fr/en/tag/americas/rss"
+    assert by_id["rfi_americas"].feed_url != by_id["bbc_latin_america"].feed_url
+    assert by_id["rfi_americas"].feed_url != by_id["guardian_americas"].feed_url
+    assert by_id["rfi_americas"].feed_url != by_id["france24_americas"].feed_url
+    assert by_id["forbes_innovation"].feed_url != by_id["wired"].feed_url
+    assert by_id["forbes_innovation"].feed_url != by_id["mit_tr"].feed_url
+    assert by_id["forbes_innovation"].feed_url != by_id["dw_world"].feed_url
+    assert by_id["forbes_innovation"].feed_url != by_id["rfi_americas"].feed_url
+    assert by_id["dw_world"].feed_url != by_id["rfi_americas"].feed_url
+    # Unused backups / replaced / title+link-only feeds stay unregistered.
+    # nyt_movies / guardian_music / guardian_stage are unused backups —
+    # mention only. france24_asia / al_monitor are the #91 daily-fetch
+    # RED slots — do not keep live (not registered as backups).
+    # independent_world is the daily-fetch RED slot — do not keep live.
+    # cbs_world is the known inserted0 vs existing cbs_news — do not add.
+    # nikkei / indian_express are empty-desc — product skipped.
+    # sky_tech / restofworld / ars_science / thehill / politico are
+    # not this batch (politico is X-handle only).
+    assert "nyt_movies" not in by_id
+    assert "guardian_music" not in by_id
+    assert "guardian_stage" not in by_id
+    assert "cbs_world" not in by_id
+    assert "independent_world" not in by_id
+    assert "france24_asia" not in by_id
+    assert "al_monitor" not in by_id
+    assert "indian_express" not in by_id
+    assert "nikkei" not in by_id
+    assert "nyt_world_asia" not in by_id
+    assert "nikkei_asia" not in by_id
+    assert "sky_tech" not in by_id
+    assert "restofworld" not in by_id
+    assert "ars_science" not in by_id
+    assert "thehill" not in by_id
+    assert "politico" not in by_id
+    for source_id, expected in _FORBES_INNOVATION_DW_WORLD_RFI_AMERICAS_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_forbes_innovation_dw_world_rfi_americas_feeds_live_http_200():
+    """Hit the three new feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _FORBES_INNOVATION_DW_WORLD_RFI_AMERICAS_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (forbes_innovation / rfi_americas) uses the
+        # un-namespaced element text. RSS 1.0 / RDF (dw_world)
+        # uses the rss-1.0 title / link plus dc:date.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0. Product lock
+        # requires non-empty RSS description/summary on these feeds.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -4107,6 +4296,7 @@ if __name__ == "__main__":
     test_scmp_business_rfi_asia_theconversation_primaries_registered()
     test_nyt_arts_guardian_sport_intercept_primaries_registered()
     test_nyt_opinion_guardian_film_propublica_primaries_registered()
+    test_forbes_innovation_dw_world_rfi_americas_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -4138,4 +4328,5 @@ if __name__ == "__main__":
     test_scmp_business_rfi_asia_theconversation_feeds_live_http_200()
     test_nyt_arts_guardian_sport_intercept_feeds_live_http_200()
     test_nyt_opinion_guardian_film_propublica_feeds_live_http_200()
+    test_forbes_innovation_dw_world_rfi_americas_feeds_live_http_200()
     print("✓ source registry tests PASSED")
