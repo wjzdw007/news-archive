@@ -63,22 +63,22 @@
 - 排除：品牌新源本轮首次入库的回填存量（该 `source` 在本轮 `latest_fetch_at` 之前没有任何行）
 - 超过 **10%** 的文章延迟 >4h 视为单轮违反 SLA
 
-**连续检测策略**（产品决策 after run #5）：
+**连续检测策略**（产品决策 after run #5；soft-miss 字段 after run 39299196711）：
 - **单轮或个位数超窗** → ⚠️ **WARN**（打印警告，不红灯，exit 0，允许 run 继续）
-- **连续两轮整体超时** → ❌ **FAIL**（红灯，exit 1，阻塞流水线）
+- **连续两轮整体超时**（large-N checked≥10 且 >10%）→ ❌ **FAIL**（红灯，exit 1，阻塞流水线）
 - ✅ 当前轮通过 → **PASS**（清除连续失败计数）
 
 **连续检测机制**：
-1. 每次运行在 `data/LAST_RUN.json` 中记录 `latency_sla_passed: true/false`
+1. 每次运行在 `data/LAST_RUN.json` 中记录 `latency_sla_passed`（job 级）和 `latency_soft_miss`（本轮 large-N 超窗）
 2. 下一轮从 `data` 分支读取上一轮状态（通过 `git show data:data/LAST_RUN.json`）
-3. 当前轮失败时：
-   - 若上一轮也失败 → **连续失败** → exit 1（红灯）
-   - 若上一轮通过 → **单轮失败** → exit 0（警告但通过）
+3. 当前轮 large-N 超窗时：
+   - 若上一轮也 miss（`latency_soft_miss=true`，或旧格式仅有 `latency_sla_passed=false`）→ **连续失败** → exit 1（红灯）
+   - 若上一轮无 miss → **单轮失败** → exit 0（警告但通过；`passed=true`，`soft_miss=true`）
 
 **说明**：
 - **首次运行回填旧文章不在检查范围内**：首次全量抓取 RSS 源时，历史存量文章（如一周前发布的）会显示较大延迟，但这是预期行为。延迟 SLA 只衡量增量新内容的时效性。
 - **新源首次入库同样按回填跳过**：feed 存量常落在 4–24h 窗口（>24h 本来就会跳过，4–24h 若计入会 100% 违规）。已有源的 4h / >10% / 连续策略不变。
-- 单轮 WARN 仍会把 `latency_sla_passed` 记为 false，这是故意的：第二次**已有源**真实超时才会硬失败。
+- 单轮 WARN **保持** `latency_sla_passed=true`，只把 `latency_soft_miss=true` 写入 LAST_RUN：一次 soft miss 不能把 persist 打成 false / 红灯；第二次**已有源**真实超时才会硬失败。
 - 10% 阈值允许偶发的调度延迟（GitHub Actions cron 漂移、源更新时间不均等）
 - 连续检测避免误报：单次网络波动/调度漂移不会红灯，只有持续问题才会告警
 
@@ -177,7 +177,7 @@
   - 避免 Run #5 问题：latency 失败导致 5 条新插入文章未持久化
 - 先于单元测试运行，确保 fetch 成功的数据立即持久化
 - 单元测试失败不会阻止数据库更新
-- 将 `validation-meta.json` 中的 `latency_sla_passed` 字段写入 `LAST_RUN.json`，供下一轮连续检测使用
+- 将 `validation-meta.json` 中的 `latency_sla_passed` 与 `latency_soft_miss` 写入 `LAST_RUN.json`，供下一轮连续检测使用
 
 #### 3. 测试高频去重
 ```yaml
@@ -339,7 +339,7 @@ PYTHONPATH=src python -m news_archive.validate \
   --output-meta /tmp/test-sla/validation-meta.json
 
 echo "Exit code: $?"  # 应该是 0
-cat /tmp/test-sla/validation-meta.json  # latency_sla_passed 应该是 false
+cat /tmp/test-sla/validation-meta.json  # latency_sla_passed=true，latency_soft_miss=true
 ```
 
 ### 模拟连续两轮失败（应该 FAIL）
@@ -371,10 +371,10 @@ echo "Exit code: $?"  # 应该是 1（连续失败）
 ### CI 中观察
 
 1. 手动触发 workflow 两次，故意让某个源延迟 >4h（可临时修改代码模拟）
-2. 第一次：应该看到 `⚠ WARN: ... Single-round violation (not consecutive)`，job 通过（绿灯）
+2. 第一次：应该看到 `⚠ WARN: ... Single-round violation (not consecutive)`，job 通过（绿灯）；`LAST_RUN` 为 `latency_sla_passed=true`、`latency_soft_miss=true`
 3. 第二次：应该看到 `FAIL: TWO CONSECUTIVE ROUNDS exceeded latency SLA`，job 失败（红灯）
-4. 检查 `data` 分支的 `LAST_RUN.json`，确认两次都记录了 `latency_sla_passed: false`
-5. 第三次：如果 latency 恢复正常，应该通过并重置连续计数
+4. 检查 `data` 分支的 `LAST_RUN.json`：第一次 passed=true/soft_miss=true；第二次 passed=false/soft_miss=true
+5. 第三次：如果 latency 恢复正常，应该通过并重置连续计数（soft_miss=false）
 
 ---
 

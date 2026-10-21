@@ -177,6 +177,23 @@ def _latency_skip_details(
     return details
 
 
+def previous_run_had_latency_miss(previous_run_meta: dict[str, Any] | None) -> bool:
+    """True when the previous persist armed a consecutive latency miss.
+
+    New LAST_RUN writes `latency_soft_miss` on a large-N >10% breach while
+    keeping `latency_sla_passed=true` for a single soft miss (job stays green).
+    Legacy LAST_RUN (e.g. run 39299196711) only had passed=false for that miss;
+    treat that as a previous miss so the consecutive rule still fires.
+    """
+    if not previous_run_meta:
+        return False
+    if previous_run_meta.get("latency_soft_miss") is True:
+        return True
+    if "latency_soft_miss" not in previous_run_meta:
+        return previous_run_meta.get("latency_sla_passed") is False
+    return False
+
+
 def check_fetch_latency(
     conn: sqlite3.Connection,
     run_stats: dict[str, Any] | None = None,
@@ -191,12 +208,13 @@ def check_fetch_latency(
     Consecutive failure policy:
     - Single round or small sample (checked < 10) → WARN (soft), return True
     - TWO consecutive large-N rounds (checked >= 10, >10%) both failed → FAIL
-    - Large-N soft WARN still returns sla_violated=True so LAST_RUN records
-      latency_sla_passed=false; a second genuine large-N violation then hard-fails
+    - Large-N soft WARN returns sla_violated=True (latency_soft_miss) so the
+      next genuine large-N miss can consecutive-hard-fail. latency_sla_passed
+      on persist stays true for that single miss — one soft miss must not red
+      the pipeline or look failed on LAST_RUN.
     - Small-N (checked < 10) never hard-fails, even if previous_run_meta has
-      latency_sla_passed=false. sla_violated is False so a tiny sample cannot
-      arm the consecutive trap for the next run. CEO: small samples must not
-      flip the job red.
+      a miss. sla_violated is False so a tiny sample cannot arm the consecutive
+      trap for the next run. CEO: small samples must not flip the job red.
     
     Rationale: First-run backfills of old stock items (e.g., week-old RSS feeds)
     would show high latency by design. We only measure freshness on new incremental
@@ -209,8 +227,8 @@ def check_fetch_latency(
     Returns (passed, message, sla_violated).
     - passed: whether to pass this check (may be True even if SLA violated, for single round)
     - message: human-readable result
-    - sla_violated: True only for large-N (checked >= 10) >10% breaches, so
-      LAST_RUN can arm consecutive hard-fail. Small-N breaches return False.
+    - sla_violated: True only for large-N (checked >= 10) >10% breaches
+      (`latency_soft_miss` on LAST_RUN). Small-N breaches return False.
     """
     # Determine if this run inserted any articles
     inserted = run_stats.get("inserted", 0) if run_stats else 0
@@ -345,11 +363,9 @@ def check_fetch_latency(
             print(f"{'='*60}\n", file=sys.stderr)
             return True, msg, False  # Job green; do not arm consecutive trap
 
-        # Check consecutive failure: did previous run also fail latency?
-        prev_failed = (
-            previous_run_meta 
-            and previous_run_meta.get("latency_sla_passed") is False
-        )
+        # Check consecutive failure: previous large-N soft miss (or legacy
+        # LAST_RUN that only stored latency_sla_passed=false).
+        prev_failed = previous_run_had_latency_miss(previous_run_meta)
         
         if prev_failed:
             # TWO consecutive large-N rounds failed → FAIL (hard)
@@ -363,7 +379,9 @@ def check_fetch_latency(
             return False, msg, True  # Failed, and SLA violated
         else:
             # Single round failure → WARN (soft), do not fail.
-            # sla_violated remains True so a second real large-N violation hard-fails.
+            # sla_violated remains True (latency_soft_miss) so a second real
+            # large-N violation hard-fails. latency_sla_passed on persist stays
+            # true — a single soft miss must not look like a red pipeline.
             msg = (
                 f"WARN: {len(violations)}/{checked} ({violation_rate:.1f}%) articles "
                 f"from this run exceed 4h SLA. Examples:\n  " + "\n  ".join(examples) +
@@ -415,7 +433,8 @@ def validate(
     Returns 0 on success, 1 on failure.
     
     If output_meta_path is provided, writes validation metadata JSON including
-    latency_sla_passed for use by next run's consecutive check.
+    latency_sla_passed (job-level; true unless consecutive hard-fail) and
+    latency_soft_miss (this-round large-N breach) for the next run.
     """
     if not db_path.exists():
         print("FAIL: Database file does not exist:", db_path, file=sys.stderr)
@@ -442,7 +461,8 @@ def validate(
     
     results = []
     all_passed = True
-    latency_sla_passed = True  # Track for output meta
+    latency_sla_passed = True  # Job-level: false only on consecutive hard-fail
+    latency_soft_miss = False  # This-round large-N >10% breach
     
     print("=== P0 Acceptance Validation ===\n")
     
@@ -460,9 +480,10 @@ def validate(
     latency_passed, latency_message, sla_violated = check_fetch_latency(conn, run_stats, previous_run_meta)
     results.append(("Fetch Latency SLA", latency_passed, latency_message))
     all_passed = all_passed and latency_passed
-    # Large-N soft WARN stores false so the next real large-N violation hard-fails.
-    # Small-N returns sla_violated=False, so a tiny sample cannot arm that trap.
-    latency_sla_passed = not sla_violated  # True if SLA not violated
+    # Job-level passed stays true on a single large-N WARN. sla_violated is the
+    # consecutive arm (`latency_soft_miss`) so one soft miss does not red persist.
+    latency_sla_passed = latency_passed
+    latency_soft_miss = sla_violated
     
     status = "✓" if latency_passed else "✗"
     print(f"[{status}] Fetch Latency SLA")
@@ -475,6 +496,7 @@ def validate(
         try:
             meta = {
                 "latency_sla_passed": latency_sla_passed,
+                "latency_soft_miss": latency_soft_miss,
                 "all_checks_passed": all_passed,
                 "timestamp": datetime.now(timezone.utc).isoformat(),
             }

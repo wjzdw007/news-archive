@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from time import struct_time
@@ -19,6 +20,16 @@ from .sources import Source
 # source twice more (3 attempts total), then let fetch_all isolate the failure.
 RSS_FETCH_ATTEMPTS = 3
 RSS_RETRY_BACKOFF_S = 1.0
+# Per-source HTTP budget. 87 sequential 30s×3 attempts can consume a 30m GHA
+# job before Persist; keep retries (#53) but cap each attempt and overlap GETs.
+RSS_TIMEOUT_S = 15.0
+RSS_FETCH_WORKERS = 8
+# Wall clock for the RSS wave only (enrich still runs after). Remaining
+# sources soft-fail so Persist still sees the feeds that finished.
+RSS_FETCH_DEADLINE_S = 600.0
+# Dense feeds (Electrek / 36kr-style) can dump 50–100 items in one RSS body.
+# Keep newest-first feed order; do not change the source registry.
+INGEST_CAP_PER_SOURCE = 30
 
 # Solidot (and some other feeds) 403 bare curl / empty-UA clients. A browser
 # UA is sent for all RSS HTTP so live CI does not come back empty.
@@ -150,8 +161,9 @@ def _get_feed_bytes(
 def fetch_source(
     source: Source,
     *,
-    timeout: float = 30.0,
+    timeout: float = RSS_TIMEOUT_S,
     sleep_fn: Callable[[float], None] | None = None,
+    ingest_cap: int = INGEST_CAP_PER_SOURCE,
 ) -> list[Article]:
     fetched_at = datetime.now(timezone.utc).isoformat()
     raw = _get_feed_bytes(source, timeout=timeout, sleep_fn=sleep_fn)
@@ -162,14 +174,64 @@ def fetch_source(
         article = article_from_entry(entry, source, fetched_at)
         if article is not None:
             articles.append(article)
+    if ingest_cap > 0 and len(articles) > ingest_cap:
+        print(
+            f"INFO {source.id}: ingest cap {ingest_cap}/{len(articles)} "
+            "(dense-source spike; newest-first feed order)",
+            file=sys.stderr,
+        )
+        articles = articles[:ingest_cap]
     return articles
 
 
-def fetch_all(sources: Iterable[Source]) -> dict[str, list[Article] | Exception]:
+class RssFetchDeadlineExceeded(TimeoutError):
+    """Remaining RSS sources skipped because the fetch wave hit its wall clock."""
+
+
+def fetch_all(
+    sources: Iterable[Source],
+    *,
+    timeout: float = RSS_TIMEOUT_S,
+    max_workers: int = RSS_FETCH_WORKERS,
+    deadline_s: float | None = RSS_FETCH_DEADLINE_S,
+    sleep_fn: Callable[[float], None] | None = None,
+    monotonic: Callable[[], float] = time.monotonic,
+) -> dict[str, list[Article] | Exception]:
+    """Fetch every source with per-source isolation.
+
+    Overlaps HTTP across `max_workers` threads. If `deadline_s` elapses,
+    sources that have not started yet are recorded as RssFetchDeadlineExceeded
+    (soft-fail, same as a per-source timeout) so finished feeds still persist.
+    """
+    source_list = list(sources)
     results: dict[str, list[Article] | Exception] = {}
-    for source in sources:
+    if not source_list:
+        return results
+
+    deadline_at: float | None = None
+    if deadline_s is not None and deadline_s > 0:
+        deadline_at = monotonic() + deadline_s
+
+    def _one(source: Source) -> tuple[str, list[Article] | Exception]:
+        if deadline_at is not None and monotonic() >= deadline_at:
+            return source.id, RssFetchDeadlineExceeded(
+                f"RSS fetch deadline ({deadline_s:.0f}s) reached; skipped"
+            )
         try:
-            results[source.id] = fetch_source(source)
+            return source.id, fetch_source(
+                source, timeout=timeout, sleep_fn=sleep_fn
+            )
         except Exception as exc:  # noqa: BLE001 — per-source isolation
-            results[source.id] = exc
+            return source.id, exc
+
+    workers = max(1, min(max_workers, len(source_list)))
+    pending: dict[str, list[Article] | Exception] = {}
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        futures = [pool.submit(_one, source) for source in source_list]
+        for fut in as_completed(futures):
+            source_id, payload = fut.result()
+            pending[source_id] = payload
+    # Preserve registry order for run-stats / tests.
+    for source in source_list:
+        results[source.id] = pending[source.id]
     return results

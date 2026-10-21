@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -29,11 +30,16 @@ def generate_for_dates(
     llm_fn=None,
     model: str | None = None,
     missing_config: bool | None = None,
+    deadline_s: float | None = None,
+    monotonic=time.monotonic,
 ) -> list[dict]:
     """Generate briefs for dates. Missing key / LLM errors write failed/empty.
 
     Skip LLM (`kept_ok`) when an existing row is status=ok and the day's
     selected RSS + X fingerprint is unchanged — including today.
+
+    If `deadline_s` elapses, remaining dates are skipped without upsert
+    (do not overwrite an existing ok brief). Fetch/persist stay green.
     """
     articles = store.get_articles_for_daily_brief()
     try:
@@ -52,8 +58,29 @@ def generate_for_dates(
         model = config["model"] if config else resolve_model()
     api_key = (config or {}).get("api_key") or ""
     results: list[dict] = []
+    deadline_at = (
+        monotonic() + deadline_s
+        if deadline_s is not None and deadline_s > 0
+        else None
+    )
 
     for date in dates:
+        if deadline_at is not None and monotonic() >= deadline_at:
+            print(
+                f"⚠ daily brief deadline ({deadline_s:.0f}s) reached; "
+                f"skipping remaining days starting {date}",
+                file=sys.stderr,
+            )
+            for skipped in dates[dates.index(date) :]:
+                results.append(
+                    {
+                        "date": skipped,
+                        "action": "skipped_deadline",
+                        "status": "skipped",
+                        "error": "daily brief deadline reached; skipped remaining days",
+                    }
+                )
+            break
         fingerprint = day_input_fingerprint(articles, date, x_posts)
         existing = store.get_daily_brief(date)
         if (
@@ -125,6 +152,12 @@ def main(argv: list[str] | None = None) -> int:
         help="How many Shanghai calendar days to cover (default 7).",
     )
     parser.add_argument("--json", action="store_true", help="Print JSON stats")
+    parser.add_argument(
+        "--deadline-seconds",
+        type=float,
+        default=0,
+        help="Wall-clock budget; remaining days skip without failing the job.",
+    )
     args = parser.parse_args(argv)
 
     stats: dict = {
@@ -137,7 +170,9 @@ def main(argv: list[str] | None = None) -> int:
     try:
         store = Store(args.db)
         dates = [args.date] if args.date else last_n_shanghai_dates(max(1, args.days))
-        stats["results"] = generate_for_dates(store, dates)
+        stats["results"] = generate_for_dates(
+            store, dates, deadline_s=args.deadline_seconds
+        )
         store.close()
     except Exception as exc:
         stats["error"] = redact_secrets(str(exc))
