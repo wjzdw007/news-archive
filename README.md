@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（101 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（104 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -107,6 +107,9 @@
 | `nyt_arts` | NYT Arts | https://rss.nytimes.com/services/xml/rss/nyt/Arts.xml | primary |
 | `guardian_sport` | Guardian Sport | https://www.theguardian.com/sport/rss | primary |
 | `intercept` | The Intercept | https://theintercept.com/feed/ | primary |
+| `nyt_opinion` | NYT Opinion | https://rss.nytimes.com/services/xml/rss/nyt/Opinion.xml | primary |
+| `guardian_film` | Guardian Film | https://www.theguardian.com/film/rss | primary |
+| `propublica` | ProPublica | https://www.propublica.org/feeds/propublica/main | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
