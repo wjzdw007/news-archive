@@ -881,8 +881,9 @@ _SEMAFOR_FRANCE24_AMERICAS_MIDDLEEASTEYE_PRIMARY = {
 # https://theconversation.com/articles.atom (feed title
 # "English – The Conversation"; official global/us/au/uk
 # edition atoms also 200 / 0 empty-desc — pick one official
-# id only; preferred articles.atom kept). forbes_innovation /
-# propublica stay unregistered (unused backups; mention only).
+# id only; preferred articles.atom kept). forbes_innovation
+# stays unregistered (unused backup; mention only).
+# propublica is batch32 (promoted from unused backup).
 # france24_asia / al_monitor stay unregistered (replaced in
 # batch29; not live CAP slots; not registered as backups).
 # independent_world stays unregistered (replaced in batch28;
@@ -934,20 +935,20 @@ _SCMP_BUSINESS_RFI_ASIA_THECONVERSATION_PRIMARY = {
 # intercept is a new source family. Locked official
 # https://theintercept.com/feed/ (channel title
 # "The Intercept"; preferred live HTTP 200 / 0 empty-desc
-# — one official id only). nyt_opinion /
-# guardian_film stay unregistered (unused backups;
-# mention only). france24_asia / al_monitor stay
-# unregistered (replaced in batch29; not live CAP slots;
-# not registered as backups). independent_world stays
-# unregistered (replaced in batch28; 429). cbs_world
-# stays unregistered (known inserted0 vs existing
-# cbs_news). nikkei / indian_express stay unregistered
-# (empty desc — product skipped). nikkei_asia stays
-# unregistered (title+link only). nyt_world_asia stays
-# unregistered (replaced in batch20). sky_tech /
-# restofworld / ars_science stay unregistered (not this
-# batch). NEWS_SOURCE_CAP display stays 6 — no CAP code
-# change. No X this batch.
+# — one official id only). nyt_opinion / guardian_film
+# are batch32 (promoted from unused backups).
+# france24_asia / al_monitor stay unregistered (replaced
+# in batch29; not live CAP slots; not registered as
+# backups). independent_world stays unregistered
+# (replaced in batch28; 429). cbs_world stays
+# unregistered (known inserted0 vs existing cbs_news).
+# nikkei / indian_express stay unregistered (empty desc
+# — product skipped). nikkei_asia stays unregistered
+# (title+link only). nyt_world_asia stays unregistered
+# (replaced in batch20). sky_tech / restofworld /
+# ars_science stay unregistered (not this batch).
+# NEWS_SOURCE_CAP display stays 6 — no CAP code change.
+# No X this batch.
 _NYT_ARTS_GUARDIAN_SPORT_INTERCEPT_PRIMARY = {
     "nyt_arts": {
         "name": "NYT Arts",
@@ -966,7 +967,68 @@ _NYT_ARTS_GUARDIAN_SPORT_INTERCEPT_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 101
+# CEO-approved NYT Opinion / Guardian Film / ProPublica RSS
+# primaries (batch32). These three are the new adds.
+# nyt_opinion is a same-outlet NYT section distinct from
+# existing nyt_world / nyt_technology / nyt_business /
+# nyt_science / nyt_climate / nyt_health / nyt_education /
+# nyt_politics / nyt_us / nyt_europe / nyt_upshot /
+# nyt_africa / nyt_arts. Locked official nyt_* feed
+# pattern
+# https://rss.nytimes.com/services/xml/rss/nyt/Opinion.xml
+# (channel title "NYT > Opinion"). guardian_film is a
+# same-outlet Guardian section distinct from existing
+# guardian_world / guardian_technology / guardian_us /
+# guardian_environment / guardian_business /
+# guardian_science / guardian_australia /
+# guardian_americas / guardian_uk / guardian_europe /
+# guardian_global_dev / guardian_law / guardian_society /
+# guardian_cities / guardian_world_africa /
+# guardian_politics / guardian_middle_east /
+# guardian_sport. Locked official guardian_* pattern
+# https://www.theguardian.com/film/rss (channel title
+# "Film | The Guardian"; geo edition may land on
+# /us/film/rss — same film section, not a swap).
+# propublica was an unused backup in batch30 and is now
+# promoted as a primary (it was not already registered;
+# new source family). Locked official
+# https://www.propublica.org/feeds/propublica/main
+# (channel title "ProPublica"; preferred live HTTP 200 /
+# 0 empty-desc — one official id only).
+# forbes_innovation / dw_world / rfi_americas stay
+# unregistered (unused backups; mention only).
+# france24_asia / al_monitor stay unregistered (replaced
+# in batch29; not live CAP slots; not registered as
+# backups). independent_world stays unregistered
+# (replaced in batch28; 429). cbs_world stays
+# unregistered (known inserted0 vs existing cbs_news).
+# nikkei / indian_express stay unregistered (empty desc
+# — product skipped). nikkei_asia stays unregistered
+# (title+link only). nyt_world_asia stays unregistered
+# (replaced in batch20). sky_tech / restofworld /
+# ars_science / thehill / politico stay unregistered
+# (not this batch; politico is X-handle only).
+# NEWS_SOURCE_CAP display stays 6 — no CAP code change.
+# No X this batch.
+_NYT_OPINION_GUARDIAN_FILM_PROPUBLICA_PRIMARY = {
+    "nyt_opinion": {
+        "name": "NYT Opinion",
+        "feed_url": "https://rss.nytimes.com/services/xml/rss/nyt/Opinion.xml",
+        "category": "综合",
+    },
+    "guardian_film": {
+        "name": "Guardian Film",
+        "feed_url": "https://www.theguardian.com/film/rss",
+        "category": "综合",
+    },
+    "propublica": {
+        "name": "ProPublica",
+        "feed_url": "https://www.propublica.org/feeds/propublica/main",
+        "category": "综合",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 104
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en) and Atom fallbacks for live XML probes.
@@ -3629,14 +3691,14 @@ def test_scmp_business_rfi_asia_theconversation_primaries_registered():
     assert by_id["scmp_business"].feed_url != by_id["theconversation"].feed_url
     assert by_id["rfi_asia"].feed_url != by_id["theconversation"].feed_url
     # Unused backups / replaced / title+link-only feeds stay unregistered.
-    # forbes_innovation / propublica are unused backups — mention only.
+    # forbes_innovation stays an unused backup — mention only.
+    # propublica is batch32 (promoted from unused backup).
     # france24_asia / al_monitor are the #91 daily-fetch RED slots —
     # do not keep live (not registered as backups).
     # independent_world is the daily-fetch RED slot — do not keep live.
     # cbs_world is the known inserted0 vs existing cbs_news — do not add.
     # nikkei / indian_express are empty-desc — product skipped.
     assert "forbes_innovation" not in by_id
-    assert "propublica" not in by_id
     assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
     assert "france24_asia" not in by_id
@@ -3780,15 +3842,13 @@ def test_nyt_arts_guardian_sport_intercept_primaries_registered():
     assert by_id["nyt_arts"].feed_url != by_id["intercept"].feed_url
     assert by_id["guardian_sport"].feed_url != by_id["intercept"].feed_url
     # Unused backups / replaced / title+link-only feeds stay unregistered.
-    # nyt_opinion / guardian_film are unused backups — mention only.
-    # france24_asia / al_monitor are the #91 daily-fetch RED slots —
-    # do not keep live (not registered as backups).
+    # nyt_opinion / guardian_film are batch32 (promoted from unused
+    # backups). france24_asia / al_monitor are the #91 daily-fetch
+    # RED slots — do not keep live (not registered as backups).
     # independent_world is the daily-fetch RED slot — do not keep live.
     # cbs_world is the known inserted0 vs existing cbs_news — do not add.
     # nikkei / indian_express are empty-desc — product skipped.
     # sky_tech / restofworld / ars_science are not this batch.
-    assert "nyt_opinion" not in by_id
-    assert "guardian_film" not in by_id
     assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
     assert "france24_asia" not in by_id
@@ -3850,6 +3910,168 @@ def test_nyt_arts_guardian_sport_intercept_feeds_live_http_200():
         )
 
 
+def test_nyt_opinion_guardian_film_propublica_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "nyt_opinion" in by_id
+    assert by_id["nyt_opinion"].feed_url == (
+        "https://rss.nytimes.com/services/xml/rss/nyt/Opinion.xml"
+    )
+    assert "guardian_film" in by_id
+    assert by_id["guardian_film"].feed_url == (
+        "https://www.theguardian.com/film/rss"
+    )
+    assert "propublica" in by_id
+    assert by_id["propublica"].feed_url == (
+        "https://www.propublica.org/feeds/propublica/main"
+    )
+    assert "nyt_world" in by_id
+    assert "nyt_technology" in by_id
+    assert "nyt_business" in by_id
+    assert "nyt_science" in by_id
+    assert "nyt_climate" in by_id
+    assert "nyt_health" in by_id
+    assert "nyt_education" in by_id
+    assert "nyt_politics" in by_id
+    assert "nyt_us" in by_id
+    assert "nyt_europe" in by_id
+    assert "nyt_upshot" in by_id
+    assert "nyt_africa" in by_id
+    assert "nyt_arts" in by_id
+    assert "guardian_world" in by_id
+    assert "guardian_technology" in by_id
+    assert "guardian_us" in by_id
+    assert "guardian_environment" in by_id
+    assert "guardian_business" in by_id
+    assert "guardian_science" in by_id
+    assert "guardian_australia" in by_id
+    assert "guardian_americas" in by_id
+    assert "guardian_uk" in by_id
+    assert "guardian_europe" in by_id
+    assert "guardian_global_dev" in by_id
+    assert "guardian_law" in by_id
+    assert "guardian_society" in by_id
+    assert "guardian_cities" in by_id
+    assert "guardian_world_africa" in by_id
+    assert "guardian_politics" in by_id
+    assert "guardian_middle_east" in by_id
+    assert "guardian_sport" in by_id
+    assert "intercept" in by_id
+    assert "rfi_en" in by_id
+    assert "rfi_asia" in by_id
+    assert "dw_en" in by_id
+    assert by_id["nyt_opinion"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["nyt_opinion"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["nyt_opinion"].feed_url != by_id["nyt_business"].feed_url
+    assert by_id["nyt_opinion"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["nyt_opinion"].feed_url != by_id["nyt_climate"].feed_url
+    assert by_id["nyt_opinion"].feed_url != by_id["nyt_health"].feed_url
+    assert by_id["nyt_opinion"].feed_url != by_id["nyt_education"].feed_url
+    assert by_id["nyt_opinion"].feed_url != by_id["nyt_politics"].feed_url
+    assert by_id["nyt_opinion"].feed_url != by_id["nyt_us"].feed_url
+    assert by_id["nyt_opinion"].feed_url != by_id["nyt_europe"].feed_url
+    assert by_id["nyt_opinion"].feed_url != by_id["nyt_upshot"].feed_url
+    assert by_id["nyt_opinion"].feed_url != by_id["nyt_africa"].feed_url
+    assert by_id["nyt_opinion"].feed_url != by_id["nyt_arts"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["guardian_technology"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["guardian_us"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["guardian_environment"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["guardian_business"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["guardian_australia"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["guardian_americas"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["guardian_uk"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["guardian_europe"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["guardian_global_dev"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["guardian_law"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["guardian_society"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["guardian_cities"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["guardian_world_africa"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["guardian_politics"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["guardian_middle_east"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["guardian_sport"].feed_url
+    assert by_id["propublica"].feed_url != by_id["intercept"].feed_url
+    assert by_id["propublica"].feed_url != by_id["theconversation"].feed_url
+    assert by_id["propublica"].feed_url != by_id["semafor"].feed_url
+    assert by_id["propublica"].feed_url != by_id["axios"].feed_url
+    assert by_id["nyt_opinion"].feed_url != by_id["guardian_film"].feed_url
+    assert by_id["nyt_opinion"].feed_url != by_id["propublica"].feed_url
+    assert by_id["guardian_film"].feed_url != by_id["propublica"].feed_url
+    # Unused backups / replaced / title+link-only feeds stay unregistered.
+    # forbes_innovation / dw_world / rfi_americas are unused backups —
+    # mention only. france24_asia / al_monitor are the #91 daily-fetch
+    # RED slots — do not keep live (not registered as backups).
+    # independent_world is the daily-fetch RED slot — do not keep live.
+    # cbs_world is the known inserted0 vs existing cbs_news — do not add.
+    # nikkei / indian_express are empty-desc — product skipped.
+    # sky_tech / restofworld / ars_science / thehill / politico are
+    # not this batch (politico is X-handle only).
+    assert "forbes_innovation" not in by_id
+    assert "dw_world" not in by_id
+    assert "rfi_americas" not in by_id
+    assert "cbs_world" not in by_id
+    assert "independent_world" not in by_id
+    assert "france24_asia" not in by_id
+    assert "al_monitor" not in by_id
+    assert "indian_express" not in by_id
+    assert "nikkei" not in by_id
+    assert "nyt_world_asia" not in by_id
+    assert "nikkei_asia" not in by_id
+    assert "sky_tech" not in by_id
+    assert "restofworld" not in by_id
+    assert "ars_science" not in by_id
+    assert "thehill" not in by_id
+    assert "politico" not in by_id
+    for source_id, expected in _NYT_OPINION_GUARDIAN_FILM_PROPUBLICA_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_nyt_opinion_guardian_film_propublica_feeds_live_http_200():
+    """Hit the three new feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _NYT_OPINION_GUARDIAN_FILM_PROPUBLICA_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (nyt_opinion / guardian_film / propublica) uses the
+        # un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0. Product lock
+        # requires non-empty RSS description/summary on these feeds.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -3884,6 +4106,7 @@ if __name__ == "__main__":
     test_semafor_france24_americas_middleeasteye_primaries_registered()
     test_scmp_business_rfi_asia_theconversation_primaries_registered()
     test_nyt_arts_guardian_sport_intercept_primaries_registered()
+    test_nyt_opinion_guardian_film_propublica_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -3914,4 +4137,5 @@ if __name__ == "__main__":
     test_semafor_france24_americas_middleeasteye_feeds_live_http_200()
     test_scmp_business_rfi_asia_theconversation_feeds_live_http_200()
     test_nyt_arts_guardian_sport_intercept_feeds_live_http_200()
+    test_nyt_opinion_guardian_film_propublica_feeds_live_http_200()
     print("✓ source registry tests PASSED")

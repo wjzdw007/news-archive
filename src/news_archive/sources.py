@@ -723,6 +723,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="nyt_opinion",
+        name="NYT Opinion",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/Opinion.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="guardian_film",
+        name="Guardian Film",
+        feed_url="https://www.theguardian.com/film/rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="propublica",
+        name="ProPublica",
+        feed_url="https://www.propublica.org/feeds/propublica/main",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
