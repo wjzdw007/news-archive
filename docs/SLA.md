@@ -35,10 +35,10 @@
 
 ### Workflow 步骤顺序与超时预算
 
-Job `timeout-minutes: 45`（87 源串行 + 日报 LLM 曾打满旧的 30m cap：runs 39243037763 / 39340262352）。
+Job `timeout-minutes: 45`（87 源串行 + 日报 LLM 曾打满旧的 30m cap：runs 39243037763 / 39340262352；#71 后 RSS 已并行，但 Fetch 仍在 45m 墙钟取消：runs 39535458475 / 39539744777，卡在全库 O(n²) recluster）。
 
 1. **Restore SQLite** → 从 `data` 分支恢复数据库（含上一轮 `LAST_RUN.json`）
-2. **Fetch feeds** → 并行 RSS（8 workers）、单源 15s×3 次重试（#53 soft-fail）、RSS 波次 600s 墙钟；剩余源 soft-fail，已完成源仍入库。密集源（Electrek/36kr 风格）每源最多入 30 条。
+2. **Fetch feeds** → 并行 RSS（8 workers）、单源 15s×3 次重试（#53 soft-fail）、RSS 波次 600s 墙钟；剩余源 soft-fail，已完成源仍入库。密集源（Electrek/36kr 风格）每源最多入 30 条。topic recluster 只打开近 24h 无 ok brief 的孤儿，且 pairwise 最多 1500 条（180s 墙钟）；更早的 topic_id 保持不变。stderr 打印 `INFO fetch_phase *_s=`。
 3. **Run validation** → P0 验收检查（含 latency 连续检测），输出 `validation-meta.json`（`latency_sla_passed` + `latency_soft_miss`）
 4. **Generate daily brief** → `continue-on-error`，步骤 8 分钟 + CLI `--deadline-seconds 300`；超时跳过剩余日期，不覆盖已有 ok 日报，不挡 Persist
 5. **Persist SQLite** → 写回 `data` 分支（含新的 `LAST_RUN.json`）

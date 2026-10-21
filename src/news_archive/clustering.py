@@ -6,11 +6,19 @@ from __future__ import annotations
 DEFAULT_SIMILARITY_THRESHOLD = 0.7  # Chinese / mixed / fallback
 EN_SIMILARITY_THRESHOLD = 0.5
 DEFAULT_WINDOW_HOURS = 6.0
+# Full-archive recluster is O(n²) and ate the 45m Fetch step (runs 39535458475 /
+# 39539744777): ~6.2k orphans cleared every run after purged_both_empty.
+# Only re-open recent orphans; cap pairwise work so Fetch keeps Persist headroom.
+RECLUSTER_LOOKBACK_HOURS = 24.0
+CLUSTER_MAX_CANDIDATES = 1500
+CLUSTER_DEADLINE_S = 180.0
 
 import re
+import sys
+import time
 import uuid
 from datetime import datetime, timedelta, timezone
-from typing import Any
+from typing import Any, Callable
 
 
 
@@ -150,6 +158,10 @@ def assign_topic_ids(
     articles: list[dict[str, Any]],
     similarity_threshold: float | None = None,
     window_hours: float = DEFAULT_WINDOW_HOURS,
+    *,
+    max_candidates: int | None = None,
+    deadline_s: float | None = None,
+    monotonic: Callable[[], float] = time.monotonic,
 ) -> list[dict[str, Any]]:
     """Assign topic_id to articles using greedy clustering.
     
@@ -158,7 +170,9 @@ def assign_topic_ids(
     - Articles with existing topic_id keep it (gone articles excluded from new merges)
     - Single articles still get a topic_id
     - Cross-source merging preferred
-    
+    - Pairwise work is newest-first up to `max_candidates` and/or `deadline_s`;
+      overflow candidates still get a singleton topic_id (not left null)
+
     Returns: List of articles with topic_id assigned
     """
     # Separate articles: active without topic_id (candidates) vs. others (keep as-is)
@@ -167,9 +181,28 @@ def assign_topic_ids(
     
     # Track topic_id assignments for candidates
     topic_assignments: dict[int, str] = {}  # index -> topic_id
-    
-    # Greedy clustering
+    work_n = len(candidates)
+    if max_candidates is not None and max_candidates >= 0:
+        work_n = min(work_n, max_candidates)
+    if work_n < len(candidates):
+        print(
+            f"WARN cluster: candidate cap {work_n}/{len(candidates)} "
+            "(newest-first; overflow get singleton topic_id)",
+            file=sys.stderr,
+        )
+
+    deadline_at: float | None = None
+    if deadline_s is not None and deadline_s > 0:
+        deadline_at = monotonic() + deadline_s
+    timed_out = False
+
+    # Greedy clustering (newest-first slice only)
     for i, article1 in enumerate(candidates):
+        if i >= work_n:
+            break
+        if deadline_at is not None and monotonic() >= deadline_at:
+            timed_out = True
+            break
         if i in topic_assignments:
             continue
         
@@ -187,9 +220,9 @@ def assign_topic_ids(
                 break
         
         if not merged:
-            # Check if merges with any unassigned articles ahead
+            # Check if merges with any unassigned articles ahead (in the work slice)
             cluster_members = [i]
-            for j in range(i + 1, len(candidates)):
+            for j in range(i + 1, work_n):
                 if j in topic_assignments:
                     continue
                 
@@ -206,7 +239,14 @@ def assign_topic_ids(
             topic_id = str(uuid.uuid4())
             for k in cluster_members:
                 topic_assignments[k] = topic_id
-    
+
+    if timed_out:
+        print(
+            f"WARN cluster: deadline {deadline_s:.0f}s reached; "
+            "remaining candidates get singleton topic_id",
+            file=sys.stderr,
+        )
+
     # Apply topic_id to candidates
     result_candidates = []
     for i, article in enumerate(candidates):

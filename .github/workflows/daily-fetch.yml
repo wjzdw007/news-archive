@@ -16,10 +16,10 @@ concurrency:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    # 87 sequential RSS sources + enrich + 7-day brief previously hit the 30m
-    # GHA job cap (runs 39243037763 / 39340262352). Fetch now overlaps RSS and
-    # caps the RSS wave; brief has its own step timeout. 45m leaves room for
-    # Persist after a slow enrich without cancelling the job.
+    # 45m job cap. RSS is 8-way + 600s wave (runs 39535458475 / 39539744777
+    # finished RSS in ~7s then hung on full-archive O(n²) recluster inside
+    # this Fetch step). Cluster is now a 24h window + 1500-candidate cap.
+    # Brief has its own 8m step timeout so a hung LLM cannot skip Persist.
     timeout-minutes: 45
     steps:
       - name: Checkout

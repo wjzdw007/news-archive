@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import json
 import sqlite3
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from .clustering import parse_iso_datetime
 from .schema import Article
 
 SCHEMA_SQL = """
@@ -269,22 +270,84 @@ class Store:
         return [dict(row) for row in rows]
 
 
-    def clear_topic_ids_without_ok_brief(self) -> int:
+    def count_active_without_topic(self) -> int:
+        """Active rows that still need a topic_id (new inserts / prior overflow)."""
+        row = self._conn.execute(
+            """
+            SELECT COUNT(*) FROM articles
+            WHERE status = 'active'
+              AND (topic_id IS NULL OR topic_id = '')
+            """
+        ).fetchone()
+        return int(row[0]) if row else 0
+
+    def clear_topic_ids_without_ok_brief(
+        self,
+        *,
+        lookback_hours: float | None = None,
+        max_clear: int | None = None,
+        now: datetime | None = None,
+    ) -> int:
         """Null topic_id on active rows whose topic has no ok brief (enable recluster).
 
         Preserves topic_ids that already have an ok topic_briefs row.
+        When `lookback_hours` is set, only recent rows (published_at, else
+        fetched_at) are cleared so Fetch does not O(n²) the whole archive.
+        `max_clear` keeps the newest eligible rows (newest-first).
         Returns number of rows cleared.
         """
-        cur = self._conn.execute(
+        if lookback_hours is None and max_clear is None:
+            cur = self._conn.execute(
+                """
+                UPDATE articles
+                SET topic_id = NULL
+                WHERE status = 'active'
+                  AND topic_id IS NOT NULL
+                  AND topic_id NOT IN (
+                      SELECT topic_id FROM topic_briefs WHERE status = 'ok'
+                  )
+                """
+            )
+            self._conn.commit()
+            return cur.rowcount
+
+        if max_clear is not None and max_clear <= 0:
+            return 0
+
+        rows = self._conn.execute(
             """
-            UPDATE articles
-            SET topic_id = NULL
+            SELECT url, published_at, fetched_at
+            FROM articles
             WHERE status = 'active'
               AND topic_id IS NOT NULL
               AND topic_id NOT IN (
                   SELECT topic_id FROM topic_briefs WHERE status = 'ok'
               )
             """
+        ).fetchall()
+        clock = now if now is not None else datetime.now(timezone.utc)
+        cutoff = None
+        if lookback_hours is not None:
+            cutoff = clock - timedelta(hours=lookback_hours)
+        eligible: list[tuple[datetime, str]] = []
+        for row in rows:
+            dt = parse_iso_datetime(row["published_at"]) or parse_iso_datetime(
+                row["fetched_at"]
+            )
+            if dt is None:
+                continue
+            if cutoff is not None and dt < cutoff:
+                continue
+            eligible.append((dt, row["url"]))
+        eligible.sort(key=lambda item: item[0], reverse=True)
+        if max_clear is not None:
+            eligible = eligible[:max_clear]
+        urls = [(url,) for _dt, url in eligible]
+        if not urls:
+            return 0
+        cur = self._conn.executemany(
+            "UPDATE articles SET topic_id = NULL WHERE url = ?",
+            urls,
         )
         self._conn.commit()
         return cur.rowcount
@@ -293,17 +356,13 @@ class Store:
         """Batch update topic_ids for given URLs. Returns count of updated rows."""
         if not url_to_topic:
             return 0
-        
-        updated = 0
-        for url, topic_id in url_to_topic.items():
-            cur = self._conn.execute(
-                "UPDATE articles SET topic_id = ? WHERE url = ?",
-                (topic_id, url),
-            )
-            updated += cur.rowcount
-        
+
+        cur = self._conn.executemany(
+            "UPDATE articles SET topic_id = ? WHERE url = ?",
+            [(topic_id, url) for url, topic_id in url_to_topic.items()],
+        )
         self._conn.commit()
-        return updated
+        return cur.rowcount
 
 
     def get_articles_for_briefs(self) -> list[dict]:

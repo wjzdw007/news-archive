@@ -541,6 +541,241 @@ def test_recluster_clears_topic_without_ok_brief():
     print("✓ recluster clears topic_id without ok brief")
 
 
+def test_recluster_lookback_skips_old_orphans():
+    """Fetch must not reopen the whole archive — only the live window."""
+    import tempfile
+    from pathlib import Path
+
+    from news_archive.schema import Article
+    from news_archive.store import Store
+
+    now = datetime(2026, 10, 21, 4, 0, tzinfo=timezone.utc)
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        store.upsert(
+            Article(
+                title="Old orphan",
+                published_at=(now - timedelta(days=10)).isoformat(),
+                url="https://old.example/1",
+                summary="s",
+                source="36kr",
+                fetched_at=(now - timedelta(days=10)).isoformat(),
+                content_snapshot="c",
+                topic_id="old-orphan",
+            )
+        )
+        store.upsert(
+            Article(
+                title="Recent orphan",
+                published_at=(now - timedelta(hours=3)).isoformat(),
+                url="https://new.example/1",
+                summary="s",
+                source="bbc_world",
+                fetched_at=(now - timedelta(hours=3)).isoformat(),
+                content_snapshot="c",
+                topic_id="recent-orphan",
+            )
+        )
+        n = store.clear_topic_ids_without_ok_brief(lookback_hours=24.0, now=now)
+        assert n == 1
+        old = store.get_article("https://old.example/1")
+        recent = store.get_article("https://new.example/1")
+        store.close()
+        assert old is not None and old["topic_id"] == "old-orphan"
+        assert recent is not None and recent["topic_id"] is None
+    print("✓ recluster lookback keeps old orphan topic_id")
+
+
+def test_recluster_max_clear_prefers_newest():
+    import tempfile
+    from pathlib import Path
+
+    from news_archive.schema import Article
+    from news_archive.store import Store
+
+    now = datetime(2026, 10, 21, 4, 0, tzinfo=timezone.utc)
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        for i, hours_ago in enumerate((2, 5, 8)):
+            store.upsert(
+                Article(
+                    title=f"Orphan {i}",
+                    published_at=(now - timedelta(hours=hours_ago)).isoformat(),
+                    url=f"https://cap.example/{i}",
+                    summary="s",
+                    source="36kr",
+                    fetched_at=(now - timedelta(hours=hours_ago)).isoformat(),
+                    content_snapshot="c",
+                    topic_id=f"orphan-{i}",
+                )
+            )
+        n = store.clear_topic_ids_without_ok_brief(
+            lookback_hours=24.0, max_clear=2, now=now
+        )
+        assert n == 2
+        assert store.get_article("https://cap.example/0")["topic_id"] is None
+        assert store.get_article("https://cap.example/1")["topic_id"] is None
+        assert store.get_article("https://cap.example/2")["topic_id"] == "orphan-2"
+        store.close()
+    print("✓ recluster max_clear keeps older of the window")
+
+
+def test_assign_topic_ids_caps_candidates_newest_first():
+    """Overflow still gets a singleton topic_id; pairwise work stays bounded."""
+    base = datetime(2026, 10, 21, 12, 0, tzinfo=timezone.utc)
+    articles = []
+    for i in range(5):
+        articles.append(
+            {
+                "url": f"https://cap.example/{i}",
+                "title": f"Unrelated headline {i} xyz{i}",
+                "published_at": (base - timedelta(hours=i)).isoformat(),
+                "source": f"src{i}",
+                "status": "active",
+            }
+        )
+    result = assign_topic_ids(articles, max_candidates=2)
+    by_url = {a["url"]: a["topic_id"] for a in result}
+    assert all(by_url[f"https://cap.example/{i}"] for i in range(5))
+    # Newest-first pair (0,1) is the only pairwise slice; 2–4 are singletons.
+    assert by_url["https://cap.example/2"] != by_url["https://cap.example/3"]
+    print("✓ assign_topic_ids caps pairwise candidates")
+
+
+def test_assign_topic_ids_deadline_assigns_singletons():
+    articles = [
+        {
+            "url": "https://deadline.example/a",
+            "title": "Alpha story about markets",
+            "published_at": "2026-10-21T12:00:00+00:00",
+            "source": "36kr",
+            "status": "active",
+        },
+        {
+            "url": "https://deadline.example/b",
+            "title": "Beta story about rockets",
+            "published_at": "2026-10-21T12:10:00+00:00",
+            "source": "tmtpost",
+            "status": "active",
+        },
+    ]
+    clock = {"n": 0}
+    values = [0.0, 100.0]
+
+    def mono() -> float:
+        i = min(clock["n"], len(values) - 1)
+        clock["n"] += 1
+        return values[i]
+
+    result = assign_topic_ids(articles, deadline_s=50.0, monotonic=mono)
+    ids = {a["topic_id"] for a in result}
+    assert all(a.get("topic_id") for a in result)
+    assert len(ids) == 2
+    print("✓ assign_topic_ids deadline still assigns singleton topic_ids")
+
+
+def test_cli_windowed_recluster_keeps_old_topics_and_inserts():
+    """Full Fetch path: inserts/dedupe unchanged; old orphans not cleared."""
+    import io
+    import json
+    import tempfile
+    from pathlib import Path
+    from unittest.mock import patch
+
+    from news_archive.schema import Article
+    from news_archive.sources import Source
+    from news_archive.store import Store
+
+    now = datetime(2026, 10, 21, 4, 0, tzinfo=timezone.utc)
+    src = Source(
+        id="abc_news",
+        name="ABC News",
+        feed_url="https://abcnews.go.com/abcnews/topstories",
+        category="综合",
+        role="primary",
+    )
+    rss = b"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel><title>ABC</title>
+<item>
+  <title>Fresh ABC headline</title>
+  <link>https://abcnews.go.com/fresh-1</link>
+  <description>Non-empty summary so thin-skip does not apply.</description>
+  <pubDate>Wed, 21 Oct 2026 03:30:00 GMT</pubDate>
+</item>
+</channel></rss>"""
+
+    class _Resp:
+        def __init__(self, content: bytes):
+            self.content = content
+
+        def raise_for_status(self) -> None:
+            return None
+
+    class _Client:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return False
+
+        def get(self, url: str, **_kwargs):
+            return _Resp(rss)
+
+    with tempfile.TemporaryDirectory() as tmp:
+        db_path = Path(tmp) / "archive.sqlite3"
+        store = Store(db_path)
+        for i in range(40):
+            store.upsert(
+                Article(
+                    title=f"Old archive row {i}",
+                    published_at=(now - timedelta(days=8, hours=i)).isoformat(),
+                    url=f"https://old.example/{i}",
+                    summary="old summary",
+                    source="36kr",
+                    fetched_at=(now - timedelta(days=8)).isoformat(),
+                    content_snapshot="old body",
+                    topic_id=f"old-topic-{i}",
+                )
+            )
+        store.close()
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with (
+            patch("news_archive.fetch.httpx.Client", _Client),
+            patch("news_archive.fetch.time.sleep"),
+            patch("news_archive.cli.SOURCES", (src,)),
+            patch("news_archive.cli.enrich_store", return_value={"fetched": 0}),
+            patch("sys.stdout", stdout),
+            patch("sys.stderr", stderr),
+        ):
+            from news_archive.cli import main
+
+            rc = main(["--db", str(db_path), "--json"])
+
+        assert rc == 0, stderr.getvalue()
+        stats = json.loads(stdout.getvalue())
+        assert stats["inserted"] == 1
+        assert stats["recluster_cleared"] == 0
+        assert stats["cluster_candidates"] == 1
+        assert stats["timings"]["cluster_s"] < 2.0
+        assert "INFO fetch_phase cluster_s=" in stderr.getvalue()
+
+        store = Store(db_path)
+        fresh = store.get_article("https://abcnews.go.com/fresh-1")
+        old = store.get_article("https://old.example/0")
+        store.close()
+        assert fresh is not None
+        assert fresh["title"] == "Fresh ABC headline"
+        assert fresh["topic_id"]
+        assert old is not None
+        assert old["topic_id"] == "old-topic-0"
+    print("✓ CLI windowed recluster keeps old topics and still inserts")
+
+
 if __name__ == "__main__":
     # Run all acceptance tests
     print("Running topic_id clustering acceptance tests...\n")
@@ -566,5 +801,10 @@ if __name__ == "__main__":
     test_en_0_5_merges_gold_russia_journalist_pair()
     test_cn_threshold_stays_0_7()
     test_recluster_clears_topic_without_ok_brief()
+    test_recluster_lookback_skips_old_orphans()
+    test_recluster_max_clear_prefers_newest()
+    test_assign_topic_ids_caps_candidates_newest_first()
+    test_assign_topic_ids_deadline_assigns_singletons()
+    test_cli_windowed_recluster_keeps_old_topics_and_inserts()
     
     print("\n✅ All tests PASSED!")
