@@ -639,6 +639,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="yonhap",
+        name="Yonhap English",
+        feed_url="https://en.yna.co.kr/RSS/news.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="anadolu_world",
+        name="Anadolu Agency World",
+        feed_url="https://www.aa.com.tr/en/rss/default?cat=world",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="independent_world",
+        name="Independent World",
+        feed_url="https://www.independent.co.uk/news/world/rss",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
