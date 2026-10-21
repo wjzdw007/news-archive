@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（110 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（113 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -116,6 +116,9 @@
 | `nyt_movies` | NYT Movies | https://rss.nytimes.com/services/xml/rss/nyt/Movies.xml | primary |
 | `guardian_music` | Guardian Music | https://www.theguardian.com/music/rss | primary |
 | `guardian_stage` | Guardian Stage | https://www.theguardian.com/stage/rss | primary |
+| `nyt_books` | NYT Books | https://rss.nytimes.com/services/xml/rss/nyt/Books.xml | primary |
+| `guardian_books` | Guardian Books | https://www.theguardian.com/books/rss | primary |
+| `npr_arts` | NPR Arts | https://feeds.npr.org/1008/rss.xml | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
