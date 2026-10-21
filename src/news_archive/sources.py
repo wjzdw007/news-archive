@@ -765,6 +765,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="nyt_movies",
+        name="NYT Movies",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/Movies.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="guardian_music",
+        name="Guardian Music",
+        feed_url="https://www.theguardian.com/music/rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="guardian_stage",
+        name="Guardian Stage",
+        feed_url="https://www.theguardian.com/stage/rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
