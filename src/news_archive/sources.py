@@ -681,6 +681,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="scmp_business",
+        name="SCMP Business",
+        feed_url="https://www.scmp.com/rss/92/feed",
+        category="财经",
+        role="primary",
+    ),
+    Source(
+        id="rfi_asia",
+        name="RFI Asia-Pacific",
+        feed_url="https://www.rfi.fr/en/tag/asia/rss",
+        category="国际·亚太",
+        role="primary",
+    ),
+    Source(
+        id="theconversation",
+        name="The Conversation",
+        feed_url="https://theconversation.com/articles.atom",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
