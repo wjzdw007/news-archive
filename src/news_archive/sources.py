@@ -702,6 +702,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="nyt_arts",
+        name="NYT Arts",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/Arts.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="guardian_sport",
+        name="Guardian Sport",
+        feed_url="https://www.theguardian.com/sport/rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="intercept",
+        name="The Intercept",
+        feed_url="https://theintercept.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
