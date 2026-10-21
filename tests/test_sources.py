@@ -857,14 +857,74 @@ _SEMAFOR_FRANCE24_AMERICAS_MIDDLEEASTEYE_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 95
+# CEO-approved SCMP Business / RFI Asia-Pacific / The Conversation
+# RSS primaries (batch30). These three are the new adds.
+# scmp_business is a same-outlet SCMP section distinct from
+# existing scmp=/rss/2 Hong Kong, scmp_asia=/rss/3, scmp_china=
+# /rss/4. Locked official scmp.com/rss Business section
+# https://www.scmp.com/rss/92/feed (channel title "Business -
+# South China Morning Post"). rfi_asia is a same-outlet RFI
+# English Asia section distinct from existing rfi_en=
+# https://www.rfi.fr/en/rss. Preferred
+# https://www.rfi.fr/en/asia-pacific/rss is HTTP 200 but
+# redirects 1:1 to https://www.rfi.fr/en/international/rss
+# ("World news and headlines - RFI"; same dump as
+# /en/europe|/en/americas|/en/middle-east) — not an
+# Asia-Pacific section (not empty, not 403; section-identity
+# failure). Official same-outlet English Asia alternate:
+# https://www.rfi.fr/en/tag/asia/rss (channel title "Asia:
+# news, podcasts, videos and analysis - RFI"; 0 overlap with
+# rfi_en / international). French /fr/asie-pacifique/rss
+# exists but is a different language than rfi_en / the
+# preferred English URL — not used. theconversation is a new
+# source family. Locked official
+# https://theconversation.com/articles.atom (feed title
+# "English – The Conversation"; official global/us/au/uk
+# edition atoms also 200 / 0 empty-desc — pick one official
+# id only; preferred articles.atom kept). forbes_innovation /
+# propublica stay unregistered (unused backups; mention only).
+# france24_asia / al_monitor stay unregistered (replaced in
+# batch29; not live CAP slots; not registered as backups).
+# independent_world stays unregistered (replaced in batch28;
+# 429). cbs_world stays unregistered (known inserted0 vs
+# existing cbs_news). nikkei / indian_express stay
+# unregistered (empty desc — product skipped). nikkei_asia
+# stays unregistered (title+link only). nyt_world_asia stays
+# unregistered (replaced in batch20). NEWS_SOURCE_CAP display
+# stays 6 — no CAP code change. No X this batch.
+_SCMP_BUSINESS_RFI_ASIA_THECONVERSATION_PRIMARY = {
+    "scmp_business": {
+        "name": "SCMP Business",
+        "feed_url": "https://www.scmp.com/rss/92/feed",
+        "category": "财经",
+    },
+    "rfi_asia": {
+        "name": "RFI Asia-Pacific",
+        "feed_url": "https://www.rfi.fr/en/tag/asia/rss",
+        "category": "国际·亚太",
+    },
+    "theconversation": {
+        "name": "The Conversation",
+        "feed_url": "https://theconversation.com/articles.atom",
+        "category": "综合",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 98
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en) and Atom fallbacks for live XML probes.
 _RSS10_ITEM = "{http://purl.org/rss/1.0/}item"
 _RSS10_DESC = "{http://purl.org/rss/1.0/}description"
-_ATOM_ENTRY = "{http://www.w3.org/2005/Atom}entry"
-_ATOM_SUMMARY = "{http://www.w3.org/2005/Atom}summary"
+_ATOM_NS = "{http://www.w3.org/2005/Atom}"
+_ATOM_ENTRY = f"{_ATOM_NS}entry"
+_ATOM_SUMMARY = f"{_ATOM_NS}summary"
+_ATOM_CONTENT = f"{_ATOM_NS}content"
+_ATOM_TITLE = f"{_ATOM_NS}title"
+_ATOM_LINK = f"{_ATOM_NS}link"
+_ATOM_PUBLISHED = f"{_ATOM_NS}published"
+_ATOM_UPDATED = f"{_ATOM_NS}updated"
+_ATOM_ID = f"{_ATOM_NS}id"
 
 
 def _decode_feed_body(body: bytes) -> bytes:
@@ -890,6 +950,45 @@ def _item_description(item: ET.Element) -> str:
         or (item.findtext(_RSS10_DESC) or "").strip()
         or (item.findtext("summary") or "").strip()
         or (item.findtext(_ATOM_SUMMARY) or "").strip()
+        or (item.findtext(_ATOM_CONTENT) or "").strip()
+    )
+
+
+def _item_title(item: ET.Element) -> str:
+    return (
+        (item.findtext("title") or "").strip()
+        or (item.findtext(_ATOM_TITLE) or "").strip()
+    )
+
+
+def _item_link(item: ET.Element) -> str:
+    text = (item.findtext("link") or "").strip()
+    if text:
+        return text
+    alternate = ""
+    first_href = ""
+    for el in [*item.findall("link"), *item.findall(_ATOM_LINK)]:
+        href = (el.get("href") or "").strip() or (el.text or "").strip()
+        if not href:
+            continue
+        if not first_href:
+            first_href = href
+        rel = el.get("rel") or "alternate"
+        if rel == "alternate":
+            alternate = href
+            break
+    if alternate or first_href:
+        return alternate or first_href
+    return (item.findtext("guid") or item.findtext(_ATOM_ID) or "").strip()
+
+
+def _item_published(item: ET.Element) -> str:
+    return (
+        (item.findtext("pubDate") or "").strip()
+        or (item.findtext("published") or "").strip()
+        or (item.findtext("updated") or "").strip()
+        or (item.findtext(_ATOM_PUBLISHED) or "").strip()
+        or (item.findtext(_ATOM_UPDATED) or "").strip()
     )
 
 
@@ -3427,6 +3526,120 @@ def test_semafor_france24_americas_middleeasteye_feeds_live_http_200():
         )
 
 
+def test_scmp_business_rfi_asia_theconversation_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "scmp_business" in by_id
+    assert by_id["scmp_business"].feed_url == "https://www.scmp.com/rss/92/feed"
+    assert "rfi_asia" in by_id
+    assert by_id["rfi_asia"].feed_url == "https://www.rfi.fr/en/tag/asia/rss"
+    assert "theconversation" in by_id
+    assert by_id["theconversation"].feed_url == (
+        "https://theconversation.com/articles.atom"
+    )
+    assert "scmp" in by_id
+    assert "scmp_asia" in by_id
+    assert "scmp_china" in by_id
+    assert "rfi_en" in by_id
+    assert "bbc_asia" in by_id
+    assert "japan_times" in by_id
+    assert "cna_asia" in by_id
+    assert "semafor" in by_id
+    assert "france24_americas" in by_id
+    assert "middleeasteye" in by_id
+    assert "guardian_business" in by_id
+    assert "bbc_business" in by_id
+    assert "nyt_business" in by_id
+    assert by_id["scmp_business"].feed_url != by_id["scmp"].feed_url
+    assert by_id["scmp_business"].feed_url != by_id["scmp_asia"].feed_url
+    assert by_id["scmp_business"].feed_url != by_id["scmp_china"].feed_url
+    assert by_id["scmp_business"].feed_url != "https://www.scmp.com/rss/2/feed"
+    assert by_id["scmp_business"].feed_url != "https://www.scmp.com/rss/3/feed"
+    assert by_id["scmp_business"].feed_url != "https://www.scmp.com/rss/4/feed"
+    assert by_id["scmp_business"].feed_url != by_id["guardian_business"].feed_url
+    assert by_id["scmp_business"].feed_url != by_id["bbc_business"].feed_url
+    assert by_id["scmp_business"].feed_url != by_id["nyt_business"].feed_url
+    assert by_id["rfi_asia"].feed_url != by_id["rfi_en"].feed_url
+    assert by_id["rfi_asia"].feed_url != "https://www.rfi.fr/en/rss"
+    assert by_id["rfi_asia"].feed_url != "https://www.rfi.fr/en/asia-pacific/rss"
+    assert by_id["rfi_asia"].feed_url != "https://www.rfi.fr/en/international/rss"
+    assert by_id["rfi_asia"].feed_url != by_id["bbc_asia"].feed_url
+    assert by_id["rfi_asia"].feed_url != by_id["scmp_asia"].feed_url
+    assert by_id["rfi_asia"].feed_url != by_id["japan_times"].feed_url
+    assert by_id["rfi_asia"].feed_url != by_id["cna_asia"].feed_url
+    assert by_id["theconversation"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["theconversation"].feed_url != by_id["bbc_science"].feed_url
+    assert by_id["theconversation"].feed_url != by_id["mit_tr"].feed_url
+    assert by_id["scmp_business"].feed_url != by_id["rfi_asia"].feed_url
+    assert by_id["scmp_business"].feed_url != by_id["theconversation"].feed_url
+    assert by_id["rfi_asia"].feed_url != by_id["theconversation"].feed_url
+    # Unused backups / replaced / title+link-only feeds stay unregistered.
+    # forbes_innovation / propublica are unused backups — mention only.
+    # france24_asia / al_monitor are the #91 daily-fetch RED slots —
+    # do not keep live (not registered as backups).
+    # independent_world is the daily-fetch RED slot — do not keep live.
+    # cbs_world is the known inserted0 vs existing cbs_news — do not add.
+    # nikkei / indian_express are empty-desc — product skipped.
+    assert "forbes_innovation" not in by_id
+    assert "propublica" not in by_id
+    assert "cbs_world" not in by_id
+    assert "independent_world" not in by_id
+    assert "france24_asia" not in by_id
+    assert "al_monitor" not in by_id
+    assert "indian_express" not in by_id
+    assert "nikkei" not in by_id
+    assert "nyt_world_asia" not in by_id
+    assert "nikkei_asia" not in by_id
+    for source_id, expected in _SCMP_BUSINESS_RFI_ASIA_THECONVERSATION_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_scmp_business_rfi_asia_theconversation_feeds_live_http_200():
+    """Hit the three new feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _SCMP_BUSINESS_RFI_ASIA_THECONVERSATION_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # Atom (theconversation) uses namespaced title / link@href /
+        # published; RSS 2.0 (scmp_business / rfi_asia) uses the
+        # un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0. Product lock
+        # requires non-empty RSS description/summary on these feeds.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -3459,6 +3672,7 @@ if __name__ == "__main__":
     test_cbc_cna_elpais_primaries_registered()
     test_yonhap_anadolu_trt_primaries_registered()
     test_semafor_france24_americas_middleeasteye_primaries_registered()
+    test_scmp_business_rfi_asia_theconversation_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -3487,4 +3701,5 @@ if __name__ == "__main__":
     test_cbc_cna_elpais_feeds_live_http_200()
     test_yonhap_anadolu_trt_feeds_live_http_200()
     test_semafor_france24_americas_middleeasteye_feeds_live_http_200()
+    test_scmp_business_rfi_asia_theconversation_feeds_live_http_200()
     print("✓ source registry tests PASSED")
