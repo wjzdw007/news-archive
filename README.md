@@ -99,8 +99,8 @@
 | `anadolu_world` | Anadolu Agency World | https://www.aa.com.tr/en/rss/default?cat=world | primary |
 | `trt_world` | TRT World | https://www.trtworld.com/feed/rss.xml | primary |
 | `semafor` | Semafor | https://www.semafor.com/rss.xml | primary |
-| `france24_asia` | France 24 Asia | https://www.france24.com/en/asia-pacific/rss | primary |
-| `al_monitor` | Al-Monitor | https://www.al-monitor.com/rss | primary |
+| `france24_americas` | France 24 Americas | https://www.france24.com/en/americas/rss | primary |
+| `middleeasteye` | Middle East Eye | https://www.middleeasteye.net/rss | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema

@@ -787,12 +787,14 @@ _CBC_CNA_ELPAIS_PRIMARY = {
 # <link>/<guid> `/article/...` resolved against the feed URL at
 # ingest; no france24 URL swap — empty-desc is 0). 
 # independent_world is unregistered (replaced). semafor /
-# france24_asia / al_monitor are batch29 (primaries; semafor
-# promoted from unused backup). cbs_world stays unregistered
-# (known inserted0 vs existing cbs_news). nikkei_asia stays
-# unregistered (title+link only). nyt_world_asia stays
-# unregistered (replaced in batch20). NEWS_SOURCE_CAP display
-# stays 6 — no CAP code change. No X this batch.
+# france24_americas / middleeasteye are batch29 (primaries;
+# france24_americas / middleeasteye replaced france24_asia /
+# al_monitor after daily-fetch inserted=0). cbs_world stays
+# unregistered (known inserted0 vs existing cbs_news).
+# nikkei_asia stays unregistered (title+link only).
+# nyt_world_asia stays unregistered (replaced in batch20).
+# NEWS_SOURCE_CAP display stays 6 — no CAP code change.
+# No X this batch.
 _YONHAP_ANADOLU_TRT_PRIMARY = {
     "yonhap": {
         "name": "Yonhap English",
@@ -811,44 +813,46 @@ _YONHAP_ANADOLU_TRT_PRIMARY = {
     },
 }
 
-# CEO-approved Semafor / France 24 Asia / Al-Monitor RSS primaries
-# (batch29). These three are the new adds. semafor was an unused
-# backup in batch28 and is now promoted (it was not already
-# registered). france24_asia is a new same-outlet section using
-# official English Asia-Pacific RSS (distinct from france24_en
-# Europe). al_monitor is a new source family. Locked Semafor
-# official https://www.semafor.com/rss.xml kept: HTTP 200 / 227
-# items / 0 empty descriptions (/feed and /rss are 404; no
-# france24 URL swap). Locked official France 24 Asia-Pacific
-# https://www.france24.com/en/asia-pacific/rss kept: HTTP 200 /
-# 30 items / 0 empty descriptions (/en/asia/rss is 404; no
-# france24 empty-desc URL swap — empty-desc is 0). Locked
-# official Al-Monitor https://www.al-monitor.com/rss kept:
-# HTTP 200 / 20 items / 0 empty descriptions (/feed and
-# /rss.xml redirect to /rss). france24_americas and
-# middleeasteye stay unregistered (unused backups; not live CAP
-# slots — probed only). independent_world stays unregistered
-# (replaced in batch28; 429). cbs_world stays unregistered
-# (known inserted0 vs existing cbs_news). nikkei /
-# indian_express stay unregistered (empty desc — product
-# skipped). nikkei_asia stays unregistered (title+link only).
-# nyt_world_asia stays unregistered (replaced in batch20).
-# NEWS_SOURCE_CAP display stays 6 — no CAP code change.
-# No X this batch.
-_SEMAFOR_FRANCE24_ASIA_AL_MONITOR_PRIMARY = {
+# CEO-approved Semafor / France 24 Americas / Middle East Eye RSS
+# primaries (batch29). semafor stays live (daily-fetch inserted
+# 30/30). france24_americas / middleeasteye replace
+# france24_asia / al_monitor after daily-fetch #91 RED
+# (france24_asia fetched 0 / inserted 0; al_monitor RSS
+# soft-fail HTTP 403 → inserted 0; CEO knife + thin-source
+# rule). france24_americas was an unused backup in #75 and is
+# now promoted as a primary (it was not already registered;
+# official English Americas RSS, distinct from france24_en
+# Europe). middleeasteye was an unused backup in #75 and is
+# now promoted (new source family; official
+# https://www.middleeasteye.net/rss). Locked Semafor official
+# https://www.semafor.com/rss.xml kept unchanged. Locked
+# official France 24 Americas
+# https://www.france24.com/en/americas/rss (no france24
+# empty-desc URL swap — empty-desc is 0). Locked official
+# Middle East Eye https://www.middleeasteye.net/rss.
+# france24_asia / al_monitor are unregistered (replaced; not
+# live CAP slots; not registered as backups).
+# independent_world stays unregistered (replaced in batch28;
+# 429). cbs_world stays unregistered (known inserted0 vs
+# existing cbs_news). nikkei / indian_express stay
+# unregistered (empty desc — product skipped). nikkei_asia
+# stays unregistered (title+link only). nyt_world_asia stays
+# unregistered (replaced in batch20). NEWS_SOURCE_CAP display
+# stays 6 — no CAP code change. No X this batch.
+_SEMAFOR_FRANCE24_AMERICAS_MIDDLEEASTEYE_PRIMARY = {
     "semafor": {
         "name": "Semafor",
         "feed_url": "https://www.semafor.com/rss.xml",
         "category": "国际",
     },
-    "france24_asia": {
-        "name": "France 24 Asia",
-        "feed_url": "https://www.france24.com/en/asia-pacific/rss",
+    "france24_americas": {
+        "name": "France 24 Americas",
+        "feed_url": "https://www.france24.com/en/americas/rss",
         "category": "国际",
     },
-    "al_monitor": {
-        "name": "Al-Monitor",
-        "feed_url": "https://www.al-monitor.com/rss",
+    "middleeasteye": {
+        "name": "Middle East Eye",
+        "feed_url": "https://www.middleeasteye.net/rss",
         "category": "国际",
     },
 }
@@ -3121,13 +3125,15 @@ def test_cbc_cna_elpais_primaries_registered():
     assert by_id["cna_asia"].feed_url != by_id["elpais_en"].feed_url
     # yonhap / anadolu_world / trt_world are batch28 (primaries;
     # trt_world replaced independent_world after daily-fetch
-    # inserted=0). semafor / france24_asia / al_monitor are
-    # batch29 (primaries, not unused backups). Unused backups /
-    # replaced / title+link-only feeds stay unregistered.
+    # inserted=0). semafor / france24_americas / middleeasteye
+    # are batch29 (primaries; france24_americas / middleeasteye
+    # replaced france24_asia / al_monitor after daily-fetch
+    # inserted=0). Unused backups / replaced / title+link-only
+    # feeds stay unregistered.
     assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
-    assert "france24_americas" not in by_id
-    assert "middleeasteye" not in by_id
+    assert "france24_asia" not in by_id
+    assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
     assert "nyt_world_asia" not in by_id
@@ -3243,13 +3249,14 @@ def test_yonhap_anadolu_trt_primaries_registered():
     # Unused backups / replaced / title+link-only feeds stay unregistered.
     # independent_world is the daily-fetch RED slot — do not keep live.
     # cbs_world is the known inserted0 vs existing cbs_news — do not add.
-    # france24_americas / middleeasteye stay unused backups (not live CAP).
+    # france24_asia / al_monitor are the #91 daily-fetch RED slots —
+    # do not keep live (not registered as backups).
     # nikkei / indian_express stay unregistered (empty desc — product skipped).
-    # semafor / france24_asia / al_monitor are batch29 (primaries).
+    # semafor / france24_americas / middleeasteye are batch29 (primaries).
     assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
-    assert "france24_americas" not in by_id
-    assert "middleeasteye" not in by_id
+    assert "france24_asia" not in by_id
+    assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
     assert "nyt_world_asia" not in by_id
@@ -3306,22 +3313,23 @@ def test_yonhap_anadolu_trt_feeds_live_http_200():
         )
 
 
-def test_semafor_france24_asia_al_monitor_primaries_registered():
+def test_semafor_france24_americas_middleeasteye_primaries_registered():
     by_id = {s.id: s for s in SOURCES}
     assert "semafor" in by_id
     assert by_id["semafor"].feed_url == "https://www.semafor.com/rss.xml"
-    assert "france24_asia" in by_id
-    assert by_id["france24_asia"].feed_url == (
-        "https://www.france24.com/en/asia-pacific/rss"
+    assert "france24_americas" in by_id
+    assert by_id["france24_americas"].feed_url == (
+        "https://www.france24.com/en/americas/rss"
     )
-    assert "al_monitor" in by_id
-    assert by_id["al_monitor"].feed_url == "https://www.al-monitor.com/rss"
+    assert "middleeasteye" in by_id
+    assert by_id["middleeasteye"].feed_url == "https://www.middleeasteye.net/rss"
     assert "france24_en" in by_id
     assert "guardian_world" in by_id
+    assert "guardian_americas" in by_id
     assert "bbc_world" in by_id
     assert "nyt_world" in by_id
     assert "aljazeera" in by_id
-    assert "bbc_asia" in by_id
+    assert "bbc_latin_america" in by_id
     assert "bbc_middle_east" in by_id
     assert "guardian_middle_east" in by_id
     assert "cna_asia" in by_id
@@ -3334,34 +3342,40 @@ def test_semafor_france24_asia_al_monitor_primaries_registered():
     assert by_id["semafor"].feed_url != by_id["nyt_world"].feed_url
     assert by_id["semafor"].feed_url != by_id["axios"].feed_url
     assert by_id["semafor"].feed_url != by_id["trt_world"].feed_url
-    assert by_id["france24_asia"].feed_url != by_id["france24_en"].feed_url
-    assert by_id["france24_asia"].feed_url != "https://www.france24.com/en/rss"
-    assert by_id["france24_asia"].feed_url != "https://www.france24.com/en/europe/rss"
-    assert by_id["france24_asia"].feed_url != by_id["bbc_asia"].feed_url
-    assert by_id["france24_asia"].feed_url != by_id["cna_asia"].feed_url
-    assert by_id["france24_asia"].feed_url != by_id["scmp_asia"].feed_url
-    assert by_id["al_monitor"].feed_url != by_id["bbc_middle_east"].feed_url
-    assert by_id["al_monitor"].feed_url != by_id["guardian_middle_east"].feed_url
-    assert by_id["al_monitor"].feed_url != by_id["aljazeera"].feed_url
-    assert by_id["al_monitor"].feed_url != by_id["trt_world"].feed_url
-    assert by_id["al_monitor"].feed_url != by_id["anadolu_world"].feed_url
-    assert by_id["semafor"].feed_url != by_id["france24_asia"].feed_url
-    assert by_id["semafor"].feed_url != by_id["al_monitor"].feed_url
-    assert by_id["france24_asia"].feed_url != by_id["al_monitor"].feed_url
+    assert by_id["france24_americas"].feed_url != by_id["france24_en"].feed_url
+    assert by_id["france24_americas"].feed_url != "https://www.france24.com/en/rss"
+    assert by_id["france24_americas"].feed_url != (
+        "https://www.france24.com/en/europe/rss"
+    )
+    assert by_id["france24_americas"].feed_url != (
+        "https://www.france24.com/en/asia-pacific/rss"
+    )
+    assert by_id["france24_americas"].feed_url != by_id["guardian_americas"].feed_url
+    assert by_id["france24_americas"].feed_url != by_id["bbc_latin_america"].feed_url
+    assert by_id["france24_americas"].feed_url != by_id["bbc_us_canada"].feed_url
+    assert by_id["middleeasteye"].feed_url != by_id["bbc_middle_east"].feed_url
+    assert by_id["middleeasteye"].feed_url != by_id["guardian_middle_east"].feed_url
+    assert by_id["middleeasteye"].feed_url != by_id["aljazeera"].feed_url
+    assert by_id["middleeasteye"].feed_url != by_id["trt_world"].feed_url
+    assert by_id["middleeasteye"].feed_url != by_id["anadolu_world"].feed_url
+    assert by_id["semafor"].feed_url != by_id["france24_americas"].feed_url
+    assert by_id["semafor"].feed_url != by_id["middleeasteye"].feed_url
+    assert by_id["france24_americas"].feed_url != by_id["middleeasteye"].feed_url
     # Unused backups / replaced / title+link-only feeds stay unregistered.
-    # france24_americas / middleeasteye are unused backups — not live CAP.
+    # france24_asia / al_monitor are the #91 daily-fetch RED slots —
+    # do not keep live (not registered as backups).
     # independent_world is the daily-fetch RED slot — do not keep live.
     # cbs_world is the known inserted0 vs existing cbs_news — do not add.
     # nikkei / indian_express are empty-desc — product skipped.
     assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
-    assert "france24_americas" not in by_id
-    assert "middleeasteye" not in by_id
+    assert "france24_asia" not in by_id
+    assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
     assert "nyt_world_asia" not in by_id
     assert "nikkei_asia" not in by_id
-    for source_id, expected in _SEMAFOR_FRANCE24_ASIA_AL_MONITOR_PRIMARY.items():
+    for source_id, expected in _SEMAFOR_FRANCE24_AMERICAS_MIDDLEEASTEYE_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
         assert source.role == "primary"
@@ -3370,10 +3384,10 @@ def test_semafor_france24_asia_al_monitor_primaries_registered():
         assert source.category == expected["category"]
 
 
-def test_semafor_france24_asia_al_monitor_feeds_live_http_200():
-    """Hit the three new feeds with the same headers fetch_source sends (not stubs)."""
+def test_semafor_france24_americas_middleeasteye_feeds_live_http_200():
+    """Hit the three live feeds with the same headers fetch_source sends (not stubs)."""
     by_id = {s.id: s for s in SOURCES}
-    for source_id in _SEMAFOR_FRANCE24_ASIA_AL_MONITOR_PRIMARY:
+    for source_id in _SEMAFOR_FRANCE24_AMERICAS_MIDDLEEASTEYE_PRIMARY:
         source = by_id[source_id]
         request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
         try:
@@ -3444,7 +3458,7 @@ if __name__ == "__main__":
     test_csmonitor_latimes_hindu_primaries_registered()
     test_cbc_cna_elpais_primaries_registered()
     test_yonhap_anadolu_trt_primaries_registered()
-    test_semafor_france24_asia_al_monitor_primaries_registered()
+    test_semafor_france24_americas_middleeasteye_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -3472,5 +3486,5 @@ if __name__ == "__main__":
     test_csmonitor_latimes_hindu_feeds_live_http_200()
     test_cbc_cna_elpais_feeds_live_http_200()
     test_yonhap_anadolu_trt_feeds_live_http_200()
-    test_semafor_france24_asia_al_monitor_feeds_live_http_200()
+    test_semafor_france24_americas_middleeasteye_feeds_live_http_200()
     print("✓ source registry tests PASSED")
