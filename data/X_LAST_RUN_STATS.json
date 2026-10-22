@@ -27,6 +27,8 @@
     "politico"
   ],
   "mode": "live",
-  "status": "failed",
-  "error": "invalid JSON response: Expecting value: line 1 column 1 (char 0)"
+  "inserted": 22,
+  "gone": 0,
+  "seen": 22,
+  "status": "ok"
 }
