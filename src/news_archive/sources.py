@@ -828,6 +828,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="nyt_travel",
+        name="NYT Travel",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/Travel.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="guardian_fashion",
+        name="Guardian Fashion",
+        feed_url="https://www.theguardian.com/fashion/rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="npr_business",
+        name="NPR Business",
+        feed_url="https://feeds.npr.org/1006/rss.xml",
+        category="财经",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
