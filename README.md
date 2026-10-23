@@ -124,7 +124,7 @@
 | `npr_science` | NPR Science | https://feeds.npr.org/1007/rss.xml | primary |
 | `nyt_travel` | NYT Travel | https://rss.nytimes.com/services/xml/rss/nyt/Travel.xml | primary |
 | `guardian_fashion` | Guardian Fashion | https://www.theguardian.com/fashion/rss | primary |
-| `npr_business` | NPR Business | https://feeds.npr.org/1006/rss.xml | primary |
+| `nyt_economy` | NYT Economy | https://rss.nytimes.com/services/xml/rss/nyt/Economy.xml | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema

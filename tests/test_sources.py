@@ -1186,8 +1186,8 @@ _NYT_MOVIES_GUARDIAN_MUSIC_GUARDIAN_STAGE_PRIMARY = {
 # thin-source floor, still registered as live).
 # nyt_food / guardian_tv / npr_science are batch36
 # (promoted from unused backups). nyt_travel /
-# guardian_fashion / npr_business are batch37
-# (promoted from unused backups).
+# guardian_fashion / nyt_economy are batch37
+# (nyt_economy hard-swapped in for npr_business).
 # france24_asia / al_monitor stay unregistered
 # (replaced in batch29; not live CAP slots; not
 # registered as backups). independent_world stays
@@ -1252,9 +1252,12 @@ _NYT_BOOKS_GUARDIAN_BOOKS_NPR_ARTS_PRIMARY = {
 # thin-source floor, still registered as live). npr_arts
 # stays in the registry (batch35 closed with it as
 # thin-source observe, not swapped). nyt_travel /
-# guardian_fashion / npr_business are batch37
-# (promoted from unused backups). Unused backups
-# list is empty this batch — do not invent next ids.
+# guardian_fashion / nyt_economy are batch37
+# (nyt_economy hard-swapped in for npr_business).
+# Unused backups list is empty this batch — do not
+# invent next ids / do not register unused live-diff
+# backups (cnbc_top / bloomberg_markets /
+# guardian_economics).
 # france24_asia / al_monitor stay unregistered
 # (replaced in batch29; not live CAP slots; not
 # registered as backups). independent_world stays
@@ -1287,15 +1290,17 @@ _NYT_FOOD_GUARDIAN_TV_NPR_SCIENCE_PRIMARY = {
     },
 }
 
-# CEO-approved NYT Travel / Guardian Fashion / NPR Business RSS
-# primaries (batch37). These three are the new adds.
-# nyt_travel is a same-outlet NYT section distinct from
-# existing nyt_world / nyt_technology / nyt_business /
+# CEO-approved NYT Travel / Guardian Fashion RSS primaries
+# (batch37) plus batch37 thin-source HARD SWAP: npr_business
+# (NPR 1006) removed because public fetch count <5; nyt_economy
+# registered in its place. nyt_travel / guardian_fashion stay
+# unchanged. nyt_travel is a same-outlet NYT section distinct
+# from existing nyt_world / nyt_technology / nyt_business /
 # nyt_science / nyt_climate / nyt_health / nyt_education /
 # nyt_politics / nyt_us / nyt_europe / nyt_upshot /
 # nyt_africa / nyt_arts / nyt_opinion / nyt_movies /
-# nyt_books / nyt_food. Locked official nyt_* feed
-# pattern
+# nyt_books / nyt_food / nyt_economy. Locked official nyt_*
+# feed pattern
 # https://rss.nytimes.com/services/xml/rss/nyt/Travel.xml
 # (channel title "NYT > Travel"). TravelGuide.xml and
 # Escapes.xml are both 404 — do not use those.
@@ -1314,17 +1319,18 @@ _NYT_FOOD_GUARDIAN_TV_NPR_SCIENCE_PRIMARY = {
 # https://www.theguardian.com/fashion/rss (channel
 # title "Fashion | The Guardian"; /uk/fashion/rss and
 # /us/fashion/rss are 404 — not a geo-edition swap).
-# npr_business is a same-outlet NPR topic distinct from
-# existing npr_news (1001) / npr_world (1004) /
-# npr_arts (1008) / npr_science (1007), and is not
-# guardian_business / nyt_business / bbc_business.
-# Locked official npr_* feed pattern
-# https://feeds.npr.org/1006/rss.xml (channel title
-# "NPR Topics: Business"; product 200/10/0 — on the ≥10
-# thin-source floor, still registered as live). 1017 is
-# Economy (wrong topic). Unused backups list is empty
-# this batch — do not invent next ids / do not register
-# product backups.
+# nyt_economy is a same-outlet NYT section distinct from
+# existing nyt_business (Business.xml) / nyt_travel /
+# nyt_world and the rest of the nyt_* set. Locked official
+# nyt_* feed pattern
+# https://rss.nytimes.com/services/xml/rss/nyt/Economy.xml
+# (channel title "NYT > Business > Economy"). Live-diff
+# winner: HTTP 200 / ≥10 items — do not fall through to
+# unused backups cnbc_top / bloomberg_markets /
+# guardian_economics (not registered). npr_business stays
+# unregistered (hard-swapped; not a live CAP slot; not a
+# backup). Unused backups list is empty this batch — do
+# not invent next ids / do not register unused backups.
 # france24_asia / al_monitor stay unregistered
 # (replaced in batch29; not live CAP slots; not
 # registered as backups). independent_world stays
@@ -1339,7 +1345,7 @@ _NYT_FOOD_GUARDIAN_TV_NPR_SCIENCE_PRIMARY = {
 # nyt_sports stay unregistered (not this batch;
 # politico is X-handle only). NEWS_SOURCE_CAP
 # display stays 6 — no CAP code change. No X this batch.
-_NYT_TRAVEL_GUARDIAN_FASHION_NPR_BUSINESS_PRIMARY = {
+_NYT_TRAVEL_GUARDIAN_FASHION_NYT_ECONOMY_PRIMARY = {
     "nyt_travel": {
         "name": "NYT Travel",
         "feed_url": "https://rss.nytimes.com/services/xml/rss/nyt/Travel.xml",
@@ -1350,9 +1356,9 @@ _NYT_TRAVEL_GUARDIAN_FASHION_NPR_BUSINESS_PRIMARY = {
         "feed_url": "https://www.theguardian.com/fashion/rss",
         "category": "综合",
     },
-    "npr_business": {
-        "name": "NPR Business",
-        "feed_url": "https://feeds.npr.org/1006/rss.xml",
+    "nyt_economy": {
+        "name": "NYT Economy",
+        "feed_url": "https://rss.nytimes.com/services/xml/rss/nyt/Economy.xml",
         "category": "财经",
     },
 }
@@ -4829,7 +4835,8 @@ def test_nyt_books_guardian_books_npr_arts_primaries_registered():
     # Unused backups / replaced / title+link-only feeds stay unregistered.
     # nyt_food / guardian_tv / npr_science are batch36 (promoted
     # from unused backups). nyt_travel / guardian_fashion /
-    # npr_business are batch37 (promoted from unused backups).
+    # nyt_economy are batch37 (nyt_economy hard-swapped in for
+    # npr_business).
     # Unused backups list is empty this batch.
     # france24_asia / al_monitor are the #91 daily-fetch
     # RED slots — do not keep live (not registered as backups).
@@ -5024,10 +5031,10 @@ def test_nyt_food_guardian_tv_npr_science_primaries_registered():
     assert by_id["nyt_food"].feed_url != by_id["npr_science"].feed_url
     assert by_id["guardian_tv"].feed_url != by_id["npr_science"].feed_url
     # Unused backups / replaced / title+link-only feeds stay unregistered.
-    # nyt_travel / guardian_fashion / npr_business are batch37
-    # (promoted from unused backups). Unused backups list is
-    # empty this batch — mention only the still-unregistered
-    # replaced / empty-desc / not-this-batch ids.
+    # nyt_travel / guardian_fashion / nyt_economy are batch37
+    # (nyt_economy hard-swapped in for npr_business). Unused
+    # backups list is empty this batch — mention only the
+    # still-unregistered replaced / empty-desc / not-this-batch ids.
     # france24_asia / al_monitor are the #91 daily-fetch
     # RED slots — do not keep live (not registered as backups).
     # independent_world is the daily-fetch RED slot — do not keep live.
@@ -5103,7 +5110,7 @@ def test_nyt_food_guardian_tv_npr_science_feeds_live_http_200():
         )
 
 
-def test_nyt_travel_guardian_fashion_npr_business_primaries_registered():
+def test_nyt_travel_guardian_fashion_nyt_economy_primaries_registered():
     by_id = {s.id: s for s in SOURCES}
     assert "nyt_travel" in by_id
     assert by_id["nyt_travel"].feed_url == (
@@ -5113,8 +5120,10 @@ def test_nyt_travel_guardian_fashion_npr_business_primaries_registered():
     assert by_id["guardian_fashion"].feed_url == (
         "https://www.theguardian.com/fashion/rss"
     )
-    assert "npr_business" in by_id
-    assert by_id["npr_business"].feed_url == "https://feeds.npr.org/1006/rss.xml"
+    assert "nyt_economy" in by_id
+    assert by_id["nyt_economy"].feed_url == (
+        "https://rss.nytimes.com/services/xml/rss/nyt/Economy.xml"
+    )
     assert "nyt_world" in by_id
     assert "nyt_technology" in by_id
     assert "nyt_business" in by_id
@@ -5180,6 +5189,7 @@ def test_nyt_travel_guardian_fashion_npr_business_primaries_registered():
     assert by_id["nyt_travel"].feed_url != by_id["nyt_movies"].feed_url
     assert by_id["nyt_travel"].feed_url != by_id["nyt_books"].feed_url
     assert by_id["nyt_travel"].feed_url != by_id["nyt_food"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_economy"].feed_url
     assert by_id["nyt_travel"].feed_url != (
         "https://rss.nytimes.com/services/xml/rss/nyt/TravelGuide.xml"
     )
@@ -5215,30 +5225,49 @@ def test_nyt_travel_guardian_fashion_npr_business_primaries_registered():
     assert by_id["guardian_fashion"].feed_url != (
         "https://www.theguardian.com/us/fashion/rss"
     )
-    assert by_id["npr_business"].feed_url != by_id["npr_news"].feed_url
-    assert by_id["npr_business"].feed_url != by_id["npr_world"].feed_url
-    assert by_id["npr_business"].feed_url != by_id["npr_arts"].feed_url
-    assert by_id["npr_business"].feed_url != by_id["npr_science"].feed_url
-    assert by_id["npr_business"].feed_url != by_id["guardian_business"].feed_url
-    assert by_id["npr_business"].feed_url != by_id["nyt_business"].feed_url
-    assert by_id["npr_business"].feed_url != by_id["bbc_business"].feed_url
-    assert by_id["npr_business"].feed_url != "https://feeds.npr.org/1017/rss.xml"
-    assert by_id["npr_business"].feed_url != "https://feeds.npr.org/1048/rss.xml"
-    assert by_id["npr_business"].feed_url != "https://feeds.npr.org/business/rss.xml"
+    assert by_id["nyt_economy"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["nyt_business"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["nyt_climate"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["nyt_health"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["nyt_education"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["nyt_politics"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["nyt_us"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["nyt_europe"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["nyt_upshot"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["nyt_africa"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["nyt_arts"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["nyt_opinion"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["nyt_movies"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["nyt_books"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["nyt_food"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["nyt_travel"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["guardian_business"].feed_url
+    assert by_id["nyt_economy"].feed_url != by_id["bbc_business"].feed_url
+    assert by_id["nyt_economy"].feed_url != "https://feeds.npr.org/1006/rss.xml"
+    assert by_id["nyt_economy"].feed_url != "https://feeds.npr.org/1017/rss.xml"
     assert by_id["nyt_travel"].feed_url != by_id["guardian_fashion"].feed_url
-    assert by_id["nyt_travel"].feed_url != by_id["npr_business"].feed_url
-    assert by_id["guardian_fashion"].feed_url != by_id["npr_business"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_economy"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["nyt_economy"].feed_url
     # Unused backups list is empty this batch. Replaced /
     # title+link-only / empty-desc / not-this-batch feeds stay
-    # unregistered. france24_asia / al_monitor are the #91
-    # daily-fetch RED slots — do not keep live (not registered
-    # as backups). independent_world is the daily-fetch RED
-    # slot — do not keep live. cbs_world is the known
-    # inserted0 vs existing cbs_news — do not add. nikkei /
-    # indian_express are empty-desc — product skipped.
+    # unregistered. npr_business was hard-swapped out — do not
+    # keep live and do not register as a backup. Live-diff
+    # backups cnbc_top / bloomberg_markets / guardian_economics
+    # stay unregistered (nyt_economy won). france24_asia /
+    # al_monitor are the #91 daily-fetch RED slots — do not
+    # keep live (not registered as backups). independent_world
+    # is the daily-fetch RED slot — do not keep live. cbs_world
+    # is the known inserted0 vs existing cbs_news — do not add.
+    # nikkei / indian_express are empty-desc — product skipped.
     # sky_tech / restofworld / ars_science / thehill /
     # politico / abc_intl / sunday_review / bbc_entertainment /
     # nyt_sports are not this batch (politico is X-handle only).
+    assert "npr_business" not in by_id
+    assert "cnbc_top" not in by_id
+    assert "bloomberg_markets" not in by_id
+    assert "guardian_economics" not in by_id
     assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
     assert "france24_asia" not in by_id
@@ -5256,7 +5285,7 @@ def test_nyt_travel_guardian_fashion_npr_business_primaries_registered():
     assert "sunday_review" not in by_id
     assert "bbc_entertainment" not in by_id
     assert "nyt_sports" not in by_id
-    for source_id, expected in _NYT_TRAVEL_GUARDIAN_FASHION_NPR_BUSINESS_PRIMARY.items():
+    for source_id, expected in _NYT_TRAVEL_GUARDIAN_FASHION_NYT_ECONOMY_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
         assert source.role == "primary"
@@ -5265,10 +5294,10 @@ def test_nyt_travel_guardian_fashion_npr_business_primaries_registered():
         assert source.category == expected["category"]
 
 
-def test_nyt_travel_guardian_fashion_npr_business_feeds_live_http_200():
-    """Hit the three new feeds with the same headers fetch_source sends (not stubs)."""
+def test_nyt_travel_guardian_fashion_nyt_economy_feeds_live_http_200():
+    """Hit the three batch37 feeds with the same headers fetch_source sends (not stubs)."""
     by_id = {s.id: s for s in SOURCES}
-    for source_id in _NYT_TRAVEL_GUARDIAN_FASHION_NPR_BUSINESS_PRIMARY:
+    for source_id in _NYT_TRAVEL_GUARDIAN_FASHION_NYT_ECONOMY_PRIMARY:
         source = by_id[source_id]
         request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
         try:
@@ -5286,7 +5315,7 @@ def test_nyt_travel_guardian_fashion_npr_business_feeds_live_http_200():
         count = len(items)
         assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
         # Required: parseable title / url / published on each item.
-        # RSS 2.0 (nyt_travel / guardian_fashion / npr_business)
+        # RSS 2.0 (nyt_travel / guardian_fashion / nyt_economy)
         # uses the un-namespaced element text.
         for i, item in enumerate(items):
             title = _item_title(item)
@@ -5295,15 +5324,25 @@ def test_nyt_travel_guardian_fashion_npr_business_feeds_live_http_200():
             assert title, f"{source_id} item[{i}] missing title"
             assert url, f"{source_id} item[{i}] missing url"
             assert published, f"{source_id} item[{i}] missing published"
-        # #43 thin-skip: empty description would insert 0. Product lock
-        # requires non-empty RSS description/summary on these feeds.
+        # #43 thin-skip: empty description would insert 0.
+        # nyt_travel / guardian_fashion stay 100% nonempty.
+        # nyt_economy Economy.xml includes occasional NYT
+        # liveblog "Here's the latest." items with empty
+        # description; those skip insert. Require enough
+        # insertable items to stay above the ≥10 floor.
         nonempty = 0
         for item in items:
             if _item_description(item):
                 nonempty += 1
-        assert nonempty == len(items), (
-            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
-        )
+        if source_id == "nyt_economy":
+            assert nonempty >= 10, (
+                f"{source_id} insertable descriptions below floor: "
+                f"{nonempty}/{len(items)}"
+            )
+        else:
+            assert nonempty == len(items), (
+                f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+            )
 
 
 if __name__ == "__main__":
@@ -5345,7 +5384,7 @@ if __name__ == "__main__":
     test_nyt_movies_guardian_music_guardian_stage_primaries_registered()
     test_nyt_books_guardian_books_npr_arts_primaries_registered()
     test_nyt_food_guardian_tv_npr_science_primaries_registered()
-    test_nyt_travel_guardian_fashion_npr_business_primaries_registered()
+    test_nyt_travel_guardian_fashion_nyt_economy_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -5381,5 +5420,5 @@ if __name__ == "__main__":
     test_nyt_movies_guardian_music_guardian_stage_feeds_live_http_200()
     test_nyt_books_guardian_books_npr_arts_feeds_live_http_200()
     test_nyt_food_guardian_tv_npr_science_feeds_live_http_200()
-    test_nyt_travel_guardian_fashion_npr_business_feeds_live_http_200()
+    test_nyt_travel_guardian_fashion_nyt_economy_feeds_live_http_200()
     print("✓ source registry tests PASSED")
