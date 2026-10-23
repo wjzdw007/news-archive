@@ -1186,8 +1186,8 @@ _NYT_MOVIES_GUARDIAN_MUSIC_GUARDIAN_STAGE_PRIMARY = {
 # thin-source floor, still registered as live).
 # nyt_food / guardian_tv / npr_science are batch36
 # (promoted from unused backups). nyt_travel /
-# guardian_fashion / npr_business stay unregistered
-# (unused backups; mention only).
+# guardian_fashion / npr_business are batch37
+# (promoted from unused backups).
 # france24_asia / al_monitor stay unregistered
 # (replaced in batch29; not live CAP slots; not
 # registered as backups). independent_world stays
@@ -1252,8 +1252,9 @@ _NYT_BOOKS_GUARDIAN_BOOKS_NPR_ARTS_PRIMARY = {
 # thin-source floor, still registered as live). npr_arts
 # stays in the registry (batch35 closed with it as
 # thin-source observe, not swapped). nyt_travel /
-# guardian_fashion / npr_business stay unregistered
-# (unused backups; mention only).
+# guardian_fashion / npr_business are batch37
+# (promoted from unused backups). Unused backups
+# list is empty this batch — do not invent next ids.
 # france24_asia / al_monitor stay unregistered
 # (replaced in batch29; not live CAP slots; not
 # registered as backups). independent_world stays
@@ -1286,7 +1287,77 @@ _NYT_FOOD_GUARDIAN_TV_NPR_SCIENCE_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 116
+# CEO-approved NYT Travel / Guardian Fashion / NPR Business RSS
+# primaries (batch37). These three are the new adds.
+# nyt_travel is a same-outlet NYT section distinct from
+# existing nyt_world / nyt_technology / nyt_business /
+# nyt_science / nyt_climate / nyt_health / nyt_education /
+# nyt_politics / nyt_us / nyt_europe / nyt_upshot /
+# nyt_africa / nyt_arts / nyt_opinion / nyt_movies /
+# nyt_books / nyt_food. Locked official nyt_* feed
+# pattern
+# https://rss.nytimes.com/services/xml/rss/nyt/Travel.xml
+# (channel title "NYT > Travel"). TravelGuide.xml and
+# Escapes.xml are both 404 — do not use those.
+# guardian_fashion is a same-outlet Guardian section
+# distinct from existing guardian_world /
+# guardian_technology / guardian_us /
+# guardian_environment / guardian_business /
+# guardian_science / guardian_australia /
+# guardian_americas / guardian_uk / guardian_europe /
+# guardian_global_dev / guardian_law / guardian_society /
+# guardian_cities / guardian_world_africa /
+# guardian_politics / guardian_middle_east /
+# guardian_sport / guardian_film / guardian_music /
+# guardian_stage / guardian_books / guardian_tv.
+# Locked official guardian_* pattern
+# https://www.theguardian.com/fashion/rss (channel
+# title "Fashion | The Guardian"; /uk/fashion/rss and
+# /us/fashion/rss are 404 — not a geo-edition swap).
+# npr_business is a same-outlet NPR topic distinct from
+# existing npr_news (1001) / npr_world (1004) /
+# npr_arts (1008) / npr_science (1007), and is not
+# guardian_business / nyt_business / bbc_business.
+# Locked official npr_* feed pattern
+# https://feeds.npr.org/1006/rss.xml (channel title
+# "NPR Topics: Business"; product 200/10/0 — on the ≥10
+# thin-source floor, still registered as live). 1017 is
+# Economy (wrong topic). Unused backups list is empty
+# this batch — do not invent next ids / do not register
+# product backups.
+# france24_asia / al_monitor stay unregistered
+# (replaced in batch29; not live CAP slots; not
+# registered as backups). independent_world stays
+# unregistered (replaced in batch28; 429). cbs_world
+# stays unregistered (known inserted0 vs existing
+# cbs_news). nikkei / indian_express stay unregistered
+# (empty desc — product skipped). nikkei_asia stays
+# unregistered (title+link only). nyt_world_asia stays
+# unregistered (replaced in batch20). sky_tech /
+# restofworld / ars_science / thehill / politico /
+# abc_intl / sunday_review / bbc_entertainment /
+# nyt_sports stay unregistered (not this batch;
+# politico is X-handle only). NEWS_SOURCE_CAP
+# display stays 6 — no CAP code change. No X this batch.
+_NYT_TRAVEL_GUARDIAN_FASHION_NPR_BUSINESS_PRIMARY = {
+    "nyt_travel": {
+        "name": "NYT Travel",
+        "feed_url": "https://rss.nytimes.com/services/xml/rss/nyt/Travel.xml",
+        "category": "综合",
+    },
+    "guardian_fashion": {
+        "name": "Guardian Fashion",
+        "feed_url": "https://www.theguardian.com/fashion/rss",
+        "category": "综合",
+    },
+    "npr_business": {
+        "name": "NPR Business",
+        "feed_url": "https://feeds.npr.org/1006/rss.xml",
+        "category": "财经",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 119
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -4758,7 +4829,8 @@ def test_nyt_books_guardian_books_npr_arts_primaries_registered():
     # Unused backups / replaced / title+link-only feeds stay unregistered.
     # nyt_food / guardian_tv / npr_science are batch36 (promoted
     # from unused backups). nyt_travel / guardian_fashion /
-    # npr_business are unused backups — mention only.
+    # npr_business are batch37 (promoted from unused backups).
+    # Unused backups list is empty this batch.
     # france24_asia / al_monitor are the #91 daily-fetch
     # RED slots — do not keep live (not registered as backups).
     # independent_world is the daily-fetch RED slot — do not keep live.
@@ -4767,9 +4839,6 @@ def test_nyt_books_guardian_books_npr_arts_primaries_registered():
     # sky_tech / restofworld / ars_science / thehill / politico /
     # abc_intl / sunday_review / bbc_entertainment / nyt_sports
     # are not this batch (politico is X-handle only).
-    assert "nyt_travel" not in by_id
-    assert "guardian_fashion" not in by_id
-    assert "npr_business" not in by_id
     assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
     assert "france24_asia" not in by_id
@@ -4955,8 +5024,11 @@ def test_nyt_food_guardian_tv_npr_science_primaries_registered():
     assert by_id["nyt_food"].feed_url != by_id["npr_science"].feed_url
     assert by_id["guardian_tv"].feed_url != by_id["npr_science"].feed_url
     # Unused backups / replaced / title+link-only feeds stay unregistered.
-    # nyt_travel / guardian_fashion / npr_business are unused backups —
-    # mention only. france24_asia / al_monitor are the #91 daily-fetch
+    # nyt_travel / guardian_fashion / npr_business are batch37
+    # (promoted from unused backups). Unused backups list is
+    # empty this batch — mention only the still-unregistered
+    # replaced / empty-desc / not-this-batch ids.
+    # france24_asia / al_monitor are the #91 daily-fetch
     # RED slots — do not keep live (not registered as backups).
     # independent_world is the daily-fetch RED slot — do not keep live.
     # cbs_world is the known inserted0 vs existing cbs_news — do not add.
@@ -4964,9 +5036,6 @@ def test_nyt_food_guardian_tv_npr_science_primaries_registered():
     # sky_tech / restofworld / ars_science / thehill / politico /
     # abc_intl / sunday_review / bbc_entertainment / nyt_sports
     # are not this batch (politico is X-handle only).
-    assert "nyt_travel" not in by_id
-    assert "guardian_fashion" not in by_id
-    assert "npr_business" not in by_id
     assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
     assert "france24_asia" not in by_id
@@ -5034,6 +5103,209 @@ def test_nyt_food_guardian_tv_npr_science_feeds_live_http_200():
         )
 
 
+def test_nyt_travel_guardian_fashion_npr_business_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "nyt_travel" in by_id
+    assert by_id["nyt_travel"].feed_url == (
+        "https://rss.nytimes.com/services/xml/rss/nyt/Travel.xml"
+    )
+    assert "guardian_fashion" in by_id
+    assert by_id["guardian_fashion"].feed_url == (
+        "https://www.theguardian.com/fashion/rss"
+    )
+    assert "npr_business" in by_id
+    assert by_id["npr_business"].feed_url == "https://feeds.npr.org/1006/rss.xml"
+    assert "nyt_world" in by_id
+    assert "nyt_technology" in by_id
+    assert "nyt_business" in by_id
+    assert "nyt_science" in by_id
+    assert "nyt_climate" in by_id
+    assert "nyt_health" in by_id
+    assert "nyt_education" in by_id
+    assert "nyt_politics" in by_id
+    assert "nyt_us" in by_id
+    assert "nyt_europe" in by_id
+    assert "nyt_upshot" in by_id
+    assert "nyt_africa" in by_id
+    assert "nyt_arts" in by_id
+    assert "nyt_opinion" in by_id
+    assert "nyt_movies" in by_id
+    assert "nyt_books" in by_id
+    assert "nyt_food" in by_id
+    assert "guardian_world" in by_id
+    assert "guardian_technology" in by_id
+    assert "guardian_us" in by_id
+    assert "guardian_environment" in by_id
+    assert "guardian_business" in by_id
+    assert "guardian_science" in by_id
+    assert "guardian_australia" in by_id
+    assert "guardian_americas" in by_id
+    assert "guardian_uk" in by_id
+    assert "guardian_europe" in by_id
+    assert "guardian_global_dev" in by_id
+    assert "guardian_law" in by_id
+    assert "guardian_society" in by_id
+    assert "guardian_cities" in by_id
+    assert "guardian_world_africa" in by_id
+    assert "guardian_politics" in by_id
+    assert "guardian_middle_east" in by_id
+    assert "guardian_sport" in by_id
+    assert "guardian_film" in by_id
+    assert "guardian_music" in by_id
+    assert "guardian_stage" in by_id
+    assert "guardian_books" in by_id
+    assert "guardian_tv" in by_id
+    assert "npr_news" in by_id
+    assert "npr_world" in by_id
+    assert "npr_arts" in by_id
+    assert "npr_science" in by_id
+    assert by_id["npr_news"].feed_url == "https://feeds.npr.org/1001/rss.xml"
+    assert by_id["npr_world"].feed_url == "https://feeds.npr.org/1004/rss.xml"
+    assert by_id["npr_arts"].feed_url == "https://feeds.npr.org/1008/rss.xml"
+    assert by_id["npr_science"].feed_url == "https://feeds.npr.org/1007/rss.xml"
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_business"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_climate"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_health"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_education"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_politics"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_us"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_europe"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_upshot"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_africa"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_arts"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_opinion"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_movies"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_books"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["nyt_food"].feed_url
+    assert by_id["nyt_travel"].feed_url != (
+        "https://rss.nytimes.com/services/xml/rss/nyt/TravelGuide.xml"
+    )
+    assert by_id["nyt_travel"].feed_url != (
+        "https://rss.nytimes.com/services/xml/rss/nyt/Escapes.xml"
+    )
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_technology"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_us"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_environment"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_business"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_australia"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_americas"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_uk"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_europe"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_global_dev"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_law"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_society"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_cities"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_world_africa"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_politics"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_middle_east"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_sport"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_film"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_music"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_stage"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_books"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["guardian_tv"].feed_url
+    assert by_id["guardian_fashion"].feed_url != (
+        "https://www.theguardian.com/uk/fashion/rss"
+    )
+    assert by_id["guardian_fashion"].feed_url != (
+        "https://www.theguardian.com/us/fashion/rss"
+    )
+    assert by_id["npr_business"].feed_url != by_id["npr_news"].feed_url
+    assert by_id["npr_business"].feed_url != by_id["npr_world"].feed_url
+    assert by_id["npr_business"].feed_url != by_id["npr_arts"].feed_url
+    assert by_id["npr_business"].feed_url != by_id["npr_science"].feed_url
+    assert by_id["npr_business"].feed_url != by_id["guardian_business"].feed_url
+    assert by_id["npr_business"].feed_url != by_id["nyt_business"].feed_url
+    assert by_id["npr_business"].feed_url != by_id["bbc_business"].feed_url
+    assert by_id["npr_business"].feed_url != "https://feeds.npr.org/1017/rss.xml"
+    assert by_id["npr_business"].feed_url != "https://feeds.npr.org/1048/rss.xml"
+    assert by_id["npr_business"].feed_url != "https://feeds.npr.org/business/rss.xml"
+    assert by_id["nyt_travel"].feed_url != by_id["guardian_fashion"].feed_url
+    assert by_id["nyt_travel"].feed_url != by_id["npr_business"].feed_url
+    assert by_id["guardian_fashion"].feed_url != by_id["npr_business"].feed_url
+    # Unused backups list is empty this batch. Replaced /
+    # title+link-only / empty-desc / not-this-batch feeds stay
+    # unregistered. france24_asia / al_monitor are the #91
+    # daily-fetch RED slots — do not keep live (not registered
+    # as backups). independent_world is the daily-fetch RED
+    # slot — do not keep live. cbs_world is the known
+    # inserted0 vs existing cbs_news — do not add. nikkei /
+    # indian_express are empty-desc — product skipped.
+    # sky_tech / restofworld / ars_science / thehill /
+    # politico / abc_intl / sunday_review / bbc_entertainment /
+    # nyt_sports are not this batch (politico is X-handle only).
+    assert "cbs_world" not in by_id
+    assert "independent_world" not in by_id
+    assert "france24_asia" not in by_id
+    assert "al_monitor" not in by_id
+    assert "indian_express" not in by_id
+    assert "nikkei" not in by_id
+    assert "nyt_world_asia" not in by_id
+    assert "nikkei_asia" not in by_id
+    assert "sky_tech" not in by_id
+    assert "restofworld" not in by_id
+    assert "ars_science" not in by_id
+    assert "thehill" not in by_id
+    assert "politico" not in by_id
+    assert "abc_intl" not in by_id
+    assert "sunday_review" not in by_id
+    assert "bbc_entertainment" not in by_id
+    assert "nyt_sports" not in by_id
+    for source_id, expected in _NYT_TRAVEL_GUARDIAN_FASHION_NPR_BUSINESS_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_nyt_travel_guardian_fashion_npr_business_feeds_live_http_200():
+    """Hit the three new feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _NYT_TRAVEL_GUARDIAN_FASHION_NPR_BUSINESS_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (nyt_travel / guardian_fashion / npr_business)
+        # uses the un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0. Product lock
+        # requires non-empty RSS description/summary on these feeds.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -5073,6 +5345,7 @@ if __name__ == "__main__":
     test_nyt_movies_guardian_music_guardian_stage_primaries_registered()
     test_nyt_books_guardian_books_npr_arts_primaries_registered()
     test_nyt_food_guardian_tv_npr_science_primaries_registered()
+    test_nyt_travel_guardian_fashion_npr_business_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -5108,4 +5381,5 @@ if __name__ == "__main__":
     test_nyt_movies_guardian_music_guardian_stage_feeds_live_http_200()
     test_nyt_books_guardian_books_npr_arts_feeds_live_http_200()
     test_nyt_food_guardian_tv_npr_science_feeds_live_http_200()
+    test_nyt_travel_guardian_fashion_npr_business_feeds_live_http_200()
     print("✓ source registry tests PASSED")

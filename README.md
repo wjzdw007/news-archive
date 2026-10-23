@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（116 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（119 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -122,6 +122,9 @@
 | `nyt_food` | NYT Food | https://rss.nytimes.com/services/xml/rss/nyt/DiningandWine.xml | primary |
 | `guardian_tv` | Guardian TV | https://www.theguardian.com/tv-and-radio/rss | primary |
 | `npr_science` | NPR Science | https://feeds.npr.org/1007/rss.xml | primary |
+| `nyt_travel` | NYT Travel | https://rss.nytimes.com/services/xml/rss/nyt/Travel.xml | primary |
+| `guardian_fashion` | Guardian Fashion | https://www.theguardian.com/fashion/rss | primary |
+| `npr_business` | NPR Business | https://feeds.npr.org/1006/rss.xml | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
