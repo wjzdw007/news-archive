@@ -842,9 +842,9 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
-        id="npr_business",
-        name="NPR Business",
-        feed_url="https://feeds.npr.org/1006/rss.xml",
+        id="nyt_economy",
+        name="NYT Economy",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/Economy.xml",
         category="财经",
         role="primary",
     ),
