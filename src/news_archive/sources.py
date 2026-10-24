@@ -849,6 +849,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="nyt_realestate",
+        name="NYT Real Estate",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/RealEstate.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="guardian_lifeandstyle",
+        name="Guardian Lifestyle",
+        feed_url="https://www.theguardian.com/lifeandstyle/rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="bbc_entertainment",
+        name="BBC Entertainment",
+        feed_url="https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
