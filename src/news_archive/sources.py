@@ -891,6 +891,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="bloomberg_markets",
+        name="Bloomberg Markets",
+        feed_url="https://feeds.bloomberg.com/markets/news.rss",
+        category="财经",
+        role="primary",
+    ),
+    Source(
+        id="guardian_economics",
+        name="Guardian Economics",
+        feed_url="https://www.theguardian.com/business/economics/rss",
+        category="财经",
+        role="primary",
+    ),
+    Source(
+        id="nyt_magazine",
+        name="NYT Magazine",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/Magazine.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
