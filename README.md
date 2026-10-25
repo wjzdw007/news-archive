@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（125 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（128 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -131,6 +131,9 @@
 | `cbs_world` | CBS News World | https://www.cbsnews.com/latest/rss/world | primary |
 | `france24_asia` | France 24 Asia-Pacific | https://www.france24.com/en/asia-pacific/rss | primary |
 | `cnbc_top` | CNBC Top News | https://www.cnbc.com/id/100003114/device/rss/rss.html | primary |
+| `bloomberg_markets` | Bloomberg Markets | https://feeds.bloomberg.com/markets/news.rss | primary |
+| `guardian_economics` | Guardian Economics | https://www.theguardian.com/business/economics/rss | primary |
+| `nyt_magazine` | NYT Magazine | https://rss.nytimes.com/services/xml/rss/nyt/Magazine.xml | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
