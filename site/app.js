@@ -3,14 +3,16 @@ let articlesData = [];
 let topicsData = [];
 let xPostsData = [];
 let dailyBriefsData = [];
+let techAiData = null;
 let articlesMap = new Map(); // url -> article
 let selectedDailyDate = null;
+
+const TECH_AI_TOPIC_ID = 'tech-ai';
 
 // Tab switching
 document.querySelectorAll('.tab-button').forEach(button => {
     button.addEventListener('click', () => {
-        const tabName = button.dataset.tab;
-        switchTab(tabName);
+        navigateTo(button.dataset.tab);
     });
 });
 
@@ -30,20 +32,44 @@ function switchTab(tabName) {
     closeTopicDetail();
 }
 
+function navigateTo(hash) {
+    const clean = String(hash || 'news').replace(/^#/, '');
+    if ((location.hash || '').replace(/^#/, '') === clean) {
+        applyRoute();
+        return;
+    }
+    location.hash = clean;
+}
+
+function applyRoute() {
+    const raw = (location.hash || '#news').replace(/^#/, '') || 'news';
+    const parts = raw.split('/');
+    const known = ['news', 'topics', 'x', 'daily'];
+    const tabName = known.includes(parts[0]) ? parts[0] : 'news';
+    switchTab(tabName);
+    if (tabName === 'topics' && parts[1] === TECH_AI_TOPIC_ID) {
+        renderTechAiDetail();
+    }
+}
+
+window.addEventListener('hashchange', applyRoute);
+
 // Load data on page load
 async function loadData() {
     try {
-        const [articles, topics, xPosts, dailyBriefs] = await Promise.all([
+        const [articles, topics, xPosts, dailyBriefs, techAi] = await Promise.all([
             fetch('data/articles.json').then(r => r.json()),
             fetch('data/topics.json').then(r => r.json()),
             fetch('data/x_posts.json').then(r => r.json()),
-            fetch('data/daily_briefs.json').then(r => r.ok ? r.json() : []).catch(() => [])
+            fetch('data/daily_briefs.json').then(r => r.ok ? r.json() : []).catch(() => []),
+            fetch('data/tech_ai.json').then(r => r.ok ? r.json() : null).catch(() => null)
         ]);
         
         articlesData = articles;
         topicsData = topics;
         xPostsData = xPosts;
         dailyBriefsData = Array.isArray(dailyBriefs) ? dailyBriefs : [];
+        techAiData = techAi && typeof techAi === 'object' ? techAi : null;
         
         // Build articles map for quick lookup
         articles.forEach(article => {
@@ -54,6 +80,7 @@ async function loadData() {
         renderTopicsList();
         renderXList();
         renderDailyTab();
+        applyRoute();
         
     } catch (error) {
         console.error('Failed to load data:', error);
@@ -262,29 +289,54 @@ function closeDetail() {
     document.getElementById('news-detail').style.display = 'none';
 }
 
+// 科技/AI is a curated 专题 (always listed; never a 暂无专题 dead end).
+function curatedTechAiCard() {
+    const items = (techAiData && Array.isArray(techAiData.items)) ? techAiData.items : [];
+    return {
+        topic_id: TECH_AI_TOPIC_ID,
+        title: (techAiData && techAiData.title) || '科技/AI',
+        generated_at: (techAiData && techAiData.generated_at) || '',
+        status: 'ok',
+        sources: items.slice(0, 3).map(i => ({ title: i.title || '无标题', url: i.url })),
+        item_count: items.length,
+        kind: 'curated',
+        used_fallback: !!(techAiData && techAiData.used_fallback),
+    };
+}
+
+function topicsForList() {
+    const rest = (topicsData || []).filter(t => t.topic_id !== TECH_AI_TOPIC_ID);
+    return [curatedTechAiCard()].concat(rest);
+}
+
 // Render topics list
 function renderTopicsList() {
     const container = document.getElementById('topics-list');
+    const topics = topicsForList();
     
-    if (topicsData.length === 0) {
-        container.innerHTML = '<div class="empty-state">暂无专题</div>';
-        return;
-    }
-    
-    const html = topicsData.map(topic => {
+    const html = topics.map(topic => {
+        const curated = topic.topic_id === TECH_AI_TOPIC_ID;
         const date = formatDate(topic.generated_at);
         const sources = topic.sources || [];
         const bulletPoints = sources.slice(0, 3).map(s => `• ${s.title || '无标题'}`).join('<br>');
         const moreText = sources.length > 3 ? `<br>...及 ${sources.length - 3} 条更多` : '';
+        const emptyHint = curated && (topic.item_count || 0) === 0
+            ? '<div class="topic-preview">专题已就绪，等待抓取写入科技与 AI 条目</div>'
+            : `<div class="topic-preview">${bulletPoints}${moreText}</div>`;
+        const countLabel = curated
+            ? `${topic.item_count || 0} 条 · RSS+X`
+            : `${sources.length} 个来源`;
+        const badge = curated ? '<span class="topic-badge">常设</span> ' : '';
+        const extraClass = curated ? ' topic-item-featured' : '';
         
         return `
-            <div class="topic-item" onclick="showTopicDetail('${escapeHtml(topic.topic_id)}')">
-                <h3 class="topic-title">${escapeHtml(topic.title)}</h3>
+            <div class="topic-item${extraClass}" onclick="showTopicDetail('${escapeHtml(topic.topic_id)}')">
+                <h3 class="topic-title">${badge}${escapeHtml(topic.title)}</h3>
                 <div class="topic-meta">
                     <span class="date">${date}</span>
-                    <span class="source-count">${sources.length} 个来源</span>
+                    <span class="source-count">${countLabel}</span>
                 </div>
-                <div class="topic-preview">${bulletPoints}${moreText}</div>
+                ${emptyHint}
             </div>
         `;
     }).join('');
@@ -294,6 +346,10 @@ function renderTopicsList() {
 
 // Show topic detail
 function showTopicDetail(topicId) {
+    if (topicId === TECH_AI_TOPIC_ID) {
+        navigateTo('topics/' + TECH_AI_TOPIC_ID);
+        return;
+    }
     const topic = topicsData.find(t => t.topic_id === topicId);
     if (!topic) return;
     
@@ -337,6 +393,85 @@ function showTopicFromArticle(topicId) {
 function closeTopicDetail() {
     document.getElementById('topics-list').style.display = 'block';
     document.getElementById('topic-detail').style.display = 'none';
+}
+
+function goBackTopics() {
+    const raw = (location.hash || '').replace(/^#/, '');
+    if (raw === 'topics/' + TECH_AI_TOPIC_ID) {
+        navigateTo('topics');
+        return;
+    }
+    closeTopicDetail();
+}
+
+function renderTechAiItemHtml(item) {
+    const kind = item.kind === 'x' ? 'x' : 'rss';
+    const badge = kind === 'x' ? 'X' : 'RSS';
+    const date = formatDate(item.sort_at || item.published_at || item.fetched_at);
+    const statusClass = item.status === 'gone' ? ' gone' : '';
+    const summary = item.summary || '';
+    const oneLine = summary.length > 140 ? summary.substring(0, 140) + '...' : summary;
+    const href = escapeHtml(item.url || '');
+    if (kind === 'x') {
+        return `
+            <div class="x-post-item tech-ai-item${statusClass}">
+                <div class="x-post-header">
+                    <span class="item-kind-badge kind-x">${badge}</span>
+                    <span class="x-author">${escapeHtml(item.source || '')}</span>
+                    <span class="date">${date}</span>
+                </div>
+                <p class="x-post-text">${escapeHtml(summary || '无内容')}</p>
+                ${href ? `<a href="${href}" target="_blank" rel="noopener noreferrer" class="x-post-link">查看原帖 ↗</a>` : ''}
+            </div>
+        `;
+    }
+    return `
+        <div class="article-item tech-ai-item${statusClass}">
+            <h3 class="article-title"><span class="item-kind-badge kind-rss">${badge}</span> ${escapeHtml(item.title || '无标题')}</h3>
+            <div class="article-meta">
+                <span class="source">${escapeHtml(item.source || '')}</span>
+                <span class="date">${date}</span>
+            </div>
+            <p class="article-summary">${escapeHtml(oneLine)}</p>
+            ${href ? `<p class="original-link"><a href="${href}" target="_blank" rel="noopener noreferrer">查看原文 ↗</a></p>` : ''}
+        </div>
+    `;
+}
+
+function renderTechAiDetail() {
+    const container = document.getElementById('topic-content');
+    const items = (techAiData && Array.isArray(techAiData.items)) ? techAiData.items : [];
+    const usedFallback = !!(techAiData && techAiData.used_fallback);
+    const usedBackups = !!(techAiData && techAiData.used_x_backups);
+    const rssCount = techAiData && typeof techAiData.rss_count === 'number'
+        ? techAiData.rss_count
+        : items.filter(i => i.kind === 'rss').length;
+    const xCount = techAiData && typeof techAiData.x_count === 'number'
+        ? techAiData.x_count
+        : items.filter(i => i.kind === 'x').length;
+
+    let hint = '';
+    if (items.length === 0) {
+        hint = '<div class="topic-empty-hint">专题已就绪。等待下一次 daily-fetch / x-fetch 写入科技与 AI 条目。Cookie 登录账号需 Follow 科技/AI 账号。</div>';
+    } else if (usedFallback) {
+        hint = '<div class="topic-empty-hint">近 24 小时暂无新条目，以下为最近归档（最多 7 天）。</div>';
+    }
+
+    const itemsHtml = items.map(renderTechAiItemHtml).join('');
+    const backupNote = usedBackups ? ' · 含备用账号' : '';
+    const generated = techAiData && techAiData.generated_at ? techAiData.generated_at : '';
+
+    container.innerHTML = `
+        <h2>科技/AI</h2>
+        <div class="topic-meta">
+            <span class="date">${formatDate(generated)}</span>
+            <span class="source-count">${items.length} 条 · RSS ${rssCount} · X ${xCount}${backupNote}</span>
+        </div>
+        ${hint}
+        <div class="tech-ai-feed">${itemsHtml}</div>
+    `;
+    document.getElementById('topics-list').style.display = 'none';
+    document.getElementById('topic-detail').style.display = 'block';
 }
 
 // Render X posts list

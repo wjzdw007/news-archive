@@ -7,13 +7,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
-from .x_config import X_NEWS_ACCOUNTS
+from .x_config import x_fetch_accounts
 from .x_store import XPost, XStore
 
 
 def _canon_author(author: str) -> str:
     a = author.lstrip("@")
-    lookup = {x.lower(): x for x in X_NEWS_ACCOUNTS}
+    lookup = {x.lower(): x for x in x_fetch_accounts()}
     return lookup.get(a.lower(), a)
 
 

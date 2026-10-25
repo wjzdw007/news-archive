@@ -9,7 +9,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any
 
-from .x_config import X_NEWS_ACCOUNTS
+from .x_config import x_fetch_accounts
 from .x_store import XPost
 
 
@@ -27,7 +27,7 @@ def mock_posts_for_accounts(
     fetched_at: str | None = None,
 ) -> list[XPost]:
     """Deterministic mock posts for schema/pipeline tests (no network)."""
-    accounts = accounts or list(X_NEWS_ACCOUNTS)
+    accounts = accounts or x_fetch_accounts()
     now = fetched_at or _iso_now()
     out: list[XPost] = []
     for i, author in enumerate(accounts):
@@ -59,7 +59,7 @@ def fetch_account_posts(
     Live mode fetches HomeTimeline via x_http_client, filters to target accounts,
     and logs author distribution (pre/post filter).
     """
-    accounts = accounts or list(X_NEWS_ACCOUNTS)
+    accounts = accounts or x_fetch_accounts()
     if mode == "mock":
         return mock_posts_for_accounts(accounts)
     if mode != "live":

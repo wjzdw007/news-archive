@@ -12,16 +12,35 @@ def validate_json_file(filepath: Path, expected_keys: list[str]) -> tuple[bool, 
         return False, f"Missing: {filepath}"
     
     try:
-        with filepath.open("r", encoding="utf-8") as f:
-            data = json.load(f)
+        raw = filepath.read_text(encoding="utf-8")
+        data = json.loads(raw)
         
+        if filepath.name == "tech_ai.json":
+            if not isinstance(data, dict):
+                return False, f"{filepath.name} must be an object"
+            missing = [k for k in expected_keys if k not in data]
+            if missing:
+                return False, f"{filepath.name} missing keys: {missing}"
+            if "content_snapshot" in raw or "post_id" in raw:
+                return False, f"{filepath.name} must not include content_snapshot or post_id"
+            items = data.get("items") or []
+            if not isinstance(items, list):
+                return False, f"{filepath.name} items must be an array"
+            return True, f"✓ {filepath.name}: {len(items)} items"
         if not isinstance(data, list):
             return False, f"{filepath.name} must be an array"
 
-        raw = filepath.read_text(encoding="utf-8")
-        if filepath.name in ("articles.json", "daily_briefs.json", "topics.json", "x_posts.json"):
+        if filepath.name in (
+            "articles.json",
+            "daily_briefs.json",
+            "topics.json",
+            "x_posts.json",
+            "tech_ai.json",
+        ):
             if "content_snapshot" in raw:
                 return False, f"{filepath.name} must not include content_snapshot"
+            if "post_id" in raw and filepath.name in ("x_posts.json", "tech_ai.json"):
+                return False, f"{filepath.name} must not include post_id"
         
         if data and expected_keys:
             first_item = data[0]
@@ -90,6 +109,7 @@ def main() -> int:
         (data_dir / "topics.json", ["topic_id", "title", "sources", "status"]),
         (data_dir / "x_posts.json", ["author", "posted_at", "fetched_at", "text_snapshot", "url", "status"]),
         (data_dir / "daily_briefs.json", ["date", "generated_at", "status", "model", "lede", "sections"]),
+        (data_dir / "tech_ai.json", ["topic_id", "title", "items"]),
     ]
     
     all_passed = True
