@@ -870,6 +870,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="cbs_world",
+        name="CBS News World",
+        feed_url="https://www.cbsnews.com/latest/rss/world",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="france24_asia",
+        name="France 24 Asia-Pacific",
+        feed_url="https://www.france24.com/en/asia-pacific/rss",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="guardian_media",
+        name="Guardian Media",
+        feed_url="https://www.theguardian.com/media/rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
