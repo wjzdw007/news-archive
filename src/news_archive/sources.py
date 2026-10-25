@@ -884,10 +884,10 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
-        id="guardian_media",
-        name="Guardian Media",
-        feed_url="https://www.theguardian.com/media/rss",
-        category="综合",
+        id="cnbc_top",
+        name="CNBC Top News",
+        feed_url="https://www.cnbc.com/id/100003114/device/rss/rss.html",
+        category="财经",
         role="primary",
     ),
     Source(

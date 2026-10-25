@@ -130,7 +130,7 @@
 | `bbc_entertainment` | BBC Entertainment | https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml | primary |
 | `cbs_world` | CBS News World | https://www.cbsnews.com/latest/rss/world | primary |
 | `france24_asia` | France 24 Asia-Pacific | https://www.france24.com/en/asia-pacific/rss | primary |
-| `guardian_media` | Guardian Media | https://www.theguardian.com/media/rss | primary |
+| `cnbc_top` | CNBC Top News | https://www.cnbc.com/id/100003114/device/rss/rss.html | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
