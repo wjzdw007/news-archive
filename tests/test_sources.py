@@ -741,8 +741,8 @@ _CSMONITOR_LATIMES_HINDU_PRIMARY = {
 # (france24 pattern not used; Singapore 0-empty is a different
 # section). yonhap / anadolu_world / trt_world are batch28
 # (primaries; trt_world replaced independent_world after
-# daily-fetch inserted=0). cbs_world stays unregistered (unused
-# backup; known inserted0 vs existing cbs_news). nikkei_asia
+# daily-fetch inserted=0). cbs_world / france24_asia /
+# guardian_media are batch39. nikkei_asia
 # stays unregistered (title+link only). nyt_world_asia stays
 # unregistered (replaced in batch20). independent_world stays
 # unregistered (replaced in batch28). NEWS_SOURCE_CAP display
@@ -789,8 +789,8 @@ _CBC_CNA_ELPAIS_PRIMARY = {
 # independent_world is unregistered (replaced). semafor /
 # france24_americas / middleeasteye are batch29 (primaries;
 # france24_americas / middleeasteye replaced france24_asia /
-# al_monitor after daily-fetch inserted=0). cbs_world stays
-# unregistered (known inserted0 vs existing cbs_news).
+# al_monitor after daily-fetch inserted=0). cbs_world /
+# france24_asia / guardian_media are batch39.
 # nikkei_asia stays unregistered (title+link only).
 # nyt_world_asia stays unregistered (replaced in batch20).
 # NEWS_SOURCE_CAP display stays 6 — no CAP code change.
@@ -830,11 +830,12 @@ _YONHAP_ANADOLU_TRT_PRIMARY = {
 # https://www.france24.com/en/americas/rss (no france24
 # empty-desc URL swap — empty-desc is 0). Locked official
 # Middle East Eye https://www.middleeasteye.net/rss.
-# france24_asia / al_monitor are unregistered (replaced; not
-# live CAP slots; not registered as backups).
+# france24_asia is batch39 (CEO knife re-add).
+# al_monitor stays unregistered (replaced in batch29;
+# not a live CAP slot).
 # independent_world stays unregistered (replaced in batch28;
-# 429). cbs_world stays unregistered (known inserted0 vs
-# existing cbs_news). nikkei / indian_express stay
+# 429). cbs_world / france24_asia / guardian_media
+# are batch39. nikkei / indian_express stay
 # unregistered (empty desc — product skipped). nikkei_asia
 # stays unregistered (title+link only). nyt_world_asia stays
 # unregistered (replaced in batch20). NEWS_SOURCE_CAP display
@@ -884,11 +885,12 @@ _SEMAFOR_FRANCE24_AMERICAS_MIDDLEEASTEYE_PRIMARY = {
 # id only; preferred articles.atom kept). forbes_innovation
 # is batch33 (promoted from unused backup).
 # propublica is batch32 (promoted from unused backup).
-# france24_asia / al_monitor stay unregistered (replaced in
-# batch29; not live CAP slots; not registered as backups).
+# france24_asia is batch39 (CEO knife re-add).
+# al_monitor stays unregistered (replaced in batch29;
+# not a live CAP slot).
 # independent_world stays unregistered (replaced in batch28;
-# 429). cbs_world stays unregistered (known inserted0 vs
-# existing cbs_news). nikkei / indian_express stay
+# 429). cbs_world / france24_asia / guardian_media
+# are batch39. nikkei / indian_express stay
 # unregistered (empty desc — product skipped). nikkei_asia
 # stays unregistered (title+link only). nyt_world_asia stays
 # unregistered (replaced in batch20). NEWS_SOURCE_CAP display
@@ -937,11 +939,11 @@ _SCMP_BUSINESS_RFI_ASIA_THECONVERSATION_PRIMARY = {
 # "The Intercept"; preferred live HTTP 200 / 0 empty-desc
 # — one official id only). nyt_opinion / guardian_film
 # are batch32 (promoted from unused backups).
-# france24_asia / al_monitor stay unregistered (replaced
-# in batch29; not live CAP slots; not registered as
-# backups). independent_world stays unregistered
-# (replaced in batch28; 429). cbs_world stays
-# unregistered (known inserted0 vs existing cbs_news).
+# france24_asia is batch39 (CEO knife re-add).
+# al_monitor stays unregistered (replaced in batch29;
+# not a live CAP slot). independent_world stays unregistered
+# (replaced in batch28; 429). cbs_world / france24_asia /
+# guardian_media are batch39.
 # nikkei / indian_express stay unregistered (empty desc
 # — product skipped). nikkei_asia stays unregistered
 # (title+link only). nyt_world_asia stays unregistered
@@ -997,11 +999,11 @@ _NYT_ARTS_GUARDIAN_SPORT_INTERCEPT_PRIMARY = {
 # 0 empty-desc — one official id only).
 # forbes_innovation / dw_world / rfi_americas are
 # batch33 (promoted from unused backups).
-# france24_asia / al_monitor stay unregistered (replaced
-# in batch29; not live CAP slots; not registered as
-# backups). independent_world stays unregistered
-# (replaced in batch28; 429). cbs_world stays
-# unregistered (known inserted0 vs existing cbs_news).
+# france24_asia is batch39 (CEO knife re-add).
+# al_monitor stays unregistered (replaced in batch29;
+# not a live CAP slot). independent_world stays unregistered
+# (replaced in batch28; 429). cbs_world / france24_asia /
+# guardian_media are batch39.
 # nikkei / indian_express stay unregistered (empty desc
 # — product skipped). nikkei_asia stays unregistered
 # (title+link only). nyt_world_asia stays unregistered
@@ -1064,12 +1066,12 @@ _NYT_OPINION_GUARDIAN_FILM_PROPUBLICA_PRIMARY = {
 # guardian_stage are batch34 (promoted from unused
 # backups). nyt_books / guardian_books / npr_arts are
 # batch35 (promoted from unused backups).
-# france24_asia / al_monitor stay
-# unregistered (replaced in batch29; not live CAP slots;
-# not registered as backups). independent_world stays
-# unregistered (replaced in batch28; 429). cbs_world
-# stays unregistered (known inserted0 vs existing
-# cbs_news). nikkei / indian_express stay unregistered
+# france24_asia is batch39 (CEO knife re-add).
+# al_monitor stays unregistered (replaced in batch29;
+# not a live CAP slot). independent_world stays
+# unregistered (replaced in batch28; 429). cbs_world /
+# france24_asia / guardian_media are batch39. nikkei /
+# indian_express stay unregistered
 # (empty desc — product skipped). nikkei_asia stays
 # unregistered (title+link only). nyt_world_asia stays
 # unregistered (replaced in batch20). sky_tech /
@@ -1125,12 +1127,12 @@ _FORBES_INNOVATION_DW_WORLD_RFI_AMERICAS_PRIMARY = {
 # "Stage | The Guardian"; /us/stage/rss is 404 — not a
 # geo-edition swap). nyt_books / guardian_books /
 # npr_arts are batch35 (promoted from unused
-# backups). france24_asia / al_monitor stay
-# unregistered (replaced in batch29; not live CAP slots;
-# not registered as backups). independent_world stays
-# unregistered (replaced in batch28; 429). cbs_world
-# stays unregistered (known inserted0 vs existing
-# cbs_news). nikkei / indian_express stay unregistered
+# backups). france24_asia is batch39 (CEO knife re-add).
+# al_monitor stays unregistered (replaced in batch29;
+# not a live CAP slot). independent_world stays
+# unregistered (replaced in batch28; 429). cbs_world /
+# france24_asia / guardian_media are batch39. nikkei /
+# indian_express stay unregistered
 # (empty desc — product skipped). nikkei_asia stays
 # unregistered (title+link only). nyt_world_asia stays
 # unregistered (replaced in batch20). sky_tech /
@@ -1190,12 +1192,12 @@ _NYT_MOVIES_GUARDIAN_MUSIC_GUARDIAN_STAGE_PRIMARY = {
 # (nyt_economy hard-swapped in for npr_business).
 # nyt_realestate / guardian_lifeandstyle /
 # bbc_entertainment are batch38.
-# france24_asia / al_monitor stay unregistered
-# (replaced in batch29; not live CAP slots; not
-# registered as backups). independent_world stays
-# unregistered (replaced in batch28; 429). cbs_world
-# stays unregistered (known inserted0 vs existing
-# cbs_news). nikkei / indian_express stay unregistered
+# france24_asia is batch39 (CEO knife re-add).
+# al_monitor stays unregistered (replaced in
+# batch29; not a live CAP slot). independent_world stays
+# unregistered (replaced in batch28; 429). cbs_world /
+# france24_asia / guardian_media are batch39. nikkei /
+# indian_express stay unregistered
 # (empty desc — product skipped). nikkei_asia stays
 # unregistered (title+link only). nyt_world_asia stays
 # unregistered (replaced in batch20). sky_tech /
@@ -1262,12 +1264,12 @@ _NYT_BOOKS_GUARDIAN_BOOKS_NPR_ARTS_PRIMARY = {
 # invent next ids / do not register unused live-diff
 # backups (cnbc_top / bloomberg_markets /
 # guardian_economics).
-# france24_asia / al_monitor stay unregistered
-# (replaced in batch29; not live CAP slots; not
-# registered as backups). independent_world stays
-# unregistered (replaced in batch28; 429). cbs_world
-# stays unregistered (known inserted0 vs existing
-# cbs_news). nikkei / indian_express stay unregistered
+# france24_asia is batch39 (CEO knife re-add).
+# al_monitor stays unregistered (replaced in
+# batch29; not a live CAP slot). independent_world stays
+# unregistered (replaced in batch28; 429). cbs_world /
+# france24_asia / guardian_media are batch39. nikkei /
+# indian_express stay unregistered
 # (empty desc — product skipped). nikkei_asia stays
 # unregistered (title+link only). nyt_world_asia stays
 # unregistered (replaced in batch20). sky_tech /
@@ -1337,12 +1339,12 @@ _NYT_FOOD_GUARDIAN_TV_NPR_SCIENCE_PRIMARY = {
 # not invent next ids / do not register unused backups.
 # nyt_realestate / guardian_lifeandstyle /
 # bbc_entertainment are batch38.
-# france24_asia / al_monitor stay unregistered
-# (replaced in batch29; not live CAP slots; not
-# registered as backups). independent_world stays
-# unregistered (replaced in batch28; 429). cbs_world
-# stays unregistered (known inserted0 vs existing
-# cbs_news). nikkei / indian_express stay unregistered
+# france24_asia is batch39 (CEO knife re-add).
+# al_monitor stays unregistered (replaced in
+# batch29; not a live CAP slot). independent_world stays
+# unregistered (replaced in batch28; 429). cbs_world /
+# france24_asia / guardian_media are batch39. nikkei /
+# indian_express stay unregistered
 # (empty desc — product skipped). nikkei_asia stays
 # unregistered (title+link only). nyt_world_asia stays
 # unregistered (replaced in batch20). sky_tech /
@@ -1409,17 +1411,16 @@ _NYT_TRAVEL_GUARDIAN_FASHION_NYT_ECONOMY_PRIMARY = {
 # culture/rss.xml, and bbc.com/culture/feed.xml are 404
 # — do not use those). Live-diff winner on all three
 # primaries: HTTP 200 / ≥10 items — do not fall through
-# to unused backups cbs_world / france24_asia /
-# guardian_media (not registered). nyt_travel /
-# guardian_fashion / nyt_economy stay registered
-# (batch37 closed; nyt_economy thin-observe kept).
+# to unused backups (not registered this batch).
+# nyt_travel / guardian_fashion / nyt_economy stay
+# registered (batch37 closed; nyt_economy thin-observe
+# kept). cbs_world / france24_asia / guardian_media
+# are batch39 (CEO knife re-add after live-diff ≥10).
 # Unused backups were probed only — do not register
-# unused backups. france24_asia / al_monitor stay
-# unregistered (replaced in batch29; not live CAP slots;
-# not registered as backups). independent_world stays
-# unregistered (replaced in batch28; 429). cbs_world
-# stays unregistered (unused backup this batch; also
-# known inserted0 vs existing cbs_news). nikkei /
+# unused backups. al_monitor stays unregistered
+# (replaced in batch29; not a live CAP slot; not
+# registered as a backup). independent_world stays
+# unregistered (replaced in batch28; 429). nikkei /
 # indian_express stay unregistered (empty desc —
 # product skipped). nikkei_asia stays unregistered
 # (title+link only). nyt_world_asia stays unregistered
@@ -1447,7 +1448,82 @@ _NYT_REALESTATE_GUARDIAN_LIFEANDSTYLE_BBC_ENTERTAINMENT_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 122
+# CEO-approved CBS World / France 24 Asia / Guardian Media
+# RSS primaries (batch39). These three are the new adds.
+# CEO knife re-opens ids that were unused backups in
+# batch38 and previously held out: cbs_world (product
+# said probe OK; distinct from existing cbs_news
+# latest/rss/main), france24_asia (re-add after
+# batch29 daily-fetch inserted=0; live-diff now ≥10),
+# guardian_media (unused backup in batch38).
+# cbs_world is a same-outlet CBS section distinct from
+# existing cbs_news. Locked official cbs_* feed pattern
+# https://www.cbsnews.com/latest/rss/world (channel
+# title "World - CBSNews.com"). world-news is 406 —
+# do not use that. france24_asia is a same-outlet
+# France 24 English section distinct from existing
+# france24_en (europe) / france24_americas. Locked
+# official france24_* pattern
+# https://www.france24.com/en/asia-pacific/rss
+# (channel title "News from Asia-Pacific - Latest
+# headlines and news reports - France 24"). /en/asia/rss
+# is 404 — do not use that. /en/rss is the locked-away
+# front page (batch23). guardian_media is a same-outlet
+# Guardian section distinct from existing
+# guardian_world / guardian_technology / guardian_us /
+# guardian_environment / guardian_business /
+# guardian_science / guardian_australia /
+# guardian_americas / guardian_uk / guardian_europe /
+# guardian_global_dev / guardian_law / guardian_society /
+# guardian_cities / guardian_world_africa /
+# guardian_politics / guardian_middle_east /
+# guardian_sport / guardian_film / guardian_music /
+# guardian_stage / guardian_books / guardian_tv /
+# guardian_fashion / guardian_lifeandstyle. Locked
+# official guardian_* pattern
+# https://www.theguardian.com/media/rss (channel title
+# "Media | The Guardian"). /uk/media/rss is a thinner
+# geo-edition — not a swap; lock the section root.
+# /us/media/rss mirrors the section root. Live-diff
+# winner on all three primaries: HTTP 200 / ≥10 items
+# — do not fall through to unused backups cnbc_top /
+# bloomberg_markets / guardian_economics (not
+# registered). nyt_realestate / guardian_lifeandstyle /
+# bbc_entertainment stay registered (batch38 closed;
+# bbc_entertainment thin-observe kept). Unused backups
+# were probed only — do not register unused backups.
+# al_monitor stays unregistered (replaced in batch29;
+# not a live CAP slot; not registered as a backup).
+# independent_world stays unregistered (replaced in
+# batch28; 429). npr_business stays unregistered
+# (hard-swapped in batch37). nikkei / indian_express
+# stay unregistered (empty desc — product skipped).
+# nikkei_asia stays unregistered (title+link only).
+# nyt_world_asia stays unregistered (replaced in
+# batch20). sky_tech / restofworld / ars_science /
+# thehill / politico / abc_intl / sunday_review /
+# nyt_sports stay unregistered (not this batch;
+# politico is X-handle only). NEWS_SOURCE_CAP
+# display stays 6 — no CAP code change. No X this batch.
+_CBS_WORLD_FRANCE24_ASIA_GUARDIAN_MEDIA_PRIMARY = {
+    "cbs_world": {
+        "name": "CBS News World",
+        "feed_url": "https://www.cbsnews.com/latest/rss/world",
+        "category": "国际",
+    },
+    "france24_asia": {
+        "name": "France 24 Asia-Pacific",
+        "feed_url": "https://www.france24.com/en/asia-pacific/rss",
+        "category": "国际",
+    },
+    "guardian_media": {
+        "name": "Guardian Media",
+        "feed_url": "https://www.theguardian.com/media/rss",
+        "category": "综合",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 125
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -3774,9 +3850,7 @@ def test_cbc_cna_elpais_primaries_registered():
     # replaced france24_asia / al_monitor after daily-fetch
     # inserted=0). Unused backups / replaced / title+link-only
     # feeds stay unregistered.
-    assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
-    assert "france24_asia" not in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -3892,14 +3966,11 @@ def test_yonhap_anadolu_trt_primaries_registered():
     assert by_id["anadolu_world"].feed_url != by_id["trt_world"].feed_url
     # Unused backups / replaced / title+link-only feeds stay unregistered.
     # independent_world is the daily-fetch RED slot — do not keep live.
-    # cbs_world is the known inserted0 vs existing cbs_news — do not add.
-    # france24_asia / al_monitor are the #91 daily-fetch RED slots —
-    # do not keep live (not registered as backups).
+    # cbs_world / france24_asia / guardian_media are batch39.
+    # al_monitor stays unregistered (replaced in batch29; not a live CAP slot).
     # nikkei / indian_express stay unregistered (empty desc — product skipped).
     # semafor / france24_americas / middleeasteye are batch29 (primaries).
-    assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
-    assert "france24_asia" not in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -4006,14 +4077,11 @@ def test_semafor_france24_americas_middleeasteye_primaries_registered():
     assert by_id["semafor"].feed_url != by_id["middleeasteye"].feed_url
     assert by_id["france24_americas"].feed_url != by_id["middleeasteye"].feed_url
     # Unused backups / replaced / title+link-only feeds stay unregistered.
-    # france24_asia / al_monitor are the #91 daily-fetch RED slots —
-    # do not keep live (not registered as backups).
+    # al_monitor stays unregistered (replaced in batch29; not a live CAP slot).
     # independent_world is the daily-fetch RED slot — do not keep live.
-    # cbs_world is the known inserted0 vs existing cbs_news — do not add.
+    # cbs_world / france24_asia / guardian_media are batch39.
     # nikkei / indian_express are empty-desc — product skipped.
-    assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
-    assert "france24_asia" not in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -4120,14 +4188,11 @@ def test_scmp_business_rfi_asia_theconversation_primaries_registered():
     # Unused backups / replaced / title+link-only feeds stay unregistered.
     # forbes_innovation is batch33 (promoted from unused backup).
     # propublica is batch32 (promoted from unused backup).
-    # france24_asia / al_monitor are the #91 daily-fetch RED slots —
-    # do not keep live (not registered as backups).
+    # al_monitor stays unregistered (replaced in batch29; not a live CAP slot).
     # independent_world is the daily-fetch RED slot — do not keep live.
-    # cbs_world is the known inserted0 vs existing cbs_news — do not add.
+    # cbs_world / france24_asia / guardian_media are batch39.
     # nikkei / indian_express are empty-desc — product skipped.
-    assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
-    assert "france24_asia" not in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -4269,15 +4334,13 @@ def test_nyt_arts_guardian_sport_intercept_primaries_registered():
     assert by_id["guardian_sport"].feed_url != by_id["intercept"].feed_url
     # Unused backups / replaced / title+link-only feeds stay unregistered.
     # nyt_opinion / guardian_film are batch32 (promoted from unused
-    # backups). france24_asia / al_monitor are the #91 daily-fetch
-    # RED slots — do not keep live (not registered as backups).
-    # independent_world is the daily-fetch RED slot — do not keep live.
-    # cbs_world is the known inserted0 vs existing cbs_news — do not add.
-    # nikkei / indian_express are empty-desc — product skipped.
+    # backups). cbs_world / france24_asia / guardian_media are
+    # batch39. al_monitor stays unregistered (replaced in
+    # batch29; not a live CAP slot). independent_world is the
+    # daily-fetch RED slot — do not keep live. nikkei /
+    # indian_express are empty-desc — product skipped.
     # sky_tech / restofworld / ars_science are not this batch.
-    assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
-    assert "france24_asia" not in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -4425,17 +4488,15 @@ def test_nyt_opinion_guardian_film_propublica_primaries_registered():
     assert by_id["guardian_film"].feed_url != by_id["propublica"].feed_url
     # Unused backups / replaced / title+link-only feeds stay unregistered.
     # forbes_innovation / dw_world / rfi_americas are batch33
-    # (promoted from unused backups). france24_asia / al_monitor
-    # are the #91 daily-fetch RED slots — do not keep live (not
-    # registered as backups). independent_world is the daily-fetch
-    # RED slot — do not keep live. cbs_world is the known inserted0
-    # vs existing cbs_news — do not add. nikkei / indian_express
-    # are empty-desc — product skipped. sky_tech / restofworld /
-    # ars_science / thehill / politico are not this batch
-    # (politico is X-handle only).
-    assert "cbs_world" not in by_id
+    # (promoted from unused backups). cbs_world / france24_asia /
+    # guardian_media are batch39. al_monitor stays unregistered
+    # (replaced in batch29; not a live CAP slot).
+    # independent_world is the daily-fetch RED slot — do not
+    # keep live. nikkei / indian_express are empty-desc —
+    # product skipped. sky_tech / restofworld / ars_science /
+    # thehill / politico are not this batch (politico is
+    # X-handle only).
     assert "independent_world" not in by_id
-    assert "france24_asia" not in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -4543,18 +4604,15 @@ def test_forbes_innovation_dw_world_rfi_americas_primaries_registered():
     # nyt_movies / guardian_music / guardian_stage are batch34
     # (promoted from unused backups). nyt_books /
     # guardian_books / npr_arts are batch35 (promoted from
-    # unused backups). france24_asia / al_monitor
-    # are the #91 daily-fetch RED slots — do not keep live
-    # (not registered as backups). independent_world is
-    # the daily-fetch RED slot — do not keep live.
-    # cbs_world is the known inserted0 vs existing
-    # cbs_news — do not add. nikkei / indian_express are
+    # unused backups). cbs_world / france24_asia /
+    # guardian_media are batch39. al_monitor stays
+    # unregistered (replaced in batch29; not a live CAP
+    # slot). independent_world is the daily-fetch RED
+    # slot — do not keep live. nikkei / indian_express are
     # empty-desc — product skipped. sky_tech /
     # restofworld / ars_science / thehill / politico are
     # not this batch (politico is X-handle only).
-    assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
-    assert "france24_asia" not in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -4736,17 +4794,15 @@ def test_nyt_movies_guardian_music_guardian_stage_primaries_registered():
     assert by_id["guardian_music"].feed_url != by_id["guardian_stage"].feed_url
     # Unused backups / replaced / title+link-only feeds stay unregistered.
     # nyt_books / guardian_books / npr_arts are batch35 (promoted
-    # from unused backups). france24_asia / al_monitor are the #91
-    # daily-fetch RED slots — do not keep live (not registered as
-    # backups). independent_world is the daily-fetch RED slot —
-    # do not keep live. cbs_world is the known inserted0 vs
-    # existing cbs_news — do not add. nikkei / indian_express are
-    # empty-desc — product skipped. sky_tech / restofworld /
-    # ars_science / thehill / politico / abc_intl /
-    # sunday_review are not this batch (politico is X-handle only).
-    assert "cbs_world" not in by_id
+    # from unused backups). cbs_world / france24_asia /
+    # guardian_media are batch39. al_monitor stays unregistered
+    # (replaced in batch29; not a live CAP slot).
+    # independent_world is the daily-fetch RED slot — do not
+    # keep live. nikkei / indian_express are empty-desc —
+    # product skipped. sky_tech / restofworld / ars_science /
+    # thehill / politico / abc_intl / sunday_review are not
+    # this batch (politico is X-handle only).
     assert "independent_world" not in by_id
-    assert "france24_asia" not in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -4923,17 +4979,14 @@ def test_nyt_books_guardian_books_npr_arts_primaries_registered():
     # npr_business). nyt_realestate / guardian_lifeandstyle /
     # bbc_entertainment are batch38.
     # Unused backups list is empty this batch.
-    # france24_asia / al_monitor are the #91 daily-fetch
-    # RED slots — do not keep live (not registered as backups).
+    # al_monitor stays unregistered (replaced in batch29; not a live CAP slot).
     # independent_world is the daily-fetch RED slot — do not keep live.
-    # cbs_world is the known inserted0 vs existing cbs_news — do not add.
+    # cbs_world / france24_asia / guardian_media are batch39.
     # nikkei / indian_express are empty-desc — product skipped.
     # sky_tech / restofworld / ars_science / thehill / politico /
     # abc_intl / sunday_review / nyt_sports
     # are not this batch (politico is X-handle only).
-    assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
-    assert "france24_asia" not in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -5121,17 +5174,14 @@ def test_nyt_food_guardian_tv_npr_science_primaries_registered():
     # bbc_entertainment are batch38. Unused backups list
     # is empty this batch — mention only the
     # still-unregistered replaced / empty-desc / not-this-batch ids.
-    # france24_asia / al_monitor are the #91 daily-fetch
-    # RED slots — do not keep live (not registered as backups).
+    # al_monitor stays unregistered (replaced in batch29; not a live CAP slot).
     # independent_world is the daily-fetch RED slot — do not keep live.
-    # cbs_world is the known inserted0 vs existing cbs_news — do not add.
+    # cbs_world / france24_asia / guardian_media are batch39.
     # nikkei / indian_express are empty-desc — product skipped.
     # sky_tech / restofworld / ars_science / thehill / politico /
     # abc_intl / sunday_review / nyt_sports
     # are not this batch (politico is X-handle only).
-    assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
-    assert "france24_asia" not in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -5342,22 +5392,19 @@ def test_nyt_travel_guardian_fashion_nyt_economy_primaries_registered():
     # backups cnbc_top / bloomberg_markets / guardian_economics
     # stay unregistered (nyt_economy won). nyt_realestate /
     # guardian_lifeandstyle / bbc_entertainment are batch38.
-    # france24_asia / al_monitor are the #91 daily-fetch RED
-    # slots — do not keep live (not registered as backups).
-    # independent_world is the daily-fetch RED slot — do not
-    # keep live. cbs_world is the known inserted0 vs existing
-    # cbs_news — do not add. nikkei / indian_express are
-    # empty-desc — product skipped. sky_tech / restofworld /
-    # ars_science / thehill / politico / abc_intl /
-    # sunday_review / nyt_sports are not this batch
-    # (politico is X-handle only).
+    # cbs_world / france24_asia / guardian_media are batch39.
+    # al_monitor stays unregistered (replaced in batch29;
+    # not a live CAP slot). independent_world is the
+    # daily-fetch RED slot — do not keep live. nikkei /
+    # indian_express are empty-desc — product skipped.
+    # sky_tech / restofworld / ars_science / thehill /
+    # politico / abc_intl / sunday_review / nyt_sports
+    # are not this batch (politico is X-handle only).
     assert "npr_business" not in by_id
     assert "cnbc_top" not in by_id
     assert "bloomberg_markets" not in by_id
     assert "guardian_economics" not in by_id
-    assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
-    assert "france24_asia" not in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -5602,28 +5649,23 @@ def test_nyt_realestate_guardian_lifeandstyle_bbc_entertainment_primaries_regist
     assert by_id["nyt_realestate"].feed_url != by_id["bbc_entertainment"].feed_url
     assert by_id["guardian_lifeandstyle"].feed_url != by_id["bbc_entertainment"].feed_url
     # Unused backups / replaced / title+link-only / empty-desc /
-    # not-this-batch feeds stay unregistered. Live-diff backups
-    # cbs_world / france24_asia / guardian_media stay
-    # unregistered (all three primaries won ≥10). npr_business
-    # was hard-swapped out in batch37 — do not keep live and
-    # do not register as a backup. france24_asia / al_monitor
-    # are the #91 daily-fetch RED slots — do not keep live
-    # (not registered as backups). independent_world is the
-    # daily-fetch RED slot — do not keep live. cbs_world is
-    # an unused backup this batch and the known inserted0 vs
-    # existing cbs_news — do not add. nikkei / indian_express
-    # are empty-desc — product skipped. sky_tech /
+    # not-this-batch feeds stay unregistered. cbs_world /
+    # france24_asia / guardian_media are batch39 (CEO knife
+    # re-add after live-diff ≥10). npr_business was
+    # hard-swapped out in batch37 — do not keep live and
+    # do not register as a backup. al_monitor stays
+    # unregistered (replaced in batch29; not a live CAP
+    # slot). independent_world is the daily-fetch RED slot
+    # — do not keep live. nikkei / indian_express are
+    # empty-desc — product skipped. sky_tech /
     # restofworld / ars_science / thehill / politico /
     # abc_intl / sunday_review / nyt_sports are not this
     # batch (politico is X-handle only).
-    assert "guardian_media" not in by_id
     assert "npr_business" not in by_id
     assert "cnbc_top" not in by_id
     assert "bloomberg_markets" not in by_id
     assert "guardian_economics" not in by_id
-    assert "cbs_world" not in by_id
     assert "independent_world" not in by_id
-    assert "france24_asia" not in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -5690,6 +5732,175 @@ def test_nyt_realestate_guardian_lifeandstyle_bbc_entertainment_feeds_live_http_
         )
 
 
+def test_cbs_world_france24_asia_guardian_media_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "cbs_world" in by_id
+    assert by_id["cbs_world"].feed_url == "https://www.cbsnews.com/latest/rss/world"
+    assert "france24_asia" in by_id
+    assert by_id["france24_asia"].feed_url == (
+        "https://www.france24.com/en/asia-pacific/rss"
+    )
+    assert "guardian_media" in by_id
+    assert by_id["guardian_media"].feed_url == "https://www.theguardian.com/media/rss"
+    assert "cbs_news" in by_id
+    assert by_id["cbs_news"].feed_url == "https://www.cbsnews.com/latest/rss/main"
+    assert "france24_en" in by_id
+    assert "france24_americas" in by_id
+    assert "nyt_realestate" in by_id
+    assert "guardian_lifeandstyle" in by_id
+    assert "bbc_entertainment" in by_id
+    assert "guardian_world" in by_id
+    assert "guardian_technology" in by_id
+    assert "guardian_us" in by_id
+    assert "guardian_environment" in by_id
+    assert "guardian_business" in by_id
+    assert "guardian_science" in by_id
+    assert "guardian_australia" in by_id
+    assert "guardian_americas" in by_id
+    assert "guardian_uk" in by_id
+    assert "guardian_europe" in by_id
+    assert "guardian_global_dev" in by_id
+    assert "guardian_law" in by_id
+    assert "guardian_society" in by_id
+    assert "guardian_cities" in by_id
+    assert "guardian_world_africa" in by_id
+    assert "guardian_politics" in by_id
+    assert "guardian_middle_east" in by_id
+    assert "guardian_sport" in by_id
+    assert "guardian_film" in by_id
+    assert "guardian_music" in by_id
+    assert "guardian_stage" in by_id
+    assert "guardian_books" in by_id
+    assert "guardian_tv" in by_id
+    assert "guardian_fashion" in by_id
+    assert by_id["nyt_realestate"].feed_url == (
+        "https://rss.nytimes.com/services/xml/rss/nyt/RealEstate.xml"
+    )
+    assert by_id["guardian_lifeandstyle"].feed_url == (
+        "https://www.theguardian.com/lifeandstyle/rss"
+    )
+    assert by_id["bbc_entertainment"].feed_url == (
+        "https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml"
+    )
+    assert by_id["cbs_world"].feed_url != by_id["cbs_news"].feed_url
+    assert by_id["cbs_world"].feed_url != "https://www.cbsnews.com/latest/rss/world-news"
+    assert by_id["france24_asia"].feed_url != by_id["france24_en"].feed_url
+    assert by_id["france24_asia"].feed_url != by_id["france24_americas"].feed_url
+    assert by_id["france24_asia"].feed_url != "https://www.france24.com/en/rss"
+    assert by_id["france24_asia"].feed_url != "https://www.france24.com/en/europe/rss"
+    assert by_id["france24_asia"].feed_url != "https://www.france24.com/en/americas/rss"
+    assert by_id["france24_asia"].feed_url != "https://www.france24.com/en/asia/rss"
+    assert by_id["guardian_media"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_technology"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_us"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_environment"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_business"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_australia"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_americas"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_uk"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_europe"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_global_dev"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_law"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_society"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_cities"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_world_africa"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_politics"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_middle_east"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_sport"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_film"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_music"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_stage"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_books"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_tv"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_fashion"].feed_url
+    assert by_id["guardian_media"].feed_url != by_id["guardian_lifeandstyle"].feed_url
+    assert by_id["guardian_media"].feed_url != "https://www.theguardian.com/uk/media/rss"
+    assert by_id["guardian_media"].feed_url != "https://www.theguardian.com/us/media/rss"
+    assert by_id["cbs_world"].feed_url != by_id["france24_asia"].feed_url
+    assert by_id["cbs_world"].feed_url != by_id["guardian_media"].feed_url
+    assert by_id["france24_asia"].feed_url != by_id["guardian_media"].feed_url
+    # Unused backups / replaced / title+link-only / empty-desc /
+    # not-this-batch feeds stay unregistered. Live-diff backups
+    # cnbc_top / bloomberg_markets / guardian_economics stay
+    # unregistered (all three primaries won ≥10). npr_business
+    # was hard-swapped out in batch37 — do not keep live and
+    # do not register as a backup. al_monitor stays
+    # unregistered (replaced in batch29; not a live CAP slot).
+    # independent_world is the daily-fetch RED slot — do not
+    # keep live. nikkei / indian_express are empty-desc —
+    # product skipped. sky_tech / restofworld / ars_science /
+    # thehill / politico / abc_intl / sunday_review /
+    # nyt_sports are not this batch (politico is X-handle only).
+    assert "npr_business" not in by_id
+    assert "cnbc_top" not in by_id
+    assert "bloomberg_markets" not in by_id
+    assert "guardian_economics" not in by_id
+    assert "independent_world" not in by_id
+    assert "al_monitor" not in by_id
+    assert "indian_express" not in by_id
+    assert "nikkei" not in by_id
+    assert "nyt_world_asia" not in by_id
+    assert "nikkei_asia" not in by_id
+    assert "sky_tech" not in by_id
+    assert "restofworld" not in by_id
+    assert "ars_science" not in by_id
+    assert "thehill" not in by_id
+    assert "politico" not in by_id
+    assert "abc_intl" not in by_id
+    assert "sunday_review" not in by_id
+    assert "nyt_sports" not in by_id
+    for source_id, expected in _CBS_WORLD_FRANCE24_ASIA_GUARDIAN_MEDIA_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_cbs_world_france24_asia_guardian_media_feeds_live_http_200():
+    """Hit the three batch39 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _CBS_WORLD_FRANCE24_ASIA_GUARDIAN_MEDIA_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (cbs_world / france24_asia / guardian_media)
+        # uses the un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0. Product
+        # lock requires non-empty RSS description/summary on these
+        # three feeds (all live-diff winners were 100% nonempty).
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -5731,6 +5942,7 @@ if __name__ == "__main__":
     test_nyt_food_guardian_tv_npr_science_primaries_registered()
     test_nyt_travel_guardian_fashion_nyt_economy_primaries_registered()
     test_nyt_realestate_guardian_lifeandstyle_bbc_entertainment_primaries_registered()
+    test_cbs_world_france24_asia_guardian_media_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -5768,4 +5980,5 @@ if __name__ == "__main__":
     test_nyt_food_guardian_tv_npr_science_feeds_live_http_200()
     test_nyt_travel_guardian_fashion_nyt_economy_feeds_live_http_200()
     test_nyt_realestate_guardian_lifeandstyle_bbc_entertainment_feeds_live_http_200()
+    test_cbs_world_france24_asia_guardian_media_feeds_live_http_200()
     print("✓ source registry tests PASSED")

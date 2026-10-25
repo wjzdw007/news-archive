@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（122 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（125 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -128,6 +128,9 @@
 | `nyt_realestate` | NYT Real Estate | https://rss.nytimes.com/services/xml/rss/nyt/RealEstate.xml | primary |
 | `guardian_lifeandstyle` | Guardian Lifestyle | https://www.theguardian.com/lifeandstyle/rss | primary |
 | `bbc_entertainment` | BBC Entertainment | https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml | primary |
+| `cbs_world` | CBS News World | https://www.cbsnews.com/latest/rss/world | primary |
+| `france24_asia` | France 24 Asia-Pacific | https://www.france24.com/en/asia-pacific/rss | primary |
+| `guardian_media` | Guardian Media | https://www.theguardian.com/media/rss | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
