@@ -1101,6 +1101,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="war_on_rocks",
+        name="War on the Rocks",
+        feed_url="https://warontherocks.com/feed/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="canary_media",
+        name="Canary Media",
+        feed_url="https://www.canarymedia.com/rss.rss",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="space_com",
+        name="Space.com",
+        feed_url="https://www.space.com/feeds.xml",
+        category="科学",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
