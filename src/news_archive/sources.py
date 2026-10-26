@@ -1626,6 +1626,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="atlantic_council",
+        name="Atlantic Council",
+        feed_url="https://www.atlanticcouncil.org/feed/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="balkan_insight",
+        name="Balkan Insight",
+        feed_url="https://balkaninsight.com/feed/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="tomshardware",
+        name="Tom's Hardware",
+        feed_url="https://www.tomshardware.com/feeds.xml",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
