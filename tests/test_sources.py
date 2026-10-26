@@ -2495,9 +2495,10 @@ _FOREIGN_POLICY_FT_WORLD_ABC_AUSTRALIA_PRIMARY = {
 # guardian_games stays unregistered (product:
 # games thin / 不进主源). sunday_review / cnbc
 # (403 known) / ap stay unregistered (product
-# lock). NEWS_SOURCE_CAP display stays 6 — no
-# CAP code change. No X this batch. No LLM this
-# batch.
+# lock). the_diplomat / stat_news /
+# ieee_spectrum are batch51. NEWS_SOURCE_CAP
+# display stays 6 — no CAP code change. No X
+# this batch. No LLM this batch.
 _WAR_ON_ROCKS_CANARY_MEDIA_SPACE_COM_PRIMARY = {
     "war_on_rocks": {
         "name": "War on the Rocks",
@@ -2516,7 +2517,120 @@ _WAR_ON_ROCKS_CANARY_MEDIA_SPACE_COM_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 158
+# CEO-approved The Diplomat / STAT News / IEEE
+# Spectrum RSS primaries (batch51). These three
+# are the new adds after #106 (batch50 CLOSED
+# with war_on_rocks / canary_media /
+# space_com) on tip 20a33b1 after #107
+# (digiday_media hard-swap live). Do not
+# re-touch those #106 winners.
+# digiday_media stays live (nyt_media hung
+# after #107 URL-collision hard-swap;
+# guardian_media stays hung).
+# the_diplomat is the official The Diplomat
+# site-wide WordPress RSS (no prior
+# the_diplomat / diplomat_* id). Locked official
+# https://thediplomat.com/feed/ (channel title
+# "The Diplomat"). /feed (no slash) is the same
+# body. /rss / /feed/rss/ urllib 301 to /feed/
+# but httpx 403 — lock /feed/. /rss.xml /
+# /feed.xml are urllib 404 / httpx 403.
+# www. apex /feed/ is HTML homepage (urllib)
+# / httpx 403. category/asia-defense/feed/ is
+# a different Asia Defense section. topics/
+# asia-defense/feed/ is 0 items. feedburner
+# the-diplomat is title+link only (0 nonempty).
+# /feed/atom/ is 500. Live-diff winner: HTTP
+# 200 / 96 nonempty / 96 insertable (httpx
+# fetch_source + urllib). Product lock ≥10
+# nonempty — keep. Distinct from live
+# foreign_policy / war_on_rocks.
+# stat_news is the official STAT News
+# site-wide WordPress RSS (no prior stat_*
+# id). Locked official
+# https://www.statnews.com/feed/ (channel
+# title "STAT"). /feed (no slash) / /rss /
+# /feed/rss/ / apex statnews.com/feed/ 301 to
+# /feed/. /rss.xml / /feed.xml / feedburner
+# are 404. category/health/feed/ is a
+# different Health section (channel "STAT
+# Health - Science, medicine and healthcare
+# news"). Live-diff winner: HTTP 200 / 20
+# nonempty / 20 insertable. Distinct from
+# live nyt_health / bbc_health /
+# guardian_science / npr_science.
+# ieee_spectrum is the official IEEE Spectrum
+# site-wide RSS (no prior ieee_* / spectrum_*
+# id). Locked official
+# https://spectrum.ieee.org/feeds/feed.rss
+# (channel title "IEEE Spectrum"). /rss and
+# /rss/fulltext 301 to /feeds/feed.rss (same
+# body). /feed and /feed/ are HTML homepage
+# (0 insertable). /feeds/rss / /feeds/fulltext
+# / /rss.xml / /feed.xml / /feeds.xml /
+# /feeds/atom.xml are 404. feedburner
+# IeeeSpectrum is the same body via
+# FeedBurner — lock the official path.
+# www.spectrum.ieee.org SSL hostname
+# mismatch. Live-diff winner: HTTP 200 / 30
+# nonempty / 30 insertable. Distinct from
+# live mit_tr / ars_technica /
+# bbc_technology / nyt_technology. Not added
+# to the tech/AI whitelist.
+# bbc_australia official
+# feeds.bbci.co.uk/news/world/australia/rss.xml
+# is HTTP 200 / 17 nonempty (probed only;
+# unused because all three primaries won).
+# /news/australia/rss.xml and
+# /news/world/asia/australia/rss.xml are 404.
+# bloomberg_technology official
+# feeds.bloomberg.com/technology/news.rss is
+# HTTP 200 / 15 nonempty (probed only; 302s
+# to www.bloomberg.com/feeds/technology/news.rss
+# — lock the feeds.bloomberg.com path to
+# match bloomberg_markets). /tech/news.rss
+# and /technology.rss are 404. Distinct from
+# live bloomberg_markets. ars_science official
+# feeds.arstechnica.com/arstechnica/science
+# is HTTP 200 / 20 nonempty (probed only;
+# same body as arstechnica.com/science/feed/).
+# Distinct from live ars_technica index.
+# war_on_rocks / canary_media / space_com
+# stay registered (batch50 closed).
+# foreign_policy / ft_world / abc_australia
+# stay registered (batch49 closed).
+# politico_politics / dw_business /
+# france24_culture stay registered (batch48
+# closed). atlantic / smh_national /
+# guardian_education stay registered
+# (batch47 closed). digiday_media stays
+# registered (#107). nyt_media /
+# guardian_media stay hung. guardian_games
+# stays unregistered (product: games thin /
+# 不进主源). sunday_review / cnbc (403
+# known) / ap stay unregistered (product
+# lock). NEWS_SOURCE_CAP display stays 6 —
+# no CAP code change. No X this batch. No
+# LLM this batch. Not tech/AI whitelist.
+_THE_DIPLOMAT_STAT_NEWS_IEEE_SPECTRUM_PRIMARY = {
+    "the_diplomat": {
+        "name": "The Diplomat",
+        "feed_url": "https://thediplomat.com/feed/",
+        "category": "国际",
+    },
+    "stat_news": {
+        "name": "STAT News",
+        "feed_url": "https://www.statnews.com/feed/",
+        "category": "科学",
+    },
+    "ieee_spectrum": {
+        "name": "IEEE Spectrum",
+        "feed_url": "https://spectrum.ieee.org/feeds/feed.rss",
+        "category": "硬科技",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 161
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -8664,7 +8778,9 @@ def test_politico_politics_dw_business_france24_culture_primaries_registered():
     # batch49 (ft_world promoted after pbs_newshour
     # CloudFront 202). war_on_rocks / canary_media /
     # space_com are batch50 (all three primaries
-    # won). pbs_newshour / restofworld /
+    # won). the_diplomat / stat_news /
+    # ieee_spectrum are batch51 (all three
+    # primaries won). pbs_newshour / restofworld /
     # economist_intl stay unregistered.
     assert "foreign_policy" in by_id
     assert "ft_world" in by_id
@@ -8672,6 +8788,9 @@ def test_politico_politics_dw_business_france24_culture_primaries_registered():
     assert "war_on_rocks" in by_id
     assert "canary_media" in by_id
     assert "space_com" in by_id
+    assert "the_diplomat" in by_id
+    assert "stat_news" in by_id
+    assert "ieee_spectrum" in by_id
     assert "pbs_newshour" not in by_id
     assert "economist_intl" not in by_id
     assert "bbc_australia" not in by_id
@@ -8780,6 +8899,8 @@ def test_foreign_policy_ft_world_abc_australia_primaries_registered():
     # hung (nyt_media hard-swapped to digiday_media
     # after URL collision; #107). war_on_rocks /
     # canary_media / space_com are batch50.
+    # the_diplomat / stat_news / ieee_spectrum
+    # are batch51.
     assert "pbs_newshour" not in by_id
     assert "restofworld" not in by_id
     assert "economist_intl" not in by_id
@@ -8789,6 +8910,9 @@ def test_foreign_policy_ft_world_abc_australia_primaries_registered():
     assert "war_on_rocks" in by_id
     assert "canary_media" in by_id
     assert "space_com" in by_id
+    assert "the_diplomat" in by_id
+    assert "stat_news" in by_id
+    assert "ieee_spectrum" in by_id
     assert "abc_intl" not in by_id
     assert by_id["foreign_policy"].feed_url != "https://foreignpolicy.com/feed"
     assert by_id["foreign_policy"].feed_url != "https://foreignpolicy.com/rss"
@@ -8902,6 +9026,8 @@ def test_war_on_rocks_canary_media_space_com_primaries_registered():
     assert by_id["space_com"].feed_url == "https://www.space.com/feeds.xml"
     # #105 winners stay registered and unchanged.
     # #107 hard-swap: digiday_media live, nyt_media hung.
+    # batch51: the_diplomat / stat_news /
+    # ieee_spectrum stay registered.
     assert "foreign_policy" in by_id
     assert "ft_world" in by_id
     assert "abc_australia" in by_id
@@ -8918,6 +9044,9 @@ def test_war_on_rocks_canary_media_space_com_primaries_registered():
     assert "bbc_science" in by_id
     assert "guardian_science" in by_id
     assert "npr_science" in by_id
+    assert "the_diplomat" in by_id
+    assert "stat_news" in by_id
+    assert "ieee_spectrum" in by_id
     # nyt_media / guardian_media hung after #107.
     # Unused backups / not-fetch-compatible /
     # not-this-batch feeds stay unregistered.
@@ -9026,6 +9155,184 @@ def test_war_on_rocks_canary_media_space_com_feeds_live_http_200():
         )
 
 
+def test_the_diplomat_stat_news_ieee_spectrum_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "the_diplomat" in by_id
+    assert by_id["the_diplomat"].feed_url == "https://thediplomat.com/feed/"
+    assert "stat_news" in by_id
+    assert by_id["stat_news"].feed_url == "https://www.statnews.com/feed/"
+    assert "ieee_spectrum" in by_id
+    assert by_id["ieee_spectrum"].feed_url == (
+        "https://spectrum.ieee.org/feeds/feed.rss"
+    )
+    # #106 winners stay registered and unchanged.
+    # #107 hard-swap: digiday_media live, nyt_media hung.
+    assert "war_on_rocks" in by_id
+    assert "canary_media" in by_id
+    assert "space_com" in by_id
+    assert "foreign_policy" in by_id
+    assert "ft_world" in by_id
+    assert "abc_australia" in by_id
+    assert "politico_politics" in by_id
+    assert "dw_business" in by_id
+    assert "france24_culture" in by_id
+    assert "atlantic" in by_id
+    assert "smh_national" in by_id
+    assert "guardian_education" in by_id
+    assert "digiday_media" in by_id
+    assert "time_top" in by_id
+    assert "nyt_obituaries" in by_id
+    assert "nyt_health" in by_id
+    assert "bbc_health" in by_id
+    assert "guardian_science" in by_id
+    assert "npr_science" in by_id
+    assert "mit_tr" in by_id
+    assert "ars_technica" in by_id
+    assert "bbc_technology" in by_id
+    assert "nyt_technology" in by_id
+    assert "bloomberg_markets" in by_id
+    # nyt_media / guardian_media hung after #107.
+    # Unused backups / not-this-batch feeds stay
+    # unregistered. bbc_australia /
+    # bloomberg_technology / ars_science were
+    # live-diff backups (HTTP 200 / ≥10 nonempty)
+    # — unused because all three primaries won.
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "bbc_australia" not in by_id
+    assert "bloomberg_technology" not in by_id
+    assert "ars_science" not in by_id
+    assert "the_register" not in by_id
+    assert "asia_times" not in by_id
+    assert "allafrica" not in by_id
+    assert "pbs_newshour" not in by_id
+    assert "restofworld" not in by_id
+    assert "economist_intl" not in by_id
+    assert by_id["the_diplomat"].feed_url != "https://thediplomat.com/feed"
+    assert by_id["the_diplomat"].feed_url != "https://thediplomat.com/rss"
+    assert by_id["the_diplomat"].feed_url != "https://thediplomat.com/rss.xml"
+    assert by_id["the_diplomat"].feed_url != "https://thediplomat.com/feed/rss/"
+    assert by_id["the_diplomat"].feed_url != "https://thediplomat.com/feed.xml"
+    assert by_id["the_diplomat"].feed_url != "https://www.thediplomat.com/feed/"
+    assert by_id["the_diplomat"].feed_url != (
+        "https://thediplomat.com/category/asia-defense/feed/"
+    )
+    assert by_id["the_diplomat"].feed_url != (
+        "https://thediplomat.com/topics/asia-defense/feed/"
+    )
+    assert by_id["the_diplomat"].feed_url != (
+        "https://feeds.feedburner.com/the-diplomat"
+    )
+    assert by_id["the_diplomat"].feed_url != "https://thediplomat.com/feed/atom/"
+    assert by_id["the_diplomat"].feed_url != by_id["foreign_policy"].feed_url
+    assert by_id["the_diplomat"].feed_url != by_id["war_on_rocks"].feed_url
+    assert by_id["stat_news"].feed_url != "https://www.statnews.com/feed"
+    assert by_id["stat_news"].feed_url != "https://www.statnews.com/rss"
+    assert by_id["stat_news"].feed_url != "https://www.statnews.com/rss.xml"
+    assert by_id["stat_news"].feed_url != "https://www.statnews.com/feed/rss/"
+    assert by_id["stat_news"].feed_url != "https://statnews.com/feed/"
+    assert by_id["stat_news"].feed_url != "https://www.statnews.com/feed.xml"
+    assert by_id["stat_news"].feed_url != "https://feeds.feedburner.com/statnews"
+    assert by_id["stat_news"].feed_url != (
+        "https://www.statnews.com/category/health/feed/"
+    )
+    assert by_id["stat_news"].feed_url != by_id["nyt_health"].feed_url
+    assert by_id["stat_news"].feed_url != by_id["bbc_health"].feed_url
+    assert by_id["stat_news"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["stat_news"].feed_url != by_id["npr_science"].feed_url
+    assert by_id["ieee_spectrum"].feed_url != "https://spectrum.ieee.org/rss"
+    assert by_id["ieee_spectrum"].feed_url != "https://spectrum.ieee.org/feed"
+    assert by_id["ieee_spectrum"].feed_url != "https://spectrum.ieee.org/feed/"
+    assert by_id["ieee_spectrum"].feed_url != "https://spectrum.ieee.org/feeds/rss"
+    assert by_id["ieee_spectrum"].feed_url != (
+        "https://spectrum.ieee.org/rss/fulltext"
+    )
+    assert by_id["ieee_spectrum"].feed_url != (
+        "https://spectrum.ieee.org/feeds/fulltext"
+    )
+    assert by_id["ieee_spectrum"].feed_url != (
+        "https://feeds.feedburner.com/IeeeSpectrum"
+    )
+    assert by_id["ieee_spectrum"].feed_url != "https://spectrum.ieee.org/rss.xml"
+    assert by_id["ieee_spectrum"].feed_url != "https://spectrum.ieee.org/feed.xml"
+    assert by_id["ieee_spectrum"].feed_url != "https://spectrum.ieee.org/feeds.xml"
+    assert by_id["ieee_spectrum"].feed_url != (
+        "https://spectrum.ieee.org/feeds/atom.xml"
+    )
+    assert by_id["ieee_spectrum"].feed_url != (
+        "https://www.spectrum.ieee.org/feeds/feed.rss"
+    )
+    assert by_id["ieee_spectrum"].feed_url != by_id["mit_tr"].feed_url
+    assert by_id["ieee_spectrum"].feed_url != by_id["ars_technica"].feed_url
+    assert by_id["ieee_spectrum"].feed_url != by_id["bbc_technology"].feed_url
+    assert by_id["ieee_spectrum"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["the_diplomat"].feed_url != by_id["stat_news"].feed_url
+    assert by_id["the_diplomat"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["stat_news"].feed_url != by_id["ieee_spectrum"].feed_url
+    # nyt_media hung after #107 — digiday_media live.
+    assert by_id["digiday_media"].feed_url == "https://digiday.com/media/feed/"
+    assert "guardian_games" not in by_id
+    assert "thehill" not in by_id
+    assert "politico" not in by_id
+    assert "bbc_culture" not in by_id
+    assert "france24_europe" not in by_id
+    assert "guardian_economics" not in by_id
+    assert "nyt_theater" not in by_id
+    assert "independent_world" not in by_id
+    assert "sundayreview" not in by_id
+    assert "ap" not in by_id
+    for source_id, expected in (
+        _THE_DIPLOMAT_STAT_NEWS_IEEE_SPECTRUM_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_the_diplomat_stat_news_ieee_spectrum_feeds_live_http_200():
+    """Hit the three batch51 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _THE_DIPLOMAT_STAT_NEWS_IEEE_SPECTRUM_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (the_diplomat / stat_news / ieee_spectrum)
+        # uses the un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # All three live-diff winners were 100% nonempty.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -9079,6 +9386,7 @@ if __name__ == "__main__":
     test_politico_politics_dw_business_france24_culture_primaries_registered()
     test_foreign_policy_ft_world_abc_australia_primaries_registered()
     test_war_on_rocks_canary_media_space_com_primaries_registered()
+    test_the_diplomat_stat_news_ieee_spectrum_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -9128,4 +9436,5 @@ if __name__ == "__main__":
     test_politico_politics_dw_business_france24_culture_feeds_live_http_200()
     test_foreign_policy_ft_world_abc_australia_feeds_live_http_200()
     test_war_on_rocks_canary_media_space_com_feeds_live_http_200()
+    test_the_diplomat_stat_news_ieee_spectrum_feeds_live_http_200()
     print("✓ source registry tests PASSED")

@@ -1122,6 +1122,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="the_diplomat",
+        name="The Diplomat",
+        feed_url="https://thediplomat.com/feed/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="stat_news",
+        name="STAT News",
+        feed_url="https://www.statnews.com/feed/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="ieee_spectrum",
+        name="IEEE Spectrum",
+        feed_url="https://spectrum.ieee.org/feeds/feed.rss",
+        category="硬科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
