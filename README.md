@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（131 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（134 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -137,6 +137,9 @@
 | `france24_middle_east` | France 24 Middle East | https://www.france24.com/en/middle-east/rss | primary |
 | `nyt_personaltech` | NYT Personal Technology | https://rss.nytimes.com/services/xml/rss/nyt/PersonalTech.xml | primary |
 | `france24_africa` | France 24 Africa | https://www.france24.com/en/africa/rss | primary |
+| `guardian_food` | Guardian Food | https://www.theguardian.com/food/rss | primary |
+| `nyt_fashion` | NYT Fashion | https://rss.nytimes.com/services/xml/rss/nyt/FashionandStyle.xml | primary |
+| `france24_europe` | France 24 Europe | https://www.france24.com/en/europe/rss | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
