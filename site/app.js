@@ -438,30 +438,45 @@ function renderTechAiItemHtml(item) {
     `;
 }
 
+function techAiColumns(data) {
+    const items = (data && Array.isArray(data.items)) ? data.items : [];
+    const rssItems = (data && Array.isArray(data.rss_items))
+        ? data.rss_items
+        : items.filter(i => i.kind === 'rss');
+    const xItems = (data && Array.isArray(data.x_items))
+        ? data.x_items
+        : items.filter(i => i.kind === 'x');
+    return { rssItems, xItems };
+}
+
 function renderTechAiDetail() {
     const container = document.getElementById('topic-content');
-    const items = (techAiData && Array.isArray(techAiData.items)) ? techAiData.items : [];
+    const { rssItems, xItems } = techAiColumns(techAiData);
     const usedFallback = !!(techAiData && techAiData.used_fallback);
     const usedBackups = !!(techAiData && techAiData.used_x_backups);
     const rssCount = techAiData && typeof techAiData.rss_count === 'number'
         ? techAiData.rss_count
-        : items.filter(i => i.kind === 'rss').length;
+        : rssItems.length;
     const xCount = techAiData && typeof techAiData.x_count === 'number'
         ? techAiData.x_count
-        : items.filter(i => i.kind === 'x').length;
+        : xItems.length;
 
-    const hints = [];
-    if (items.length === 0) {
-        hints.push('专题已就绪。等待下一次 daily-fetch / x-fetch 写入科技与 AI 条目。');
+    const pageHints = [];
+    if (rssItems.length === 0 && xItems.length === 0) {
+        pageHints.push('专题已就绪。等待下一次 daily-fetch / x-fetch 写入科技与 AI 条目。');
     } else if (usedFallback) {
-        hints.push('近 24 小时暂无新条目，以下为最近归档（最多 7 天）。');
+        pageHints.push('近 24 小时暂无新条目，以下为最近归档（最多 7 天）。');
     }
-    if (xCount === 0) {
-        hints.push('X 段暂无可用帖。已按账号抓取 user timeline（不必 Follow），等待下一次 x-fetch 写入。');
-    }
-    const hint = hints.map(t => `<div class="topic-empty-hint">${t}</div>`).join('');
+    const pageHint = pageHints.map(t => `<div class="topic-empty-hint">${t}</div>`).join('');
 
-    const itemsHtml = items.map(renderTechAiItemHtml).join('');
+    const rssHtml = rssItems.map(renderTechAiItemHtml).join('');
+    const xHtml = xItems.map(renderTechAiItemHtml).join('');
+    const xEmpty = xCount === 0
+        ? '<div class="topic-empty-hint">X 栏暂无可用帖。已按账号抓取 user timeline（不必 Follow），等待下一次 x-fetch 写入。</div>'
+        : '';
+    const rssEmpty = rssCount === 0
+        ? '<div class="topic-empty-hint">资讯栏暂无条目。</div>'
+        : '';
     const backupNote = usedBackups ? ' · 含备用账号' : '';
     const generated = techAiData && techAiData.generated_at ? techAiData.generated_at : '';
 
@@ -469,10 +484,21 @@ function renderTechAiDetail() {
         <h2>科技/AI</h2>
         <div class="topic-meta">
             <span class="date">${formatDate(generated)}</span>
-            <span class="source-count">${items.length} 条 · RSS ${rssCount} · X ${xCount}${backupNote}</span>
+            <span class="source-count">资讯 ${rssCount} · X ${xCount}${backupNote}</span>
         </div>
-        ${hint}
-        <div class="tech-ai-feed">${itemsHtml}</div>
+        ${pageHint}
+        <div class="tech-ai-columns">
+            <section class="tech-ai-col tech-ai-col-rss">
+                <h3 class="tech-ai-col-title">资讯 <span class="tech-ai-col-count">${rssCount}</span></h3>
+                ${rssEmpty}
+                <div class="tech-ai-feed">${rssHtml}</div>
+            </section>
+            <section class="tech-ai-col tech-ai-col-x">
+                <h3 class="tech-ai-col-title">X <span class="tech-ai-col-count">${xCount}</span></h3>
+                ${xEmpty}
+                <div class="tech-ai-feed">${xHtml}</div>
+            </section>
+        </div>
     `;
     document.getElementById('topics-list').style.display = 'none';
     document.getElementById('topic-detail').style.display = 'block';

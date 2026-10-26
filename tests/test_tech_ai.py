@@ -14,13 +14,13 @@ from news_archive.tech_ai import (
     TECH_AI_SOURCE_WHITELIST,
     TECH_AI_TITLE,
     TECH_AI_TOPIC_ID,
-    X_RESERVED_SLOTS,
+    X_COLUMN_CAP,
     article_on_topic,
     assert_whitelist_registered,
     build_tech_ai_page,
     empty_tech_ai_payload,
     matches_ai_keywords,
-    merge_reserved_feed,
+    split_column_feeds,
     tech_ai_topic_card,
 )
 from news_archive.x_config import (
@@ -173,11 +173,13 @@ def test_merge_time_order_rss_and_x():
     rss = _art(url="https://wired/2", title="WIRED AI chip", source="wired", hours_ago=3)
     x = _post(author="karpathy", text="new tokenizer notes", hours_ago=1)
     page = build_tech_ai_page([rss], [x], now=NOW)
-    kinds = [i["kind"] for i in page["items"]]
-    assert kinds == ["x", "rss"]
+    assert [i["kind"] for i in page["rss_items"]] == ["rss"]
+    assert [i["kind"] for i in page["x_items"]] == ["x"]
+    assert [i["kind"] for i in page["items"]] == ["x", "rss"]
     assert page["rss_count"] == 1
     assert page["x_count"] == 1
-    print("✓ merge time order")
+    assert page["layout"] == "columns"
+    print("✓ columns keep per-column time order")
 
 
 def test_no_snapshot_or_post_id():
@@ -201,10 +203,10 @@ def test_no_snapshot_or_post_id():
     print("✓ no snapshot / post_id")
 
 
-def test_x_slots_reserved_so_rss_max_cannot_wipe_x():
+def test_x_column_independent_of_rss_max():
     assert NEWS_SOURCE_CAP == 6
     assert MAX_ITEMS == 100
-    assert X_RESERVED_SLOTS == 25
+    assert X_COLUMN_CAP == 30
 
     rss = [
         _art(url=f"https://wired/{i}", title=f"WIRED {i}", source="wired", hours_ago=0.1 * i)
@@ -216,31 +218,35 @@ def test_x_slots_reserved_so_rss_max_cannot_wipe_x():
     ]
     page = build_tech_ai_page(rss, x_few, now=NOW)
     assert page["x_count"] == 5
-    assert page["rss_count"] == 95
-    assert len(page["items"]) == 100
-    assert page["x_reserved_slots"] == 25
+    assert page["rss_count"] == 100
+    assert len(page["rss_items"]) == 100
+    assert len(page["x_items"]) == 5
+    assert page["x_column_cap"] == 30
+    assert "x_reserved_slots" not in page
 
     x_many = [
         _post(author="karpathy", text=f"note {i}", hours_ago=0.2 * i, post_id=f"k-{i}")
         for i in range(40)
     ]
     page_cap = build_tech_ai_page(rss, x_many, now=NOW)
-    assert page_cap["x_count"] == 25
-    assert page_cap["rss_count"] == 75
-    assert len(page_cap["items"]) == 100
+    assert page_cap["x_count"] == 30
+    assert page_cap["rss_count"] == 100
+    assert len(page_cap["items"]) == 130
 
     page_rss_only = build_tech_ai_page(rss, [], now=NOW)
     assert page_rss_only["x_count"] == 0
     assert page_rss_only["rss_count"] == 100
-    print("✓ X reserved slots")
+    assert page_rss_only["x_items"] == []
+    print("✓ X column cap independent of RSS MAX")
 
 
-def test_merge_reserved_feed_keeps_time_order():
+def test_split_column_feeds_independent_caps():
     rss = [_art(url="https://wired/old", title="old rss", source="wired", hours_ago=3)]
     x = [_post(author="sama", text="new x", hours_ago=1)]
-    items = merge_reserved_feed(rss, x)
-    assert [i["kind"] for i in items] == ["x", "rss"]
-    print("✓ reserved merge time order")
+    rss_items, x_items = split_column_feeds(rss, x)
+    assert [i["kind"] for i in rss_items] == ["rss"]
+    assert [i["kind"] for i in x_items] == ["x"]
+    print("✓ split columns")
 
 
 def test_x_fetch_accounts_union():
@@ -307,8 +313,8 @@ if __name__ == "__main__":
     test_page_prefers_24h_and_falls_back()
     test_x_primaries_and_backups()
     test_merge_time_order_rss_and_x()
-    test_x_slots_reserved_so_rss_max_cannot_wipe_x()
-    test_merge_reserved_feed_keeps_time_order()
+    test_x_column_independent_of_rss_max()
+    test_split_column_feeds_independent_caps()
     test_no_snapshot_or_post_id()
     test_x_fetch_accounts_union()
     print("✓ All tech_ai tests passed")

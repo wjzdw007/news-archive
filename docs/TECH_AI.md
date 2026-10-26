@@ -1,6 +1,6 @@
 # 科技/AI 专题（MVP）
 
-常设专题，挂在现有 **专题** Tab（`#topics/tech-ai`）。RSS ∪ X 按时间倒序合并。无 LLM。新闻 Tab 的 `NEWS_SOURCE_CAP=6` 不变。
+常设专题，挂在现有 **专题** Tab（`#topics/tech-ai`）。页内 **分栏「资讯 | X」**（资讯=RSS）。无 LLM。新闻 Tab 的 `NEWS_SOURCE_CAP=6` 不变。
 
 ## RSS 白名单
 
@@ -51,7 +51,7 @@
 
 AI 主/备账号走 **UserByScreenName + UserTweets**（按账号 timeline），**不必 Follow**。新闻 X 账号仍走 HomeTimeline + filter。
 
-专题页 `MAX=100` 混排时预留 **25** 个 X 槽（约 25%）：有 X 帖时 RSS 最多占 75，避免 RSS 把 X 挤成 0。无 X 帖时 RSS 可用满 100，页上显示 X 空态提示（不是静默 0）。
+专题页分栏：**资讯** 上限 `MAX=100`，**X** 独立上限 **30**。RSS 再多也不会挤掉 X。窄屏上下堆叠两栏。X 栏为空时显示提示（不是静默 0）。
 
 ## 时效
 

@@ -44,10 +44,15 @@ def test_page_opens_and_not_dead_end():
     assert "不必 Follow" in app
     assert "user timeline" in app
     assert "xCount === 0" in app
+    assert "function techAiColumns" in app
+    assert "tech-ai-columns" in app
+    assert "资讯" in app
 
     css = CSS.read_text(encoding="utf-8")
     assert ".tech-ai-feed" in css
+    assert ".tech-ai-columns" in css
     assert ".item-kind-badge" in css
+    assert "grid-template-columns: 1fr" in css
     print("✓ page wiring")
 
 
@@ -146,8 +151,42 @@ console.log(JSON.stringify({rss, x}));
     print("✓ RSS∪X render")
 
 
+def test_columns_split_rss_and_x():
+    app = APP_JS.read_text(encoding="utf-8")
+    start = app.index("function techAiColumns")
+    end = app.index("function renderTechAiDetail")
+    helpers = app[start:end]
+    result = _run_node(
+        helpers
+        + """
+const cols = techAiColumns({
+  rss_items: [{kind:'rss', title:'WIRED'}],
+  x_items: [{kind:'x', title:'gpt', author:'OpenAI'}],
+  items: [{kind:'x'}, {kind:'rss'}],
+});
+const emptyX = techAiColumns({
+  rss_items: [{kind:'rss', title:'only'}],
+  x_items: [],
+  items: [{kind:'rss'}],
+});
+console.log(JSON.stringify({
+  rss: cols.rssItems.map(i => i.kind),
+  x: cols.xItems.map(i => i.kind),
+  emptyX: emptyX.xItems.length,
+  emptyRss: emptyX.rssItems.length,
+}));
+"""
+    )
+    assert result["rss"] == ["rss"]
+    assert result["x"] == ["x"]
+    assert result["emptyX"] == 0
+    assert result["emptyRss"] == 1
+    print("✓ 资讯 | X columns")
+
+
 if __name__ == "__main__":
     test_page_opens_and_not_dead_end()
     test_topics_for_list_always_has_tech_ai()
     test_render_mixes_rss_and_x_without_snapshot()
+    test_columns_split_rss_and_x()
     print("✓ All tech_ai UI tests passed")
