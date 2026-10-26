@@ -1626,10 +1626,10 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
-        id="atlantic_council",
-        name="Atlantic Council",
-        feed_url="https://www.atlanticcouncil.org/feed/",
-        category="国际",
+        id="grist",
+        name="Grist",
+        feed_url="https://grist.org/feed/",
+        category="科学",
         role="primary",
     ),
     Source(

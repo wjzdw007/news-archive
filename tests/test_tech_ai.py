@@ -397,11 +397,14 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "scotusblog" not in TECH_AI_SOURCE_WHITELIST
     assert "infoq" not in TECH_AI_SOURCE_WHITELIST
     # batch75 RSS primaries stay off the tech/AI whitelist.
-    # atlantic_council lands on the existing 国际
-    # category path (think-tank / international
-    # affairs, same as foreign_affairs /
-    # crisis_group / aspi_strategist /
-    # world_politics_review).
+    # atlantic_council stays off (hard-swapped
+    # after daily-fetch #40299450300 RSS 403
+    # → DB=0; do not re-register).
+    # grist is the atlantic_council hard-swap
+    # fill and lands on 科学 (climate /
+    # environment journalism, same as
+    # climate_home / carbon_brief / mongabay)
+    # but is not added to TECH_AI_KEYWORD_SOURCES.
     # balkan_insight lands on 国际 (Southeast
     # Europe newsroom, same as
     # kyiv_independent / bbc_europe).
@@ -411,16 +414,16 @@ def test_whitelist_registered_and_cap_unchanged():
     # tech sources stay off the frozen ALWAYS
     # set. None of these match the wired /
     # verge / techcrunch ALWAYS pattern.
-    # Unused backups dezeen / moscow_times /
-    # grist stay off (all three primaries
-    # KEEP). euractiv stays off (official
-    # 301 to rapporteur.com; Feedburner stale).
+    # Unused backups dezeen / moscow_times
+    # stay off (reserved for hung batch77).
+    # euractiv stays off (official 301 to
+    # rapporteur.com; Feedburner stale).
     assert "atlantic_council" not in TECH_AI_SOURCE_WHITELIST
+    assert "grist" not in TECH_AI_SOURCE_WHITELIST
     assert "balkan_insight" not in TECH_AI_SOURCE_WHITELIST
     assert "tomshardware" not in TECH_AI_SOURCE_WHITELIST
     assert "dezeen" not in TECH_AI_SOURCE_WHITELIST
     assert "moscow_times" not in TECH_AI_SOURCE_WHITELIST
-    assert "grist" not in TECH_AI_SOURCE_WHITELIST
     assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
