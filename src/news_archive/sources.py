@@ -1080,6 +1080,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="foreign_policy",
+        name="Foreign Policy",
+        feed_url="https://foreignpolicy.com/feed/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="ft_world",
+        name="FT World",
+        feed_url="https://www.ft.com/world?format=rss",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="abc_australia",
+        name="ABC Australia",
+        feed_url="https://www.abc.net.au/news/feed/51120/rss.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
