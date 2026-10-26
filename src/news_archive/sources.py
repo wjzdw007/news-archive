@@ -1248,6 +1248,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="africa_report",
+        name="The Africa Report",
+        feed_url="https://www.theafricareport.com/feed/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="mexico_news_daily",
+        name="Mexico News Daily",
+        feed_url="https://mexiconewsdaily.com/feed/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="sciencedaily",
+        name="ScienceDaily",
+        feed_url="https://www.sciencedaily.com/rss/all.xml",
+        category="科学",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
