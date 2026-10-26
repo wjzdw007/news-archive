@@ -287,6 +287,24 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "vox" not in TECH_AI_SOURCE_WHITELIST
     assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
     assert "pew_research" not in TECH_AI_SOURCE_WHITELIST
+    # batch70 RSS primaries stay off the tech/AI whitelist.
+    # media404 lands on the existing 综合
+    # category path (investigative tech
+    # journalism, same as the_markup /
+    # intercept). hrw lands on 国际
+    # (human rights reporting, same as
+    # crisis_group / the_new_humanitarian).
+    # un_news lands on 国际 (UN global
+    # newsroom, same as bbc_world /
+    # guardian_world). None of these
+    # match the wired / verge /
+    # techcrunch ALWAYS pattern.
+    assert "media404" not in TECH_AI_SOURCE_WHITELIST
+    assert "hrw" not in TECH_AI_SOURCE_WHITELIST
+    assert "un_news" not in TECH_AI_SOURCE_WHITELIST
+    assert "jacobin" not in TECH_AI_SOURCE_WHITELIST
+    assert "psyche" not in TECH_AI_SOURCE_WHITELIST
+    assert "new_republic" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

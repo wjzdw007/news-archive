@@ -1521,6 +1521,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="media404",
+        name="404 Media",
+        feed_url="https://www.404media.co/rss/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="hrw",
+        name="Human Rights Watch",
+        feed_url="https://www.hrw.org/rss/news",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="un_news",
+        name="UN News",
+        feed_url="https://news.un.org/feed/subscribe/en/news/all/rss.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
