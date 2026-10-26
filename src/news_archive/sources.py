@@ -1479,6 +1479,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="popular_science",
+        name="Popular Science",
+        feed_url="https://www.popsci.com/feed/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="slate",
+        name="Slate",
+        feed_url="https://slate.com/feeds/all.rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="the_19th",
+        name="The 19th",
+        feed_url="https://19thnews.org/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
