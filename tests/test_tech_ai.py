@@ -90,9 +90,11 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "bloomberg_markets" in TECH_AI_KEYWORD_SOURCES
     assert TECH_AI_ALWAYS_SOURCES.isdisjoint(TECH_AI_KEYWORD_SOURCES)
     # batch52 RSS primaries stay off the tech/AI whitelist.
+    # ars_science → zdnet hard-swap stays off the whitelist.
     assert "bbc_australia" not in TECH_AI_SOURCE_WHITELIST
     assert "bloomberg_technology" not in TECH_AI_SOURCE_WHITELIST
     assert "ars_science" not in TECH_AI_SOURCE_WHITELIST
+    assert "zdnet" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
