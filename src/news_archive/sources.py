@@ -1500,6 +1500,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="kff_health",
+        name="KFF Health News",
+        feed_url="https://kffhealthnews.org/feed/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="niemanlab",
+        name="Nieman Lab",
+        feed_url="https://www.niemanlab.org/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="reason",
+        name="Reason",
+        feed_url="https://reason.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

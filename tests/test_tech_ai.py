@@ -269,6 +269,24 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "longreads" not in TECH_AI_SOURCE_WHITELIST
     assert "new_republic" not in TECH_AI_SOURCE_WHITELIST
     assert "texas_tribune" not in TECH_AI_SOURCE_WHITELIST
+    # batch69 RSS primaries stay off the tech/AI whitelist.
+    # kff_health lands on the existing 科学
+    # category path (health journalism;
+    # same as stat_news / nyt_health /
+    # bbc_health). niemanlab lands on 综合
+    # (journalism / media research, same
+    # as digiday_media). reason lands on
+    # 综合 (news / politics / opinion
+    # magazine, same as salon / slate /
+    # atlantic). None of these match the
+    # wired / verge / techcrunch ALWAYS
+    # pattern.
+    assert "kff_health" not in TECH_AI_SOURCE_WHITELIST
+    assert "niemanlab" not in TECH_AI_SOURCE_WHITELIST
+    assert "reason" not in TECH_AI_SOURCE_WHITELIST
+    assert "vox" not in TECH_AI_SOURCE_WHITELIST
+    assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
+    assert "pew_research" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
