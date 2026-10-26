@@ -234,6 +234,23 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "artnet" not in TECH_AI_SOURCE_WHITELIST
     assert "reason" not in TECH_AI_SOURCE_WHITELIST
     assert "vox" not in TECH_AI_SOURCE_WHITELIST
+    # batch67 RSS primaries stay off the tech/AI whitelist.
+    # the_new_humanitarian lands on the existing 国际
+    # category path (humanitarian / crisis reporting;
+    # same as crisis_group / guardian_global_dev).
+    # salon lands on 综合 (news / politics / culture,
+    # same as atlantic / intercept) after dawn
+    # official httpx 403 hard-swap. mother_jones
+    # lands on 综合 (investigative magazine, same
+    # as intercept / propublica). None of these
+    # match the wired / verge / techcrunch ALWAYS
+    # pattern.
+    assert "the_new_humanitarian" not in TECH_AI_SOURCE_WHITELIST
+    assert "salon" not in TECH_AI_SOURCE_WHITELIST
+    assert "mother_jones" not in TECH_AI_SOURCE_WHITELIST
+    assert "dawn" not in TECH_AI_SOURCE_WHITELIST
+    assert "kff_health" not in TECH_AI_SOURCE_WHITELIST
+    assert "niemanlab" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

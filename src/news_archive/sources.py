@@ -1458,6 +1458,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="the_new_humanitarian",
+        name="The New Humanitarian",
+        feed_url="https://www.thenewhumanitarian.org/rss/all.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="salon",
+        name="Salon",
+        feed_url="https://www.salon.com/feed",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="mother_jones",
+        name="Mother Jones",
+        feed_url="https://www.motherjones.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
