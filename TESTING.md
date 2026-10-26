@@ -378,6 +378,24 @@ echo "Exit code: $?"  # 应该是 1（连续失败）
 
 ---
 
+## 日报当天可见性（today failed 必须红）
+
+Live run [40258264336](https://github.com/wjzdw007/news-archive/actions/runs/40258264336) 的洞：LKEAP `The read operation timed out` 后 CLI `--deadline-seconds 300` 跳过剩余日期，JSON 仍 `"ok": true`，步骤 `continue-on-error`，daily-fetch 绿灯，站点显示「当日摘要生成失败」。
+
+```bash
+PYTHONPATH=src python tests/test_daily_briefs.py
+```
+
+- 当前上海日 `status=failed` / `skipped` / missing → CLI 非 0，JSON `ok` 为 false；`--check-today` 同样非 0
+- 当前上海日 `status=ok` 或 `empty` → CLI 0，JSON `ok` 为 true；`--check-today` 0
+- 只生成更早日期时失败仍 soft-fail（exit 0）
+- 先生成今天（最多 3 次超时重试），再回填 `failed`/`empty`/missing 历史日（一发；覆盖 live 2026-10-25/24/23/21）
+- **重跑不得用 failed 覆盖已有 ok**（超时不得 clobber）；历史 ok 不再重生成；当天 ok 指纹变化才尝试刷新，失败则保留 ok 且绿灯
+- 绝不写 mock/ok 掩盖失败
+- daily-fetch：生成步骤仍 `continue-on-error`（Persist 必须落库）；之后的 `Fail if today's daily brief is failed or missing` **无** soft-fail，把 run 打红
+
+---
+
 ## 未来改进（P1/P2）
 
 - [x] **连续两轮超时 → 红**：通过 `data/LAST_RUN.json` 持久化前轮时效统计，已实现

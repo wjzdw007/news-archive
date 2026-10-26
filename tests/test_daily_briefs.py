@@ -9,6 +9,7 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
+from news_archive.daily_brief import evaluate_today_exit
 from news_archive.daily_brief import generate_for_dates
 from news_archive.daily_brief import main as daily_brief_main
 from news_archive.daily_briefs import (
@@ -18,9 +19,12 @@ from news_archive.daily_briefs import (
     DAILY_BRIEF_ARTICLE_FIELDS,
     DAILY_BRIEF_X_FIELDS,
     DEFAULT_MODEL,
+    LLM_READ_TIMEOUT_S,
     MODEL_ENV,
+    OLDER_LLM_ATTEMPTS,
     OTHER_TITLE,
     SECTIONS_MAX,
+    TODAY_LLM_ATTEMPTS,
     X_LINKS_MAX,
     X_SECTION_TITLE,
     X_SECTION_TOPIC_ID,
@@ -31,13 +35,17 @@ from news_archive.daily_briefs import (
     generate_daily_brief,
     group_sections,
     input_fingerprint,
+    is_retryable_llm_error,
     is_soft_x_post,
     last_n_shanghai_dates,
+    order_dates_today_first,
+    prioritize_failed_backfill,
     redact_secrets,
     resolve_llm_config,
     resolve_model,
     shanghai_calendar_date,
     stories_should_merge,
+    today_status_is_success,
     x_posts_for_day,
 )
 from news_archive.schema import Article
@@ -423,7 +431,11 @@ def test_ok_unchanged_rss_changed_x_updates_stable_x_kept_ok():
         _seed_article(store)
         _seed_x_post(store)
         first = generate_for_dates(
-            store, ["2026-10-15"], llm_fn=llm, model="deepseek/deepseek-flash"
+            store,
+            ["2026-10-15"],
+            llm_fn=llm,
+            model="deepseek/deepseek-flash",
+            today="2026-10-15",
         )
         assert first[0]["action"] == "inserted"
         assert first[0]["status"] == "ok"
@@ -437,7 +449,11 @@ def test_ok_unchanged_rss_changed_x_updates_stable_x_kept_ok():
         assert _x_section_count(saved["sections"]) == 1
 
         stable = generate_for_dates(
-            store, ["2026-10-15"], llm_fn=llm, model="deepseek/deepseek-flash"
+            store,
+            ["2026-10-15"],
+            llm_fn=llm,
+            model="deepseek/deepseek-flash",
+            today="2026-10-15",
         )
         assert stable[0]["action"] == "kept_ok"
         assert stable[0]["status"] == "ok"
@@ -451,7 +467,11 @@ def test_ok_unchanged_rss_changed_x_updates_stable_x_kept_ok():
             text_snapshot="午夜简讯改变当日 X 集合。",
         )
         added = generate_for_dates(
-            store, ["2026-10-15"], llm_fn=llm, model="deepseek/deepseek-flash"
+            store,
+            ["2026-10-15"],
+            llm_fn=llm,
+            model="deepseek/deepseek-flash",
+            today="2026-10-15",
         )
         assert added[0]["action"] == "updated"
         assert added[0]["status"] == "ok"
@@ -463,7 +483,11 @@ def test_ok_unchanged_rss_changed_x_updates_stable_x_kept_ok():
         )
         store._conn.commit()
         edited = generate_for_dates(
-            store, ["2026-10-15"], llm_fn=llm, model="deepseek/deepseek-flash"
+            store,
+            ["2026-10-15"],
+            llm_fn=llm,
+            model="deepseek/deepseek-flash",
+            today="2026-10-15",
         )
         assert edited[0]["action"] == "updated"
         assert edited[0]["status"] == "ok"
@@ -483,7 +507,11 @@ def test_ok_changed_article_set_updates_and_calls_llm():
         store = Store(Path(tmp) / "t.sqlite3")
         _seed_article(store)
         first = generate_for_dates(
-            store, ["2026-10-15"], llm_fn=llm, model="deepseek/deepseek-flash"
+            store,
+            ["2026-10-15"],
+            llm_fn=llm,
+            model="deepseek/deepseek-flash",
+            today="2026-10-15",
         )
         assert first[0]["action"] == "inserted"
         assert calls["n"] == 1
@@ -495,7 +523,11 @@ def test_ok_changed_article_set_updates_and_calls_llm():
             source="tmtpost",
         )
         second = generate_for_dates(
-            store, ["2026-10-15"], llm_fn=llm, model="deepseek/deepseek-flash"
+            store,
+            ["2026-10-15"],
+            llm_fn=llm,
+            model="deepseek/deepseek-flash",
+            today="2026-10-15",
         )
         assert second[0]["action"] == "updated"
         assert second[0]["status"] == "ok"
@@ -589,7 +621,6 @@ def test_today_same_as_other_days_no_force_refresh():
             encoding="utf-8"
         )
         assert "Always refresh today" not in src
-        assert "date != today" not in src
         store.close()
 
 
@@ -713,12 +744,21 @@ def test_workflow_wires_daily_brief_secrets_soft_fail():
     assert "deepseek/deepseek-flash" in yml
     assert "continue-on-error: true" in yml
     assert "timeout-minutes: 45" in yml
-    assert "timeout-minutes: 8" in yml
-    assert "--deadline-seconds 300" in yml
+    assert "timeout-minutes: 12" in yml
+    assert "--deadline-seconds 600" in yml
+    assert "--check-today" in yml
+    assert "--write-status" in yml
+    assert "Fail if today's daily brief is failed or missing" in yml
     assert "latency_soft_miss" in yml
     assert "OPENAI_API_KEY" not in yml
     assert "X_BEARER" not in yml
     assert "x_cookie" not in yml.lower()
+    check_at = yml.index("- name: Fail if today's daily brief is failed or missing")
+    check_block = yml[check_at : check_at + 900]
+    assert "--check-today" in check_block
+    assert "continue-on-error:" not in check_block
+    assert "--deadline-seconds 300" not in yml
+    assert "timeout-minutes: 8" not in yml
 
 
 def test_deadline_skips_remaining_days_without_overwrite():
@@ -767,13 +807,666 @@ def test_deadline_skips_remaining_days_without_overwrite():
         )
         assert results[0]["status"] == "ok"
         assert results[0]["action"] in {"inserted", "updated"}
-        assert results[1]["action"] == "skipped_deadline"
-        assert results[1]["status"] == "skipped"
+        assert results[1]["action"] == "kept_ok"
+        assert results[1]["status"] == "ok"
         assert store.get_daily_brief("2026-10-15")["status"] == "ok"
         kept = store.get_daily_brief("2026-10-16")
         assert kept["status"] == "ok"
         assert kept["lede"] == "已有日报不应被 deadline skip 覆盖。"
         assert kept["input_fingerprint"] == "keep-me"
+        store.close()
+
+
+def test_order_dates_today_first_then_failed_backfill():
+    today = "2026-10-26"
+    dates = ["2026-10-22", "2026-10-26", "2026-10-25", "2026-10-24", "2026-10-23", "2026-10-21"]
+    statuses = {
+        "2026-10-26": "ok",
+        "2026-10-25": "failed",
+        "2026-10-24": "failed",
+        "2026-10-23": "failed",
+        "2026-10-22": "ok",
+        "2026-10-21": "failed",
+    }
+    assert order_dates_today_first(dates, today=today)[0] == today
+    ordered = prioritize_failed_backfill(dates, today, statuses.get)
+    assert ordered[0] == today
+    assert ordered[1:] == ["2026-10-25", "2026-10-24", "2026-10-23", "2026-10-21", "2026-10-22"]
+    assert today_status_is_success("ok")
+    assert today_status_is_success("empty")
+    assert not today_status_is_success("failed")
+    assert not today_status_is_success("skipped")
+    assert is_retryable_llm_error("The read operation timed out")
+    assert not is_retryable_llm_error("missing DAILY_BRIEF_API_KEY or DAILY_BRIEF_API_BASE")
+    assert LLM_READ_TIMEOUT_S >= 90
+    assert TODAY_LLM_ATTEMPTS >= 3
+    assert OLDER_LLM_ATTEMPTS == 1
+
+
+def test_evaluate_today_exit_failed_red_ok_green():
+    today = "2026-10-26"
+    failed = evaluate_today_exit(
+        today=today,
+        dates=[today, "2026-10-25"],
+        results=[{"date": today, "status": "failed", "error": "timed out"}],
+        fatal_error=None,
+    )
+    assert failed == (1, "failed", "timed out")
+    ok = evaluate_today_exit(
+        today=today,
+        dates=[today],
+        results=[{"date": today, "status": "ok"}],
+        fatal_error=None,
+    )
+    assert ok[0] == 0 and ok[1] == "ok"
+    empty = evaluate_today_exit(
+        today=today,
+        dates=[today],
+        results=[{"date": today, "status": "empty"}],
+        fatal_error=None,
+    )
+    assert empty[0] == 0 and empty[1] == "empty"
+    skipped = evaluate_today_exit(
+        today=today,
+        dates=[today, "2026-10-25"],
+        results=[{"date": today, "status": "skipped", "error": "deadline"}],
+        fatal_error=None,
+    )
+    assert skipped[0] == 1 and skipped[1] == "skipped"
+    older_only = evaluate_today_exit(
+        today=today,
+        dates=["2026-10-15"],
+        results=[{"date": "2026-10-15", "status": "failed", "error": "timed out"}],
+        fatal_error=None,
+    )
+    assert older_only[0] == 0 and older_only[1] == "not_requested"
+
+
+def _cli_json_rc(argv):
+    import io
+    from contextlib import redirect_stderr, redirect_stdout
+
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+    with redirect_stdout(stdout), redirect_stderr(stderr):
+        rc = daily_brief_main(argv)
+    return rc, stdout.getvalue(), stderr.getvalue()
+
+
+def test_cli_today_failed_exits_nonzero():
+    saved_env = _clear_brief_env()
+    today = shanghai_calendar_date()
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            db_path = Path(tmp) / "t.sqlite3"
+            store = Store(db_path)
+            _seed_article(
+                store,
+                published_at=f"{today}T02:00:00+00:00",
+                fetched_at=f"{today}T03:00:00+00:00",
+            )
+            store.close()
+            status_path = Path(tmp) / "today.json"
+            rc, out, err = _cli_json_rc(
+                [
+                    "--db",
+                    str(db_path),
+                    "--date",
+                    today,
+                    "--json",
+                    "--write-status",
+                    str(status_path),
+                ]
+            )
+            assert rc == 1
+            payload = json.loads(out)
+            assert payload["ok"] is False
+            assert payload["today_status"] == "failed"
+            saved = Store(db_path).get_daily_brief(today)
+            assert saved["status"] == "failed"
+            assert saved["lede"] == ""
+            assert saved["sections"] == []
+            written = json.loads(status_path.read_text(encoding="utf-8"))
+            assert written["status"] == "failed"
+            assert written["ok"] is False
+            assert "::error::" in err
+            check_rc, check_out, check_err = _cli_json_rc(
+                ["--check-today", "--status-file", str(status_path), "--db", str(db_path)]
+            )
+            assert check_rc == 1
+            assert "failed" in check_out
+            assert "::error::" in check_err
+    finally:
+        _restore_brief_env(saved_env)
+
+
+def test_cli_today_ok_exits_zero():
+    saved_env = _clear_brief_env()
+    today = shanghai_calendar_date()
+    os.environ[API_KEY_ENV] = "sk-test"
+    os.environ[API_BASE_ENV] = "https://api.lkeap.cloud.tencent.com/plan/v3"
+    import news_archive.daily_briefs as daily_mod
+
+    orig = daily_mod.openai_complete
+
+    def fake_complete(grouped, **_kwargs):
+        return _ok_llm(grouped)
+
+    daily_mod.openai_complete = fake_complete
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            db_path = Path(tmp) / "t.sqlite3"
+            store = Store(db_path)
+            _seed_article(
+                store,
+                published_at=f"{today}T02:00:00+00:00",
+                fetched_at=f"{today}T03:00:00+00:00",
+            )
+            store.close()
+            status_path = Path(tmp) / "today.json"
+            rc, out, err = _cli_json_rc(
+                [
+                    "--db",
+                    str(db_path),
+                    "--date",
+                    today,
+                    "--json",
+                    "--write-status",
+                    str(status_path),
+                ]
+            )
+            assert rc == 0
+            payload = json.loads(out)
+            assert payload["ok"] is True
+            assert payload["today_status"] == "ok"
+            saved = Store(db_path).get_daily_brief(today)
+            assert saved["status"] == "ok"
+            assert saved["lede"]
+            written = json.loads(status_path.read_text(encoding="utf-8"))
+            assert written["status"] == "ok"
+            assert written["ok"] is True
+            assert "::error::" not in err
+            check_rc, _, check_err = _cli_json_rc(
+                ["--check-today", "--status-file", str(status_path)]
+            )
+            assert check_rc == 0
+            assert "::error::" not in check_err
+    finally:
+        daily_mod.openai_complete = orig
+        os.environ.pop(API_KEY_ENV, None)
+        os.environ.pop(API_BASE_ENV, None)
+        _restore_brief_env(saved_env)
+
+
+def test_cli_today_empty_exits_zero():
+    saved_env = _clear_brief_env()
+    today = shanghai_calendar_date()
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            db_path = Path(tmp) / "t.sqlite3"
+            Store(db_path).close()
+            rc, out, _err = _cli_json_rc(
+                ["--db", str(db_path), "--date", today, "--json"]
+            )
+            assert rc == 0
+            payload = json.loads(out)
+            assert payload["ok"] is True
+            assert payload["today_status"] == "empty"
+            saved = Store(db_path).get_daily_brief(today)
+            assert saved["status"] == "empty"
+    finally:
+        _restore_brief_env(saved_env)
+
+
+def test_cli_older_failed_today_ok_exits_zero():
+    today = shanghai_calendar_date()
+    older = "2026-10-21"
+    llm, calls = _counting_llm()
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        _seed_article(
+            store,
+            published_at=f"{today}T02:00:00+00:00",
+            fetched_at=f"{today}T03:00:00+00:00",
+            title="今日稿件标题足够长了",
+        )
+        first = generate_for_dates(
+            store, [today], llm_fn=llm, model="deepseek/deepseek-flash", sleep=lambda _s: None
+        )
+        assert first[0]["status"] == "ok"
+        store.upsert_daily_brief(
+            {
+                "date": older,
+                "generated_at": f"{older}T01:00:00+00:00",
+                "status": "failed",
+                "model": "",
+                "lede": "",
+                "sections": [],
+                "error": "The read operation timed out",
+                "input_fingerprint": "stale",
+            }
+        )
+        results = generate_for_dates(
+            store,
+            [older, today],
+            llm_fn=llm,
+            model="deepseek/deepseek-flash",
+            sleep=lambda _s: None,
+            today=today,
+        )
+        by_date = {row["date"]: row for row in results}
+        assert by_date[today]["status"] == "ok"
+        assert by_date[today]["action"] == "kept_ok"
+        assert by_date[older]["status"] == "empty"
+        exit_code, status, _error = evaluate_today_exit(
+            today=today, dates=[older, today], results=results, fatal_error=None
+        )
+        assert exit_code == 0
+        assert status == "ok"
+        store.close()
+
+
+def test_today_retries_timeout_then_ok():
+    today = shanghai_calendar_date()
+    calls = {"n": 0}
+
+    def llm(_grouped):
+        calls["n"] += 1
+        if calls["n"] < 3:
+            raise RuntimeError("The read operation timed out")
+        return _ok_llm(_grouped)
+
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        _seed_article(
+            store,
+            published_at=f"{today}T02:00:00+00:00",
+            fetched_at=f"{today}T03:00:00+00:00",
+        )
+        results = generate_for_dates(
+            store,
+            [today],
+            llm_fn=llm,
+            model="deepseek/deepseek-flash",
+            sleep=lambda _s: None,
+            today=today,
+        )
+        assert calls["n"] == 3
+        assert results[0]["status"] == "ok"
+        saved = store.get_daily_brief(today)
+        assert saved["status"] == "ok"
+        assert saved["lede"]
+        store.close()
+
+
+def test_older_day_timeout_is_one_shot():
+    calls = {"n": 0}
+
+    def llm(_grouped):
+        calls["n"] += 1
+        raise RuntimeError("The read operation timed out")
+
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        _seed_article(store)
+        results = generate_for_dates(
+            store,
+            ["2026-10-15"],
+            llm_fn=llm,
+            model="deepseek/deepseek-flash",
+            sleep=lambda _s: None,
+            today="2026-10-26",
+        )
+        assert calls["n"] == 1
+        assert results[0]["status"] == "failed"
+        saved = store.get_daily_brief("2026-10-15")
+        assert saved["status"] == "failed"
+        assert saved["lede"] == ""
+        store.close()
+
+
+def test_failed_historical_days_backfilled_after_today():
+    """Live failed 2026-10-25/24/23/21 must regenerate after today-first."""
+    today = "2026-10-26"
+    failed_days = ["2026-10-25", "2026-10-24", "2026-10-23", "2026-10-21"]
+    seen: list[str] = []
+
+    def llm(grouped):
+        title = grouped[0]["title"]
+        seen.append(title)
+        return _ok_llm(grouped)
+
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        _seed_article(
+            store,
+            url="https://example.com/today",
+            published_at=f"{today}T02:00:00+00:00",
+            fetched_at=f"{today}T03:00:00+00:00",
+            title="TODAY稿件标题足够长了",
+        )
+        store.upsert_daily_brief(
+            {
+                "date": today,
+                "generated_at": f"{today}T01:00:00+00:00",
+                "status": "ok",
+                "model": "deepseek/deepseek-flash",
+                "lede": "今日已恢复成功摘要。",
+                "sections": [
+                    {"title": "旧", "bullets": ["保留"], "links": [], "topic_id": None}
+                ],
+                "error": None,
+                "input_fingerprint": day_input_fingerprint(
+                    store.get_articles_for_daily_brief(), today, []
+                ),
+            }
+        )
+        ok_day = "2026-10-22"
+        _seed_article(
+            store,
+            url="https://example.com/ok22",
+            published_at=f"{ok_day}T02:00:00+00:00",
+            fetched_at=f"{ok_day}T03:00:00+00:00",
+            title="OK22稿件标题足够长了",
+        )
+        store.upsert_daily_brief(
+            {
+                "date": ok_day,
+                "generated_at": f"{ok_day}T01:00:00+00:00",
+                "status": "ok",
+                "model": "deepseek/deepseek-flash",
+                "lede": "已有成功日报。",
+                "sections": [
+                    {"title": "旧", "bullets": ["保留"], "links": [], "topic_id": None}
+                ],
+                "error": None,
+                "input_fingerprint": day_input_fingerprint(
+                    store.get_articles_for_daily_brief(), ok_day, []
+                ),
+            }
+        )
+        for day in failed_days:
+            _seed_article(
+                store,
+                url=f"https://example.com/{day}",
+                published_at=f"{day}T02:00:00+00:00",
+                fetched_at=f"{day}T03:00:00+00:00",
+                title=f"FAIL{day}稿件标题足够长了",
+            )
+            store.upsert_daily_brief(
+                {
+                    "date": day,
+                    "generated_at": f"{day}T01:00:00+00:00",
+                    "status": "failed",
+                    "model": "",
+                    "lede": "",
+                    "sections": [],
+                    "error": "The read operation timed out",
+                    "input_fingerprint": "stale-failed",
+                }
+            )
+        dates = [ok_day, today, *failed_days]
+        results = generate_for_dates(
+            store,
+            dates,
+            llm_fn=llm,
+            model="deepseek/deepseek-flash",
+            sleep=lambda _s: None,
+            today=today,
+        )
+        by_date = {row["date"]: row for row in results}
+        assert by_date[today]["action"] == "kept_ok"
+        assert by_date[today]["status"] == "ok"
+        assert [row["date"] for row in results[:5]] == [today, *failed_days]
+        for day in failed_days:
+            assert by_date[day]["status"] == "ok"
+            assert by_date[day]["action"] == "updated"
+            saved = store.get_daily_brief(day)
+            assert saved["status"] == "ok"
+            assert saved["lede"]
+        assert by_date[ok_day]["action"] == "kept_ok"
+        assert "TODAY稿件标题足够长了" not in seen
+        assert [title for title in seen if title.startswith("FAIL")] == [
+            f"FAIL{day}稿件标题足够长了" for day in failed_days
+        ]
+        store.close()
+
+
+def test_failed_today_does_not_write_mock_ok():
+    today = shanghai_calendar_date()
+
+    def boom(_grouped):
+        raise RuntimeError("The read operation timed out")
+
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        _seed_article(
+            store,
+            published_at=f"{today}T02:00:00+00:00",
+            fetched_at=f"{today}T03:00:00+00:00",
+        )
+        results = generate_for_dates(
+            store,
+            [today],
+            llm_fn=boom,
+            model="deepseek/deepseek-flash",
+            sleep=lambda _s: None,
+            today=today,
+        )
+        assert results[0]["status"] == "failed"
+        saved = store.get_daily_brief(today)
+        assert saved["status"] == "failed"
+        assert saved["lede"] == ""
+        assert saved["sections"] == []
+        assert "timed out" in (saved.get("error") or "")
+        store.close()
+
+
+def test_check_today_missing_status_file_exits_nonzero():
+    rc, out, err = _cli_json_rc(
+        ["--check-today", "--status-file", "/tmp/daily-brief-status-missing.json"]
+    )
+    assert rc == 1
+    assert "missing" in out
+    assert "::error::" in err
+
+
+def test_openai_complete_uses_raised_read_timeout():
+    src = (ROOT / "src" / "news_archive" / "daily_briefs.py").read_text(encoding="utf-8")
+    assert "LLM_READ_TIMEOUT_S = 90.0" in src
+    assert "timeout=45" not in src
+    assert "httpx.Timeout(" in src
+    assert "read=read_timeout" in src
+
+
+def test_store_upsert_failed_does_not_clobber_ok():
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        store.upsert_daily_brief(
+            {
+                "date": "2026-10-22",
+                "generated_at": "2026-10-22T01:00:00+00:00",
+                "status": "ok",
+                "model": "deepseek/deepseek-flash",
+                "lede": "已有成功日报不得被超时覆盖。",
+                "sections": [
+                    {"title": "旧", "bullets": ["保留"], "links": [], "topic_id": None}
+                ],
+                "error": None,
+                "input_fingerprint": "keep-ok",
+            }
+        )
+        action = store.upsert_daily_brief(
+            {
+                "date": "2026-10-22",
+                "generated_at": "2026-10-22T02:00:00+00:00",
+                "status": "failed",
+                "model": "deepseek/deepseek-flash",
+                "lede": "",
+                "sections": [],
+                "error": "The read operation timed out",
+                "input_fingerprint": "new-failed",
+            }
+        )
+        assert action == "kept_ok"
+        saved = store.get_daily_brief("2026-10-22")
+        assert saved["status"] == "ok"
+        assert saved["lede"] == "已有成功日报不得被超时覆盖。"
+        assert saved["input_fingerprint"] == "keep-ok"
+        store.close()
+
+
+def test_historical_ok_not_regenerated_when_fingerprint_changes():
+    """Rerun only fills failed/missing; historical ok stays even if RSS changes."""
+    llm, calls = _counting_llm()
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        _seed_article(store)
+        first = generate_for_dates(
+            store,
+            ["2026-10-15"],
+            llm_fn=llm,
+            model="deepseek/deepseek-flash",
+            today="2026-10-26",
+        )
+        assert first[0]["action"] == "inserted"
+        assert calls["n"] == 1
+        _seed_article(
+            store,
+            url="https://example.com/2",
+            title="第二篇入选稿件标题足够长",
+            summary="新增稿件改变当日所选集合。",
+            source="tmtpost",
+        )
+        second = generate_for_dates(
+            store,
+            ["2026-10-15"],
+            llm_fn=llm,
+            model="deepseek/deepseek-flash",
+            today="2026-10-26",
+            sleep=lambda _s: None,
+        )
+        assert second[0]["action"] == "kept_ok"
+        assert second[0]["status"] == "ok"
+        assert calls["n"] == 1
+        saved = store.get_daily_brief("2026-10-15")
+        assert saved["status"] == "ok"
+        assert saved["lede"]
+        store.close()
+
+
+def test_timeout_does_not_clobber_existing_ok_today_stays_green():
+    today = "2026-10-26"
+    calls = {"n": 0}
+
+    def boom(_grouped):
+        calls["n"] += 1
+        raise RuntimeError("The read operation timed out")
+
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        _seed_article(
+            store,
+            url="https://example.com/today",
+            published_at=f"{today}T02:00:00+00:00",
+            fetched_at=f"{today}T03:00:00+00:00",
+            title="TODAY稿件标题足够长了",
+        )
+        store.upsert_daily_brief(
+            {
+                "date": today,
+                "generated_at": f"{today}T01:00:00+00:00",
+                "status": "ok",
+                "model": "deepseek/deepseek-flash",
+                "lede": "今日已恢复成功摘要。",
+                "sections": [
+                    {"title": "旧", "bullets": ["保留"], "links": [], "topic_id": None}
+                ],
+                "error": None,
+                "input_fingerprint": "stale-ok",
+            }
+        )
+        results = generate_for_dates(
+            store,
+            [today],
+            llm_fn=boom,
+            model="deepseek/deepseek-flash",
+            sleep=lambda _s: None,
+            today=today,
+        )
+        assert calls["n"] == TODAY_LLM_ATTEMPTS
+        assert results[0]["action"] == "kept_ok"
+        assert results[0]["status"] == "ok"
+        saved = store.get_daily_brief(today)
+        assert saved["status"] == "ok"
+        assert saved["lede"] == "今日已恢复成功摘要。"
+        assert saved["input_fingerprint"] == "stale-ok"
+        exit_code, status, _error = evaluate_today_exit(
+            today=today, dates=[today], results=results, fatal_error=None
+        )
+        assert exit_code == 0
+        assert status == "ok"
+        store.close()
+
+
+def test_deadline_skip_missing_today_is_red_ok_today_stays_green():
+    clock = {"t": 0.0}
+
+    def advancing_mono() -> float:
+        clock["t"] += 10.0
+        return clock["t"]
+
+    missing_today = evaluate_today_exit(
+        today="2026-10-26",
+        dates=["2026-10-26"],
+        results=[
+            {
+                "date": "2026-10-26",
+                "action": "skipped_deadline",
+                "status": "skipped",
+                "error": "deadline",
+            }
+        ],
+        fatal_error=None,
+    )
+    assert missing_today[0] == 1
+    assert missing_today[1] == "skipped"
+
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        _seed_article(
+            store,
+            url="https://example.com/today",
+            published_at="2026-10-26T02:00:00+00:00",
+            fetched_at="2026-10-26T03:00:00+00:00",
+            title="TODAY稿件标题足够长了",
+        )
+        store.upsert_daily_brief(
+            {
+                "date": "2026-10-26",
+                "generated_at": "2026-10-26T01:00:00+00:00",
+                "status": "ok",
+                "model": "deepseek/deepseek-flash",
+                "lede": "已有成功日报。",
+                "sections": [
+                    {"title": "旧", "bullets": ["保留"], "links": [], "topic_id": None}
+                ],
+                "error": None,
+                "input_fingerprint": "keep",
+            }
+        )
+        results = generate_for_dates(
+            store,
+            ["2026-10-26"],
+            llm_fn=_ok_llm,
+            model="deepseek/deepseek-flash",
+            deadline_s=1.0,
+            monotonic=advancing_mono,
+            today="2026-10-26",
+        )
+        assert results[0]["action"] == "kept_ok"
+        assert results[0]["status"] == "ok"
+        assert store.get_daily_brief("2026-10-26")["lede"] == "已有成功日报。"
         store.close()
 
 
@@ -1518,6 +2211,22 @@ if __name__ == "__main__":
     test_cli_never_fails_on_corrupt_handler()
     test_workflow_wires_daily_brief_secrets_soft_fail()
     test_deadline_skips_remaining_days_without_overwrite()
+    test_order_dates_today_first_then_failed_backfill()
+    test_evaluate_today_exit_failed_red_ok_green()
+    test_cli_today_failed_exits_nonzero()
+    test_cli_today_ok_exits_zero()
+    test_cli_today_empty_exits_zero()
+    test_cli_older_failed_today_ok_exits_zero()
+    test_today_retries_timeout_then_ok()
+    test_older_day_timeout_is_one_shot()
+    test_failed_historical_days_backfilled_after_today()
+    test_failed_today_does_not_write_mock_ok()
+    test_check_today_missing_status_file_exits_nonzero()
+    test_openai_complete_uses_raised_read_timeout()
+    test_store_upsert_failed_does_not_clobber_ok()
+    test_historical_ok_not_regenerated_when_fingerprint_changes()
+    test_timeout_does_not_clobber_existing_ok_today_stays_green()
+    test_deadline_skip_missing_today_is_red_ok_today_stays_green()
     test_cli_deadline_flag_exits_zero()
     test_resolve_llm_config_requires_key_and_base()
     test_resolve_model_defaults_and_env_override()
