@@ -1206,6 +1206,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="politico_europe",
+        name="Politico Europe",
+        feed_url="https://www.politico.eu/feed/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="breaking_defense",
+        name="Breaking Defense",
+        feed_url="https://breakingdefense.com/feed/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="carbon_brief",
+        name="Carbon Brief",
+        feed_url="https://www.carbonbrief.org/feed/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

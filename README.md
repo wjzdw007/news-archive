@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（170 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（173 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -176,6 +176,9 @@
 | `phys_org` | Phys.org | https://phys.org/rss-feed/ | primary |
 | `globe_mail` | The Globe and Mail | https://www.theglobeandmail.com/arc/outboundfeeds/rss/?outputType=xml | primary |
 | `newatlas` | New Atlas | https://newatlas.com/index.rss | primary |
+| `politico_europe` | Politico Europe | https://www.politico.eu/feed/ | primary |
+| `breaking_defense` | Breaking Defense | https://breakingdefense.com/feed/ | primary |
+| `carbon_brief` | Carbon Brief | https://www.carbonbrief.org/feed/ | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
