@@ -18958,6 +18958,10 @@ def test_media404_jacobin_un_news_primaries_registered():
     )
     # hrw hung after this hard-swap.
     assert "hrw" not in by_id
+    # #129 / batch71 winners stay registered.
+    assert "texas_tribune" in by_id
+    assert "pew_research" in by_id
+    assert "defector" in by_id
     # #127 winners stay registered and unchanged.
     # #126 winners stay registered and unchanged.
     # #125 winners stay registered and unchanged.
