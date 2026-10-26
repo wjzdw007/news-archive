@@ -1185,6 +1185,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="phys_org",
+        name="Phys.org",
+        feed_url="https://phys.org/rss-feed/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="globe_mail",
+        name="The Globe and Mail",
+        feed_url="https://www.theglobeandmail.com/arc/outboundfeeds/rss/?outputType=xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="newatlas",
+        name="New Atlas",
+        feed_url="https://newatlas.com/index.rss",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
