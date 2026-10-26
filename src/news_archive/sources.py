@@ -1731,6 +1731,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="howtogeek",
+        name="How-To Geek",
+        feed_url="https://www.howtogeek.com/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="new_republic",
+        name="The New Republic",
+        feed_url="https://newrepublic.com/rss.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="vox",
+        name="Vox",
+        feed_url="https://www.vox.com/rss/index.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

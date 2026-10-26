@@ -568,6 +568,45 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "atlantic_council" not in TECH_AI_SOURCE_WHITELIST
     assert "the_nation" not in TECH_AI_SOURCE_WHITELIST
     assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
+    # batch80 RSS primaries stay off the tech/AI whitelist.
+    # howtogeek lands on 科技 (how-to /
+    # consumer tech newsroom, same as
+    # tomshardware / zdnet /
+    # android_authority) but later-batch
+    # tech sources stay off the frozen
+    # ALWAYS set. new_republic lands on
+    # 综合 (political magazine newsroom,
+    # same as atlantic / slate / salon /
+    # unherd). vox lands on 综合 (news /
+    # explainers newsroom, same as
+    # atlantic / slate / axios / semafor).
+    # None of these match the wired /
+    # verge / techcrunch ALWAYS pattern.
+    # Unused backups techdirt / macrumors
+    # / quillette stay off (first-winner
+    # unused stay out; do not probe unused
+    # backups after three KEEP). the_cut
+    # stays off (product dropped — all
+    # 404; do not probe / register).
+    # atlantic_council stays off
+    # (hard-swapped to grist in #139).
+    # the_nation stays off (empty
+    # site-wide FAIL). euractiv stays off
+    # (official 301 to rapporteur.com;
+    # Feedburner stale).
+    assert "howtogeek" not in TECH_AI_SOURCE_WHITELIST
+    assert "new_republic" not in TECH_AI_SOURCE_WHITELIST
+    assert "vox" not in TECH_AI_SOURCE_WHITELIST
+    assert "techdirt" not in TECH_AI_SOURCE_WHITELIST
+    assert "macrumors" not in TECH_AI_SOURCE_WHITELIST
+    assert "quillette" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_cut" not in TECH_AI_SOURCE_WHITELIST
+    assert "android_authority" not in TECH_AI_SOURCE_WHITELIST
+    assert "unherd" not in TECH_AI_SOURCE_WHITELIST
+    assert "psyche" not in TECH_AI_SOURCE_WHITELIST
+    assert "atlantic_council" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_nation" not in TECH_AI_SOURCE_WHITELIST
+    assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
