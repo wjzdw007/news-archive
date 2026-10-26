@@ -227,7 +227,7 @@
 | `texas_tribune` | The Texas Tribune | https://feeds.texastribune.org/feeds/main/ | primary |
 | `pew_research` | Pew Research Center | https://www.pewresearch.org/feed/ | primary |
 | `defector` | Defector | https://defector.com/feed | primary |
-| `independent` | The Independent | https://www.independent.co.uk/rss | primary |
+| `who_news` | WHO News | https://www.who.int/rss-feeds/news-english.xml | primary |
 | `scientific_american` | Scientific American | https://www.scientificamerican.com/platform/syndication/rss/ | primary |
 | `thenewstack` | The New Stack | https://thenewstack.io/feed/ | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |

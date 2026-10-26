@@ -1563,10 +1563,10 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
-        id="independent",
-        name="The Independent",
-        feed_url="https://www.independent.co.uk/rss",
-        category="综合",
+        id="who_news",
+        name="WHO News",
+        feed_url="https://www.who.int/rss-feeds/news-english.xml",
+        category="科学",
         role="primary",
     ),
     Source(

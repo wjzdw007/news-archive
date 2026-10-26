@@ -328,9 +328,12 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "passblue" not in TECH_AI_SOURCE_WHITELIST
     assert "inkstick" not in TECH_AI_SOURCE_WHITELIST
     # batch72 RSS primaries stay off the tech/AI whitelist.
-    # independent lands on the existing 综合
-    # category path (UK newsroom, same as
-    # guardian_uk / bbc_uk / axios).
+    # independent → who_news hard-swap
+    # stays off the whitelist.
+    # who_news lands on 科学 (health
+    # organization newsroom, same as
+    # kff_health / bbc_health /
+    # nyt_health / stat_news).
     # scientific_american lands on 科学
     # (science magazine, same as
     # popular_science / science_news /
