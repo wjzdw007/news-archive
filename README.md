@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（224 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（227 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -230,6 +230,9 @@
 | `independent` | The Independent | https://www.independent.co.uk/rss | primary |
 | `scientific_american` | Scientific American | https://www.scientificamerican.com/platform/syndication/rss/ | primary |
 | `thenewstack` | The New Stack | https://thenewstack.io/feed/ | primary |
+| `irish_times` | The Irish Times | https://www.irishtimes.com/arc/outboundfeeds/rss/?outputType=xml | primary |
+| `science_org` | Science Magazine | https://www.science.org/rss/news_current.xml | primary |
+| `variety` | Variety | https://variety.com/feed/ | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema

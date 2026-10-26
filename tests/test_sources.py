@@ -6545,6 +6545,8 @@ _TEXAS_TRIBUNE_PEW_RESEARCH_DEFECTOR_PRIMARY = {
 # no CAP code change. No X this
 # batch. No LLM this batch. Not
 # tech/AI whitelist.
+# irish_times / science_org / variety
+# are batch73.
 _INDEPENDENT_SCIENTIFIC_AMERICAN_THENEWSTACK_PRIMARY = {
     "independent": {
         "name": "The Independent",
@@ -6565,7 +6567,316 @@ _INDEPENDENT_SCIENTIFIC_AMERICAN_THENEWSTACK_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 224
+# CEO-approved The Irish Times /
+# Science Magazine / Variety RSS
+# primaries (batch73). These three
+# are the new adds after #131 (batch72
+# independent / scientific_american /
+# thenewstack) on tip
+# 8ed344ef5d5acfeda64c7fa9c95a9f7d198a563c.
+# Do not re-touch that #131 winner.
+# Do not restore hrw. Do not touch
+# independent / scientific_american /
+# thenewstack (#131) / texas_tribune /
+# pew_research / defector (#129) /
+# media404 / jacobin / un_news (#128
+# after the hard-swap) / kff_health /
+# niemanlab / reason (#127) /
+# popular_science / slate / the_19th
+# (#126) / the_new_humanitarian /
+# salon / mother_jones (#125) /
+# world_politics_review / climate_home /
+# project_syndicate (#124) /
+# japan_forward / artforum / knowable
+# (#123) / the_wire_china / literary_hub
+# / himal (#122) / defense_one /
+# fast_company / lowy_interpreter (#121)
+# / techinasia / science_news /
+# african_arguments (#120) / the_markup
+# / atlas_obscura / undark (#119) /
+# aspi_strategist / nautilus /
+# hyperallergic (#118) / aeon / noema /
+# marketwatch (#117) / mercopress /
+# nature_news / crisis_group (#116) /
+# africa_report / mexico_news_daily /
+# sciencedaily (#115) / mongabay /
+# daily_maverick / oilprice (#114) /
+# politico_europe / breaking_defense /
+# carbon_brief (#113) / phys_org /
+# globe_mail / newatlas (#112) /
+# the_register / foreign_affairs /
+# allafrica (#111) / zdnet (#110) /
+# digiday_media (#107). ars_science
+# stays hung. nyt_media / guardian_media
+# stay hung.
+# irish_times is the official The
+# Irish Times site-wide Arc RSS (no
+# prior irish_times / irish_times_com /
+# irishtimes / the_irish_times id).
+# Locked official
+# https://www.irishtimes.com/arc/outboundfeeds/rss/?outputType=xml
+# (channel "Irish Times Feeds";
+# subtitle "Irish Times Feeds News
+# Feed"). MUST lock www +
+# outputType=xml: apex remaps to www
+# + query. /arc/outboundfeeds/rss (no
+# slash) remaps to /rss/. /rss/
+# without query is the same 100-item
+# body — lock official
+# outputType=xml contract, not the
+# query-less alias. /cmlink/news-
+# 1.1319192 remaps to
+# /arc/outboundfeeds/feed-irish-news/
+# (Irish News section, 20 insertable)
+# — lock site-wide, not a section.
+# /cmlink/the-irish-times-news-
+# 1.1319192 remaps to homepage-top
+# digest (15 insertable).
+# /rss/the-irish-times-business-
+# 1.1319195 remaps to Business
+# section. /feed / /feed/ /rss /
+# /rss/ /rss.xml /feed.xml /
+# /atom.xml /latest/feed/ /news/rss
+# /ireland/rss are HTTP 404.
+# ?feed=rss / ?feed=rss2 are HTTP
+# 200 HTML (0 insertable). Old
+# /feeds/rss/newspaper/index.rss and
+# /newspaper/breaking/breaking.rss
+# are HTTP 404. Feedburner
+# https://feeds.feedburner.com/irishtimes
+# (and /IrishTimes) is HTTP 404.
+# Live-diff winner: HTTP 200 / 100
+# nonempty / 30 insertable (ingest
+# cap 30; 100 items; httpx
+# fetch_source + urllib). Product
+# lock ≥10 nonempty — keep (100 is
+# not the 5–9 observe band). Distinct
+# from live guardian_uk / bbc_uk /
+# independent / bbc_world /
+# guardian_world / nyt_world /
+# sky_world / the_19th / axios /
+# npr_news / atlantic. 0 article URL
+# overlap with those. Lands on the
+# existing 综合 category path (Irish
+# general newsroom, same as
+# guardian_uk / bbc_uk / independent
+# / axios). Not added to the tech/AI
+# whitelist.
+# science_org is the official Science
+# Magazine (AAAS) Latest News RSS 1.0
+# (no prior science_org / science_aaas
+# / aaas / science_magazine /
+# sciencemag id). Locked official
+# https://www.science.org/rss/news_current.xml
+# (channel "Latest News from Science
+# Magazine"). MUST lock www + no
+# trailing slash: apex remaps to www.
+# /rss/news_current.xml/ is the same
+# 10-insertable body — lock official
+# no-slash URL. feeds.science.org/
+# rss/news_current.xml is HTTP 403.
+# /rss/current.xml remaps to
+# feeds.science.org/rss/science.xml
+# (journal TOC "Science", academic
+# papers) — lock news, not journal
+# TOC. /action/showFeed?type=etoc&
+# feed=rss&jc=science is journal etoc
+# (papers). /feed / /feed/ /rss/
+# /rss.xml /feed.xml are HTTP 404.
+# /rss remaps to the alerts HTML
+# page (403). ?feed=rss / news/feed
+# / atom.xml /
+# sciencemag.org/rss/news_current.xml
+# are HTTP 403. Feedburner
+# https://feeds.feedburner.com/science
+# is empty (0 insertable);
+# /ScienceMagazine is spam
+# (science-magazine.info). Live-diff
+# winner: HTTP 200 / 10 nonempty /
+# 10 insertable (RSS 1.0 RDF; httpx
+# fetch_source + urllib). Product
+# lock ≥10 nonempty — keep (10 is
+# the KEEP floor, not the 5–9
+# observe band). Distinct from live
+# scientific_american /
+# popular_science / nyt_science /
+# bbc_science / guardian_science /
+# npr_science / nature_news /
+# sciencedaily / phys_org /
+# science_news / knowable / nautilus
+# / undark / space_com / stat_news.
+# 0 article URL overlap with those.
+# Lands on the existing 科学
+# category path (AAAS Science
+# Magazine news, same as
+# scientific_american /
+# popular_science / science_news).
+# Not added to the tech/AI
+# whitelist.
+# variety is the official Variety
+# WordPress site-wide RSS (no prior
+# variety / variety_com /
+# variety_magazine id). Locked
+# official https://variety.com/feed/
+# (channel "Variety"; subtitle
+# "Entertainment news, film reviews,
+# awards, film festivals, box
+# office, entertainment industry
+# conferences"). MUST lock apex +
+# trailing slash: /feed remaps to
+# /feed/. www remaps to apex /feed/.
+# /rss / /rss/ remap to /feed/.
+# ?feed=rss / ?feed=rss2 remap to
+# /feed/. /v/film/feed/ is a Film
+# section — lock site-wide, not a
+# section. /c/news/feed/ is a News
+# section. /blog/feed/ /rss.xml /
+# /feed.xml /atom.xml /latest/feed/
+# /news/feed/ are HTTP 404.
+# Feedburner
+# https://feeds.feedburner.com/variety
+# (and /Variety) is empty (0
+# insertable) — lock official
+# WordPress /feed/, not Feedburner.
+# Live-diff winner: HTTP 200 / 10
+# nonempty / 10 insertable (httpx
+# fetch_source + urllib). Product
+# lock ≥10 nonempty — keep (10 is
+# the KEEP floor, not the 5–9
+# observe band). Distinct from live
+# nyt_arts / nyt_movies /
+# guardian_film / guardian_music /
+# guardian_stage / npr_arts /
+# bbc_entertainment / guardian_tv /
+# hyperallergic / artforum /
+# literary_hub. 0 article URL
+# overlap with those. Lands on the
+# existing 综合 category path
+# (entertainment trade newsroom,
+# same as bbc_entertainment /
+# nyt_movies / guardian_film —
+# existing pattern has no 娱乐
+# category). Not added to the
+# tech/AI whitelist.
+# Product-locked backups (use only if a
+# primary fails live-diff / fetch /
+# URL-dedup): medicalxpress /
+# new_republic / howtogeek — unused
+# because all three primaries won
+# (≥10 nonempty via fetch_source).
+# Do not probe unused backups.
+# Do NOT use as backups (product skip):
+# bangkok_post (HTTP 451 / prior skip),
+# indian_express (insertable=0
+# empty-desc), rest_of_world (httpx
+# 403 JS challenge), al_monitor
+# (flaky 403), hkfp (HTTP 403),
+# biographic (httpx 403 — 勿再挂),
+# asiatimes / asia_times (httpx 403),
+# dawn (Cloudflare 403), longreads
+# (httpx 403), hrw (daily-fetch
+# httpx 403 hard-swap). Do not
+# invent other backups. Do not
+# restore ars_science. Do not add a
+# second digiday_media (digiday0观察).
+# Do not register dawn Feedburner.
+# Do not restore independent_world
+# (/news/world/rss is a World
+# section + prior 429 hang).
+# independent / scientific_american /
+# thenewstack stay registered
+# (batch72 closed). texas_tribune /
+# pew_research / defector stay
+# registered (batch71 closed).
+# media404 / jacobin / un_news stay
+# registered (batch70 after the
+# hrw → jacobin hard-swap; hrw hung).
+# kff_health / niemanlab / reason stay
+# registered (batch69 closed).
+# popular_science / slate / the_19th
+# stay registered (batch68 closed).
+# the_new_humanitarian / salon /
+# mother_jones stay registered
+# (batch67 closed).
+# world_politics_review / climate_home /
+# project_syndicate stay registered
+# (batch66 closed). japan_forward /
+# artforum / knowable stay registered
+# (batch65 closed). the_wire_china /
+# literary_hub / himal stay registered
+# (batch64 closed). defense_one /
+# fast_company / lowy_interpreter stay
+# registered (batch63 closed).
+# techinasia / science_news /
+# african_arguments stay registered
+# (batch62 closed). the_markup /
+# atlas_obscura / undark stay
+# registered (batch61 closed).
+# aspi_strategist / nautilus /
+# hyperallergic stay registered
+# (batch60 closed). aeon / noema /
+# marketwatch stay registered (batch59
+# closed). mercopress / nature_news /
+# crisis_group stay registered (batch58
+# closed). africa_report /
+# mexico_news_daily / sciencedaily stay
+# registered (batch57 closed). mongabay
+# / daily_maverick / oilprice stay
+# registered (batch56 closed).
+# politico_europe / breaking_defense /
+# carbon_brief stay registered (batch55
+# closed). phys_org / globe_mail /
+# newatlas stay registered (batch54
+# closed). the_register /
+# foreign_affairs / allafrica stay
+# registered (batch53 closed).
+# bbc_australia / bloomberg_technology /
+# zdnet stay registered (batch52 after
+# #110). ars_science stays hung.
+# the_diplomat / stat_news /
+# ieee_spectrum stay registered
+# (batch51 closed). war_on_rocks /
+# canary_media / space_com stay
+# registered (batch50 closed).
+# foreign_policy / ft_world /
+# abc_australia stay registered
+# (batch49 closed). politico_politics /
+# dw_business / france24_culture stay
+# registered (batch48 closed).
+# atlantic / smh_national /
+# guardian_education stay registered
+# (batch47 closed). digiday_media
+# stays registered (#107). nyt_media /
+# guardian_media stay hung.
+# guardian_games stays unregistered
+# (product: games thin / 不进主源).
+# sunday_review / cnbc (403 known) /
+# ap stay unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6 —
+# no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_IRISH_TIMES_SCIENCE_ORG_VARIETY_PRIMARY = {
+    "irish_times": {
+        "name": "The Irish Times",
+        "feed_url": (
+            "https://www.irishtimes.com/arc/outboundfeeds/rss/?outputType=xml"
+        ),
+        "category": "综合",
+    },
+    "science_org": {
+        "name": "Science Magazine",
+        "feed_url": "https://www.science.org/rss/news_current.xml",
+        "category": "科学",
+    },
+    "variety": {
+        "name": "Variety",
+        "feed_url": "https://variety.com/feed/",
+        "category": "综合",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 227
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -20114,6 +20425,10 @@ def test_independent_scientific_american_thenewstack_primaries_registered():
     )
     assert "thenewstack" in by_id
     assert by_id["thenewstack"].feed_url == "https://thenewstack.io/feed/"
+    # #132 / batch73 winners stay registered.
+    assert "irish_times" in by_id
+    assert "science_org" in by_id
+    assert "variety" in by_id
     # #129 / #130 winners stay registered and unchanged.
     # #128 winners stay registered and unchanged.
     # #127 winners stay registered and unchanged.
@@ -20359,7 +20674,12 @@ def test_independent_scientific_american_thenewstack_primaries_registered():
     # All three batch72 primaries KEEP, so
     # who_news / new_yorker / smithsonian_mag
     # stay unused (do not probe unused
-    # backups). independent_world stays hung
+    # backups). irish_times / science_org /
+    # variety are now batch73.
+    # medicalxpress / new_republic /
+    # howtogeek stay unused because all
+    # three batch73 primaries KEEP.
+    # independent_world stays hung
     # (prior 429; World section — do not
     # restore). vox / euractiv / passblue
     # stay unused (batch71 leftovers).
@@ -20371,6 +20691,11 @@ def test_independent_scientific_american_thenewstack_primaries_registered():
     # biographic stays out (httpx 403).
     # inkstick stays out (product dropped).
     # hrw stays hung.
+    assert "irish_times" in by_id
+    assert "science_org" in by_id
+    assert "variety" in by_id
+    assert "medicalxpress" not in by_id
+    assert "howtogeek" not in by_id
     assert "who_news" not in by_id
     assert "who" not in by_id
     assert "who_int" not in by_id
@@ -20536,6 +20861,381 @@ def test_independent_scientific_american_thenewstack_feeds_live_http_200():
         )
 
 
+def test_irish_times_science_org_variety_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "irish_times" in by_id
+    assert by_id["irish_times"].feed_url == (
+        "https://www.irishtimes.com/arc/outboundfeeds/rss/?outputType=xml"
+    )
+    assert "science_org" in by_id
+    assert by_id["science_org"].feed_url == (
+        "https://www.science.org/rss/news_current.xml"
+    )
+    assert "variety" in by_id
+    assert by_id["variety"].feed_url == "https://variety.com/feed/"
+    # #131 winners stay registered and unchanged.
+    # #129 / #130 winners stay registered and unchanged.
+    # #128 winners stay registered and unchanged.
+    # #127 winners stay registered and unchanged.
+    # #126 winners stay registered and unchanged.
+    # #125 winners stay registered and unchanged.
+    # #124 winners stay registered and unchanged.
+    # #123 winners stay registered and unchanged.
+    # #122 winners stay registered and unchanged.
+    # #121 winners stay registered and unchanged.
+    # #120 winners stay registered and unchanged.
+    # #119 winners stay registered and unchanged.
+    # #118 winners stay registered and unchanged.
+    # #117 winners stay registered and unchanged.
+    # #116 winners stay registered and unchanged.
+    # #115 winners stay registered and unchanged.
+    # #114 winners stay registered and unchanged.
+    # #113 winners stay registered and unchanged.
+    # #112 winners stay registered and unchanged.
+    # #111 winners stay registered and unchanged.
+    # #110 hard-swap: zdnet live, ars_science hung.
+    # #107 hard-swap: digiday_media live, nyt_media hung.
+    # Do not touch independent / scientific_american /
+    # thenewstack / texas_tribune / pew_research /
+    # defector / media404 / jacobin / un_news /
+    # kff_health / niemanlab / reason /
+    # popular_science / slate / the_19th /
+    # the_new_humanitarian / salon /
+    # mother_jones / world_politics_review /
+    # climate_home / project_syndicate /
+    # japan_forward / artforum / knowable /
+    # the_wire_china / literary_hub / himal /
+    # defense_one / fast_company /
+    # lowy_interpreter / techinasia /
+    # science_news / african_arguments /
+    # the_markup / atlas_obscura / undark /
+    # aspi_strategist / nautilus /
+    # hyperallergic / aeon / noema /
+    # marketwatch / mercopress / nature_news /
+    # crisis_group / africa_report /
+    # mexico_news_daily / sciencedaily /
+    # mongabay / daily_maverick / oilprice /
+    # politico_europe / breaking_defense /
+    # carbon_brief / phys_org / globe_mail /
+    # newatlas / the_register / foreign_affairs /
+    # allafrica / zdnet / digiday_media.
+    assert "independent" in by_id
+    assert "scientific_american" in by_id
+    assert "thenewstack" in by_id
+    assert "texas_tribune" in by_id
+    assert "pew_research" in by_id
+    assert "defector" in by_id
+    assert "media404" in by_id
+    assert "jacobin" in by_id
+    assert "un_news" in by_id
+    assert "hrw" not in by_id
+    assert "kff_health" in by_id
+    assert "niemanlab" in by_id
+    assert "reason" in by_id
+    assert "popular_science" in by_id
+    assert "slate" in by_id
+    assert "the_19th" in by_id
+    assert "the_new_humanitarian" in by_id
+    assert "salon" in by_id
+    assert "mother_jones" in by_id
+    assert "world_politics_review" in by_id
+    assert "climate_home" in by_id
+    assert "project_syndicate" in by_id
+    assert "japan_forward" in by_id
+    assert "artforum" in by_id
+    assert "knowable" in by_id
+    assert "the_wire_china" in by_id
+    assert "literary_hub" in by_id
+    assert "himal" in by_id
+    assert "defense_one" in by_id
+    assert "fast_company" in by_id
+    assert "lowy_interpreter" in by_id
+    assert "techinasia" in by_id
+    assert "science_news" in by_id
+    assert "african_arguments" in by_id
+    assert "the_markup" in by_id
+    assert "atlas_obscura" in by_id
+    assert "undark" in by_id
+    assert "aspi_strategist" in by_id
+    assert "nautilus" in by_id
+    assert "hyperallergic" in by_id
+    assert "aeon" in by_id
+    assert "noema" in by_id
+    assert "marketwatch" in by_id
+    assert "africa_report" in by_id
+    assert "sciencedaily" in by_id
+    assert "digiday_media" in by_id
+    assert "breaking_defense" in by_id
+    assert "carbon_brief" in by_id
+    assert "zdnet" in by_id
+    assert "the_register" in by_id
+    assert "newatlas" in by_id
+    assert "phys_org" in by_id
+    assert "nature_news" in by_id
+    assert "scientific_american" in by_id
+    assert by_id["independent"].feed_url == (
+        "https://www.independent.co.uk/rss"
+    )
+    assert by_id["scientific_american"].feed_url == (
+        "https://www.scientificamerican.com/platform/syndication/rss/"
+    )
+    assert by_id["thenewstack"].feed_url == "https://thenewstack.io/feed/"
+    assert by_id["texas_tribune"].feed_url == (
+        "https://feeds.texastribune.org/feeds/main/"
+    )
+    assert by_id["pew_research"].feed_url == (
+        "https://www.pewresearch.org/feed/"
+    )
+    assert by_id["defector"].feed_url == "https://defector.com/feed"
+    assert by_id["media404"].feed_url == "https://www.404media.co/rss/"
+    assert by_id["jacobin"].feed_url == "https://jacobin.com/feed/"
+    assert by_id["un_news"].feed_url == (
+        "https://news.un.org/feed/subscribe/en/news/all/rss.xml"
+    )
+    assert by_id["kff_health"].feed_url == "https://kffhealthnews.org/feed/"
+    assert by_id["niemanlab"].feed_url == "https://www.niemanlab.org/feed/"
+    assert by_id["reason"].feed_url == "https://reason.com/feed/"
+    assert by_id["popular_science"].feed_url == "https://www.popsci.com/feed/"
+    assert by_id["slate"].feed_url == "https://slate.com/feeds/all.rss"
+    assert by_id["the_19th"].feed_url == "https://19thnews.org/feed/"
+    assert by_id["zdnet"].feed_url == "https://www.zdnet.com/feed/"
+    assert by_id["the_register"].feed_url == (
+        "https://www.theregister.com/headlines.atom"
+    )
+    assert by_id["newatlas"].feed_url == "https://newatlas.com/index.rss"
+    assert by_id["irish_times"].feed_url != (
+        "https://www.irishtimes.com/arc/outboundfeeds/rss/"
+    )
+    assert by_id["irish_times"].feed_url != (
+        "https://www.irishtimes.com/arc/outboundfeeds/rss"
+    )
+    assert by_id["irish_times"].feed_url != (
+        "https://irishtimes.com/arc/outboundfeeds/rss/?outputType=xml"
+    )
+    assert by_id["irish_times"].feed_url != (
+        "https://www.irishtimes.com/cmlink/news-1.1319192"
+    )
+    assert by_id["irish_times"].feed_url != (
+        "https://www.irishtimes.com/cmlink/the-irish-times-news-1.1319192"
+    )
+    assert by_id["irish_times"].feed_url != (
+        "https://www.irishtimes.com/arc/outboundfeeds/digest-resolver/"
+        "homepage-top/"
+    )
+    assert by_id["irish_times"].feed_url != (
+        "https://www.irishtimes.com/rss/the-irish-times-business-1.1319195"
+    )
+    assert by_id["irish_times"].feed_url != "https://www.irishtimes.com/feed/"
+    assert by_id["irish_times"].feed_url != "https://www.irishtimes.com/rss/"
+    assert by_id["irish_times"].feed_url != (
+        "https://feeds.feedburner.com/irishtimes"
+    )
+    assert by_id["irish_times"].feed_url != by_id["guardian_uk"].feed_url
+    assert by_id["irish_times"].feed_url != by_id["bbc_uk"].feed_url
+    assert by_id["irish_times"].feed_url != by_id["independent"].feed_url
+    assert by_id["irish_times"].feed_url != by_id["bbc_world"].feed_url
+    assert by_id["irish_times"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["irish_times"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["irish_times"].feed_url != by_id["sky_world"].feed_url
+    assert by_id["irish_times"].feed_url != by_id["the_19th"].feed_url
+    assert by_id["irish_times"].feed_url != by_id["axios"].feed_url
+    assert by_id["irish_times"].feed_url != by_id["npr_news"].feed_url
+    assert by_id["irish_times"].feed_url != by_id["atlantic"].feed_url
+    assert by_id["science_org"].feed_url != (
+        "https://www.science.org/rss/news_current.xml/"
+    )
+    assert by_id["science_org"].feed_url != (
+        "https://science.org/rss/news_current.xml"
+    )
+    assert by_id["science_org"].feed_url != (
+        "https://www.science.org/rss/current.xml"
+    )
+    assert by_id["science_org"].feed_url != (
+        "https://feeds.science.org/rss/science.xml"
+    )
+    assert by_id["science_org"].feed_url != (
+        "https://feeds.science.org/rss/news_current.xml"
+    )
+    assert by_id["science_org"].feed_url != "https://www.science.org/feed/"
+    assert by_id["science_org"].feed_url != "https://www.science.org/rss/"
+    assert by_id["science_org"].feed_url != (
+        "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science"
+    )
+    assert by_id["science_org"].feed_url != (
+        "https://feeds.feedburner.com/science"
+    )
+    assert by_id["science_org"].feed_url != (
+        "https://feeds.feedburner.com/ScienceMagazine"
+    )
+    assert by_id["science_org"].feed_url != (
+        by_id["scientific_american"].feed_url
+    )
+    assert by_id["science_org"].feed_url != (
+        by_id["popular_science"].feed_url
+    )
+    assert by_id["science_org"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["science_org"].feed_url != by_id["bbc_science"].feed_url
+    assert by_id["science_org"].feed_url != (
+        by_id["guardian_science"].feed_url
+    )
+    assert by_id["science_org"].feed_url != by_id["npr_science"].feed_url
+    assert by_id["science_org"].feed_url != by_id["nature_news"].feed_url
+    assert by_id["science_org"].feed_url != by_id["sciencedaily"].feed_url
+    assert by_id["science_org"].feed_url != by_id["phys_org"].feed_url
+    assert by_id["science_org"].feed_url != by_id["science_news"].feed_url
+    assert by_id["science_org"].feed_url != by_id["knowable"].feed_url
+    assert by_id["science_org"].feed_url != by_id["nautilus"].feed_url
+    assert by_id["science_org"].feed_url != by_id["undark"].feed_url
+    assert by_id["science_org"].feed_url != by_id["space_com"].feed_url
+    assert by_id["science_org"].feed_url != by_id["stat_news"].feed_url
+    assert by_id["variety"].feed_url != "https://variety.com/feed"
+    assert by_id["variety"].feed_url != "https://www.variety.com/feed/"
+    assert by_id["variety"].feed_url != "https://variety.com/rss"
+    assert by_id["variety"].feed_url != "https://variety.com/rss/"
+    assert by_id["variety"].feed_url != "https://variety.com/?feed=rss"
+    assert by_id["variety"].feed_url != "https://variety.com/?feed=rss2"
+    assert by_id["variety"].feed_url != "https://variety.com/v/film/feed/"
+    assert by_id["variety"].feed_url != "https://variety.com/c/news/feed/"
+    assert by_id["variety"].feed_url != (
+        "https://feeds.feedburner.com/variety"
+    )
+    assert by_id["variety"].feed_url != (
+        "https://feeds.feedburner.com/Variety"
+    )
+    assert by_id["variety"].feed_url != by_id["nyt_arts"].feed_url
+    assert by_id["variety"].feed_url != by_id["nyt_movies"].feed_url
+    assert by_id["variety"].feed_url != by_id["guardian_film"].feed_url
+    assert by_id["variety"].feed_url != by_id["guardian_music"].feed_url
+    assert by_id["variety"].feed_url != by_id["guardian_stage"].feed_url
+    assert by_id["variety"].feed_url != by_id["npr_arts"].feed_url
+    assert by_id["variety"].feed_url != by_id["bbc_entertainment"].feed_url
+    assert by_id["variety"].feed_url != by_id["guardian_tv"].feed_url
+    assert by_id["variety"].feed_url != by_id["hyperallergic"].feed_url
+    assert by_id["variety"].feed_url != by_id["artforum"].feed_url
+    assert by_id["variety"].feed_url != by_id["literary_hub"].feed_url
+    assert by_id["irish_times"].feed_url != by_id["science_org"].feed_url
+    assert by_id["irish_times"].feed_url != by_id["variety"].feed_url
+    assert by_id["science_org"].feed_url != by_id["variety"].feed_url
+    # Unused backups + product-skip sources stay out.
+    # All three batch73 primaries KEEP, so
+    # medicalxpress / new_republic / howtogeek
+    # stay unused (do not probe unused
+    # backups). who_news / new_yorker /
+    # smithsonian_mag stay unused (batch72
+    # leftovers). independent_world stays
+    # hung (prior 429; World section — do
+    # not restore). vox / euractiv /
+    # passblue stay unused (batch71
+    # leftovers). longreads stays out
+    # (batch68 official httpx 403). dawn
+    # stays out (batch67 official
+    # Cloudflare 403). Do not register
+    # dawn Feedburner.
+    # asiatimes / asia_times stay out (httpx 403).
+    # biographic stays out (httpx 403).
+    # inkstick stays out (product dropped).
+    # hrw stays hung.
+    assert "medicalxpress" not in by_id
+    assert "medical_xpress" not in by_id
+    assert "medicalxpress_com" not in by_id
+    assert "new_republic" not in by_id
+    assert "newrepublic" not in by_id
+    assert "new_republic_com" not in by_id
+    assert "howtogeek" not in by_id
+    assert "how_to_geek" not in by_id
+    assert "howtogeek_com" not in by_id
+    assert "who_news" not in by_id
+    assert "new_yorker" not in by_id
+    assert "smithsonian_mag" not in by_id
+    assert "irish_times_com" not in by_id
+    assert "irishtimes" not in by_id
+    assert "the_irish_times" not in by_id
+    assert "science_aaas" not in by_id
+    assert "aaas" not in by_id
+    assert "science_magazine" not in by_id
+    assert "sciencemag" not in by_id
+    assert "variety_com" not in by_id
+    assert "variety_magazine" not in by_id
+    assert "independent_world" not in by_id
+    assert "vox" not in by_id
+    assert "euractiv" not in by_id
+    assert "passblue" not in by_id
+    assert "inkstick" not in by_id
+    assert "hrw" not in by_id
+    assert "longreads" not in by_id
+    assert "dawn" not in by_id
+    assert "asiatimes" not in by_id
+    assert "asia_times" not in by_id
+    assert "biographic" not in by_id
+    assert "hkfp" not in by_id
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "guardian_games" not in by_id
+    for source_id, expected in (
+        _IRISH_TIMES_SCIENCE_ORG_VARIETY_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_irish_times_science_org_variety_feeds_live_http_200():
+    """Hit the three batch73 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _IRISH_TIMES_SCIENCE_ORG_VARIETY_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (irish_times / variety) uses
+        # the un-namespaced element text.
+        # science_org is RSS 1.0 RDF
+        # (dc:date / rss1.0 title+link).
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # All three winners were 100% nonempty
+        # this probe (irish_times 100/100;
+        # science_org 10/10; variety 10/10).
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= 10, (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -20612,6 +21312,7 @@ if __name__ == "__main__":
     test_hrw_hard_swapped_to_jacobin()
     test_texas_tribune_pew_research_defector_primaries_registered()
     test_independent_scientific_american_thenewstack_primaries_registered()
+    test_irish_times_science_org_variety_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -20683,4 +21384,5 @@ if __name__ == "__main__":
     test_media404_jacobin_un_news_feeds_live_http_200()
     test_texas_tribune_pew_research_defector_feeds_live_http_200()
     test_independent_scientific_american_thenewstack_feeds_live_http_200()
+    test_irish_times_science_org_variety_feeds_live_http_200()
     print("✓ source registry tests PASSED")
