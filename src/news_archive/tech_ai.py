@@ -1,6 +1,6 @@
-"""科技/AI curated topic: RSS whitelist + keyword filter, merged with X.
+"""科技/AI curated topic: RSS whitelist + keyword filter, plus X column.
 
-Static Pages consume the merged feed. No LLM. NEWS_SOURCE_CAP stays 6
+Static Pages render 资讯 | X columns. No LLM. NEWS_SOURCE_CAP stays 6
 on the news tab; this module does not change ingest/display caps.
 """
 
@@ -20,10 +20,9 @@ TECH_AI_TITLE = "科技/AI"
 # 专题 page is never a dead end.
 WINDOW_HOURS = 24
 FALLBACK_HOURS = 168  # 7 days
-MAX_ITEMS = 100
-# Knife #2: RSS MAX must not wipe X. Reserve 25% when X posts exist.
-# Remaining slots go to RSS; list stays one chronological feed (mobile-friendly).
-X_RESERVED_SLOTS = 25
+MAX_ITEMS = 100  # 资讯 column only
+# X column is independent — RSS MAX=100 cannot squeeze it.
+X_COLUMN_CAP = 30
 
 # Dedicated tech / hard-tech / 科技商业 feeds: include recent items as-is.
 TECH_AI_ALWAYS_SOURCES: frozenset[str] = frozenset(
@@ -284,7 +283,10 @@ def empty_tech_ai_payload(*, now: datetime | None = None) -> dict[str, Any]:
         "used_x_backups": False,
         "rss_count": 0,
         "x_count": 0,
-        "x_reserved_slots": X_RESERVED_SLOTS,
+        "x_column_cap": X_COLUMN_CAP,
+        "layout": "columns",
+        "rss_items": [],
+        "x_items": [],
         "items": [],
     }
 
@@ -339,7 +341,7 @@ def build_tech_ai_page(
     *,
     now: datetime | None = None,
 ) -> dict[str, Any]:
-    """Build the public 科技/AI payload: RSS ∪ X, time-ordered, no snapshots."""
+    """Build the public 科技/AI payload: 资讯 | X columns, no snapshots."""
     now_dt = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     article_list = list(articles)
     post_list = list(posts)
@@ -355,7 +357,8 @@ def build_tech_ai_page(
         used_fallback = True
         window_hours = FALLBACK_HOURS
 
-    items = merge_reserved_feed(rss, x_posts)
+    rss_items, x_items = split_column_feeds(rss, x_posts)
+    items = sorted(rss_items + x_items, key=item_sort_at, reverse=True)
 
     for item in items:
         item.pop("content_snapshot", None)
@@ -369,37 +372,33 @@ def build_tech_ai_page(
         "fallback_hours": FALLBACK_HOURS,
         "used_fallback": used_fallback,
         "used_x_backups": used_backups,
-        "rss_count": sum(1 for it in items if it.get("kind") == "rss"),
-        "x_count": sum(1 for it in items if it.get("kind") == "x"),
-        "x_reserved_slots": X_RESERVED_SLOTS,
+        "rss_count": len(rss_items),
+        "x_count": len(x_items),
+        "x_column_cap": X_COLUMN_CAP,
+        "layout": "columns",
+        "rss_items": rss_items,
+        "x_items": x_items,
         "items": items,
     }
 
 
-def merge_reserved_feed(
+def split_column_feeds(
     rss: Iterable[dict[str, Any]],
     x_posts: Iterable[dict[str, Any]],
     *,
-    max_items: int = MAX_ITEMS,
-    x_reserved: int = X_RESERVED_SLOTS,
-) -> list[dict[str, Any]]:
-    """Chronological RSS∪X with reserved X slots so RSS MAX cannot zero X.
+    rss_cap: int = MAX_ITEMS,
+    x_cap: int = X_COLUMN_CAP,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Split 资讯 / X columns with independent caps.
 
-    When X posts exist, keep up to `x_reserved` newest X items and fill the
-    rest with newest RSS. When X is empty, RSS may use the full MAX.
+    RSS uses MAX_ITEMS (100). X uses X_COLUMN_CAP (30) and is never
+    reduced because RSS filled up.
     """
     rss_items = [_rss_item(a) for a in rss]
     x_items = [_x_item(p) for p in x_posts]
     rss_items.sort(key=item_sort_at, reverse=True)
     x_items.sort(key=item_sort_at, reverse=True)
-
-    if x_items:
-        x_keep = x_items[: min(max(x_reserved, 0), max_items)]
-        rss_keep = rss_items[: max(max_items - len(x_keep), 0)]
-        items = rss_keep + x_keep
-        items.sort(key=item_sort_at, reverse=True)
-        return items
-    return rss_items[:max_items]
+    return rss_items[: max(rss_cap, 0)], x_items[: max(x_cap, 0)]
 
 
 def assert_whitelist_registered() -> list[str]:
