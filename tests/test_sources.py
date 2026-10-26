@@ -4576,6 +4576,8 @@ _DEFENSE_ONE_FAST_COMPANY_LOWY_INTERPRETER_PRIMARY = {
 # no CAP code change. No X this
 # batch. No LLM this batch. Not
 # tech/AI whitelist.
+# japan_forward / artforum / knowable
+# are batch65.
 _THE_WIRE_CHINA_LITERARY_HUB_HIMAL_PRIMARY = {
     "the_wire_china": {
         "name": "The Wire China",
@@ -4594,7 +4596,219 @@ _THE_WIRE_CHINA_LITERARY_HUB_HIMAL_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 200
+# CEO-approved Japan Forward / Artforum /
+# Knowable Magazine RSS primaries (batch65).
+# These three are the new adds after #122
+# (the_wire_china / literary_hub / himal)
+# on tip 99ed5c65. Do not re-touch that
+# #122 winner. Do not touch defense_one /
+# fast_company / lowy_interpreter (#121) /
+# techinasia / science_news /
+# african_arguments (#120) / the_markup /
+# atlas_obscura / undark (#119) /
+# aspi_strategist / nautilus /
+# hyperallergic (#118) / aeon / noema /
+# marketwatch (#117) / mercopress /
+# nature_news / crisis_group (#116) /
+# africa_report / mexico_news_daily /
+# sciencedaily (#115) / mongabay /
+# daily_maverick / oilprice (#114) /
+# politico_europe / breaking_defense /
+# carbon_brief (#113) / phys_org /
+# globe_mail / newatlas (#112) /
+# the_register / foreign_affairs /
+# allafrica (#111) / zdnet (#110) /
+# digiday_media (#107). ars_science
+# stays hung. nyt_media / guardian_media
+# stay hung.
+# japan_forward is the official Japan
+# Forward WordPress RSS (no prior
+# japan_forward / japanforward id;
+# unused batch63 leftover at this
+# official URL stays unregistered as
+# that leftover id). Locked official
+# https://japan-forward.com/feed/
+# (channel "Japan Forward"; empty
+# subtitle). /feed remaps to /feed/.
+# /rss / ?feed=rss / ?feed=rss2 /
+# /feed/rss/ remap to /feed/.
+# www.japan-forward.com/feed/ remaps
+# to the homepage (HTML 200 / 0
+# insertable). /rss.xml remaps to
+# sitemap.rss (50 items / 0 nonempty /
+# 0 insertable). /atom.xml is HTTP
+# 404. Live-diff winner: HTTP 200 /
+# 12 nonempty / 12 insertable (httpx
+# fetch_source + urllib). Product
+# lock ≥10 nonempty — keep (12 is
+# not the 5–9 observe band). Distinct
+# from live japan_times / bbc_asia /
+# scmp_asia / himal / the_diplomat /
+# aspi_strategist / lowy_interpreter /
+# hindu_international /
+# straitstimes_world / the_wire_china.
+# 0 article URL overlap with those.
+# Lands on the existing 国际·亚太
+# category path (Japan English news /
+# opinion, same as japan_times). Not
+# added to the tech/AI whitelist.
+# artforum is the official Artforum
+# WordPress RSS (no prior artforum /
+# art_forum id; unused batch63 leftover
+# at this official URL stays
+# unregistered as that leftover id).
+# Locked official
+# https://www.artforum.com/feed/
+# (channel "Artforum"; empty subtitle).
+# /feed remaps to /feed/. /rss /
+# ?feed=rss / ?feed=rss2 remap to
+# /feed/. apex artforum.com/rss and
+# /feed/ remap to www /feed/.
+# /rss.xml / /atom.xml are HTTP 404.
+# /news/feed/ remaps to HTML /c/news/
+# / 0 insertable. Lock the documented
+# WordPress /feed/, not the /rss
+# rewrite. Live-diff winner: HTTP 200
+# / 12 nonempty / 12 insertable
+# (httpx fetch_source + urllib).
+# Product lock ≥10 nonempty — keep
+# (12 is not the 5–9 observe band).
+# Distinct from live hyperallergic /
+# guardian_artanddesign / nyt_arts /
+# france24_culture / nyt_movies /
+# guardian_film / npr_arts /
+# guardian_stage / guardian_books /
+# nyt_books / aeon / noema /
+# literary_hub. 0 article URL overlap
+# with those. Lands on the existing
+# 综合 category path (art / culture,
+# same as hyperallergic /
+# guardian_artanddesign). Not added
+# to the tech/AI whitelist.
+# knowable is the official Knowable
+# Magazine RSS (no prior knowable /
+# knowable_magazine id; unused
+# batch60 / batch61 leftover at this
+# official URL stays unregistered as
+# those leftover ids). Locked official
+# https://knowablemagazine.org/rss
+# (channel "Knowable Magazine";
+# subtitle "Knowable Magazine is from
+# Annual Reviews, a nonprofit
+# publisher dedicated to synthesizing
+# and integrating knowledge for the
+# progress of science and the benefit
+# of society."). www remaps to apex
+# /rss. /rss/ / /feed / /feed/ /
+# /rss.xml / /en/rss / ?feed=rss /
+# /atom.xml are HTTP 403. Live-diff
+# winner: HTTP 200 / 20 nonempty /
+# 20 insertable (httpx fetch_source +
+# urllib). Product lock ≥10 nonempty
+# — keep. Distinct from live
+# science_news / nautilus / undark /
+# nature_news / sciencedaily /
+# phys_org / nyt_science /
+# guardian_science / bbc_science /
+# npr_science / aeon. 0 article URL
+# overlap with those. Lands on the
+# existing 科学 category path
+# (science magazine from Annual
+# Reviews, same as nature_news /
+# sciencedaily / phys_org). Not added
+# to the tech/AI whitelist.
+# Product-locked backups (use only if a
+# primary fails live-diff / fetch /
+# URL-dedup): the_new_humanitarian /
+# dawn / grist — unused because all
+# three primaries won (≥10 nonempty
+# via fetch_source). Do not probe
+# unused backups. Do NOT use vox /
+# reason / project_syndicate
+# (product replaced those backups).
+# Do NOT use as backups (product skip):
+# bangkok_post (HTTP 451 / prior skip),
+# indian_express (insertable=0
+# empty-desc), rest_of_world (httpx
+# 403 JS challenge), al_monitor
+# (flaky 403), hkfp (HTTP 403),
+# biographic (httpx 403 — 勿再挂),
+# asiatimes / asia_times (httpx 403).
+# Do not invent other backups. Do not
+# restore ars_science. Do not add a
+# second digiday_media.
+# the_wire_china / literary_hub /
+# himal stay registered (batch64
+# closed). defense_one / fast_company /
+# lowy_interpreter stay registered
+# (batch63 closed). techinasia /
+# science_news / african_arguments stay
+# registered (batch62 closed).
+# the_markup / atlas_obscura / undark
+# stay registered (batch61 closed).
+# aspi_strategist / nautilus /
+# hyperallergic stay registered
+# (batch60 closed). aeon / noema /
+# marketwatch stay registered (batch59
+# closed). mercopress / nature_news /
+# crisis_group stay registered (batch58
+# closed). africa_report /
+# mexico_news_daily / sciencedaily stay
+# registered (batch57 closed). mongabay
+# / daily_maverick / oilprice stay
+# registered (batch56 closed).
+# politico_europe / breaking_defense /
+# carbon_brief stay registered (batch55
+# closed). phys_org / globe_mail /
+# newatlas stay registered (batch54
+# closed). the_register /
+# foreign_affairs / allafrica stay
+# registered (batch53 closed).
+# bbc_australia / bloomberg_technology /
+# zdnet stay registered (batch52 after
+# #110). ars_science stays hung.
+# the_diplomat / stat_news /
+# ieee_spectrum stay registered
+# (batch51 closed). war_on_rocks /
+# canary_media / space_com stay
+# registered (batch50 closed).
+# foreign_policy / ft_world /
+# abc_australia stay registered
+# (batch49 closed). politico_politics /
+# dw_business / france24_culture stay
+# registered (batch48 closed).
+# atlantic / smh_national /
+# guardian_education stay registered
+# (batch47 closed). digiday_media
+# stays registered (#107). nyt_media /
+# guardian_media stay hung.
+# guardian_games stays unregistered
+# (product: games thin / 不进主源).
+# sunday_review / cnbc (403 known) /
+# ap stay unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6 —
+# no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_JAPAN_FORWARD_ARTFORUM_KNOWABLE_PRIMARY = {
+    "japan_forward": {
+        "name": "Japan Forward",
+        "feed_url": "https://japan-forward.com/feed/",
+        "category": "国际·亚太",
+    },
+    "artforum": {
+        "name": "Artforum",
+        "feed_url": "https://www.artforum.com/feed/",
+        "category": "综合",
+    },
+    "knowable": {
+        "name": "Knowable Magazine",
+        "feed_url": "https://knowablemagazine.org/rss",
+        "category": "科学",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 203
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -13525,9 +13739,11 @@ def test_aspi_strategist_nautilus_hyperallergic_primaries_registered():
     # primaries won. Product-skip sources stay out.
     # lowy_interpreter is now the batch63
     # primary (was an unused batch60
-    # backup).
+    # backup). knowable is now the
+    # batch65 primary (was an unused
+    # batch60 leftover).
     assert "lowy_interpreter" in by_id
-    assert "knowable" not in by_id
+    assert "knowable" in by_id
     assert "knowable_magazine" not in by_id
     assert "artnet" not in by_id
     # undark is now the batch61 hard-swap
@@ -13850,14 +14066,16 @@ def test_the_markup_atlas_obscura_undark_primaries_registered():
     # biographic stays out (httpx 403).
     # defense_one / lowy_interpreter are now
     # the batch63 primaries (were unused
-    # batch61 backups).
+    # batch61 backups). knowable is now
+    # the batch65 primary (was an unused
+    # batch61 leftover).
     assert "asiatimes" not in by_id
     assert "asia_times" not in by_id
     assert "biographic" not in by_id
     assert "biographic_magazine" not in by_id
     assert "defense_one" in by_id
     assert "lowy_interpreter" in by_id
-    assert "knowable" not in by_id
+    assert "knowable" in by_id
     assert "knowable_magazine" not in by_id
     assert "artnet" not in by_id
     assert "yale_e360" not in by_id
@@ -14481,17 +14699,18 @@ def test_defense_one_fast_company_lowy_interpreter_primaries_registered():
         "https://breakingdefense.com/feed/"
     )
     # Unused backups + product-skip sources stay out.
-    # japan_forward / artforum / knowable unused
-    # because all three primaries KEEP.
+    # japan_forward / artforum / knowable are
+    # now the batch65 primaries (were unused
+    # batch63 leftovers).
     # asiatimes / asia_times stay out (httpx 403).
     # biographic stays out (httpx 403).
     # fastcompany alias stays out (registered as
     # fast_company).
-    assert "japan_forward" not in by_id
+    assert "japan_forward" in by_id
     assert "japanforward" not in by_id
-    assert "artforum" not in by_id
+    assert "artforum" in by_id
     assert "art_forum" not in by_id
-    assert "knowable" not in by_id
+    assert "knowable" in by_id
     assert "knowable_magazine" not in by_id
     assert "fastcompany" not in by_id
     assert "asiatimes" not in by_id
@@ -15080,6 +15299,378 @@ def test_the_wire_china_literary_hub_himal_feeds_live_http_200():
         )
 
 
+def test_japan_forward_artforum_knowable_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "japan_forward" in by_id
+    assert by_id["japan_forward"].feed_url == (
+        "https://japan-forward.com/feed/"
+    )
+    assert "artforum" in by_id
+    assert by_id["artforum"].feed_url == "https://www.artforum.com/feed/"
+    assert "knowable" in by_id
+    assert by_id["knowable"].feed_url == "https://knowablemagazine.org/rss"
+    # #122 winners stay registered and unchanged.
+    # #121 winners stay registered and unchanged.
+    # #120 winners stay registered and unchanged.
+    # #119 winners stay registered and unchanged.
+    # #118 winners stay registered and unchanged.
+    # #117 winners stay registered and unchanged.
+    # #116 winners stay registered and unchanged.
+    # #115 winners stay registered and unchanged.
+    # #114 winners stay registered and unchanged.
+    # #113 winners stay registered and unchanged.
+    # #112 winners stay registered and unchanged.
+    # #111 winners stay registered and unchanged.
+    # #110 hard-swap: zdnet live, ars_science hung.
+    # #107 hard-swap: digiday_media live, nyt_media hung.
+    # Do not touch the_wire_china / literary_hub /
+    # himal / defense_one / fast_company /
+    # lowy_interpreter / techinasia / science_news /
+    # african_arguments / the_markup /
+    # atlas_obscura / undark / aspi_strategist /
+    # nautilus / hyperallergic / aeon / noema /
+    # marketwatch / mercopress / nature_news /
+    # crisis_group / africa_report /
+    # mexico_news_daily / sciencedaily /
+    # mongabay / daily_maverick / oilprice /
+    # politico_europe / breaking_defense /
+    # carbon_brief / phys_org / globe_mail /
+    # newatlas / the_register / foreign_affairs /
+    # allafrica / zdnet / digiday_media.
+    assert "the_wire_china" in by_id
+    assert "literary_hub" in by_id
+    assert "himal" in by_id
+    assert "defense_one" in by_id
+    assert "fast_company" in by_id
+    assert "lowy_interpreter" in by_id
+    assert "techinasia" in by_id
+    assert "science_news" in by_id
+    assert "african_arguments" in by_id
+    assert "the_markup" in by_id
+    assert "atlas_obscura" in by_id
+    assert "undark" in by_id
+    assert "aspi_strategist" in by_id
+    assert "nautilus" in by_id
+    assert "hyperallergic" in by_id
+    assert "aeon" in by_id
+    assert "noema" in by_id
+    assert "marketwatch" in by_id
+    assert "mercopress" in by_id
+    assert "nature_news" in by_id
+    assert "crisis_group" in by_id
+    assert "africa_report" in by_id
+    assert "mexico_news_daily" in by_id
+    assert "sciencedaily" in by_id
+    assert "mongabay" in by_id
+    assert "daily_maverick" in by_id
+    assert "oilprice" in by_id
+    assert "politico_europe" in by_id
+    assert "breaking_defense" in by_id
+    assert "carbon_brief" in by_id
+    assert "phys_org" in by_id
+    assert "globe_mail" in by_id
+    assert "newatlas" in by_id
+    assert "the_register" in by_id
+    assert "foreign_affairs" in by_id
+    assert "allafrica" in by_id
+    assert "bbc_australia" in by_id
+    assert "bloomberg_technology" in by_id
+    assert "zdnet" in by_id
+    assert "ars_science" not in by_id
+    assert "the_diplomat" in by_id
+    assert "stat_news" in by_id
+    assert "ieee_spectrum" in by_id
+    assert "war_on_rocks" in by_id
+    assert "canary_media" in by_id
+    assert "space_com" in by_id
+    assert "foreign_policy" in by_id
+    assert "ft_world" in by_id
+    assert "abc_australia" in by_id
+    assert "politico_politics" in by_id
+    assert "dw_business" in by_id
+    assert "france24_culture" in by_id
+    assert "atlantic" in by_id
+    assert "smh_national" in by_id
+    assert "guardian_education" in by_id
+    assert "digiday_media" in by_id
+    assert "time_top" in by_id
+    assert "nyt_obituaries" in by_id
+    assert "nyt_magazine" in by_id
+    assert "theconversation" in by_id
+    assert "guardian_opinion" in by_id
+    assert "nyt_opinion" in by_id
+    assert "intercept" in by_id
+    assert "propublica" in by_id
+    assert "guardian_artanddesign" in by_id
+    assert "nyt_arts" in by_id
+    assert "guardian_film" in by_id
+    assert "npr_arts" in by_id
+    assert "nyt_science" in by_id
+    assert "guardian_science" in by_id
+    assert "bbc_science" in by_id
+    assert "npr_science" in by_id
+    assert "techcrunch" in by_id
+    assert "verge" in by_id
+    assert "wired" in by_id
+    assert "bbc_africa" in by_id
+    assert "nyt_africa" in by_id
+    assert "france24_africa" in by_id
+    assert "guardian_world_africa" in by_id
+    assert "scmp_china" in by_id
+    assert "economist_china" in by_id
+    assert "bbc_china" in by_id
+    assert "guardian_books" in by_id
+    assert "nyt_books" in by_id
+    assert "hindu_international" in by_id
+    assert "japan_times" in by_id
+    assert by_id["japan_forward"].feed_url != (
+        "https://japan-forward.com/feed"
+    )
+    assert by_id["japan_forward"].feed_url != (
+        "https://www.japan-forward.com/feed/"
+    )
+    assert by_id["japan_forward"].feed_url != (
+        "https://www.japan-forward.com/feed"
+    )
+    assert by_id["japan_forward"].feed_url != (
+        "https://japan-forward.com/rss"
+    )
+    assert by_id["japan_forward"].feed_url != (
+        "https://japan-forward.com/rss.xml"
+    )
+    assert by_id["japan_forward"].feed_url != (
+        "https://japan-forward.com/?feed=rss"
+    )
+    assert by_id["japan_forward"].feed_url != (
+        "https://japan-forward.com/?feed=rss2"
+    )
+    assert by_id["japan_forward"].feed_url != (
+        "https://japan-forward.com/atom.xml"
+    )
+    assert by_id["japan_forward"].feed_url != (
+        "https://japan-forward.com/feed/rss/"
+    )
+    assert by_id["japan_forward"].feed_url != by_id["japan_times"].feed_url
+    assert by_id["japan_forward"].feed_url != by_id["bbc_asia"].feed_url
+    assert by_id["japan_forward"].feed_url != by_id["scmp_asia"].feed_url
+    assert by_id["japan_forward"].feed_url != by_id["himal"].feed_url
+    assert by_id["japan_forward"].feed_url != by_id["the_diplomat"].feed_url
+    assert by_id["japan_forward"].feed_url != (
+        by_id["aspi_strategist"].feed_url
+    )
+    assert by_id["japan_forward"].feed_url != (
+        by_id["lowy_interpreter"].feed_url
+    )
+    assert by_id["japan_forward"].feed_url != (
+        by_id["hindu_international"].feed_url
+    )
+    assert by_id["japan_forward"].feed_url != (
+        by_id["straitstimes_world"].feed_url
+    )
+    assert by_id["japan_forward"].feed_url != (
+        by_id["the_wire_china"].feed_url
+    )
+    assert by_id["artforum"].feed_url != "https://www.artforum.com/rss"
+    assert by_id["artforum"].feed_url != "https://www.artforum.com/feed"
+    assert by_id["artforum"].feed_url != "https://artforum.com/rss"
+    assert by_id["artforum"].feed_url != "https://artforum.com/feed/"
+    assert by_id["artforum"].feed_url != "https://www.artforum.com/rss.xml"
+    assert by_id["artforum"].feed_url != "https://www.artforum.com/?feed=rss"
+    assert by_id["artforum"].feed_url != (
+        "https://www.artforum.com/?feed=rss2"
+    )
+    assert by_id["artforum"].feed_url != "https://www.artforum.com/atom.xml"
+    assert by_id["artforum"].feed_url != (
+        "https://www.artforum.com/news/feed/"
+    )
+    assert by_id["artforum"].feed_url != by_id["hyperallergic"].feed_url
+    assert by_id["artforum"].feed_url != (
+        by_id["guardian_artanddesign"].feed_url
+    )
+    assert by_id["artforum"].feed_url != by_id["nyt_arts"].feed_url
+    assert by_id["artforum"].feed_url != (
+        by_id["france24_culture"].feed_url
+    )
+    assert by_id["artforum"].feed_url != by_id["nyt_movies"].feed_url
+    assert by_id["artforum"].feed_url != by_id["guardian_film"].feed_url
+    assert by_id["artforum"].feed_url != by_id["npr_arts"].feed_url
+    assert by_id["artforum"].feed_url != by_id["guardian_stage"].feed_url
+    assert by_id["artforum"].feed_url != by_id["guardian_books"].feed_url
+    assert by_id["artforum"].feed_url != by_id["nyt_books"].feed_url
+    assert by_id["artforum"].feed_url != by_id["aeon"].feed_url
+    assert by_id["artforum"].feed_url != by_id["noema"].feed_url
+    assert by_id["artforum"].feed_url != by_id["literary_hub"].feed_url
+    assert by_id["knowable"].feed_url != "https://knowablemagazine.org/rss/"
+    assert by_id["knowable"].feed_url != (
+        "https://www.knowablemagazine.org/rss"
+    )
+    assert by_id["knowable"].feed_url != "https://knowablemagazine.org/feed"
+    assert by_id["knowable"].feed_url != "https://knowablemagazine.org/feed/"
+    assert by_id["knowable"].feed_url != (
+        "https://knowablemagazine.org/rss.xml"
+    )
+    assert by_id["knowable"].feed_url != (
+        "https://knowablemagazine.org/en/rss"
+    )
+    assert by_id["knowable"].feed_url != (
+        "https://knowablemagazine.org/?feed=rss"
+    )
+    assert by_id["knowable"].feed_url != (
+        "https://knowablemagazine.org/atom.xml"
+    )
+    assert by_id["knowable"].feed_url != by_id["science_news"].feed_url
+    assert by_id["knowable"].feed_url != by_id["nautilus"].feed_url
+    assert by_id["knowable"].feed_url != by_id["undark"].feed_url
+    assert by_id["knowable"].feed_url != by_id["nature_news"].feed_url
+    assert by_id["knowable"].feed_url != by_id["sciencedaily"].feed_url
+    assert by_id["knowable"].feed_url != by_id["phys_org"].feed_url
+    assert by_id["knowable"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["knowable"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["knowable"].feed_url != by_id["bbc_science"].feed_url
+    assert by_id["knowable"].feed_url != by_id["npr_science"].feed_url
+    assert by_id["knowable"].feed_url != by_id["aeon"].feed_url
+    assert by_id["japan_forward"].feed_url != by_id["artforum"].feed_url
+    assert by_id["japan_forward"].feed_url != by_id["knowable"].feed_url
+    assert by_id["artforum"].feed_url != by_id["knowable"].feed_url
+    # #122 locks stay exactly as registered.
+    assert by_id["the_wire_china"].feed_url == (
+        "https://www.thewirechina.com/feed/"
+    )
+    assert by_id["literary_hub"].feed_url == "https://lithub.com/feed/"
+    assert by_id["himal"].feed_url == "https://www.himalmag.com/rss/"
+    assert by_id["defense_one"].feed_url == (
+        "https://www.defenseone.com/rss/all/"
+    )
+    assert by_id["fast_company"].feed_url == (
+        "https://www.fastcompany.com/latest/rss"
+    )
+    assert by_id["lowy_interpreter"].feed_url == (
+        "https://www.lowyinstitute.org/the-interpreter/rss.xml"
+    )
+    assert by_id["techinasia"].feed_url == (
+        "https://www.techinasia.com/feed"
+    )
+    assert by_id["science_news"].feed_url == (
+        "https://www.sciencenews.org/feed"
+    )
+    assert by_id["african_arguments"].feed_url == (
+        "https://africanarguments.org/feed/"
+    )
+    assert by_id["the_markup"].feed_url == (
+        "https://themarkup.org/feeds/rss.xml"
+    )
+    assert by_id["atlas_obscura"].feed_url == (
+        "https://www.atlasobscura.com/feeds/latest"
+    )
+    assert by_id["undark"].feed_url == "https://undark.org/feed/"
+    assert by_id["aspi_strategist"].feed_url == (
+        "https://www.aspistrategist.org.au/feed/"
+    )
+    assert by_id["nautilus"].feed_url == "https://nautil.us/feed/"
+    assert by_id["hyperallergic"].feed_url == (
+        "https://hyperallergic.com/feed/"
+    )
+    assert by_id["aeon"].feed_url == "https://aeon.co/feed.rss"
+    assert by_id["noema"].feed_url == "https://www.noemamag.com/feed/"
+    assert by_id["marketwatch"].feed_url == (
+        "https://feeds.marketwatch.com/marketwatch/topstories"
+    )
+    assert by_id["africa_report"].feed_url == (
+        "https://www.theafricareport.com/feed/"
+    )
+    assert by_id["sciencedaily"].feed_url == (
+        "https://www.sciencedaily.com/rss/all.xml"
+    )
+    assert by_id["digiday_media"].feed_url == "https://digiday.com/media/feed/"
+    assert by_id["breaking_defense"].feed_url == (
+        "https://breakingdefense.com/feed/"
+    )
+    # Unused backups + product-skip sources stay out.
+    # the_new_humanitarian / dawn / grist unused
+    # because all three primaries KEEP.
+    # asiatimes / asia_times stay out (httpx 403).
+    # biographic stays out (httpx 403).
+    assert "the_new_humanitarian" not in by_id
+    assert "new_humanitarian" not in by_id
+    assert "dawn" not in by_id
+    assert "dawn_com" not in by_id
+    assert "grist" not in by_id
+    assert "grist_org" not in by_id
+    assert "vox" not in by_id
+    assert "reason" not in by_id
+    assert "project_syndicate" not in by_id
+    assert "japanforward" not in by_id
+    assert "art_forum" not in by_id
+    assert "knowable_magazine" not in by_id
+    assert "asiatimes" not in by_id
+    assert "asia_times" not in by_id
+    assert "biographic" not in by_id
+    assert "biographic_magazine" not in by_id
+    assert "hkfp" not in by_id
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "guardian_games" not in by_id
+    for source_id, expected in (
+        _JAPAN_FORWARD_ARTFORUM_KNOWABLE_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_japan_forward_artforum_knowable_feeds_live_http_200():
+    """Hit the three batch65 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _JAPAN_FORWARD_ARTFORUM_KNOWABLE_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (japan_forward / artforum / knowable)
+        # uses the un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # All three winners were 100% nonempty this probe.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= 10, (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -15147,6 +15738,7 @@ if __name__ == "__main__":
     test_techinasia_science_news_african_arguments_primaries_registered()
     test_defense_one_fast_company_lowy_interpreter_primaries_registered()
     test_the_wire_china_literary_hub_himal_primaries_registered()
+    test_japan_forward_artforum_knowable_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -15210,4 +15802,5 @@ if __name__ == "__main__":
     test_techinasia_science_news_african_arguments_feeds_live_http_200()
     test_defense_one_fast_company_lowy_interpreter_feeds_live_http_200()
     test_the_wire_china_literary_hub_himal_feeds_live_http_200()
+    test_japan_forward_artforum_knowable_feeds_live_http_200()
     print("✓ source registry tests PASSED")

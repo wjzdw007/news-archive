@@ -195,6 +195,25 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "himal" not in TECH_AI_SOURCE_WHITELIST
     assert "artnet" not in TECH_AI_SOURCE_WHITELIST
     assert "military_times" not in TECH_AI_SOURCE_WHITELIST
+    # batch65 RSS primaries stay off the tech/AI whitelist.
+    # japan_forward lands on the existing 国际·亚太
+    # category path (Japan English news /
+    # opinion; same as japan_times).
+    # artforum lands on 综合 (art / culture,
+    # same as hyperallergic /
+    # guardian_artanddesign). knowable
+    # lands on 科学 (science magazine from
+    # Annual Reviews; same as nature_news /
+    # sciencedaily / phys_org) and is not
+    # added to TECH_AI_KEYWORD_SOURCES.
+    # None of these match the wired /
+    # verge / techcrunch ALWAYS pattern.
+    assert "japan_forward" not in TECH_AI_SOURCE_WHITELIST
+    assert "artforum" not in TECH_AI_SOURCE_WHITELIST
+    assert "knowable" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_new_humanitarian" not in TECH_AI_SOURCE_WHITELIST
+    assert "dawn" not in TECH_AI_SOURCE_WHITELIST
+    assert "grist" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

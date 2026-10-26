@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（200 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（203 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -206,6 +206,9 @@
 | `the_wire_china` | The Wire China | https://www.thewirechina.com/feed/ | primary |
 | `literary_hub` | Literary Hub | https://lithub.com/feed/ | primary |
 | `himal` | Himal Southasian | https://www.himalmag.com/rss/ | primary |
+| `japan_forward` | Japan Forward | https://japan-forward.com/feed/ | primary |
+| `artforum` | Artforum | https://www.artforum.com/feed/ | primary |
+| `knowable` | Knowable Magazine | https://knowablemagazine.org/rss | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
