@@ -1290,6 +1290,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="aeon",
+        name="Aeon",
+        feed_url="https://aeon.co/feed.rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="noema",
+        name="Noema Magazine",
+        feed_url="https://www.noemamag.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="marketwatch",
+        name="MarketWatch",
+        feed_url="https://feeds.marketwatch.com/marketwatch/topstories",
+        category="财经",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

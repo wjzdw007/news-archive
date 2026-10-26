@@ -123,6 +123,14 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "mercopress" not in TECH_AI_SOURCE_WHITELIST
     assert "nature_news" not in TECH_AI_SOURCE_WHITELIST
     assert "crisis_group" not in TECH_AI_SOURCE_WHITELIST
+    # batch59 RSS primaries stay off the tech/AI whitelist.
+    # aeon / noema land on the existing 综合 category path
+    # and are not added to TECH_AI_KEYWORD_SOURCES.
+    # marketwatch lands on the existing 财经 category path
+    # and is not added to TECH_AI_KEYWORD_SOURCES.
+    assert "aeon" not in TECH_AI_SOURCE_WHITELIST
+    assert "noema" not in TECH_AI_SOURCE_WHITELIST
+    assert "marketwatch" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
