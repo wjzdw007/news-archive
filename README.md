@@ -197,6 +197,9 @@
 | `the_markup` | The Markup | https://themarkup.org/feeds/rss.xml | primary |
 | `atlas_obscura` | Atlas Obscura | https://www.atlasobscura.com/feeds/latest | primary |
 | `undark` | Undark Magazine | https://undark.org/feed/ | primary |
+| `techinasia` | Tech in Asia | https://www.techinasia.com/feed | primary |
+| `science_news` | Science News | https://www.sciencenews.org/feed | primary |
+| `african_arguments` | African Arguments | https://africanarguments.org/feed/ | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
