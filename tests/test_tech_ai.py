@@ -350,6 +350,27 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "who_news" not in TECH_AI_SOURCE_WHITELIST
     assert "new_yorker" not in TECH_AI_SOURCE_WHITELIST
     assert "smithsonian_mag" not in TECH_AI_SOURCE_WHITELIST
+    # batch73 RSS primaries stay off the tech/AI whitelist.
+    # irish_times lands on the existing 综合
+    # category path (Irish general newsroom,
+    # same as guardian_uk / bbc_uk /
+    # axios). science_org lands on 科学
+    # (AAAS Science Magazine news, same
+    # as scientific_american /
+    # popular_science / science_news).
+    # variety lands on 综合 (entertainment
+    # trade newsroom, same as
+    # bbc_entertainment / nyt_movies /
+    # guardian_film — existing pattern has
+    # no 娱乐 category). None of these
+    # match the wired / verge /
+    # techcrunch ALWAYS pattern.
+    assert "irish_times" not in TECH_AI_SOURCE_WHITELIST
+    assert "science_org" not in TECH_AI_SOURCE_WHITELIST
+    assert "variety" not in TECH_AI_SOURCE_WHITELIST
+    assert "medicalxpress" not in TECH_AI_SOURCE_WHITELIST
+    assert "new_republic" not in TECH_AI_SOURCE_WHITELIST
+    assert "howtogeek" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

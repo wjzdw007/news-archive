@@ -1584,6 +1584,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="irish_times",
+        name="The Irish Times",
+        feed_url="https://www.irishtimes.com/arc/outboundfeeds/rss/?outputType=xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="science_org",
+        name="Science Magazine",
+        feed_url="https://www.science.org/rss/news_current.xml",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="variety",
+        name="Variety",
+        feed_url="https://variety.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
