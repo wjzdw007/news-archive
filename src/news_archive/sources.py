@@ -1017,9 +1017,9 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
-        id="nyt_media",
-        name="NYT Media and Advertising",
-        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/MediaandAdvertising.xml",
+        id="digiday_media",
+        name="Digiday Media",
+        feed_url="https://digiday.com/media/feed/",
         category="综合",
         role="primary",
     ),

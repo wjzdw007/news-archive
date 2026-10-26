@@ -2022,7 +2022,9 @@ _NYT_AUTOMOBILES_THE_HILL_NPR_BUSINESS_PRIMARY = {
 # (hard-swapped in batch40). guardian_media was
 # hard-swapped in batch39, re-registered in
 # batch46 on /us/media/rss, then hard-swapped
-# again (live insert=2 <5) for nyt_media.
+# again (live insert=2 <5) for nyt_media, then
+# nyt_media → digiday_media (fetched=20
+# inserted=0 URL collision with live nyt_*).
 # al_monitor
 # stays unregistered (replaced in batch29; not a live
 # CAP slot; not registered as a backup). nikkei /
@@ -2054,33 +2056,36 @@ _GUARDIAN_ARTANDDESIGN_DW_EUROPE_GUARDIAN_FOOTBALL_PRIMARY = {
     },
 }
 
-# CEO-approved batch46 KEEP + hard-swap guardian_media
-# → nyt_media. time_top stays live (product KEEP; this-
-# session probe 25 items / 23 nonempty). nyt_obituaries
-# stays registered as thin-observe (product live
-# insert=8; do not swap). guardian_media /us/media/rss
-# is unregistered (product live insert=2 <5 hard-swap
-# from daily-fetch #40260050441 on #99 tip). This-session
-# RSS for the removed feed was still 200/20 — same
-# pattern as #91 guardian_economics RSS=20 / public
-# insert=1. nyt_media is a same-outlet NYT section
-# distinct from every live nyt_* URL (including
-# nyt_obituaries / nyt_business / nyt_arts /
-# nyt_automobiles / nyt_well). Locked official nyt_*
-# feed pattern
-# https://rss.nytimes.com/services/xml/rss/nyt/MediaandAdvertising.xml
-# (channel title "NYT > Business > Media"). Official
-# NYT RSS section token is MediaandAdvertising (developer
-# docs). MediaAndAdvertising.xml / lowercase alias return
-# the same Media body — lock MediaandAdvertising.xml to
-# match existing nyt_* casing. www.nytimes.com/services/...
-# aliases to rss.nytimes.com — lock the rss host.
-# Media.xml / Advertising.xml / MediaAdvertising.xml /
-# Media_and_Advertising.xml / Media-and-Advertising.xml
-# are 404. Live-diff winner: HTTP 200 / 20 items /
-# 20 nonempty ≥10. digiday_media was the unused backup
-# (probed only; /media/feed/ is 15/15 nonempty —
-# unused because nyt_media already won). time_top is
+# Product+QA locked hard-swap nyt_media →
+# digiday_media after daily-fetch #40264007127
+# (tip f6464ac / #104+#105). nyt_media
+# fetched=20 inserted=0 — not a fetch hang, not
+# #43 empty-desc skip (20/20 nonempty).
+# store.upsert is INSERT OR IGNORE on url
+# PRIMARY KEY; MediaandAdvertising items are
+# largely /business/media/ paths already stored
+# under live nyt_business / nyt_obituaries /
+# other nyt_* from prior daily-fetch waves
+# (this-session current windows already cover
+# 8/20; 14/20 are /business/media/).
+# by_source_total had no nyt_media key.
+# guardian_media stays unregistered (prior
+# hard-swap, live insert=2 <5). time_top stays
+# live (product KEEP; this-session probe 25
+# items / 23 nonempty). nyt_obituaries stays
+# registered as thin-observe (product live
+# insert=8; do not swap). nyt_media
+# MediaandAdvertising.xml is unregistered —
+# same-outlet NYT section URLs collide with
+# live nyt_* even though the feed URL itself
+# is distinct. digiday_media is the product-
+# approved backup, now promoted. Locked
+# official https://digiday.com/media/feed/
+# (this-session HTTP 200 / 15 nonempty / 0 URL
+# overlap with any live nyt_* / 15/15 insert
+# after nyt_* seeded). digiday.com/feed/ is
+# the site-wide feed — not the media primary.
+# time_top is
 # TIME's official top/stories RSS (product id time_top).
 # Locked official https://time.com/feed/ (channel
 # title "TIME"; channel description "Breaking news
@@ -2093,8 +2098,10 @@ _GUARDIAN_ARTANDDESIGN_DW_EUROPE_GUARDIAN_FOOTBALL_PRIMARY = {
 # from every live URL (no prior time_* id).
 # nyt_obituaries is a same-outlet NYT section
 # distinct from every live nyt_* URL (including
-# nyt_media / nyt_theater / nyt_arts / nyt_well /
-# nyt_automobiles / nyt_health). Locked official nyt_*
+# nyt_theater / nyt_arts / nyt_well /
+# nyt_automobiles / nyt_health) and from the
+# unregistered nyt_media MediaandAdvertising.xml.
+# Locked official nyt_*
 # feed pattern
 # https://rss.nytimes.com/services/xml/rss/nyt/Obituaries.xml
 # (channel title "NYT > Obituaries"). Obits.xml /
@@ -2145,10 +2152,10 @@ _GUARDIAN_ARTANDDESIGN_DW_EUROPE_GUARDIAN_FOOTBALL_PRIMARY = {
 # stay registered (batch48 closed; #103).
 # NEWS_SOURCE_CAP display stays 6 — no CAP code
 # change. No X this batch. No LLM this batch.
-_NYT_MEDIA_TIME_TOP_NYT_OBITUARIES_PRIMARY = {
-    "nyt_media": {
-        "name": "NYT Media and Advertising",
-        "feed_url": "https://rss.nytimes.com/services/xml/rss/nyt/MediaandAdvertising.xml",
+_DIGIDAY_MEDIA_TIME_TOP_NYT_OBITUARIES_PRIMARY = {
+    "digiday_media": {
+        "name": "Digiday Media",
+        "feed_url": "https://digiday.com/media/feed/",
         "category": "综合",
     },
     "time_top": {
@@ -2294,10 +2301,11 @@ _ATLANTIC_SMH_NATIONAL_GUARDIAN_EDUCATION_PRIMARY = {
 # registered (batch47 closed). guardian_football /
 # dw_europe stay registered (batch45 hard-swap
 # replacements; #102). guardian_artanddesign stays
-# registered (batch45 KEEP). nyt_media /
+# registered (batch45 KEEP). digiday_media /
 # time_top / nyt_obituaries stay registered
-# (batch46 closed; guardian_media hard-swapped
-# for live insert=2 <5). nyt_automobiles / the_hill /
+# (batch46 closed; nyt_media hard-swapped out
+# after fetched=20 inserted=0 URL collision
+# with live nyt_*). nyt_automobiles / the_hill /
 # npr_business stay registered (batch44 closed).
 # guardian_games stays unregistered (product:
 # games thin / 不进主源). sunday_review / cnbc
@@ -2331,8 +2339,9 @@ _POLITICO_POLITICS_DW_BUSINESS_FRANCE24_CULTURE_PRIMARY = {
 # are the new adds after #103 (batch48 CLOSED
 # with politico_politics / dw_business /
 # france24_culture). Do not re-touch those #103
-# winners. Do not hard-swap guardian_media →
-# nyt_media (separate open cloud track).
+# winners. guardian_media / nyt_media stay
+# unregistered (nyt_media hard-swapped to
+# digiday_media after URL collision).
 # foreign_policy is the official Foreign Policy
 # site-wide RSS (no prior foreign_policy / fp_*
 # id). Locked official
@@ -2387,7 +2396,8 @@ _POLITICO_POLITICS_DW_BUSINESS_FRANCE24_CULTURE_PRIMARY = {
 # france24_culture stay registered (batch48
 # closed). atlantic / smh_national /
 # guardian_education stay registered (batch47
-# closed). guardian_media stays registered.
+# closed). digiday_media stays registered
+# (nyt_media / guardian_media unregistered).
 # guardian_games stays unregistered (product:
 # games thin / 不进主源). sunday_review / cnbc
 # (403 known) / ap stay unregistered (product
@@ -7590,8 +7600,8 @@ def test_nyt_well_guardian_travel_dw_asia_primaries_registered():
     # nyt_theater / independent_world were hard-swapped
     # out after batch45 (theater live insert <5;
     # independent_world RSS 429 → DB 0).
-    # nyt_media / time_top / nyt_obituaries are the
-    # post-swap batch46 set (guardian_media hard-swapped
+    # digiday_media / time_top / nyt_obituaries are the
+    # post-swap batch46 set (nyt_media hard-swapped out)
     # for live insert=2 <5). nikkei / indian_express are empty-desc —
     # product skipped. sky_tech / restofworld /
     # ars_science / thehill / abc_intl / sunday_review
@@ -7604,7 +7614,8 @@ def test_nyt_well_guardian_travel_dw_asia_primaries_registered():
     assert "france24_europe" not in by_id
     assert "npr_business" in by_id
     assert "guardian_media" not in by_id
-    assert "nyt_media" in by_id
+    assert "nyt_media" not in by_id
+    assert "digiday_media" in by_id
     assert "time_top" in by_id
     assert "nyt_obituaries" in by_id
     assert "guardian_economics" not in by_id
@@ -7766,8 +7777,8 @@ def test_nyt_automobiles_the_hill_npr_business_primaries_registered():
     # nyt_theater / independent_world were hard-swapped
     # out after batch45 (theater live insert <5;
     # independent_world RSS 429 → DB 0).
-    # nyt_media / time_top / nyt_obituaries are the
-    # post-swap batch46 set (guardian_media hard-swapped
+    # digiday_media / time_top / nyt_obituaries are the
+    # post-swap batch46 set (nyt_media hard-swapped out)
     # for live insert=2 <5). nikkei / indian_express are empty-desc —
     # product skipped. sky_tech / restofworld /
     # ars_science / abc_intl / sunday_review are not
@@ -7778,7 +7789,8 @@ def test_nyt_automobiles_the_hill_npr_business_primaries_registered():
     assert "bbc_culture" not in by_id
     assert "france24_europe" not in by_id
     assert "guardian_media" not in by_id
-    assert "nyt_media" in by_id
+    assert "nyt_media" not in by_id
+    assert "digiday_media" in by_id
     assert "time_top" in by_id
     assert "nyt_obituaries" in by_id
     assert "guardian_economics" not in by_id
@@ -7995,9 +8007,11 @@ def test_guardian_artanddesign_dw_europe_guardian_football_primaries_registered(
     # hard-swapped out in batch40. guardian_media was
     # hard-swapped out in batch39, re-registered in
     # batch46, then hard-swapped again (live insert=2
-    # <5) for nyt_media. al_monitor stays
+    # <5) for nyt_media, then nyt_media →
+    # digiday_media (fetched=20 inserted=0 URL
+    # collision). al_monitor stays
     # unregistered (replaced in batch29; not a live CAP
-    # slot). nyt_media / time_top / nyt_obituaries
+    # slot). digiday_media / time_top / nyt_obituaries
     # are the post-swap batch46 set. nikkei / indian_express are empty-desc
     # — product skipped. sky_tech / restofworld /
     # ars_science / abc_intl / sunday_review are not
@@ -8013,7 +8027,8 @@ def test_guardian_artanddesign_dw_europe_guardian_football_primaries_registered(
     assert "bbc_culture" not in by_id
     assert "france24_europe" not in by_id
     assert "guardian_media" not in by_id
-    assert "nyt_media" in by_id
+    assert "nyt_media" not in by_id
+    assert "digiday_media" in by_id
     assert "time_top" in by_id
     assert "nyt_obituaries" in by_id
     assert "guardian_economics" not in by_id
@@ -8090,12 +8105,10 @@ def test_guardian_artanddesign_dw_europe_guardian_football_feeds_live_http_200()
         )
 
 
-def test_nyt_media_time_top_nyt_obituaries_primaries_registered():
+def test_digiday_media_time_top_nyt_obituaries_primaries_registered():
     by_id = {s.id: s for s in SOURCES}
-    assert "nyt_media" in by_id
-    assert by_id["nyt_media"].feed_url == (
-        "https://rss.nytimes.com/services/xml/rss/nyt/MediaandAdvertising.xml"
-    )
+    assert "digiday_media" in by_id
+    assert by_id["digiday_media"].feed_url == "https://digiday.com/media/feed/"
     assert "time_top" in by_id
     assert by_id["time_top"].feed_url == "https://time.com/feed/"
     assert "nyt_obituaries" in by_id
@@ -8103,7 +8116,7 @@ def test_nyt_media_time_top_nyt_obituaries_primaries_registered():
         "https://rss.nytimes.com/services/xml/rss/nyt/Obituaries.xml"
     )
     assert "guardian_media" not in by_id
-    assert "digiday_media" not in by_id
+    assert "nyt_media" not in by_id
     assert "guardian_artanddesign" in by_id
     assert "nyt_theater" not in by_id
     assert "independent_world" not in by_id
@@ -8126,58 +8139,50 @@ def test_nyt_media_time_top_nyt_obituaries_primaries_registered():
     assert "nyt_world" in by_id
     assert "dw_world" in by_id
     assert "cnbc_top" in by_id
-    assert by_id["nyt_media"].feed_url != by_id["nyt_world"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_technology"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_business"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_science"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_climate"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_health"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_education"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_politics"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_us"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_europe"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_upshot"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_africa"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_arts"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_opinion"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_movies"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_books"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_food"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_travel"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_economy"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_realestate"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_magazine"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_personaltech"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_fashion"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_well"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_automobiles"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_obituaries"].feed_url
-    assert by_id["nyt_media"].feed_url != (
+    assert by_id["digiday_media"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_business"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_climate"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_health"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_education"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_politics"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_us"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_europe"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_upshot"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_africa"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_arts"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_opinion"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_movies"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_books"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_food"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_travel"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_economy"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_realestate"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_magazine"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_personaltech"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_fashion"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_well"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_automobiles"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_obituaries"].feed_url
+    assert by_id["digiday_media"].feed_url != (
         "https://rss.nytimes.com/services/xml/rss/nyt/Theater.xml"
     )
-    assert by_id["nyt_media"].feed_url != (
+    assert by_id["digiday_media"].feed_url != (
+        "https://rss.nytimes.com/services/xml/rss/nyt/MediaandAdvertising.xml"
+    )
+    assert by_id["digiday_media"].feed_url != (
         "https://rss.nytimes.com/services/xml/rss/nyt/Media.xml"
     )
-    assert by_id["nyt_media"].feed_url != (
+    assert by_id["digiday_media"].feed_url != (
         "https://rss.nytimes.com/services/xml/rss/nyt/Advertising.xml"
     )
-    assert by_id["nyt_media"].feed_url != (
-        "https://rss.nytimes.com/services/xml/rss/nyt/MediaAndAdvertising.xml"
-    )
-    assert by_id["nyt_media"].feed_url != (
-        "https://rss.nytimes.com/services/xml/rss/nyt/MediaAdvertising.xml"
-    )
-    assert by_id["nyt_media"].feed_url != (
-        "https://rss.nytimes.com/services/xml/rss/nyt/mediaandadvertising.xml"
-    )
-    assert by_id["nyt_media"].feed_url != (
-        "https://www.nytimes.com/services/xml/rss/nyt/MediaandAdvertising.xml"
-    )
-    assert by_id["nyt_media"].feed_url != (
+    assert by_id["digiday_media"].feed_url != (
         "https://www.theguardian.com/us/media/rss"
     )
-    assert by_id["nyt_media"].feed_url != "https://digiday.com/media/feed/"
-    assert by_id["nyt_media"].feed_url != "https://digiday.com/feed/"
+    assert by_id["digiday_media"].feed_url != "https://digiday.com/feed/"
+    assert by_id["digiday_media"].feed_url != "https://digiday.com/media/rss"
+    assert by_id["digiday_media"].feed_url != "https://digiday.com/feed/media/"
     assert by_id["time_top"].feed_url != "https://time.com/feed"
     assert by_id["time_top"].feed_url != "https://time.com/top/feed/"
     assert by_id["time_top"].feed_url != (
@@ -8214,7 +8219,10 @@ def test_nyt_media_time_top_nyt_obituaries_primaries_registered():
     assert by_id["nyt_obituaries"].feed_url != by_id["nyt_fashion"].feed_url
     assert by_id["nyt_obituaries"].feed_url != by_id["nyt_well"].feed_url
     assert by_id["nyt_obituaries"].feed_url != by_id["nyt_automobiles"].feed_url
-    assert by_id["nyt_obituaries"].feed_url != by_id["nyt_media"].feed_url
+    assert by_id["nyt_obituaries"].feed_url != by_id["digiday_media"].feed_url
+    assert by_id["nyt_obituaries"].feed_url != (
+        "https://rss.nytimes.com/services/xml/rss/nyt/MediaandAdvertising.xml"
+    )
     assert by_id["nyt_obituaries"].feed_url != (
         "https://rss.nytimes.com/services/xml/rss/nyt/Theater.xml"
     )
@@ -8227,16 +8235,16 @@ def test_nyt_media_time_top_nyt_obituaries_primaries_registered():
     assert by_id["nyt_obituaries"].feed_url != (
         "https://rss.nytimes.com/services/xml/rss/nyt/Obituary.xml"
     )
-    assert by_id["nyt_media"].feed_url != by_id["time_top"].feed_url
-    assert by_id["nyt_media"].feed_url != by_id["nyt_obituaries"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["time_top"].feed_url
+    assert by_id["digiday_media"].feed_url != by_id["nyt_obituaries"].feed_url
     assert by_id["time_top"].feed_url != by_id["nyt_obituaries"].feed_url
     # Unused backups / replaced / title+link-only / empty-desc /
     # colliding / not-this-batch feeds stay unregistered.
     # guardian_media is removed (live insert=2 <5) — not a
     # live CAP slot and not registered as a backup.
-    # digiday_media was the unused hard-swap backup
-    # (HTTP 200 / 15 nonempty) — unused because nyt_media
-    # already won. atlantic / guardian_education were
+    # nyt_media is removed (daily-fetch #40264007127
+    # fetched=20 inserted=0 / DB total=0 — URL dedupe
+    # collision with live nyt_*). atlantic / guardian_education were
     # unused batch46 backups and are now batch47.
     # guardian_games stays unregistered (product: games
     # thin / 不进主源). thehill (no underscore) is the
@@ -8289,7 +8297,7 @@ def test_nyt_media_time_top_nyt_obituaries_primaries_registered():
     assert "nyt_sports" not in by_id
     assert "ap" not in by_id
     for source_id, expected in (
-        _NYT_MEDIA_TIME_TOP_NYT_OBITUARIES_PRIMARY.items()
+        _DIGIDAY_MEDIA_TIME_TOP_NYT_OBITUARIES_PRIMARY.items()
     ):
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
@@ -8299,10 +8307,10 @@ def test_nyt_media_time_top_nyt_obituaries_primaries_registered():
         assert source.category == expected["category"]
 
 
-def test_nyt_media_time_top_nyt_obituaries_feeds_live_http_200():
+def test_digiday_media_time_top_nyt_obituaries_feeds_live_http_200():
     """Hit the three post-swap batch46 feeds with the same headers fetch_source sends (not stubs)."""
     by_id = {s.id: s for s in SOURCES}
-    for source_id in _NYT_MEDIA_TIME_TOP_NYT_OBITUARIES_PRIMARY:
+    for source_id in _DIGIDAY_MEDIA_TIME_TOP_NYT_OBITUARIES_PRIMARY:
         source = by_id[source_id]
         request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
         try:
@@ -8320,7 +8328,7 @@ def test_nyt_media_time_top_nyt_obituaries_feeds_live_http_200():
         count = len(items)
         assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
         # Required: parseable title / url / published on each item.
-        # RSS 2.0 (nyt_media / time_top / nyt_obituaries)
+        # RSS 2.0 (digiday_media / time_top / nyt_obituaries)
         # uses the un-namespaced element text.
         for i, item in enumerate(items):
             title = _item_title(item)
@@ -8330,7 +8338,7 @@ def test_nyt_media_time_top_nyt_obituaries_feeds_live_http_200():
             assert url, f"{source_id} item[{i}] missing url"
             assert published, f"{source_id} item[{i}] missing published"
         # #43 thin-skip: empty description would insert 0 unless
-        # content:encoded is present. nyt_media /
+        # content:encoded is present. digiday_media /
         # nyt_obituaries live-diff winners were 100% nonempty.
         # time_top is 23 nonempty / 2 empty-desc sponsored
         # listicles that still carry content:encoded — product
@@ -8365,7 +8373,8 @@ def test_atlantic_smh_national_guardian_education_primaries_registered():
     assert "dw_europe" in by_id
     assert "guardian_football" in by_id
     assert "guardian_media" not in by_id
-    assert "nyt_media" in by_id
+    assert "nyt_media" not in by_id
+    assert "digiday_media" in by_id
     assert "time_top" in by_id
     assert "nyt_obituaries" in by_id
     assert "smh_world" in by_id
@@ -8394,7 +8403,7 @@ def test_atlantic_smh_national_guardian_education_primaries_registered():
     assert by_id["guardian_education"].feed_url != (
         "https://www.theguardian.com/us/media/rss"
     )
-    assert by_id["guardian_education"].feed_url != by_id["nyt_media"].feed_url
+    assert by_id["guardian_education"].feed_url != by_id["digiday_media"].feed_url
     assert by_id["guardian_education"].feed_url != by_id["bbc_education"].feed_url
     assert by_id["guardian_education"].feed_url != by_id["nyt_education"].feed_url
     assert by_id["guardian_education"].feed_url != (
@@ -8501,7 +8510,8 @@ def test_politico_politics_dw_business_france24_culture_primaries_registered():
     assert "guardian_football" in by_id
     assert "guardian_artanddesign" in by_id
     assert "guardian_media" not in by_id
-    assert "nyt_media" in by_id
+    assert "nyt_media" not in by_id
+    assert "digiday_media" in by_id
     assert "time_top" in by_id
     assert "nyt_obituaries" in by_id
     assert "nyt_theater" not in by_id
@@ -8655,7 +8665,9 @@ def test_foreign_policy_ft_world_abc_australia_primaries_registered():
     assert "atlantic" in by_id
     assert "smh_national" in by_id
     assert "guardian_education" in by_id
-    assert "guardian_media" in by_id
+    assert "guardian_media" not in by_id
+    assert "nyt_media" not in by_id
+    assert "digiday_media" in by_id
     assert "abc_news" in by_id
     assert "ftchinese" in by_id
     assert "economist_china" in by_id
@@ -8665,12 +8677,12 @@ def test_foreign_policy_ft_world_abc_australia_primaries_registered():
     # RSS_HEADERS — not registered. restofworld is
     # httpx 403 (fetch_source) — not registered.
     # economist_intl unused because ft_world filled
-    # the backup slot. nyt_media is a separate open
-    # cloud track — not this PR.
+    # the backup slot. nyt_media / guardian_media stay
+    # unregistered (nyt_media hard-swapped to
+    # digiday_media after URL collision).
     assert "pbs_newshour" not in by_id
     assert "restofworld" not in by_id
     assert "economist_intl" not in by_id
-    assert "nyt_media" not in by_id
     assert "abc_intl" not in by_id
     assert by_id["foreign_policy"].feed_url != "https://foreignpolicy.com/feed"
     assert by_id["foreign_policy"].feed_url != "https://foreignpolicy.com/rss"
@@ -8710,10 +8722,7 @@ def test_foreign_policy_ft_world_abc_australia_primaries_registered():
     assert by_id["foreign_policy"].feed_url != by_id["ft_world"].feed_url
     assert by_id["foreign_policy"].feed_url != by_id["abc_australia"].feed_url
     assert by_id["ft_world"].feed_url != by_id["abc_australia"].feed_url
-    # guardian_media stays — do not hard-swap.
-    assert by_id["guardian_media"].feed_url == (
-        "https://www.theguardian.com/us/media/rss"
-    )
+    assert by_id["digiday_media"].feed_url == "https://digiday.com/media/feed/"
     assert "guardian_games" not in by_id
     assert "thehill" not in by_id
     assert "politico" not in by_id
@@ -8824,7 +8833,7 @@ if __name__ == "__main__":
     test_nyt_well_guardian_travel_dw_asia_primaries_registered()
     test_nyt_automobiles_the_hill_npr_business_primaries_registered()
     test_guardian_artanddesign_dw_europe_guardian_football_primaries_registered()
-    test_nyt_media_time_top_nyt_obituaries_primaries_registered()
+    test_digiday_media_time_top_nyt_obituaries_primaries_registered()
     test_atlantic_smh_national_guardian_education_primaries_registered()
     test_politico_politics_dw_business_france24_culture_primaries_registered()
     test_foreign_policy_ft_world_abc_australia_primaries_registered()
@@ -8872,7 +8881,7 @@ if __name__ == "__main__":
     test_nyt_well_guardian_travel_dw_asia_feeds_live_http_200()
     test_nyt_automobiles_the_hill_npr_business_feeds_live_http_200()
     test_guardian_artanddesign_dw_europe_guardian_football_feeds_live_http_200()
-    test_nyt_media_time_top_nyt_obituaries_feeds_live_http_200()
+    test_digiday_media_time_top_nyt_obituaries_feeds_live_http_200()
     test_atlantic_smh_national_guardian_education_feeds_live_http_200()
     test_politico_politics_dw_business_france24_culture_feeds_live_http_200()
     test_foreign_policy_ft_world_abc_australia_feeds_live_http_200()
