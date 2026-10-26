@@ -222,7 +222,7 @@
 | `niemanlab` | Nieman Lab | https://www.niemanlab.org/feed/ | primary |
 | `reason` | Reason | https://reason.com/feed/ | primary |
 | `media404` | 404 Media | https://www.404media.co/rss/ | primary |
-| `hrw` | Human Rights Watch | https://www.hrw.org/rss/news | primary |
+| `jacobin` | Jacobin | https://jacobin.com/feed/ | primary |
 | `un_news` | UN News | https://news.un.org/feed/subscribe/en/news/all/rss.xml | primary |
 | `texas_tribune` | The Texas Tribune | https://feeds.texastribune.org/feeds/main/ | primary |
 | `pew_research` | Pew Research Center | https://www.pewresearch.org/feed/ | primary |

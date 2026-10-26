@@ -1528,10 +1528,10 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
-        id="hrw",
-        name="Human Rights Watch",
-        feed_url="https://www.hrw.org/rss/news",
-        category="国际",
+        id="jacobin",
+        name="Jacobin",
+        feed_url="https://jacobin.com/feed/",
+        category="综合",
         role="primary",
     ),
     Source(
