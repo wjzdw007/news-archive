@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（179 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（182 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -185,6 +185,9 @@
 | `africa_report` | The Africa Report | https://www.theafricareport.com/feed/ | primary |
 | `mexico_news_daily` | Mexico News Daily | https://mexiconewsdaily.com/feed/ | primary |
 | `sciencedaily` | ScienceDaily | https://www.sciencedaily.com/rss/all.xml | primary |
+| `mercopress` | MercoPress | https://en.mercopress.com/rss/ | primary |
+| `nature_news` | Nature News | https://www.nature.com/latest-news.rss | primary |
+| `crisis_group` | International Crisis Group | https://www.crisisgroup.org/rss.xml | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema

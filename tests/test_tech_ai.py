@@ -117,6 +117,12 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "africa_report" not in TECH_AI_SOURCE_WHITELIST
     assert "mexico_news_daily" not in TECH_AI_SOURCE_WHITELIST
     assert "sciencedaily" not in TECH_AI_SOURCE_WHITELIST
+    # batch58 RSS primaries stay off the tech/AI whitelist.
+    # nature_news lands on the existing 科学 category path
+    # and is not added to TECH_AI_KEYWORD_SOURCES.
+    assert "mercopress" not in TECH_AI_SOURCE_WHITELIST
+    assert "nature_news" not in TECH_AI_SOURCE_WHITELIST
+    assert "crisis_group" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
