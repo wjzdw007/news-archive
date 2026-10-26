@@ -251,6 +251,24 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "dawn" not in TECH_AI_SOURCE_WHITELIST
     assert "kff_health" not in TECH_AI_SOURCE_WHITELIST
     assert "niemanlab" not in TECH_AI_SOURCE_WHITELIST
+    # batch68 RSS primaries stay off the tech/AI whitelist.
+    # popular_science lands on the existing 科学
+    # category path (science magazine; same as
+    # science_news / knowable / sciencedaily).
+    # slate lands on 综合 (news / politics /
+    # culture, same as salon / atlantic) after
+    # longreads official httpx 403 hard-swap.
+    # the_19th lands on 综合 (gender / politics
+    # / policy newsroom, same as salon /
+    # atlantic / the_hill). None of these
+    # match the wired / verge / techcrunch
+    # ALWAYS pattern.
+    assert "popular_science" not in TECH_AI_SOURCE_WHITELIST
+    assert "slate" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_19th" not in TECH_AI_SOURCE_WHITELIST
+    assert "longreads" not in TECH_AI_SOURCE_WHITELIST
+    assert "new_republic" not in TECH_AI_SOURCE_WHITELIST
+    assert "texas_tribune" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

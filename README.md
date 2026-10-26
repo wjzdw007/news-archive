@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（209 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（212 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -215,6 +215,9 @@
 | `the_new_humanitarian` | The New Humanitarian | https://www.thenewhumanitarian.org/rss/all.xml | primary |
 | `salon` | Salon | https://www.salon.com/feed | primary |
 | `mother_jones` | Mother Jones | https://www.motherjones.com/feed/ | primary |
+| `popular_science` | Popular Science | https://www.popsci.com/feed/ | primary |
+| `slate` | Slate | https://slate.com/feeds/all.rss | primary |
+| `the_19th` | The 19th | https://19thnews.org/feed/ | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
