@@ -5716,8 +5716,9 @@ _POPULAR_SCIENCE_SLATE_THE_19TH_PRIMARY = {
 # no CAP code change. No X this
 # batch. No LLM this batch. Not
 # tech/AI whitelist.
-# media404 / hrw / un_news are
-# batch70.
+# media404 / jacobin / un_news are
+# batch70 after the hrw → jacobin
+# hard-swap. hrw stays hung.
 _KFF_HEALTH_NIEMANLAB_REASON_PRIMARY = {
     "kff_health": {
         "name": "KFF Health News",
@@ -5736,10 +5737,14 @@ _KFF_HEALTH_NIEMANLAB_REASON_PRIMARY = {
     },
 }
 
-# CEO-approved 404 Media / Human Rights
-# Watch / UN News RSS primaries
-# (batch70). These three are the new
-# adds after #127 (kff_health /
+# CEO-approved 404 Media / Jacobin /
+# UN News RSS primaries (batch70 after
+# the Product+QA locked hard-swap
+# hrw → jacobin). media404 / un_news
+# stay. hrw stays hung (daily-fetch
+# #40287559337 httpx 403 → DB 0).
+# These three are the batch70 set
+# after #127 (kff_health /
 # niemanlab / reason) on tip
 # fd9b5f803ee0f62d95c2a35c42d6c6761f328736.
 # Do not re-touch that #127 winner. Do
@@ -5806,41 +5811,47 @@ _KFF_HEALTH_NIEMANLAB_REASON_PRIMARY = {
 # (investigative tech journalism, same
 # as the_markup / intercept). Not
 # added to the tech/AI whitelist.
-# hrw is the official Human Rights
-# Watch news RSS (no prior hrw /
-# human_rights_watch / hrw_org id).
-# Locked official
-# https://www.hrw.org/rss/news
-# (channel "Human Rights Watch News").
-# /rss / /rss.xml remaps to /rss/news.
-# /rss/news/ remaps to /rss/news
-# (no trailing slash). apex hrw.org
-# remaps to www. /feed / /feed/ /
-# /feeds / /news/feed / /news/rss /
-# /atom.xml / /feed.xml /
-# /news/rss.xml / /rss/dispatches /
-# /rss/report are HTTP 404. ?feed=rss
-# / ?feed=rss2 are HTTP 200 HTML (0
-# insertable). Feedburner
-# https://feeds.feedburner.com/hrw is
-# a stale 2017 mirror (10 insertable,
-# old articles) — lock official, not
-# Feedburner.
-# feeds.feedburner.com/HumanRightsWatch
-# is empty (0 insertable). Live-diff
-# winner: HTTP 200 / 20 nonempty / 20
-# insertable (httpx fetch_source +
-# urllib). Product lock ≥10 nonempty
-# — keep. Distinct from live
-# crisis_group / the_new_humanitarian
-# / guardian_global_dev /
-# foreign_affairs / foreign_policy /
-# world_politics_review. 0 article
-# URL overlap with those. Lands on
-# the existing 国际 category path
-# (human rights reporting, same as
-# crisis_group /
-# the_new_humanitarian). Not added
+# hrw official https://www.hrw.org/rss/news
+# is unregistered (hard-swapped; daily-fetch
+# #40287559337 httpx 403 → DB 0). Do not
+# re-probe hrw. jacobin is the
+# product-approved backup, now promoted
+# (no prior jacobin / jacobin_mag /
+# jacobin_com id). Locked official
+# https://jacobin.com/feed/ (channel
+# "Jacobin"). /feed (no slash) is the
+# same 20-insertable body. www remaps
+# to apex. jacobinmag.com /feed/
+# remaps to jacobin.com/feed/. /rss
+# / /rss/ are a thinner same-title
+# body (20 insertable) — lock the
+# official WordPress /feed/, not
+# /rss. /rss.xml / /atom.xml /
+# /feed.xml / /feeds/ / /blog/feed/
+# / /feed/rss/ / /feed/atom/ /
+# /latest/feed/ / /news/feed/ /
+# /magazine/feed/ are HTTP 404.
+# ?feed=rss / ?feed=rss2 are HTTP
+# 200 HTML (0 insertable). Feedburner
+# https://feeds.feedburner.com/jacobin
+# (and /Jacobin) is empty (0
+# insertable) — lock official, not
+# Feedburner. /jacobinmag is HTTP
+# 404. Live-diff winner: HTTP 200 /
+# 20 nonempty / 20 insertable (httpx
+# fetch_source + urllib). Product
+# lock ≥10 nonempty — keep. Distinct
+# from live salon / mother_jones /
+# slate / reason / atlantic /
+# intercept / propublica / the_hill /
+# politico_politics /
+# project_syndicate / nyt_opinion /
+# guardian_opinion. 0 article URL
+# overlap with those. Lands on the
+# existing 综合 category path
+# (socialist political magazine,
+# same as salon / slate /
+# mother_jones / reason). Not added
 # to the tech/AI whitelist.
 # un_news is the official UN News
 # English site-wide RSS (no prior
@@ -5887,9 +5898,10 @@ _KFF_HEALTH_NIEMANLAB_REASON_PRIMARY = {
 # the tech/AI whitelist.
 # Product-locked backups (use only if a
 # primary fails live-diff / fetch /
-# URL-dedup): jacobin / psyche /
-# new_republic — unused because all
-# three primaries won (≥10 nonempty
+# URL-dedup): jacobin — used as the
+# hrw httpx 403 hard-swap fill.
+# psyche / new_republic stay unused
+# because jacobin won (≥10 nonempty
 # via fetch_source). Do not probe
 # unused backups.
 # Do NOT use as backups (product skip):
@@ -5973,16 +5985,16 @@ _KFF_HEALTH_NIEMANLAB_REASON_PRIMARY = {
 # tech/AI whitelist.
 # texas_tribune / pew_research /
 # defector are batch71.
-_MEDIA404_HRW_UN_NEWS_PRIMARY = {
+_MEDIA404_JACOBIN_UN_NEWS_PRIMARY = {
     "media404": {
         "name": "404 Media",
         "feed_url": "https://www.404media.co/rss/",
         "category": "综合",
     },
-    "hrw": {
-        "name": "Human Rights Watch",
-        "feed_url": "https://www.hrw.org/rss/news",
-        "category": "国际",
+    "jacobin": {
+        "name": "Jacobin",
+        "feed_url": "https://jacobin.com/feed/",
+        "category": "综合",
     },
     "un_news": {
         "name": "UN News",
@@ -5995,9 +6007,11 @@ _MEDIA404_HRW_UN_NEWS_PRIMARY = {
 # Research Center / Defector RSS
 # primaries (batch71). These three are
 # the new adds after #128 (media404 /
-# hrw / un_news) on tip
+# jacobin / un_news after the hrw →
+# jacobin hard-swap) on tip
 # 1ba55ec0c1e02f880b408404b095ba453101ba5e.
-# Do not re-touch that #128 winner. Do
+# Do not re-touch that #128 winner
+# (hrw hung; jacobin KEEP). Do
 # not touch kff_health / niemanlab /
 # reason (#127) / popular_science /
 # slate / the_19th (#126) /
@@ -6162,8 +6176,9 @@ _MEDIA404_HRW_UN_NEWS_PRIMARY = {
 # dawn Feedburner. Do not register
 # inkstick (product dropped — FP niche
 # overlap).
-# media404 / hrw / un_news stay
-# registered (batch70 closed).
+# media404 / jacobin / un_news stay
+# registered (batch70 after the hrw →
+# jacobin hard-swap; hrw hung).
 # kff_health / niemanlab / reason stay
 # registered (batch69 closed).
 # popular_science / slate / the_19th
@@ -18803,10 +18818,11 @@ def test_kff_health_niemanlab_reason_primaries_registered():
     # vox / euractiv stay unused (do not
     # probe unused backups). pew_research
     # / texas_tribune / defector are now
-    # batch71. media404 / hrw / un_news
-    # are now batch70. jacobin / psyche /
+    # batch71. media404 / jacobin / un_news
+    # are now batch70 after the hrw → jacobin
+    # hard-swap. hrw stays hung. psyche /
     # new_republic stay unused because
-    # all three batch70 primaries KEEP.
+    # jacobin won the hard-swap fill.
     # longreads stays out (batch68 official
     # httpx 403). dawn stays out (batch67
     # official Cloudflare 403). Do not
@@ -18814,9 +18830,9 @@ def test_kff_health_niemanlab_reason_primaries_registered():
     # asiatimes / asia_times stay out (httpx 403).
     # biographic stays out (httpx 403).
     assert "media404" in by_id
-    assert "hrw" in by_id
+    assert "jacobin" in by_id
     assert "un_news" in by_id
-    assert "jacobin" not in by_id
+    assert "hrw" not in by_id
     assert "psyche" not in by_id
     assert "vox" not in by_id
     assert "vox_com" not in by_id
@@ -18829,6 +18845,7 @@ def test_kff_health_niemanlab_reason_primaries_registered():
     assert "longreads_com" not in by_id
     assert "new_republic" not in by_id
     assert "texas_tribune" in by_id
+    assert "defector" in by_id
     assert "kff" not in by_id
     assert "kffhealthnews" not in by_id
     assert "khn" not in by_id
@@ -18929,16 +18946,22 @@ def test_kff_health_niemanlab_reason_feeds_live_http_200():
         )
 
 
-def test_media404_hrw_un_news_primaries_registered():
+def test_media404_jacobin_un_news_primaries_registered():
     by_id = {s.id: s for s in SOURCES}
     assert "media404" in by_id
     assert by_id["media404"].feed_url == "https://www.404media.co/rss/"
-    assert "hrw" in by_id
-    assert by_id["hrw"].feed_url == "https://www.hrw.org/rss/news"
+    assert "jacobin" in by_id
+    assert by_id["jacobin"].feed_url == "https://jacobin.com/feed/"
     assert "un_news" in by_id
     assert by_id["un_news"].feed_url == (
         "https://news.un.org/feed/subscribe/en/news/all/rss.xml"
     )
+    # hrw hung after this hard-swap.
+    assert "hrw" not in by_id
+    # #129 / batch71 winners stay registered.
+    assert "texas_tribune" in by_id
+    assert "pew_research" in by_id
+    assert "defector" in by_id
     # #127 winners stay registered and unchanged.
     # #126 winners stay registered and unchanged.
     # #125 winners stay registered and unchanged.
@@ -19113,28 +19136,37 @@ def test_media404_hrw_un_news_primaries_registered():
     assert by_id["media404"].feed_url != by_id["the_register"].feed_url
     assert by_id["media404"].feed_url != by_id["atlantic"].feed_url
     assert by_id["media404"].feed_url != by_id["niemanlab"].feed_url
-    assert by_id["hrw"].feed_url != "https://www.hrw.org/rss"
-    assert by_id["hrw"].feed_url != "https://www.hrw.org/rss.xml"
-    assert by_id["hrw"].feed_url != "https://www.hrw.org/rss/news/"
-    assert by_id["hrw"].feed_url != "https://hrw.org/rss/news"
-    assert by_id["hrw"].feed_url != "https://www.hrw.org/feed"
-    assert by_id["hrw"].feed_url != "https://www.hrw.org/feed/"
-    assert by_id["hrw"].feed_url != "https://www.hrw.org/feeds"
-    assert by_id["hrw"].feed_url != "https://www.hrw.org/news/feed"
-    assert by_id["hrw"].feed_url != "https://www.hrw.org/news/rss"
-    assert by_id["hrw"].feed_url != "https://www.hrw.org/atom.xml"
-    assert by_id["hrw"].feed_url != "https://www.hrw.org/feed.xml"
-    assert by_id["hrw"].feed_url != "https://www.hrw.org/?feed=rss"
-    assert by_id["hrw"].feed_url != "https://feeds.feedburner.com/hrw"
-    assert by_id["hrw"].feed_url != (
-        "https://feeds.feedburner.com/HumanRightsWatch"
+    assert by_id["jacobin"].feed_url != "https://jacobin.com/feed"
+    assert by_id["jacobin"].feed_url != "https://www.jacobin.com/feed/"
+    assert by_id["jacobin"].feed_url != "https://www.jacobin.com/feed"
+    assert by_id["jacobin"].feed_url != "https://jacobin.com/rss"
+    assert by_id["jacobin"].feed_url != "https://jacobin.com/rss/"
+    assert by_id["jacobin"].feed_url != "https://jacobin.com/rss.xml"
+    assert by_id["jacobin"].feed_url != "https://jacobin.com/atom.xml"
+    assert by_id["jacobin"].feed_url != "https://jacobin.com/feed.xml"
+    assert by_id["jacobin"].feed_url != "https://jacobin.com/feeds/"
+    assert by_id["jacobin"].feed_url != "https://jacobin.com/?feed=rss"
+    assert by_id["jacobin"].feed_url != "https://jacobin.com/?feed=rss2"
+    assert by_id["jacobin"].feed_url != "https://jacobin.com/blog/feed/"
+    assert by_id["jacobin"].feed_url != "https://jacobinmag.com/feed/"
+    assert by_id["jacobin"].feed_url != "https://www.jacobinmag.com/feed/"
+    assert by_id["jacobin"].feed_url != "https://feeds.feedburner.com/jacobin"
+    assert by_id["jacobin"].feed_url != "https://feeds.feedburner.com/Jacobin"
+    assert by_id["jacobin"].feed_url != (
+        "https://feeds.feedburner.com/jacobinmag"
     )
-    assert by_id["hrw"].feed_url != by_id["crisis_group"].feed_url
-    assert by_id["hrw"].feed_url != by_id["the_new_humanitarian"].feed_url
-    assert by_id["hrw"].feed_url != by_id["guardian_global_dev"].feed_url
-    assert by_id["hrw"].feed_url != by_id["foreign_affairs"].feed_url
-    assert by_id["hrw"].feed_url != by_id["foreign_policy"].feed_url
-    assert by_id["hrw"].feed_url != by_id["world_politics_review"].feed_url
+    assert by_id["jacobin"].feed_url != by_id["salon"].feed_url
+    assert by_id["jacobin"].feed_url != by_id["mother_jones"].feed_url
+    assert by_id["jacobin"].feed_url != by_id["slate"].feed_url
+    assert by_id["jacobin"].feed_url != by_id["reason"].feed_url
+    assert by_id["jacobin"].feed_url != by_id["atlantic"].feed_url
+    assert by_id["jacobin"].feed_url != by_id["intercept"].feed_url
+    assert by_id["jacobin"].feed_url != by_id["propublica"].feed_url
+    assert by_id["jacobin"].feed_url != by_id["the_hill"].feed_url
+    assert by_id["jacobin"].feed_url != by_id["politico_politics"].feed_url
+    assert by_id["jacobin"].feed_url != by_id["project_syndicate"].feed_url
+    assert by_id["jacobin"].feed_url != by_id["nyt_opinion"].feed_url
+    assert by_id["jacobin"].feed_url != by_id["guardian_opinion"].feed_url
     assert by_id["un_news"].feed_url != (
         "https://news.un.org/feed/subscribe/en/news/all/rss.xml/"
     )
@@ -19166,9 +19198,9 @@ def test_media404_hrw_un_news_primaries_registered():
     assert by_id["un_news"].feed_url != by_id["crisis_group"].feed_url
     assert by_id["un_news"].feed_url != by_id["the_new_humanitarian"].feed_url
     assert by_id["un_news"].feed_url != by_id["guardian_global_dev"].feed_url
-    assert by_id["media404"].feed_url != by_id["hrw"].feed_url
+    assert by_id["media404"].feed_url != by_id["jacobin"].feed_url
     assert by_id["media404"].feed_url != by_id["un_news"].feed_url
-    assert by_id["hrw"].feed_url != by_id["un_news"].feed_url
+    assert by_id["jacobin"].feed_url != by_id["un_news"].feed_url
     # #127 locks stay exactly as registered.
     assert by_id["kff_health"].feed_url == "https://kffhealthnews.org/feed/"
     assert by_id["niemanlab"].feed_url == "https://www.niemanlab.org/feed/"
@@ -19253,22 +19285,24 @@ def test_media404_hrw_un_news_primaries_registered():
         "https://www.carbonbrief.org/feed/"
     )
     # Unused backups + product-skip sources stay out.
-    # All three batch70 primaries KEEP, so
-    # jacobin / psyche / new_republic stay
+    # jacobin is the hrw hard-swap fill
+    # (KEEP). psyche / new_republic stay
     # unused (do not probe unused backups).
     # texas_tribune / pew_research /
     # defector are now batch71. vox /
     # euractiv / passblue stay unused
     # because all three batch71 primaries
-    # KEEP. longreads stays out (batch68
-    # official httpx 403). dawn stays out
-    # (batch67 official Cloudflare 403).
-    # Do not register dawn Feedburner.
+    # KEEP. hrw stays hung. longreads stays
+    # out (batch68 official httpx 403).
+    # dawn stays out (batch67 official
+    # Cloudflare 403). Do not register
+    # dawn Feedburner.
     # asiatimes / asia_times stay out (httpx 403).
     # biographic stays out (httpx 403).
-    assert "jacobin" not in by_id
+    assert "jacobin" in by_id
     assert "jacobin_mag" not in by_id
     assert "jacobin_com" not in by_id
+    assert "hrw" not in by_id
     assert "psyche" not in by_id
     assert "psyche_co" not in by_id
     assert "psyche_magazine" not in by_id
@@ -19296,6 +19330,7 @@ def test_media404_hrw_un_news_primaries_registered():
     assert "longreads" not in by_id
     assert "longreads_com" not in by_id
     assert "texas_tribune" in by_id
+    assert "defector" in by_id
     assert "kff" not in by_id
     assert "kffhealthnews" not in by_id
     assert "khn" not in by_id
@@ -19340,7 +19375,7 @@ def test_media404_hrw_un_news_primaries_registered():
     assert "guardian_media" not in by_id
     assert "guardian_games" not in by_id
     for source_id, expected in (
-        _MEDIA404_HRW_UN_NEWS_PRIMARY.items()
+        _MEDIA404_JACOBIN_UN_NEWS_PRIMARY.items()
     ):
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
@@ -19350,10 +19385,26 @@ def test_media404_hrw_un_news_primaries_registered():
         assert source.category == expected["category"]
 
 
-def test_media404_hrw_un_news_feeds_live_http_200():
+def test_hrw_hard_swapped_to_jacobin():
+    """Product lock: hrw is gone; jacobin is the KEEP replacement."""
+    by_id = {s.id: s for s in SOURCES}
+    assert "hrw" not in by_id
+    assert "human_rights_watch" not in by_id
+    assert "hrw_org" not in by_id
+    assert "humanrightswatch" not in by_id
+    assert "jacobin" in by_id
+    source = by_id["jacobin"]
+    assert source.role == "primary"
+    assert source.name == "Jacobin"
+    assert source.feed_url == "https://jacobin.com/feed/"
+    assert source.category == "综合"
+    assert "https://www.hrw.org/rss/news" not in {s.feed_url for s in SOURCES}
+
+
+def test_media404_jacobin_un_news_feeds_live_http_200():
     """Hit the three batch70 feeds with the same headers fetch_source sends (not stubs)."""
     by_id = {s.id: s for s in SOURCES}
-    for source_id in _MEDIA404_HRW_UN_NEWS_PRIMARY:
+    for source_id in _MEDIA404_JACOBIN_UN_NEWS_PRIMARY:
         source = by_id[source_id]
         request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
         try:
@@ -19371,7 +19422,7 @@ def test_media404_hrw_un_news_feeds_live_http_200():
         count = len(items)
         assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
         # Required: parseable title / url / published on each item.
-        # RSS 2.0 (media404 / hrw /
+        # RSS 2.0 (media404 / jacobin /
         # un_news) uses the un-namespaced
         # element text.
         for i, item in enumerate(items):
@@ -19428,7 +19479,7 @@ def test_texas_tribune_pew_research_defector_primaries_registered():
     # #111 winners stay registered and unchanged.
     # #110 hard-swap: zdnet live, ars_science hung.
     # #107 hard-swap: digiday_media live, nyt_media hung.
-    # Do not touch media404 / hrw / un_news /
+    # Do not touch media404 / jacobin / un_news /
     # kff_health / niemanlab / reason /
     # popular_science / slate / the_19th /
     # the_new_humanitarian / salon /
@@ -19451,8 +19502,9 @@ def test_texas_tribune_pew_research_defector_primaries_registered():
     # newatlas / the_register / foreign_affairs /
     # allafrica / zdnet / digiday_media.
     assert "media404" in by_id
-    assert "hrw" in by_id
+    assert "jacobin" in by_id
     assert "un_news" in by_id
+    assert "hrw" not in by_id
     assert "kff_health" in by_id
     assert "niemanlab" in by_id
     assert "reason" in by_id
@@ -19492,7 +19544,7 @@ def test_texas_tribune_pew_research_defector_primaries_registered():
     assert "breaking_defense" in by_id
     assert "carbon_brief" in by_id
     assert by_id["media404"].feed_url == "https://www.404media.co/rss/"
-    assert by_id["hrw"].feed_url == "https://www.hrw.org/rss/news"
+    assert by_id["jacobin"].feed_url == "https://jacobin.com/feed/"
     assert by_id["un_news"].feed_url == (
         "https://news.un.org/feed/subscribe/en/news/all/rss.xml"
     )
@@ -19604,9 +19656,10 @@ def test_texas_tribune_pew_research_defector_primaries_registered():
     assert "pewresearch" not in by_id
     assert "defector_com" not in by_id
     assert "defector_media" not in by_id
-    assert "jacobin" not in by_id
+    assert "jacobin" in by_id
     assert "jacobin_mag" not in by_id
     assert "jacobin_com" not in by_id
+    assert "hrw" not in by_id
     assert "psyche" not in by_id
     assert "psyche_co" not in by_id
     assert "psyche_magazine" not in by_id
@@ -19803,7 +19856,8 @@ if __name__ == "__main__":
     test_the_new_humanitarian_salon_mother_jones_primaries_registered()
     test_popular_science_slate_the_19th_primaries_registered()
     test_kff_health_niemanlab_reason_primaries_registered()
-    test_media404_hrw_un_news_primaries_registered()
+    test_media404_jacobin_un_news_primaries_registered()
+    test_hrw_hard_swapped_to_jacobin()
     test_texas_tribune_pew_research_defector_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
@@ -19873,6 +19927,6 @@ if __name__ == "__main__":
     test_the_new_humanitarian_salon_mother_jones_feeds_live_http_200()
     test_popular_science_slate_the_19th_feeds_live_http_200()
     test_kff_health_niemanlab_reason_feeds_live_http_200()
-    test_media404_hrw_un_news_feeds_live_http_200()
+    test_media404_jacobin_un_news_feeds_live_http_200()
     test_texas_tribune_pew_research_defector_feeds_live_http_200()
     print("✓ source registry tests PASSED")
