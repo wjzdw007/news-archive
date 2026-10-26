@@ -7272,7 +7272,106 @@ _PHYSICS_WORLD_KYIV_INDEPENDENT_PITCHFORK_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 230
+# CEO-approved Atlantic Council /
+# Balkan Insight / Tom's Hardware
+# RSS primaries (batch75). These
+# three are the new adds after #136
+# (batch74 physics_world /
+# kyiv_independent / pitchfork
+# squash) on tip
+# df1cadd9caad9c2de2a6b6a92575307ca4d932db.
+# Do not re-touch that #136 winner.
+# Do not restore independent. Do not
+# restore hrw. Do not restore
+# euractiv. Do not touch
+# physics_world / kyiv_independent /
+# pitchfork (#136) / irish_times /
+# science_org / variety (#135) /
+# who_news / scientific_american /
+# thenewstack (#134 / #131) /
+# texas_tribune / pew_research /
+# defector (#129) / media404 /
+# jacobin / un_news (#128 after the
+# hard-swap) / kff_health /
+# niemanlab / reason (#127) /
+# popular_science / slate / the_19th
+# (#126) / the_new_humanitarian /
+# salon / mother_jones (#125) /
+# world_politics_review / climate_home /
+# project_syndicate (#124) /
+# japan_forward / artforum / knowable
+# (#123) / the_wire_china / literary_hub
+# / himal (#122) / defense_one /
+# fast_company / lowy_interpreter (#121)
+# / techinasia / science_news /
+# african_arguments (#120) / the_markup
+# / atlas_obscura / undark (#119) /
+# aspi_strategist / nautilus /
+# hyperallergic (#118) / aeon / noema /
+# marketwatch (#117) / mercopress /
+# nature_news / crisis_group (#116) /
+# africa_report / mexico_news_daily /
+# sciencedaily (#115) / mongabay /
+# daily_maverick / oilprice (#114) /
+# politico_europe / breaking_defense /
+# carbon_brief (#113) / phys_org /
+# globe_mail / newatlas (#112) /
+# the_register / foreign_affairs /
+# allafrica (#111) / bbc_australia /
+# bloomberg_technology / zdnet (#110
+# after the ars_science hard-swap).
+# atlantic_council is official
+# WordPress site-wide RSS (homepage
+# <link> "Atlantic Council » Feed");
+# lock www /feed/; apex /feed/
+# remaps to the homepage HTML.
+# balkan_insight is official
+# WordPress site-wide RSS (homepage
+# <link> "Balkan Insight » Feed");
+# lock apex /feed/; www remaps to
+# apex. tomshardware is the official
+# Future site-wide feeds.xml
+# (homepage <link>); lock
+# /feeds.xml. Do not lock
+# Feedburner /tomshardware (stale
+# French 2019-era mirror). Unused
+# backups dezeen / moscow_times /
+# grist stay out (all three
+# primaries KEEP; first-winner
+# unused stay out). Product-skip
+# (do not probe / register):
+# bangkok_post / indian_express /
+# rest_of_world / al_monitor / hkfp
+# / biographic / asiatimes / dawn /
+# longreads / hrw / independent
+# (429) / euractiv (301→rapporteur
+# FAIL). digiday0观察 — do not add
+# a second digiday. sunday_review /
+# cnbc (403 known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6 —
+# no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_ATLANTIC_COUNCIL_BALKAN_INSIGHT_TOMSHARDWARE_PRIMARY = {
+    "atlantic_council": {
+        "name": "Atlantic Council",
+        "feed_url": "https://www.atlanticcouncil.org/feed/",
+        "category": "国际",
+    },
+    "balkan_insight": {
+        "name": "Balkan Insight",
+        "feed_url": "https://balkaninsight.com/feed/",
+        "category": "国际",
+    },
+    "tomshardware": {
+        "name": "Tom's Hardware",
+        "feed_url": "https://www.tomshardware.com/feeds.xml",
+        "category": "科技",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 233
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -22152,6 +22251,497 @@ def test_physics_world_kyiv_independent_pitchfork_feeds_live_http_200():
         )
 
 
+def test_atlantic_council_balkan_insight_tomshardware_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "atlantic_council" in by_id
+    assert by_id["atlantic_council"].feed_url == (
+        "https://www.atlanticcouncil.org/feed/"
+    )
+    assert "balkan_insight" in by_id
+    assert by_id["balkan_insight"].feed_url == (
+        "https://balkaninsight.com/feed/"
+    )
+    assert "tomshardware" in by_id
+    assert by_id["tomshardware"].feed_url == (
+        "https://www.tomshardware.com/feeds.xml"
+    )
+    # #136 / batch74 winners stay registered and unchanged.
+    # #135 / batch73 winners stay registered and unchanged.
+    # #134 / #131 winners stay registered and unchanged.
+    # #129 / #130 winners stay registered and unchanged.
+    # #128 winners stay registered and unchanged.
+    # #127 winners stay registered and unchanged.
+    # #126 winners stay registered and unchanged.
+    # #125 winners stay registered and unchanged.
+    # #124 winners stay registered and unchanged.
+    # #123 winners stay registered and unchanged.
+    # #122 winners stay registered and unchanged.
+    # #121 winners stay registered and unchanged.
+    # #120 winners stay registered and unchanged.
+    # #119 winners stay registered and unchanged.
+    # #118 winners stay registered and unchanged.
+    # #117 winners stay registered and unchanged.
+    # #116 winners stay registered and unchanged.
+    # #115 winners stay registered and unchanged.
+    # #114 winners stay registered and unchanged.
+    # #113 winners stay registered and unchanged.
+    # #112 winners stay registered and unchanged.
+    # #111 winners stay registered and unchanged.
+    # #110 hard-swap: zdnet live, ars_science hung.
+    # #107 hard-swap: digiday_media live, nyt_media hung.
+    # Do not touch physics_world / kyiv_independent /
+    # pitchfork / irish_times / science_org /
+    # variety / who_news / scientific_american /
+    # thenewstack / texas_tribune / pew_research /
+    # defector / media404 / jacobin / un_news /
+    # kff_health / niemanlab / reason /
+    # popular_science / slate / the_19th /
+    # the_new_humanitarian / salon /
+    # mother_jones / world_politics_review /
+    # climate_home / project_syndicate /
+    # japan_forward / artforum / knowable /
+    # the_wire_china / literary_hub / himal /
+    # defense_one / fast_company /
+    # lowy_interpreter / techinasia /
+    # science_news / african_arguments /
+    # the_markup / atlas_obscura / undark /
+    # aspi_strategist / nautilus /
+    # hyperallergic / aeon / noema /
+    # marketwatch / mercopress / nature_news /
+    # crisis_group / africa_report /
+    # mexico_news_daily / sciencedaily /
+    # mongabay / daily_maverick / oilprice /
+    # politico_europe / breaking_defense /
+    # carbon_brief / phys_org / globe_mail /
+    # newatlas / the_register / foreign_affairs /
+    # allafrica / zdnet / digiday_media.
+    assert "physics_world" in by_id
+    assert "kyiv_independent" in by_id
+    assert "pitchfork" in by_id
+    assert "irish_times" in by_id
+    assert "science_org" in by_id
+    assert "variety" in by_id
+    assert "who_news" in by_id
+    assert "independent" not in by_id
+    assert "scientific_american" in by_id
+    assert "thenewstack" in by_id
+    assert "texas_tribune" in by_id
+    assert "pew_research" in by_id
+    assert "defector" in by_id
+    assert "media404" in by_id
+    assert "jacobin" in by_id
+    assert "un_news" in by_id
+    assert "hrw" not in by_id
+    assert "kff_health" in by_id
+    assert "niemanlab" in by_id
+    assert "reason" in by_id
+    assert "popular_science" in by_id
+    assert "slate" in by_id
+    assert "the_19th" in by_id
+    assert "the_new_humanitarian" in by_id
+    assert "salon" in by_id
+    assert "mother_jones" in by_id
+    assert "world_politics_review" in by_id
+    assert "climate_home" in by_id
+    assert "project_syndicate" in by_id
+    assert "japan_forward" in by_id
+    assert "artforum" in by_id
+    assert "knowable" in by_id
+    assert "the_wire_china" in by_id
+    assert "literary_hub" in by_id
+    assert "himal" in by_id
+    assert "defense_one" in by_id
+    assert "fast_company" in by_id
+    assert "lowy_interpreter" in by_id
+    assert "techinasia" in by_id
+    assert "science_news" in by_id
+    assert "african_arguments" in by_id
+    assert "the_markup" in by_id
+    assert "atlas_obscura" in by_id
+    assert "undark" in by_id
+    assert "aspi_strategist" in by_id
+    assert "nautilus" in by_id
+    assert "hyperallergic" in by_id
+    assert "aeon" in by_id
+    assert "noema" in by_id
+    assert "marketwatch" in by_id
+    assert "africa_report" in by_id
+    assert "sciencedaily" in by_id
+    assert "digiday_media" in by_id
+    assert "breaking_defense" in by_id
+    assert "carbon_brief" in by_id
+    assert "zdnet" in by_id
+    assert "the_register" in by_id
+    assert "newatlas" in by_id
+    assert "phys_org" in by_id
+    assert "nature_news" in by_id
+    assert "atlantic" in by_id
+    assert by_id["physics_world"].feed_url == "https://physicsworld.com/feed/"
+    assert by_id["kyiv_independent"].feed_url == (
+        "https://kyivindependent.com/feed/rss/"
+    )
+    assert by_id["pitchfork"].feed_url == "https://pitchfork.com/feed/rss"
+    assert by_id["irish_times"].feed_url == (
+        "https://www.irishtimes.com/arc/outboundfeeds/rss/?outputType=xml"
+    )
+    assert by_id["science_org"].feed_url == (
+        "https://www.science.org/rss/news_current.xml"
+    )
+    assert by_id["variety"].feed_url == "https://variety.com/feed/"
+    assert by_id["who_news"].feed_url == (
+        "https://www.who.int/rss-feeds/news-english.xml"
+    )
+    assert by_id["scientific_american"].feed_url == (
+        "https://www.scientificamerican.com/platform/syndication/rss/"
+    )
+    assert by_id["thenewstack"].feed_url == "https://thenewstack.io/feed/"
+    assert by_id["texas_tribune"].feed_url == (
+        "https://feeds.texastribune.org/feeds/main/"
+    )
+    assert by_id["pew_research"].feed_url == (
+        "https://www.pewresearch.org/feed/"
+    )
+    assert by_id["defector"].feed_url == "https://defector.com/feed"
+    assert by_id["media404"].feed_url == "https://www.404media.co/rss/"
+    assert by_id["jacobin"].feed_url == "https://jacobin.com/feed/"
+    assert by_id["un_news"].feed_url == (
+        "https://news.un.org/feed/subscribe/en/news/all/rss.xml"
+    )
+    assert by_id["kff_health"].feed_url == "https://kffhealthnews.org/feed/"
+    assert by_id["niemanlab"].feed_url == "https://www.niemanlab.org/feed/"
+    assert by_id["reason"].feed_url == "https://reason.com/feed/"
+    assert by_id["popular_science"].feed_url == "https://www.popsci.com/feed/"
+    assert by_id["slate"].feed_url == "https://slate.com/feeds/all.rss"
+    assert by_id["the_19th"].feed_url == "https://19thnews.org/feed/"
+    assert by_id["zdnet"].feed_url == "https://www.zdnet.com/feed/"
+    assert by_id["the_register"].feed_url == (
+        "https://www.theregister.com/headlines.atom"
+    )
+    assert by_id["newatlas"].feed_url == "https://newatlas.com/index.rss"
+    assert by_id["phys_org"].feed_url == "https://phys.org/rss-feed/"
+    assert by_id["atlantic"].feed_url == "https://www.theatlantic.com/feed/all/"
+    assert by_id["atlantic_council"].feed_url != (
+        "https://www.atlanticcouncil.org/feed"
+    )
+    assert by_id["atlantic_council"].feed_url != (
+        "https://atlanticcouncil.org/feed/"
+    )
+    assert by_id["atlantic_council"].feed_url != (
+        "https://www.atlanticcouncil.org/rss"
+    )
+    assert by_id["atlantic_council"].feed_url != (
+        "https://www.atlanticcouncil.org/rss/"
+    )
+    assert by_id["atlantic_council"].feed_url != (
+        "https://www.atlanticcouncil.org/rss.xml"
+    )
+    assert by_id["atlantic_council"].feed_url != (
+        "https://www.atlanticcouncil.org/?feed=rss"
+    )
+    assert by_id["atlantic_council"].feed_url != (
+        "https://www.atlanticcouncil.org/?feed=rss2"
+    )
+    assert by_id["atlantic_council"].feed_url != (
+        "https://www.atlanticcouncil.org/feed/rss/"
+    )
+    assert by_id["atlantic_council"].feed_url != (
+        "https://www.atlanticcouncil.org/feed/atom/"
+    )
+    assert by_id["atlantic_council"].feed_url != (
+        "https://www.atlanticcouncil.org/comments/feed/"
+    )
+    assert by_id["atlantic_council"].feed_url != (
+        "https://www.atlanticcouncil.org/blogs/feed/"
+    )
+    assert by_id["atlantic_council"].feed_url != (
+        "https://feeds.feedburner.com/atlanticcouncil"
+    )
+    assert by_id["atlantic_council"].feed_url != (
+        "https://feeds.feedburner.com/AtlanticCouncil"
+    )
+    assert by_id["atlantic_council"].feed_url != by_id["atlantic"].feed_url
+    assert by_id["atlantic_council"].feed_url != (
+        by_id["foreign_affairs"].feed_url
+    )
+    assert by_id["atlantic_council"].feed_url != (
+        by_id["foreign_policy"].feed_url
+    )
+    assert by_id["atlantic_council"].feed_url != by_id["crisis_group"].feed_url
+    assert by_id["atlantic_council"].feed_url != (
+        by_id["aspi_strategist"].feed_url
+    )
+    assert by_id["atlantic_council"].feed_url != (
+        by_id["world_politics_review"].feed_url
+    )
+    assert by_id["atlantic_council"].feed_url != by_id["defense_one"].feed_url
+    assert by_id["atlantic_council"].feed_url != (
+        by_id["breaking_defense"].feed_url
+    )
+    assert by_id["atlantic_council"].feed_url != (
+        by_id["lowy_interpreter"].feed_url
+    )
+    assert by_id["atlantic_council"].feed_url != by_id["the_diplomat"].feed_url
+    assert by_id["atlantic_council"].feed_url != by_id["war_on_rocks"].feed_url
+    assert by_id["atlantic_council"].feed_url != (
+        by_id["politico_europe"].feed_url
+    )
+    assert by_id["atlantic_council"].feed_url != by_id["un_news"].feed_url
+    assert by_id["atlantic_council"].feed_url != by_id["bbc_world"].feed_url
+    assert by_id["atlantic_council"].feed_url != (
+        by_id["guardian_world"].feed_url
+    )
+    assert by_id["atlantic_council"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["atlantic_council"].feed_url != by_id["aljazeera"].feed_url
+    assert by_id["balkan_insight"].feed_url != "https://balkaninsight.com/feed"
+    assert by_id["balkan_insight"].feed_url != (
+        "https://www.balkaninsight.com/feed/"
+    )
+    assert by_id["balkan_insight"].feed_url != "https://balkaninsight.com/rss"
+    assert by_id["balkan_insight"].feed_url != "https://balkaninsight.com/rss/"
+    assert by_id["balkan_insight"].feed_url != (
+        "https://balkaninsight.com/rss.xml"
+    )
+    assert by_id["balkan_insight"].feed_url != (
+        "https://balkaninsight.com/?feed=rss"
+    )
+    assert by_id["balkan_insight"].feed_url != (
+        "https://balkaninsight.com/?feed=rss2"
+    )
+    assert by_id["balkan_insight"].feed_url != (
+        "https://balkaninsight.com/feed/atom/"
+    )
+    assert by_id["balkan_insight"].feed_url != (
+        "https://balkaninsight.com/comments/feed/"
+    )
+    assert by_id["balkan_insight"].feed_url != (
+        "https://balkaninsight.com/news/feed/"
+    )
+    assert by_id["balkan_insight"].feed_url != (
+        "https://feeds.feedburner.com/balkaninsight"
+    )
+    assert by_id["balkan_insight"].feed_url != (
+        "https://feeds.feedburner.com/BalkanInsight"
+    )
+    assert by_id["balkan_insight"].feed_url != (
+        by_id["kyiv_independent"].feed_url
+    )
+    assert by_id["balkan_insight"].feed_url != by_id["bbc_europe"].feed_url
+    assert by_id["balkan_insight"].feed_url != (
+        by_id["guardian_europe"].feed_url
+    )
+    assert by_id["balkan_insight"].feed_url != (
+        by_id["politico_europe"].feed_url
+    )
+    assert by_id["balkan_insight"].feed_url != by_id["dw_europe"].feed_url
+    assert by_id["balkan_insight"].feed_url != by_id["dw_en"].feed_url
+    assert by_id["balkan_insight"].feed_url != by_id["euronews"].feed_url
+    assert by_id["balkan_insight"].feed_url != by_id["bbc_world"].feed_url
+    assert by_id["balkan_insight"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["balkan_insight"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["balkan_insight"].feed_url != by_id["nyt_europe"].feed_url
+    assert by_id["balkan_insight"].feed_url != by_id["aljazeera"].feed_url
+    assert by_id["balkan_insight"].feed_url != by_id["un_news"].feed_url
+    assert by_id["balkan_insight"].feed_url != by_id["crisis_group"].feed_url
+    assert by_id["balkan_insight"].feed_url != (
+        by_id["the_new_humanitarian"].feed_url
+    )
+    assert by_id["balkan_insight"].feed_url != (
+        by_id["foreign_affairs"].feed_url
+    )
+    assert by_id["tomshardware"].feed_url != (
+        "https://www.tomshardware.com/feeds.xml/"
+    )
+    assert by_id["tomshardware"].feed_url != (
+        "https://www.tomshardware.com/rss.xml"
+    )
+    assert by_id["tomshardware"].feed_url != "https://www.tomshardware.com/rss"
+    assert by_id["tomshardware"].feed_url != "https://www.tomshardware.com/rss/"
+    assert by_id["tomshardware"].feed_url != (
+        "https://www.tomshardware.com/feed"
+    )
+    assert by_id["tomshardware"].feed_url != (
+        "https://www.tomshardware.com/feed/"
+    )
+    assert by_id["tomshardware"].feed_url != (
+        "https://tomshardware.com/feeds.xml"
+    )
+    assert by_id["tomshardware"].feed_url != (
+        "https://www.tomshardware.com/?feed=rss"
+    )
+    assert by_id["tomshardware"].feed_url != (
+        "https://www.tomshardware.com/news/feeds.xml"
+    )
+    assert by_id["tomshardware"].feed_url != (
+        "https://www.tomshardware.com/feed/rss"
+    )
+    assert by_id["tomshardware"].feed_url != (
+        "https://feeds.feedburner.com/tomshardware"
+    )
+    assert by_id["tomshardware"].feed_url != (
+        "https://feeds.feedburner.com/Tomshardware"
+    )
+    assert by_id["tomshardware"].feed_url != by_id["zdnet"].feed_url
+    assert by_id["tomshardware"].feed_url != by_id["the_register"].feed_url
+    assert by_id["tomshardware"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["tomshardware"].feed_url != by_id["thenewstack"].feed_url
+    assert by_id["tomshardware"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["tomshardware"].feed_url != by_id["ars_technica"].feed_url
+    assert by_id["tomshardware"].feed_url != by_id["wired"].feed_url
+    assert by_id["tomshardware"].feed_url != by_id["verge"].feed_url
+    assert by_id["tomshardware"].feed_url != by_id["techinasia"].feed_url
+    assert by_id["tomshardware"].feed_url != by_id["techcrunch"].feed_url
+    assert by_id["tomshardware"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["tomshardware"].feed_url != (
+        by_id["bbc_technology"].feed_url
+    )
+    assert by_id["tomshardware"].feed_url != (
+        by_id["guardian_technology"].feed_url
+    )
+    assert by_id["tomshardware"].feed_url != by_id["mit_tr"].feed_url
+    assert by_id["tomshardware"].feed_url != by_id["media404"].feed_url
+    assert by_id["atlantic_council"].feed_url != by_id["balkan_insight"].feed_url
+    assert by_id["atlantic_council"].feed_url != by_id["tomshardware"].feed_url
+    assert by_id["balkan_insight"].feed_url != by_id["tomshardware"].feed_url
+    # Unused backups + product-skip sources stay out.
+    # All three primaries KEEP — no hard-swap.
+    # dezeen / moscow_times / grist stay
+    # unused (do not probe unused backups).
+    # physics_world / kyiv_independent /
+    # pitchfork stay registered (batch74
+    # KEEP). irish_times / science_org /
+    # variety stay registered (batch73
+    # KEEP). medicalxpress / new_republic /
+    # howtogeek stay unused (batch73
+    # leftovers). who_news stays
+    # registered (batch72 hard-swap KEEP).
+    # new_yorker / smithsonian_mag stay
+    # unused (batch72 leftovers).
+    # independent stays hung (daily-fetch
+    # #40291069350 httpx 429 勿再挂).
+    # independent_world stays hung (prior
+    # 429; World section — do not
+    # restore). vox / passblue stay unused
+    # (batch71 leftovers). longreads stays
+    # out (batch68 official httpx 403).
+    # dawn stays out (batch67 official
+    # Cloudflare 403). Do not register
+    # dawn Feedburner. Do not register
+    # euractiv Feedburner.
+    # asiatimes / asia_times stay out (httpx 403).
+    # biographic stays out (httpx 403).
+    # inkstick stays out (product dropped).
+    # hrw stays hung. euractiv stays unused
+    # (official www.euractiv.com 301s to
+    # rapporteur.com; Feedburner stale
+    # 2025-12 — do not register).
+    # scotusblog / infoq stay unused
+    # (batch74 leftovers).
+    assert "dezeen" not in by_id
+    assert "dezeen_com" not in by_id
+    assert "moscow_times" not in by_id
+    assert "the_moscow_times" not in by_id
+    assert "moscowtimes" not in by_id
+    assert "grist" not in by_id
+    assert "grist_org" not in by_id
+    assert "scotusblog" not in by_id
+    assert "scotus_blog" not in by_id
+    assert "infoq" not in by_id
+    assert "info_q" not in by_id
+    assert "euractiv" not in by_id
+    assert "euractiv_com" not in by_id
+    assert "rapporteur" not in by_id
+    assert "atlanticcouncil" not in by_id
+    assert "atlantic_council_org" not in by_id
+    assert "balkaninsight" not in by_id
+    assert "balkan_insight_com" not in by_id
+    assert "toms_hardware" not in by_id
+    assert "tomshardware_com" not in by_id
+    assert "medicalxpress" not in by_id
+    assert "new_republic" not in by_id
+    assert "howtogeek" not in by_id
+    assert "who_news" in by_id
+    assert "new_yorker" not in by_id
+    assert "smithsonian_mag" not in by_id
+    assert "independent" not in by_id
+    assert "independent_world" not in by_id
+    assert "vox" not in by_id
+    assert "passblue" not in by_id
+    assert "inkstick" not in by_id
+    assert "hrw" not in by_id
+    assert "longreads" not in by_id
+    assert "dawn" not in by_id
+    assert "asiatimes" not in by_id
+    assert "asia_times" not in by_id
+    assert "biographic" not in by_id
+    assert "hkfp" not in by_id
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "guardian_games" not in by_id
+    for source_id, expected in (
+        _ATLANTIC_COUNCIL_BALKAN_INSIGHT_TOMSHARDWARE_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_atlantic_council_balkan_insight_tomshardware_feeds_live_http_200():
+    """Hit the three batch75 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _ATLANTIC_COUNCIL_BALKAN_INSIGHT_TOMSHARDWARE_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (atlantic_council / balkan_insight
+        # / tomshardware) uses the un-namespaced
+        # element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # All three winners were 100% nonempty
+        # this probe (atlantic_council 100/100;
+        # balkan_insight 90/90; tomshardware
+        # 50/50).
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= 10, (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -22231,6 +22821,7 @@ if __name__ == "__main__":
     test_independent_hard_swapped_to_who_news()
     test_irish_times_science_org_variety_primaries_registered()
     test_physics_world_kyiv_independent_pitchfork_primaries_registered()
+    test_atlantic_council_balkan_insight_tomshardware_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -22304,4 +22895,5 @@ if __name__ == "__main__":
     test_who_news_scientific_american_thenewstack_feeds_live_http_200()
     test_irish_times_science_org_variety_feeds_live_http_200()
     test_physics_world_kyiv_independent_pitchfork_feeds_live_http_200()
+    test_atlantic_council_balkan_insight_tomshardware_feeds_live_http_200()
     print("✓ source registry tests PASSED")
