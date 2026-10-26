@@ -3964,6 +3964,8 @@ _ASPI_STRATEGIST_NAUTILUS_HYPERALLERGIC_PRIMARY = {
 # display stays 6 — no CAP code change.
 # No X this batch. No LLM this batch.
 # Not tech/AI whitelist.
+# techinasia / science_news /
+# african_arguments are batch62.
 _THE_MARKUP_ATLAS_OBSCURA_UNDARK_PRIMARY = {
     "the_markup": {
         "name": "The Markup",
@@ -3982,7 +3984,197 @@ _THE_MARKUP_ATLAS_OBSCURA_UNDARK_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 191
+# CEO-approved Tech in Asia / Science News /
+# African Arguments RSS primaries (batch62).
+# These three are the new adds after #119
+# (the_markup / atlas_obscura / undark)
+# on tip 4a666af. Do not re-touch that
+# #119 winner. Do not touch
+# aspi_strategist / nautilus /
+# hyperallergic (#118) / aeon / noema /
+# marketwatch (#117) / mercopress /
+# nature_news / crisis_group (#116) /
+# africa_report / mexico_news_daily /
+# sciencedaily (#115) / mongabay /
+# daily_maverick / oilprice (#114) /
+# politico_europe / breaking_defense /
+# carbon_brief (#113) / phys_org /
+# globe_mail / newatlas (#112) /
+# the_register / foreign_affairs /
+# allafrica (#111) / zdnet (#110) /
+# digiday_media (#107). ars_science
+# stays hung. nyt_media /
+# guardian_media stay hung.
+# techinasia is the official Tech in
+# Asia WordPress site-wide feed (no
+# prior techinasia / tech_in_asia id).
+# Locked official
+# https://www.techinasia.com/feed
+# (channel "Tech in Asia"; subtitle
+# "Connecting Asia's startup ecosystem";
+# homepage alternate). /feed/ (trailing
+# slash) remaps to the no-slash lock.
+# Apex techinasia.com/feed remaps to
+# www. /feed/rss remaps to /feed.
+# /rss / /rss.xml / /atom.xml /
+# ?feed=rss / ?feed=rss2 are HTML 200 /
+# 0 insertable. Live-diff winner: HTTP
+# 200 / 36 nonempty / 36 insertable
+# (ingest cap 30; httpx fetch_source +
+# urllib). Product lock ≥10 nonempty —
+# keep. Distinct from live techcrunch /
+# verge / wired / newatlas / zdnet /
+# the_register / ieee_spectrum /
+# bloomberg_technology / mit_tr /
+# bbc_technology / nyt_technology /
+# nyt_personaltech / guardian_technology
+# / ars_technica / forbes_innovation /
+# the_markup / 36kr / tmtpost /
+# geekpark / solidot / ifanr. 0 article
+# URL overlap with those. Lands on the
+# existing 科技 category path (Asia
+# tech / startups; same 科技 path as
+# newatlas). Not added to the tech/AI
+# whitelist (not the wired / verge /
+# techcrunch ALWAYS pattern; not the
+# 36kr 科技商业 ALWAYS pattern).
+# science_news is the official Science
+# News WordPress site-wide feed (no
+# prior science_news / sciencenews id).
+# Locked official
+# https://www.sciencenews.org/feed
+# (channel "Science News"; subtitle
+# "INDEPENDENT JOURNALISM SINCE 1921").
+# /feed/ (trailing slash) remaps to the
+# no-slash lock. Apex remaps to www.
+# /rss / ?feed=rss / ?feed=rss2 remap
+# to /feed. /rss.xml /
+# /feeds/headlines.rss / /atom.xml are
+# HTTP 404. Live-diff winner: HTTP 200
+# / 20 nonempty / 20 insertable (httpx
+# fetch_source + urllib). Product lock
+# ≥10 nonempty — keep. Distinct from
+# live nautilus / undark / aeon /
+# noema / theconversation /
+# sciencedaily / nature_news /
+# phys_org / npr_science / nyt_science
+# / guardian_science / bbc_science /
+# mongabay / carbon_brief / stat_news
+# / atlantic / nyt_magazine. 0 article
+# URL overlap with those. Lands on the
+# existing 综合 category path (science
+# magazine, same as nautilus / undark).
+# Not added to the tech/AI whitelist.
+# african_arguments is the official
+# African Arguments WordPress site-wide
+# feed (no prior african_arguments /
+# africanarguments id). Locked official
+# https://africanarguments.org/feed/
+# (channel "African Arguments";
+# subtitle "African Arguments"). /feed
+# (no slash) is httpx 403 JS challenge
+# (urllib remaps) — lock the trailing
+# slash. www /feed/ and www /feed are
+# httpx 403 JS challenge (urllib remaps
+# to apex /feed/). /rss / /rss.xml /
+# /rss-2/ / ?feed=rss / ?feed=rss2 /
+# /atom.xml are httpx 403. Live-diff
+# winner: HTTP 200 / 10 nonempty / 10
+# insertable (httpx fetch_source +
+# urllib). Product lock ≥10 nonempty —
+# keep (10 is not the 5–9 observe
+# band). Distinct from live
+# africa_report / allafrica /
+# daily_maverick / bbc_africa /
+# nyt_africa / france24_africa /
+# guardian_world_africa /
+# crisis_group / aspi_strategist /
+# mercopress / foreign_affairs /
+# the_diplomat. 0 article URL overlap
+# with those. Lands on the existing
+# 国际 category path (same as
+# africa_report / allafrica). Not
+# added to the tech/AI whitelist.
+# Product-locked backups (use only if a
+# primary fails live-diff / fetch /
+# URL-dedup): the_wire_china /
+# literary_hub / world_politics_review
+# — unused because all three primaries
+# won (≥10 nonempty via fetch_source).
+# Do NOT use as backups (product skip):
+# bangkok_post (HTTP 403 / prior skip),
+# indian_express (insertable=0
+# empty-desc), rest_of_world (httpx 403
+# JS challenge), al_monitor (flaky 403),
+# hkfp (HTTP 403), biographic (httpx
+# 403 — 勿再挂), asiatimes / asia_times
+# (httpx 403). Do not invent other
+# backups. Do not restore ars_science.
+# Do not add a second digiday_media.
+# the_markup / atlas_obscura / undark
+# stay registered (batch61 closed).
+# aspi_strategist / nautilus /
+# hyperallergic stay registered
+# (batch60 closed). aeon / noema /
+# marketwatch stay registered (batch59
+# closed). mercopress / nature_news /
+# crisis_group stay registered (batch58
+# closed). africa_report /
+# mexico_news_daily / sciencedaily stay
+# registered (batch57 closed). mongabay
+# / daily_maverick / oilprice stay
+# registered (batch56 closed).
+# politico_europe / breaking_defense /
+# carbon_brief stay registered (batch55
+# closed). phys_org / globe_mail /
+# newatlas stay registered (batch54
+# closed). the_register /
+# foreign_affairs / allafrica stay
+# registered (batch53 closed).
+# bbc_australia / bloomberg_technology /
+# zdnet stay registered (batch52 after
+# #110). ars_science stays hung.
+# the_diplomat / stat_news /
+# ieee_spectrum stay registered
+# (batch51 closed). war_on_rocks /
+# canary_media / space_com stay
+# registered (batch50 closed).
+# foreign_policy / ft_world /
+# abc_australia stay registered
+# (batch49 closed). politico_politics /
+# dw_business / france24_culture stay
+# registered (batch48 closed). atlantic
+# / smh_national / guardian_education
+# stay registered (batch47 closed).
+# digiday_media stays registered
+# (#107). nyt_media / guardian_media
+# stay hung. guardian_games stays
+# unregistered (product: games thin /
+# 不进主源). sunday_review / cnbc (403
+# known) / ap stay unregistered
+# (product lock). NEWS_SOURCE_CAP
+# display stays 6 — no CAP code change.
+# No X this batch. No LLM this batch.
+# Not tech/AI whitelist.
+_TECHINASIA_SCIENCE_NEWS_AFRICAN_ARGUMENTS_PRIMARY = {
+    "techinasia": {
+        "name": "Tech in Asia",
+        "feed_url": "https://www.techinasia.com/feed",
+        "category": "科技",
+    },
+    "science_news": {
+        "name": "Science News",
+        "feed_url": "https://www.sciencenews.org/feed",
+        "category": "综合",
+    },
+    "african_arguments": {
+        "name": "African Arguments",
+        "feed_url": "https://africanarguments.org/feed/",
+        "category": "国际",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 194
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -13263,6 +13455,282 @@ def test_the_markup_atlas_obscura_undark_primaries_registered():
         assert source.category == expected["category"]
 
 
+def test_techinasia_science_news_african_arguments_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "techinasia" in by_id
+    assert by_id["techinasia"].feed_url == (
+        "https://www.techinasia.com/feed"
+    )
+    assert "science_news" in by_id
+    assert by_id["science_news"].feed_url == (
+        "https://www.sciencenews.org/feed"
+    )
+    assert "african_arguments" in by_id
+    assert by_id["african_arguments"].feed_url == (
+        "https://africanarguments.org/feed/"
+    )
+    # #119 winners stay registered and unchanged.
+    # #118 winners stay registered and unchanged.
+    # #117 winners stay registered and unchanged.
+    # #116 winners stay registered and unchanged.
+    # #115 winners stay registered and unchanged.
+    # #114 winners stay registered and unchanged.
+    # #113 winners stay registered and unchanged.
+    # #112 winners stay registered and unchanged.
+    # #111 winners stay registered and unchanged.
+    # #110 hard-swap: zdnet live, ars_science hung.
+    # #107 hard-swap: digiday_media live, nyt_media hung.
+    # Do not touch the_markup / atlas_obscura /
+    # undark / aspi_strategist / nautilus /
+    # hyperallergic / aeon / noema / marketwatch /
+    # mercopress / nature_news / crisis_group /
+    # africa_report / mexico_news_daily /
+    # sciencedaily / mongabay / daily_maverick /
+    # oilprice / politico_europe /
+    # breaking_defense / carbon_brief / phys_org /
+    # globe_mail / newatlas / the_register /
+    # foreign_affairs / allafrica / zdnet /
+    # digiday_media.
+    assert "the_markup" in by_id
+    assert "atlas_obscura" in by_id
+    assert "undark" in by_id
+    assert "aspi_strategist" in by_id
+    assert "nautilus" in by_id
+    assert "hyperallergic" in by_id
+    assert "aeon" in by_id
+    assert "noema" in by_id
+    assert "marketwatch" in by_id
+    assert "mercopress" in by_id
+    assert "nature_news" in by_id
+    assert "crisis_group" in by_id
+    assert "africa_report" in by_id
+    assert "mexico_news_daily" in by_id
+    assert "sciencedaily" in by_id
+    assert "mongabay" in by_id
+    assert "daily_maverick" in by_id
+    assert "oilprice" in by_id
+    assert "politico_europe" in by_id
+    assert "breaking_defense" in by_id
+    assert "carbon_brief" in by_id
+    assert "phys_org" in by_id
+    assert "globe_mail" in by_id
+    assert "newatlas" in by_id
+    assert "the_register" in by_id
+    assert "foreign_affairs" in by_id
+    assert "allafrica" in by_id
+    assert "bbc_australia" in by_id
+    assert "bloomberg_technology" in by_id
+    assert "zdnet" in by_id
+    assert "ars_science" not in by_id
+    assert "the_diplomat" in by_id
+    assert "stat_news" in by_id
+    assert "ieee_spectrum" in by_id
+    assert "war_on_rocks" in by_id
+    assert "canary_media" in by_id
+    assert "space_com" in by_id
+    assert "foreign_policy" in by_id
+    assert "ft_world" in by_id
+    assert "abc_australia" in by_id
+    assert "politico_politics" in by_id
+    assert "dw_business" in by_id
+    assert "france24_culture" in by_id
+    assert "atlantic" in by_id
+    assert "smh_national" in by_id
+    assert "guardian_education" in by_id
+    assert "digiday_media" in by_id
+    assert "time_top" in by_id
+    assert "nyt_obituaries" in by_id
+    assert "nyt_magazine" in by_id
+    assert "theconversation" in by_id
+    assert "guardian_opinion" in by_id
+    assert "nyt_opinion" in by_id
+    assert "intercept" in by_id
+    assert "propublica" in by_id
+    assert "guardian_artanddesign" in by_id
+    assert "nyt_arts" in by_id
+    assert "guardian_film" in by_id
+    assert "npr_arts" in by_id
+    assert "nyt_science" in by_id
+    assert "guardian_science" in by_id
+    assert "bbc_science" in by_id
+    assert "npr_science" in by_id
+    assert "techcrunch" in by_id
+    assert "verge" in by_id
+    assert "wired" in by_id
+    assert "bbc_africa" in by_id
+    assert "nyt_africa" in by_id
+    assert "france24_africa" in by_id
+    assert "guardian_world_africa" in by_id
+    assert by_id["techinasia"].feed_url != "https://www.techinasia.com/feed/"
+    assert by_id["techinasia"].feed_url != "https://techinasia.com/feed"
+    assert by_id["techinasia"].feed_url != "https://techinasia.com/feed/"
+    assert by_id["techinasia"].feed_url != "https://www.techinasia.com/rss"
+    assert by_id["techinasia"].feed_url != "https://www.techinasia.com/rss.xml"
+    assert by_id["techinasia"].feed_url != "https://www.techinasia.com/atom.xml"
+    assert by_id["techinasia"].feed_url != "https://www.techinasia.com/feed/rss"
+    assert by_id["techinasia"].feed_url != by_id["techcrunch"].feed_url
+    assert by_id["techinasia"].feed_url != by_id["verge"].feed_url
+    assert by_id["techinasia"].feed_url != by_id["wired"].feed_url
+    assert by_id["techinasia"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["techinasia"].feed_url != by_id["zdnet"].feed_url
+    assert by_id["techinasia"].feed_url != by_id["the_register"].feed_url
+    assert by_id["techinasia"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["techinasia"].feed_url != (
+        by_id["bloomberg_technology"].feed_url
+    )
+    assert by_id["techinasia"].feed_url != by_id["mit_tr"].feed_url
+    assert by_id["techinasia"].feed_url != by_id["bbc_technology"].feed_url
+    assert by_id["techinasia"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["techinasia"].feed_url != (
+        by_id["nyt_personaltech"].feed_url
+    )
+    assert by_id["techinasia"].feed_url != (
+        by_id["guardian_technology"].feed_url
+    )
+    assert by_id["techinasia"].feed_url != by_id["ars_technica"].feed_url
+    assert by_id["techinasia"].feed_url != (
+        by_id["forbes_innovation"].feed_url
+    )
+    assert by_id["techinasia"].feed_url != by_id["the_markup"].feed_url
+    assert by_id["techinasia"].feed_url != by_id["tmtpost"].feed_url
+    assert by_id["techinasia"].feed_url != by_id["geekpark"].feed_url
+    assert by_id["techinasia"].feed_url != by_id["solidot"].feed_url
+    assert by_id["techinasia"].feed_url != by_id["ifanr"].feed_url
+    assert by_id["science_news"].feed_url != (
+        "https://www.sciencenews.org/feed/"
+    )
+    assert by_id["science_news"].feed_url != "https://sciencenews.org/feed"
+    assert by_id["science_news"].feed_url != "https://sciencenews.org/feed/"
+    assert by_id["science_news"].feed_url != "https://www.sciencenews.org/rss"
+    assert by_id["science_news"].feed_url != (
+        "https://www.sciencenews.org/rss.xml"
+    )
+    assert by_id["science_news"].feed_url != (
+        "https://www.sciencenews.org/feeds/headlines.rss"
+    )
+    assert by_id["science_news"].feed_url != (
+        "https://www.sciencenews.org/atom.xml"
+    )
+    assert by_id["science_news"].feed_url != by_id["nautilus"].feed_url
+    assert by_id["science_news"].feed_url != by_id["undark"].feed_url
+    assert by_id["science_news"].feed_url != by_id["aeon"].feed_url
+    assert by_id["science_news"].feed_url != by_id["noema"].feed_url
+    assert by_id["science_news"].feed_url != by_id["theconversation"].feed_url
+    assert by_id["science_news"].feed_url != by_id["sciencedaily"].feed_url
+    assert by_id["science_news"].feed_url != by_id["nature_news"].feed_url
+    assert by_id["science_news"].feed_url != by_id["phys_org"].feed_url
+    assert by_id["science_news"].feed_url != by_id["npr_science"].feed_url
+    assert by_id["science_news"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["science_news"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["science_news"].feed_url != by_id["bbc_science"].feed_url
+    assert by_id["science_news"].feed_url != by_id["mongabay"].feed_url
+    assert by_id["science_news"].feed_url != by_id["carbon_brief"].feed_url
+    assert by_id["science_news"].feed_url != by_id["stat_news"].feed_url
+    assert by_id["science_news"].feed_url != by_id["atlantic"].feed_url
+    assert by_id["science_news"].feed_url != by_id["nyt_magazine"].feed_url
+    assert by_id["african_arguments"].feed_url != (
+        "https://africanarguments.org/feed"
+    )
+    assert by_id["african_arguments"].feed_url != (
+        "https://www.africanarguments.org/feed/"
+    )
+    assert by_id["african_arguments"].feed_url != (
+        "https://www.africanarguments.org/feed"
+    )
+    assert by_id["african_arguments"].feed_url != (
+        "https://africanarguments.org/rss"
+    )
+    assert by_id["african_arguments"].feed_url != (
+        "https://africanarguments.org/rss.xml"
+    )
+    assert by_id["african_arguments"].feed_url != (
+        "https://africanarguments.org/rss-2/"
+    )
+    assert by_id["african_arguments"].feed_url != by_id["africa_report"].feed_url
+    assert by_id["african_arguments"].feed_url != by_id["allafrica"].feed_url
+    assert by_id["african_arguments"].feed_url != (
+        by_id["daily_maverick"].feed_url
+    )
+    assert by_id["african_arguments"].feed_url != by_id["bbc_africa"].feed_url
+    assert by_id["african_arguments"].feed_url != by_id["nyt_africa"].feed_url
+    assert by_id["african_arguments"].feed_url != (
+        by_id["france24_africa"].feed_url
+    )
+    assert by_id["african_arguments"].feed_url != (
+        by_id["guardian_world_africa"].feed_url
+    )
+    assert by_id["african_arguments"].feed_url != by_id["crisis_group"].feed_url
+    assert by_id["african_arguments"].feed_url != (
+        by_id["aspi_strategist"].feed_url
+    )
+    assert by_id["african_arguments"].feed_url != by_id["mercopress"].feed_url
+    assert by_id["african_arguments"].feed_url != (
+        by_id["foreign_affairs"].feed_url
+    )
+    assert by_id["african_arguments"].feed_url != by_id["the_diplomat"].feed_url
+    assert by_id["techinasia"].feed_url != by_id["science_news"].feed_url
+    assert by_id["techinasia"].feed_url != by_id["african_arguments"].feed_url
+    assert by_id["science_news"].feed_url != by_id["african_arguments"].feed_url
+    # #119 locks stay exactly as registered.
+    assert by_id["the_markup"].feed_url == (
+        "https://themarkup.org/feeds/rss.xml"
+    )
+    assert by_id["atlas_obscura"].feed_url == (
+        "https://www.atlasobscura.com/feeds/latest"
+    )
+    assert by_id["undark"].feed_url == "https://undark.org/feed/"
+    assert by_id["aspi_strategist"].feed_url == (
+        "https://www.aspistrategist.org.au/feed/"
+    )
+    assert by_id["nautilus"].feed_url == "https://nautil.us/feed/"
+    assert by_id["hyperallergic"].feed_url == (
+        "https://hyperallergic.com/feed/"
+    )
+    assert by_id["aeon"].feed_url == "https://aeon.co/feed.rss"
+    assert by_id["noema"].feed_url == "https://www.noemamag.com/feed/"
+    assert by_id["marketwatch"].feed_url == (
+        "https://feeds.marketwatch.com/marketwatch/topstories"
+    )
+    assert by_id["africa_report"].feed_url == (
+        "https://www.theafricareport.com/feed/"
+    )
+    assert by_id["sciencedaily"].feed_url == (
+        "https://www.sciencedaily.com/rss/all.xml"
+    )
+    assert by_id["digiday_media"].feed_url == "https://digiday.com/media/feed/"
+    # Unused backups + product-skip sources stay out.
+    # asiatimes / asia_times stay out (httpx 403).
+    # biographic stays out (httpx 403).
+    assert "the_wire_china" not in by_id
+    assert "wire_china" not in by_id
+    assert "literary_hub" not in by_id
+    assert "lithub" not in by_id
+    assert "world_politics_review" not in by_id
+    assert "asiatimes" not in by_id
+    assert "asia_times" not in by_id
+    assert "biographic" not in by_id
+    assert "biographic_magazine" not in by_id
+    assert "defense_one" not in by_id
+    assert "hkfp" not in by_id
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "guardian_games" not in by_id
+    for source_id, expected in (
+        _TECHINASIA_SCIENCE_NEWS_AFRICAN_ARGUMENTS_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
 def test_aeon_noema_marketwatch_feeds_live_http_200():
     """Hit the three batch59 feeds with the same headers fetch_source sends (not stubs)."""
     by_id = {s.id: s for s in SOURCES}
@@ -13389,6 +13857,48 @@ def test_the_markup_atlas_obscura_undark_feeds_live_http_200():
         )
 
 
+def test_techinasia_science_news_african_arguments_feeds_live_http_200():
+    """Hit the three batch62 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _TECHINASIA_SCIENCE_NEWS_AFRICAN_ARGUMENTS_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (techinasia / science_news / african_arguments)
+        # uses the un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # All three winners were 100% nonempty this probe.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -13453,6 +13963,7 @@ if __name__ == "__main__":
     test_aeon_noema_marketwatch_primaries_registered()
     test_aspi_strategist_nautilus_hyperallergic_primaries_registered()
     test_the_markup_atlas_obscura_undark_primaries_registered()
+    test_techinasia_science_news_african_arguments_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -13513,4 +14024,5 @@ if __name__ == "__main__":
     test_aeon_noema_marketwatch_feeds_live_http_200()
     test_aspi_strategist_nautilus_hyperallergic_feeds_live_http_200()
     test_the_markup_atlas_obscura_undark_feeds_live_http_200()
+    test_techinasia_science_news_african_arguments_feeds_live_http_200()
     print("✓ source registry tests PASSED")

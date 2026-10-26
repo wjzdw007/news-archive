@@ -152,6 +152,24 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "undark" not in TECH_AI_SOURCE_WHITELIST
     assert "asiatimes" not in TECH_AI_SOURCE_WHITELIST
     assert "asia_times" not in TECH_AI_SOURCE_WHITELIST
+    # batch62 RSS primaries stay off the tech/AI whitelist.
+    # techinasia lands on the existing 科技
+    # category path (Asia tech / startups;
+    # same 科技 path as newatlas, not the
+    # wired / verge / techcrunch ALWAYS
+    # pattern and not 36kr 科技商业).
+    # science_news lands on the existing
+    # 综合 category path (science magazine,
+    # same as nautilus / undark).
+    # african_arguments lands on the
+    # existing 国际 category path (same
+    # as africa_report / allafrica).
+    assert "techinasia" not in TECH_AI_SOURCE_WHITELIST
+    assert "science_news" not in TECH_AI_SOURCE_WHITELIST
+    assert "african_arguments" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_wire_china" not in TECH_AI_SOURCE_WHITELIST
+    assert "literary_hub" not in TECH_AI_SOURCE_WHITELIST
+    assert "world_politics_review" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

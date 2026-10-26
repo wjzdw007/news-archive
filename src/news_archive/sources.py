@@ -1353,6 +1353,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="techinasia",
+        name="Tech in Asia",
+        feed_url="https://www.techinasia.com/feed",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="science_news",
+        name="Science News",
+        feed_url="https://www.sciencenews.org/feed",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="african_arguments",
+        name="African Arguments",
+        feed_url="https://africanarguments.org/feed/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
