@@ -519,15 +519,24 @@ def test_export_empty_files():
         site_data_dir = Path(tmpdir) / "site" / "data"
         export_empty_files(site_data_dir)
         
-        # Verify all files exist with empty arrays
-        for filename in ["articles.json", "topics.json", "x_posts.json", "daily_briefs.json"]:
+        for filename in ["articles.json", "x_posts.json", "daily_briefs.json"]:
             filepath = site_data_dir / filename
             assert filepath.exists()
-            
             with filepath.open("r", encoding="utf-8") as f:
                 data = json.load(f)
-            
             assert data == []
+
+        topics = json.loads((site_data_dir / "topics.json").read_text(encoding="utf-8"))
+        assert topics[0]["topic_id"] == "tech-ai"
+        assert topics[0]["status"] == "ok"
+        assert topics[0]["title"] == "科技/AI"
+
+        tech_ai_raw = (site_data_dir / "tech_ai.json").read_text(encoding="utf-8")
+        assert "content_snapshot" not in tech_ai_raw
+        assert "post_id" not in tech_ai_raw
+        tech_ai = json.loads(tech_ai_raw)
+        assert tech_ai["topic_id"] == "tech-ai"
+        assert tech_ai["items"] == []
 
 
 def test_export_daily_briefs():
@@ -751,6 +760,82 @@ def test_export_daily_briefs_x_section_omits_post_id_and_secrets():
         store.close()
 
 
+def test_export_tech_ai_merges_and_omits_secrets():
+    """tech_ai.json is RSS∪X, whitelist-only, no content_snapshot / post_id."""
+    import sys
+    from datetime import datetime, timedelta, timezone
+
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from export_site_data import export_tech_ai, prepend_tech_ai_topic
+
+    now = datetime.now(timezone.utc)
+    recent = (now - timedelta(hours=1)).isoformat()
+    fetched = now.isoformat()
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        db_path = Path(tmpdir) / "test.db"
+        store = Store(db_path)
+        store.upsert(
+            Article(
+                url="https://www.wired.com/ai",
+                title="WIRED covers OpenAI",
+                published_at=recent,
+                summary="On-topic tech.",
+                source="wired",
+                fetched_at=fetched,
+                content_snapshot="FULL TEXT that must never ship to Pages.",
+                status="active",
+            )
+        )
+        store.upsert(
+            Article(
+                url="https://www.bbc.com/world/1",
+                title="OpenAI hearing",
+                published_at=recent,
+                summary="AI keyword but source not whitelisted.",
+                source="bbc_world",
+                fetched_at=fetched,
+                content_snapshot="nope",
+                status="active",
+            )
+        )
+        x_store = XStore(db_path)
+        x_store.upsert(
+            XPost(
+                post_id="secret-id-ai",
+                author="OpenAI",
+                url="https://x.com/OpenAI/status/1",
+                text_snapshot="Shipping a model",
+                posted_at=recent,
+                fetched_at=fetched,
+                status="active",
+            )
+        )
+        x_store.close()
+
+        conn = sqlite3.connect(db_path)
+        output_path = Path(tmpdir) / "tech_ai.json"
+        payload = export_tech_ai(conn, output_path)
+        topics_path = Path(tmpdir) / "topics.json"
+        topics_path.write_text("[]", encoding="utf-8")
+        prepend_tech_ai_topic(topics_path, payload)
+        conn.close()
+
+        raw = output_path.read_text(encoding="utf-8")
+        assert "content_snapshot" not in raw
+        assert "FULL TEXT that must never ship to Pages" not in raw
+        assert "post_id" not in raw
+        assert "secret-id-ai" not in raw
+        assert payload["title"] == "科技/AI"
+        urls = [item["url"] for item in payload["items"]]
+        assert "https://www.wired.com/ai" in urls
+        assert "https://x.com/OpenAI/status/1" in urls
+        assert "https://www.bbc.com/world/1" not in urls
+        topics = json.loads(topics_path.read_text(encoding="utf-8"))
+        assert topics[0]["topic_id"] == "tech-ai"
+        store.close()
+
+
 def test_export_daily_briefs_missing_table_soft_fail():
     import sys
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
@@ -778,6 +863,7 @@ if __name__ == "__main__":
     test_export_x_posts()
     test_export_x_posts_omits_secrets_and_post_id()
     test_export_empty_files()
+    test_export_tech_ai_merges_and_omits_secrets()
     test_export_daily_briefs()
     test_export_daily_briefs_omits_content_snapshot_and_error()
     test_export_daily_briefs_x_section_omits_post_id_and_secrets()

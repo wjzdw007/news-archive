@@ -17,10 +17,11 @@
    - **X Tab 不套用上述展示序**
 
 2. **专题** (`#topics`)
-   - 仅展示 `topic_briefs` 中 `status=ok` 的专题
+   - 常设 **科技/AI** 专题（`#topics/tech-ai`）始终排在第一：RSS 白名单 + AI 关键词 ∪ X 主/备账号，时间倒序合并。规则见 [TECH_AI.md](TECH_AI.md)
+   - 另展示 `topic_briefs` 中 `status=ok` 的专题
    - 卡片：专题标题 + 前 3 条来源标题（项目符号）
-   - 详情：完整来源列表（标题 + 原文链接）
-   - **无 brief 的专题不出现**（规则强制）
+   - 详情：完整来源列表（标题 + 原文链接）；科技/AI 详情为 RSS+X 混排
+   - **无 brief 的聚类专题不出现**（规则强制）；科技/AI 即使 0 条也保留卡片，避免「暂无专题」死胡同
 
 3. **X** (`#x`)
    - 列表：X 帖子按 `posted_at` 倒序
@@ -64,6 +65,7 @@ python scripts/export_site_data.py
 # ✓ Exported M topics (status=ok only)
 # ✓ Exported K X posts
 # ✓ Exported D daily briefs
+# ✓ Exported 科技/AI (rss=… x=…)
 
 # 2. 查看生成的 JSON
 ls -lh site/data/*.json
@@ -138,9 +140,10 @@ news-archive/
 │   ├── style.css              # 样式（响应式 + 移动友好）
 │   └── data/                  # 导出的 JSON（构建时生成）
 │       ├── articles.json      # 所有文章（按 published_at desc，缺则 fetched_at；无 content_snapshot）
-│       ├── topics.json        # 专题（仅 status=ok）
+│       ├── topics.json        # 专题（仅 status=ok；科技/AI 常设卡在前）
 │       ├── x_posts.json       # X 帖子（仅 author/posted_at/fetched_at/text_snapshot/url/status）
-│       └── daily_briefs.json  # 日报（ok/failed/empty；无 content_snapshot）
+│       ├── daily_briefs.json  # 日报（ok/failed/empty；无 content_snapshot）
+│       └── tech_ai.json       # 科技/AI 混排（无 content_snapshot / post_id）
 ├── scripts/
 │   └── export_site_data.py    # 从 SQLite 导出 JSON
 └── .github/workflows/
@@ -186,7 +189,7 @@ news-archive/
 - [ ] 新闻 Tab 展示位 1–50：任一 `source` ≤ 6；被挤出的仍在 50 位之后
 - [ ] 36氪快讯：`newsflashes` URL 有「快讯」角标；前 50 快讯默认折行；非快讯 URL 无角标
 - [ ] 展示序 fixture：`PYTHONPATH=src python3 tests/test_news_display.py`
-- [ ] 专题 Tab：仅显示 status=ok 的专题、来源列表、gone 标记变灰
+- [ ] 专题 Tab：科技/AI 常设卡可打开；`#topics/tech-ai` 为 RSS∪X；无「暂无专题」死胡同；仅显示 status=ok 的聚类专题、来源列表、gone 标记变灰
 - [ ] X Tab：帖子列表、作者/时间/文本、gone 变灰、原文链接
 - [ ] 日报 Tab：默认今天（上海日历）、近 7 日切换、空态「当日暂无摘要」、failed 降级文案
 - [ ] 当日有 X 帖：日报含且仅含一节「X 动态」；当日无 X：该节不出现；RSS 分组仍在

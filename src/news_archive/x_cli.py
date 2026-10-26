@@ -7,8 +7,8 @@ import json
 import sys
 from pathlib import Path
 
-from .x_config import X_NEWS_ACCOUNTS
-from .x_fetch import XFetchError, fetch_account_posts, sync_posts
+from .x_config import x_fetch_accounts
+from .x_fetch import fetch_account_posts, sync_posts
 from .x_import import import_jsonl
 from .x_store import XStore
 
@@ -37,11 +37,11 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     store = XStore(args.db)
-    result: dict = {"accounts": X_NEWS_ACCOUNTS}
+    result: dict = {"accounts": x_fetch_accounts()}
     try:
         if args.import_jsonl:
             result["mode"] = "import-jsonl"
-            authors = list(X_NEWS_ACCOUNTS) if args.mark_missing_gone else None
+            authors = x_fetch_accounts() if args.mark_missing_gone else None
             stats = import_jsonl(
                 store,
                 args.import_jsonl,
