@@ -139,6 +139,19 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "aspi_strategist" not in TECH_AI_SOURCE_WHITELIST
     assert "nautilus" not in TECH_AI_SOURCE_WHITELIST
     assert "hyperallergic" not in TECH_AI_SOURCE_WHITELIST
+    # batch61 RSS primaries stay off the tech/AI whitelist.
+    # the_markup lands on the existing 综合 category
+    # path (investigative, same as intercept /
+    # propublica) and is not added to
+    # TECH_AI_ALWAYS_SOURCES / TECH_AI_KEYWORD_SOURCES.
+    # atlas_obscura / undark land on the existing
+    # 综合 category path. asiatimes was httpx 403
+    # and is not registered.
+    assert "the_markup" not in TECH_AI_SOURCE_WHITELIST
+    assert "atlas_obscura" not in TECH_AI_SOURCE_WHITELIST
+    assert "undark" not in TECH_AI_SOURCE_WHITELIST
+    assert "asiatimes" not in TECH_AI_SOURCE_WHITELIST
+    assert "asia_times" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

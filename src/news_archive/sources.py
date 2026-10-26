@@ -1332,6 +1332,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="the_markup",
+        name="The Markup",
+        feed_url="https://themarkup.org/feeds/rss.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="atlas_obscura",
+        name="Atlas Obscura",
+        feed_url="https://www.atlasobscura.com/feeds/latest",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="undark",
+        name="Undark Magazine",
+        feed_url="https://undark.org/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

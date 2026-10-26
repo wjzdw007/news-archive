@@ -194,6 +194,9 @@
 | `aspi_strategist` | ASPI The Strategist | https://www.aspistrategist.org.au/feed/ | primary |
 | `nautilus` | Nautilus Magazine | https://nautil.us/feed/ | primary |
 | `hyperallergic` | Hyperallergic | https://hyperallergic.com/feed/ | primary |
+| `the_markup` | The Markup | https://themarkup.org/feeds/rss.xml | primary |
+| `atlas_obscura` | Atlas Obscura | https://www.atlasobscura.com/feeds/latest | primary |
+| `undark` | Undark Magazine | https://undark.org/feed/ | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
