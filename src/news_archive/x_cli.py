@@ -7,7 +7,7 @@ import json
 import sys
 from pathlib import Path
 
-from .x_config import x_fetch_accounts
+from .x_config import X_AI_BACKUP_ACCOUNTS, X_AI_PRIMARY_ACCOUNTS, x_fetch_accounts
 from .x_fetch import fetch_account_posts, sync_posts
 from .x_import import import_jsonl
 from .x_store import XStore
@@ -52,7 +52,12 @@ def main(argv: list[str] | None = None) -> int:
             result["status"] = "ok"
         else:
             result["mode"] = args.mode
-            posts = fetch_account_posts(mode=args.mode)
+            since_ids = None
+            if args.mode == "live":
+                since_ids = store.latest_post_ids(
+                    X_AI_PRIMARY_ACCOUNTS + X_AI_BACKUP_ACCOUNTS
+                )
+            posts = fetch_account_posts(mode=args.mode, since_ids=since_ids)
             stats = sync_posts(store, posts)
             result.update(stats)
             result["status"] = "ok"

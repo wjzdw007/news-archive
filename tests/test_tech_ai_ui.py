@@ -41,6 +41,9 @@ def test_page_opens_and_not_dead_end():
     assert "article.content_snapshot" not in app
     assert "const NEWS_SOURCE_CAP = 6;" in app
     assert "科技/AI" in app
+    assert "不必 Follow" in app
+    assert "user timeline" in app
+    assert "xCount === 0" in app
 
     css = CSS.read_text(encoding="utf-8")
     assert ".tech-ai-feed" in css

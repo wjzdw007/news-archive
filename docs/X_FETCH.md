@@ -4,22 +4,25 @@ X/Twitter 帖子抓取功能支持两种模式，**严格遵循 [x-crawler](http
 
 ## 实现路径
 
-### x-crawler 模式（唯一支持路径）
+### 双路径（同一套 Cookie / Bearer，不新增 Secret）
 
-1. **HomeLatestTimeline / HomeTimeline** GraphQL endpoint
+1. **新闻账号 — HomeLatestTimeline / HomeTimeline** GraphQL（x-crawler）
    - Query ID: `1_nms9JVtHQxTw8VwZJciQ` (HomeTimeline, **default following**)
    - Query ID: `xNGIIoXaz9DyeBXBfn3AjA` (HomeLatestTimeline, recommended)
    - 来源：x-crawler `crawler.py` lines 40-42
+   - 抓 home timeline，再过滤 `X_NEWS_ACCOUNTS`
 
-2. **认证方式**（x-crawler `config_loader.py` + `crawler.py`）：
+2. **科技/AI 账号 — UserByScreenName + UserTweets**（按 handle，不必 Follow）
+   - `UserByScreenName` query ID: `AMIBMjtxEEATh4z8V9GtRg`（twitter-openapi）
+   - `UserTweets` query ID: `7_KBXBpG0zBPRN6UCIV0-w`
+   - 每个主账号 1 次 lookup + 1 次 timeline（约 20 条）
+   - 备用账号仅当主账号在近 24h 窗口无可用帖时才请求
+   - `since_id`：CLI 从 DB 读各 AI handle 最新 `post_id`，写入前丢掉更旧 snowflake（upsert 仍按 `post_id` 去重）
+
+3. **认证方式**（x-crawler `config_loader.py` + `crawler.py`）：
    - **必需**: Cookies (`auth_token`, `ct0`)
    - **推荐**: Headers (`Authorization` Bearer, `X-Csrf-Token`)
    - 从浏览器 DevTools 提取（见下文）
-
-3. **抓取逻辑**（x-crawler `crawler.py` crawl_daily_posts + save_by_user_daily）：
-   - 抓取 home timeline（推荐/关注流）
-   - 过滤出目标账号帖子：新闻白名单 `BBCChinese`, `Reuters`, `FT`, `TechCrunch`, `Tesla`, `elonmusk`, `AP`, `WSJ`, `BBCWorld`, `NPR`, `nytimes`, `TheEconomist`, `SCMPNews`, `Bloomberg`, `WIRED`, `AFP`, `CNBC`, `AJEnglish`, `Nature`, `SkyNews`, `ABC`, `CBSNews`, `axios`, `NikkeiAsia`, `politico`，以及科技/AI 主账号 `OpenAI`, `AnthropicAI`, `xai`, `GoogleDeepMind`, `AIatMeta`, `nvidia`, `huggingface`, `karpathy`, `sama`, `demishassabis`, `ylecun` 与备用 `AndrewYNg`, `miramurati`, `gdb`, `MistralAI`, `cohere`（`elonmusk` 两名单共用）
-   - 去重并持久化到 SQLite
 
 ## Author 字段解析
 
@@ -49,20 +52,24 @@ X 已将 `screen_name` 从 `user_results.result.legacy.screen_name` 迁移到 **
 
 抓取时输出两条日志（stderr）：
 
-1. **过滤前**: HomeTimeline 总条数 + author 分布（top 20）  
-   → 用于诊断：「目标账号未出现在 following feed」vs「author 解析挂了全变 unknown」
+1. **HomeTimeline 过滤前**: 总条数 + author 分布（top 20）  
+   → 用于诊断新闻路径：「目标账号未出现在 following feed」vs「author 解析挂了全变 unknown」
 
-2. **过滤后**: 匹配目标账号的帖子数
+2. **HomeTimeline 过滤后**: 匹配新闻白名单的帖子数
+
+3. **UserTweets**: 每 handle 条数；单账号失败 skip，429 中止剩余 AI handle（新闻帖仍保留）
 
 示例：
 
 ```
-[x-fetch] HomeTimeline: 38 tweets, author distribution (top 20): {"BBCChinese": 3, "Reuters": 2, "elonmusk": 5, "OpenAI": 3, "unknown": 1, ...}
-[x-fetch] Filtered to 5 posts from target accounts: ['BBCChinese', 'Reuters', 'FT', 'TechCrunch', 'Tesla', 'elonmusk', 'AP', 'WSJ', 'BBCWorld', 'NPR', 'nytimes', 'TheEconomist', 'SCMPNews', 'Bloomberg', 'WIRED', 'AFP', 'CNBC', 'AJEnglish', 'Nature', 'SkyNews', 'ABC', 'CBSNews', 'axios', 'NikkeiAsia', 'politico']
+[x-fetch] HomeTimeline: 38 tweets, author distribution (top 20): {"BBCChinese": 3, "Reuters": 2, "elonmusk": 5, "unknown": 1, ...}
+[x-fetch] Filtered to 5 posts from target accounts: ['BBCChinese', 'Reuters', ...]
+[x-fetch] UserTweets: 9 posts from 12 handles {"OpenAI": 2, "karpathy": 1, ...}
 ```
 
-若过滤后为 0 且 `"unknown"` 占比高 → author 解析问题；  
-若过滤后为 0 且无 `"unknown"` → 当前账号的 following feed 中暂无目标账号帖子。
+新闻过滤后为 0 且 `"unknown"` 占比高 → author 解析问题；  
+新闻过滤后为 0 且无 `"unknown"` → following feed 暂无新闻白名单帖子。  
+AI 路径不依赖 Follow；某 handle 0 条是该账号窗口空或 skip，不是改回 HomeTimeline 的理由。
 
 ## 模式
 
@@ -152,19 +159,21 @@ git checkout main
 ## 测试
 
 - `tests/test_x_posts.py`: mock/dedupe/soft-fail 测试
-- `tests/test_x_http_client.py`: author 解析 + TweetWithVisibilityResults unwrap 单元测试（无网络，模拟真实 GraphQL 形状）
+- `tests/test_x_http_client.py`: author 解析 + TweetWithVisibilityResults unwrap + UserTweets 按账号抓取（无网络，模拟 GraphQL 形状）
 - `tests/test_x_import.py`: JSONL import 测试
 
 ## 参考实现
 
-严格遵循 [x-crawler](https://github.com/wjzdw007/x-crawler) 的认证与抓取模式：
+新闻路径遵循 [x-crawler](https://github.com/wjzdw007/x-crawler) 的认证与 HomeTimeline 模式：
 - `crawler.py` lines 40-42: GraphQL query IDs（HomeLatestTimeline / HomeTimeline）
 - `config_loader.py` lines 59-65: 认证配置加载（cookies + headers）
 - `crawler.py` lines 660-720: Home timeline 抓取 + 用户过滤模式
 
+AI 路径用同一认证，改为按账号 `UserTweets`（twitter-openapi queryId）。
+
 **关键差异**：
 - x-crawler 从 `user_prompt_templates.json` 读取关注用户列表
-- news-archive 硬编码抓取账号：新闻白名单 + 科技/AI 主/备账号（见 `x_config.x_fetch_accounts()`；专题规则见 [TECH_AI.md](TECH_AI.md)）
+- news-archive 硬编码抓取账号：新闻白名单走 HomeTimeline；科技/AI 主/备走 UserTweets（见 `x_config`；专题规则见 [TECH_AI.md](TECH_AI.md)）
 
 ## Soft-Fail 设计
 
@@ -183,7 +192,8 @@ X 抓取失败**不会**阻断 RSS daily-fetch：
 
 ## 限制
 
-- **不支持搜索**: 本配置仅按账号过滤，不做关键词搜索
-- **不使用 UserTweets**: 保持 HomeTimeline/following + filter 路径（CEO 决定）
-- **依赖 following**: Cookie 登录账号须 Follow 新闻白名单 **以及** 科技/AI 主/备 handle（`OpenAI`, `AnthropicAI`, `xai`, `elonmusk`, `GoogleDeepMind`, `AIatMeta`, `nvidia`, `huggingface`, `karpathy`, `sama`, `demishassabis`, `ylecun`, `AndrewYNg`, `miramurati`, `gdb`, `MistralAI`, `cohere`），HomeLatestTimeline / following 才能看到它们（运维说明，不是代码 Secret）。未 follow，或目标账号未在当前 HomeTimeline 窗口（~40 条），过滤结果为空。白名单变大后窗口更挤；某账号本页 0 条是 WARN，不是改路径的理由
-- **QueryId 稳定性**: 当前使用 x-crawler 的真实 queryId；若 X 更新 API，需更新该 ID
+- **不支持搜索**: 本配置仅按账号抓取，不做关键词搜索
+- **新闻仍走 HomeTimeline**: Cookie 账号须 Follow 新闻白名单，following 窗口 (~40) 才能看到它们。未 follow → 该新闻账号本轮 0 条是 WARN
+- **科技/AI 不依赖 Follow**: 主账号（及窗口内主账号全空时的备用）走 UserTweets
+- **配额**: 每 4h 一轮：HomeTimeline ×1 + 主账号最多 12×(UserByScreenName+UserTweets)=24 次 GraphQL；handle 之间 pause 0.45s。备用最多再 +10 次，且仅主账号 24h 窗口为空时触发。429 时停 AI 剩余请求，保留已抓到的新闻帖
+- **QueryId 稳定性**: HomeTimeline 用 x-crawler queryId；UserTweets / UserByScreenName 用 twitter-openapi。X 更新 API 时需改常量

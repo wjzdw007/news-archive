@@ -17,7 +17,7 @@
    - **X Tab 不套用上述展示序**
 
 2. **专题** (`#topics`)
-   - 常设 **科技/AI** 专题（`#topics/tech-ai`）始终排在第一：RSS 白名单 + AI 关键词 ∪ X 主/备账号，时间倒序合并。规则见 [TECH_AI.md](TECH_AI.md)
+   - 常设 **科技/AI** 专题（`#topics/tech-ai`）始终排在第一：RSS 白名单 + AI 关键词 ∪ X 主/备账号，时间倒序合并；有 X 帖时预留 25 槽，避免 RSS `MAX=100` 把 X 挤成 0。规则见 [TECH_AI.md](TECH_AI.md)
    - 另展示 `topic_briefs` 中 `status=ok` 的专题
    - 卡片：专题标题 + 前 3 条来源标题（项目符号）
    - 详情：完整来源列表（标题 + 原文链接）；科技/AI 详情为 RSS+X 混排

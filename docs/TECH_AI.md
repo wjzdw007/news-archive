@@ -47,9 +47,11 @@
 
 **主账号**：`OpenAI` · `AnthropicAI` · `xai` · `elonmusk` · `GoogleDeepMind` · `AIatMeta` · `nvidia` · `huggingface` · `karpathy` · `sama` · `demishassabis` · `ylecun`
 
-**备用**（仅当主账号在窗口内无可用帖）：`AndrewYNg` · `miramurati` · `gdb` · `MistralAI` · `cohere`
+**备用**（仅当主账号在窗口内无可用帖才抓取 / 上页）：`AndrewYNg` · `miramurati` · `gdb` · `MistralAI` · `cohere`
 
-Cookie 登录账号须 Follow 上述 handle，HomeTimeline / following 才能看到它们。未 Follow 时专题 X 段可能为空（RSS 仍在）。
+AI 主/备账号走 **UserByScreenName + UserTweets**（按账号 timeline），**不必 Follow**。新闻 X 账号仍走 HomeTimeline + filter。
+
+专题页 `MAX=100` 混排时预留 **25** 个 X 槽（约 25%）：有 X 帖时 RSS 最多占 75，避免 RSS 把 X 挤成 0。无 X 帖时 RSS 可用满 100，页上显示 X 空态提示（不是静默 0）。
 
 ## 时效
 

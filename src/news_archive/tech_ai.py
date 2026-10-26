@@ -21,6 +21,9 @@ TECH_AI_TITLE = "科技/AI"
 WINDOW_HOURS = 24
 FALLBACK_HOURS = 168  # 7 days
 MAX_ITEMS = 100
+# Knife #2: RSS MAX must not wipe X. Reserve 25% when X posts exist.
+# Remaining slots go to RSS; list stays one chronological feed (mobile-friendly).
+X_RESERVED_SLOTS = 25
 
 # Dedicated tech / hard-tech / 科技商业 feeds: include recent items as-is.
 TECH_AI_ALWAYS_SOURCES: frozenset[str] = frozenset(
@@ -281,6 +284,7 @@ def empty_tech_ai_payload(*, now: datetime | None = None) -> dict[str, Any]:
         "used_x_backups": False,
         "rss_count": 0,
         "x_count": 0,
+        "x_reserved_slots": X_RESERVED_SLOTS,
         "items": [],
     }
 
@@ -351,9 +355,7 @@ def build_tech_ai_page(
         used_fallback = True
         window_hours = FALLBACK_HOURS
 
-    items = [_rss_item(a) for a in rss] + [_x_item(p) for p in x_posts]
-    items.sort(key=item_sort_at, reverse=True)
-    items = items[:MAX_ITEMS]
+    items = merge_reserved_feed(rss, x_posts)
 
     for item in items:
         item.pop("content_snapshot", None)
@@ -369,8 +371,35 @@ def build_tech_ai_page(
         "used_x_backups": used_backups,
         "rss_count": sum(1 for it in items if it.get("kind") == "rss"),
         "x_count": sum(1 for it in items if it.get("kind") == "x"),
+        "x_reserved_slots": X_RESERVED_SLOTS,
         "items": items,
     }
+
+
+def merge_reserved_feed(
+    rss: Iterable[dict[str, Any]],
+    x_posts: Iterable[dict[str, Any]],
+    *,
+    max_items: int = MAX_ITEMS,
+    x_reserved: int = X_RESERVED_SLOTS,
+) -> list[dict[str, Any]]:
+    """Chronological RSS∪X with reserved X slots so RSS MAX cannot zero X.
+
+    When X posts exist, keep up to `x_reserved` newest X items and fill the
+    rest with newest RSS. When X is empty, RSS may use the full MAX.
+    """
+    rss_items = [_rss_item(a) for a in rss]
+    x_items = [_x_item(p) for p in x_posts]
+    rss_items.sort(key=item_sort_at, reverse=True)
+    x_items.sort(key=item_sort_at, reverse=True)
+
+    if x_items:
+        x_keep = x_items[: min(max(x_reserved, 0), max_items)]
+        rss_keep = rss_items[: max(max_items - len(x_keep), 0)]
+        items = rss_keep + x_keep
+        items.sort(key=item_sort_at, reverse=True)
+        return items
+    return rss_items[:max_items]
 
 
 def assert_whitelist_registered() -> list[str]:
