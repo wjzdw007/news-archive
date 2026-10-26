@@ -2838,7 +2838,112 @@ _THE_REGISTER_FOREIGN_AFFAIRS_ALLAFRICA_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 167
+# CEO-approved Phys.org / The Globe and Mail / New Atlas RSS
+# primaries (batch54). These three are the new adds after #111
+# (the_register / foreign_affairs / allafrica) on tip a461c0a.
+# Do not re-touch that #111 winner. Do not touch zdnet (#110)
+# / digiday_media (#107). ars_science stays hung. nyt_media /
+# guardian_media stay hung.
+# phys_org is the official Phys.org site-wide science news
+# feed (no prior phys_org / physorg / sciencex id). Locked
+# official https://phys.org/rss-feed/ (channel "Phys.org -
+# latest science and technology news stories"). Apex +
+# trailing slash — /rss-feed (no slash) and www.phys.org
+# remaps to the same body. /feeds/ / /feed / /feed/ /
+# /rss.xml are 403 HTML. /rss-feed/breaking/ is a Breaking
+# subset (17/30 article overlap) — not the general primary.
+# Live-diff winner: HTTP 200 / 30 nonempty / 30 insertable
+# (httpx fetch_source + urllib). Product lock ≥10 nonempty
+# — keep. Distinct from live nyt_science / bbc_science /
+# guardian_science / npr_science / stat_news / space_com /
+# canary_media. 0 article URL overlap with those. Not added
+# to the tech/AI whitelist.
+# globe_mail is the official The Globe and Mail general
+# Arc outboundfeeds RSS (Canada news; no prior globe_mail
+# / globeandmail / tgam id). Locked official
+# https://www.theglobeandmail.com/arc/outboundfeeds/rss/?outputType=xml
+# (channel "The Globe and Mail"). Home /rss/home/ and
+# /rss/ / /feed/ / /arc/outboundfeeds/rss/ (no
+# outputType) are 404. /rss/category/news/ is HTTP 200
+# but insertable=0. Official help-centre Canada section
+# /rss/category/canada/ is HTTP 200 / 99 nonempty / 100
+# insertable (1 empty description) — probed only; not the
+# general/top lock. /rss/category/world/ is World.
+# glacier-media-rss is a partner syndication body (0
+# article-URL overlap with the general feed). Apex
+# theglobeandmail.com remaps to www. Live-diff winner:
+# HTTP 200 / 100 nonempty / 100 insertable (ingest cap
+# 30). Distinct from live cbc_world / bbc_us_canada /
+# guardian_americas / nyt_world / guardian_world. 0
+# article URL overlap.
+# newatlas is the official New Atlas complete site-wide
+# feed (no prior newatlas / new_atlas / gizmag id).
+# Locked official https://newatlas.com/index.rss
+# (channel "New Atlas: Technology-Innovation-Outdoor
+# News"). /xml/ remaps to index.rss. www.newatlas.com
+# aliases the same body — lock apex. /rss is 200 HTML
+# (insertable=0). /feed/ is 404. /technology/index.rss
+# is a Technology section (16/60 overlap) — not the
+# complete primary. Live-diff winner: HTTP 200 / 60
+# nonempty / 60 insertable (ingest cap 30). Distinct
+# from live wired / techcrunch / verge / zdnet /
+# the_register / ieee_spectrum / ars_technica /
+# bloomberg_technology. 0 article URL overlap. Not
+# added to the tech/AI whitelist.
+# Product-locked backups (use only if a primary fails
+# live-diff / fetch / URL-dedup): fastcompany official
+# https://www.fastcompany.com/latest/rss is HTTP 200 /
+# 20 insertable (probed only; unused because all three
+# primaries won). /feed / /feed/ are 403. sciencedaily
+# official https://www.sciencedaily.com/rss/all.xml is
+# HTTP 200 / 60 insertable (probed only; unused).
+# bangkok_post official
+# https://www.bangkokpost.com/rss/data/topstories.xml
+# and most-recent / world / thailand are HTTP 451
+# (Unavailable For Legal Reasons; urllib + httpx) —
+# not fetch-compatible; unused. euractiv / dawn /
+# asia_times stay skipped (known bad). Do not invent
+# other backups. the_register / foreign_affairs /
+# allafrica stay registered (batch53 closed).
+# bbc_australia / bloomberg_technology / zdnet stay
+# registered (batch52 after #110). ars_science stays
+# hung. the_diplomat / stat_news / ieee_spectrum stay
+# registered (batch51 closed). war_on_rocks /
+# canary_media / space_com stay registered (batch50
+# closed). foreign_policy / ft_world / abc_australia
+# stay registered (batch49 closed). politico_politics /
+# dw_business / france24_culture stay registered
+# (batch48 closed). atlantic / smh_national /
+# guardian_education stay registered (batch47 closed).
+# digiday_media stays registered (#107). nyt_media /
+# guardian_media stay hung. guardian_games stays
+# unregistered (product: games thin / 不进主源).
+# sunday_review / cnbc (403 known) / ap stay
+# unregistered (product lock). NEWS_SOURCE_CAP display
+# stays 6 — no CAP code change. No X this batch. No
+# LLM this batch. Not tech/AI whitelist.
+_PHYS_ORG_GLOBE_MAIL_NEWATLAS_PRIMARY = {
+    "phys_org": {
+        "name": "Phys.org",
+        "feed_url": "https://phys.org/rss-feed/",
+        "category": "科学",
+    },
+    "globe_mail": {
+        "name": "The Globe and Mail",
+        "feed_url": (
+            "https://www.theglobeandmail.com/arc/outboundfeeds/rss/"
+            "?outputType=xml"
+        ),
+        "category": "国际",
+    },
+    "newatlas": {
+        "name": "New Atlas",
+        "feed_url": "https://newatlas.com/index.rss",
+        "category": "科技",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 170
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -9981,6 +10086,225 @@ def test_the_register_foreign_affairs_allafrica_feeds_live_http_200():
         )
 
 
+def test_phys_org_globe_mail_newatlas_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "phys_org" in by_id
+    assert by_id["phys_org"].feed_url == "https://phys.org/rss-feed/"
+    assert "globe_mail" in by_id
+    assert by_id["globe_mail"].feed_url == (
+        "https://www.theglobeandmail.com/arc/outboundfeeds/rss/?outputType=xml"
+    )
+    assert "newatlas" in by_id
+    assert by_id["newatlas"].feed_url == "https://newatlas.com/index.rss"
+    # #111 winners stay registered and unchanged.
+    # #110 hard-swap: zdnet live, ars_science hung.
+    # #107 hard-swap: digiday_media live, nyt_media hung.
+    # Do not touch digiday_media / zdnet / the_register /
+    # foreign_affairs / allafrica.
+    assert "the_register" in by_id
+    assert "foreign_affairs" in by_id
+    assert "allafrica" in by_id
+    assert "bbc_australia" in by_id
+    assert "bloomberg_technology" in by_id
+    assert "zdnet" in by_id
+    assert "ars_science" not in by_id
+    assert "the_diplomat" in by_id
+    assert "stat_news" in by_id
+    assert "ieee_spectrum" in by_id
+    assert "war_on_rocks" in by_id
+    assert "canary_media" in by_id
+    assert "space_com" in by_id
+    assert "foreign_policy" in by_id
+    assert "ft_world" in by_id
+    assert "abc_australia" in by_id
+    assert "politico_politics" in by_id
+    assert "dw_business" in by_id
+    assert "france24_culture" in by_id
+    assert "atlantic" in by_id
+    assert "smh_national" in by_id
+    assert "guardian_education" in by_id
+    assert "digiday_media" in by_id
+    assert "time_top" in by_id
+    assert "nyt_obituaries" in by_id
+    assert "nyt_science" in by_id
+    assert "bbc_science" in by_id
+    assert "guardian_science" in by_id
+    assert "npr_science" in by_id
+    assert "stat_news" in by_id
+    assert "space_com" in by_id
+    assert "canary_media" in by_id
+    assert "cbc_world" in by_id
+    assert "bbc_us_canada" in by_id
+    assert "guardian_americas" in by_id
+    assert "nyt_world" in by_id
+    assert "guardian_world" in by_id
+    assert "wired" in by_id
+    assert "techcrunch" in by_id
+    assert "verge" in by_id
+    assert "zdnet" in by_id
+    assert "the_register" in by_id
+    assert "ieee_spectrum" in by_id
+    assert "ars_technica" in by_id
+    assert "bloomberg_technology" in by_id
+    # nyt_media / guardian_media hung after #107.
+    # Unused / not-fetch-compatible backups stay
+    # unregistered because all three primaries won.
+    # fastcompany / sciencedaily were live but unused.
+    # bangkok_post is HTTP 451. euractiv 301s to
+    # rapporteur.com. dawn / asia_times are httpx 403.
+    # Do not invent other backups.
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "fastcompany" not in by_id
+    assert "sciencedaily" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "euractiv" not in by_id
+    assert "dawn" not in by_id
+    assert "asia_times" not in by_id
+    assert "zdnet" in by_id
+    assert "ars_science" not in by_id
+    assert "pbs_newshour" not in by_id
+    assert "restofworld" not in by_id
+    assert "economist_intl" not in by_id
+    assert by_id["phys_org"].feed_url != "https://phys.org/rss-feed"
+    assert by_id["phys_org"].feed_url != "https://phys.org/feeds/"
+    assert by_id["phys_org"].feed_url != "https://phys.org/rss-feed/breaking/"
+    assert by_id["phys_org"].feed_url != "https://phys.org/feed"
+    assert by_id["phys_org"].feed_url != "https://phys.org/feed/"
+    assert by_id["phys_org"].feed_url != "https://phys.org/rss.xml"
+    assert by_id["phys_org"].feed_url != "https://www.phys.org/rss-feed/"
+    assert by_id["phys_org"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["phys_org"].feed_url != by_id["bbc_science"].feed_url
+    assert by_id["phys_org"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["phys_org"].feed_url != by_id["npr_science"].feed_url
+    assert by_id["phys_org"].feed_url != by_id["stat_news"].feed_url
+    assert by_id["phys_org"].feed_url != by_id["space_com"].feed_url
+    assert by_id["phys_org"].feed_url != by_id["canary_media"].feed_url
+    assert by_id["globe_mail"].feed_url != (
+        "https://www.theglobeandmail.com/arc/outboundfeeds/rss/category/canada/"
+    )
+    assert by_id["globe_mail"].feed_url != (
+        "https://www.theglobeandmail.com/arc/outboundfeeds/rss/"
+        "category/canada/?outputType=xml"
+    )
+    assert by_id["globe_mail"].feed_url != (
+        "https://www.theglobeandmail.com/arc/outboundfeeds/rss/home/"
+        "?outputType=xml"
+    )
+    assert by_id["globe_mail"].feed_url != (
+        "https://www.theglobeandmail.com/arc/outboundfeeds/glacier-media-rss/"
+        "?outputType=xml"
+    )
+    assert by_id["globe_mail"].feed_url != (
+        "https://www.theglobeandmail.com/arc/outboundfeeds/rss/"
+    )
+    assert by_id["globe_mail"].feed_url != "https://www.theglobeandmail.com/rss/"
+    assert by_id["globe_mail"].feed_url != "https://www.theglobeandmail.com/feed/"
+    assert by_id["globe_mail"].feed_url != (
+        "https://www.theglobeandmail.com/arc/outboundfeeds/rss/category/world/"
+    )
+    assert by_id["globe_mail"].feed_url != (
+        "https://www.theglobeandmail.com/arc/outboundfeeds/rss/category/news/"
+    )
+    assert by_id["globe_mail"].feed_url != (
+        "https://theglobeandmail.com/arc/outboundfeeds/rss/?outputType=xml"
+    )
+    assert by_id["globe_mail"].feed_url != by_id["cbc_world"].feed_url
+    assert by_id["globe_mail"].feed_url != by_id["bbc_us_canada"].feed_url
+    assert by_id["globe_mail"].feed_url != by_id["guardian_americas"].feed_url
+    assert by_id["globe_mail"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["globe_mail"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["newatlas"].feed_url != "https://newatlas.com/xml/"
+    assert by_id["newatlas"].feed_url != "https://newatlas.com/rss"
+    assert by_id["newatlas"].feed_url != "https://www.newatlas.com/index.rss"
+    assert by_id["newatlas"].feed_url != "https://newatlas.com/feed/"
+    assert by_id["newatlas"].feed_url != (
+        "https://newatlas.com/technology/index.rss"
+    )
+    assert by_id["newatlas"].feed_url != by_id["wired"].feed_url
+    assert by_id["newatlas"].feed_url != by_id["techcrunch"].feed_url
+    assert by_id["newatlas"].feed_url != by_id["verge"].feed_url
+    assert by_id["newatlas"].feed_url != by_id["zdnet"].feed_url
+    assert by_id["newatlas"].feed_url != by_id["the_register"].feed_url
+    assert by_id["newatlas"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["newatlas"].feed_url != by_id["ars_technica"].feed_url
+    assert by_id["newatlas"].feed_url != (
+        by_id["bloomberg_technology"].feed_url
+    )
+    assert by_id["phys_org"].feed_url != by_id["globe_mail"].feed_url
+    assert by_id["phys_org"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["globe_mail"].feed_url != by_id["newatlas"].feed_url
+    # nyt_media hung after #107 — digiday_media live.
+    # zdnet is the batch52 hard-swap lock after #110.
+    # the_register / foreign_affairs / allafrica are
+    # the batch53 locks after #111.
+    assert by_id["digiday_media"].feed_url == "https://digiday.com/media/feed/"
+    assert by_id["zdnet"].feed_url == "https://www.zdnet.com/feed/"
+    assert by_id["the_register"].feed_url == (
+        "https://www.theregister.com/headlines.atom"
+    )
+    assert by_id["phys_org"].feed_url != by_id["zdnet"].feed_url
+    assert by_id["newatlas"].feed_url != by_id["zdnet"].feed_url
+    assert "guardian_games" not in by_id
+    assert "thehill" not in by_id
+    assert "politico" not in by_id
+    assert "bbc_culture" not in by_id
+    assert "france24_europe" not in by_id
+    assert "guardian_economics" not in by_id
+    assert "nyt_theater" not in by_id
+    assert "independent_world" not in by_id
+    assert "sundayreview" not in by_id
+    assert "ap" not in by_id
+    for source_id, expected in _PHYS_ORG_GLOBE_MAIL_NEWATLAS_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_phys_org_globe_mail_newatlas_feeds_live_http_200():
+    """Hit the three batch54 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _PHYS_ORG_GLOBE_MAIL_NEWATLAS_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (phys_org / globe_mail / newatlas) uses
+        # the un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # All three live-diff winners were 100% nonempty.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -10037,6 +10361,7 @@ if __name__ == "__main__":
     test_the_diplomat_stat_news_ieee_spectrum_primaries_registered()
     test_bbc_australia_bloomberg_technology_zdnet_primaries_registered()
     test_the_register_foreign_affairs_allafrica_primaries_registered()
+    test_phys_org_globe_mail_newatlas_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -10089,4 +10414,5 @@ if __name__ == "__main__":
     test_the_diplomat_stat_news_ieee_spectrum_feeds_live_http_200()
     test_bbc_australia_bloomberg_technology_zdnet_feeds_live_http_200()
     test_the_register_foreign_affairs_allafrica_feeds_live_http_200()
+    test_phys_org_globe_mail_newatlas_feeds_live_http_200()
     print("✓ source registry tests PASSED")
