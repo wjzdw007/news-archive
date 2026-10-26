@@ -526,15 +526,22 @@ class Store:
         return d
 
     def upsert_daily_brief(self, brief: dict) -> str:
-        """Insert or replace one calendar-day brief. Returns inserted|updated."""
+        """Insert or replace one calendar-day brief.
+
+        Hard invariant: never replace an existing status=ok row with failed
+        (timeout / empty parse / model error). Returns inserted|updated|kept_ok.
+        """
         date = brief["date"]
-        sections_json = json.dumps(brief.get("sections") or [], ensure_ascii=False)
+        status = brief.get("status") or "failed"
         existing = self._conn.execute(
-            "SELECT date FROM daily_briefs WHERE date = ?", (date,)
+            "SELECT status FROM daily_briefs WHERE date = ?", (date,)
         ).fetchone()
+        if existing and existing["status"] == "ok" and status == "failed":
+            return "kept_ok"
+        sections_json = json.dumps(brief.get("sections") or [], ensure_ascii=False)
         payload = (
             brief.get("generated_at") or "",
-            brief.get("status") or "failed",
+            status,
             brief.get("model") or "",
             brief.get("lede") or "",
             sections_json,

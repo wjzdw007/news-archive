@@ -11,6 +11,8 @@ import hashlib
 import json
 import os
 import re
+import sys
+import time
 from datetime import datetime, timedelta, timezone
 from typing import Any, Callable
 from zoneinfo import ZoneInfo
@@ -39,6 +41,16 @@ DEFAULT_MODEL = "deepseek/deepseek-flash"
 MODEL_ENV = "DAILY_BRIEF_MODEL"
 API_KEY_ENV = "DAILY_BRIEF_API_KEY"
 API_BASE_ENV = "DAILY_BRIEF_API_BASE"
+# Per-request read timeout. 45s was losing to DeepSeek "read operation timed out".
+LLM_TIMEOUT_S = 90.0
+# One retry after timeout / empty / parse errors so a single blip does not
+# burn the run deadline and skip remaining days.
+LLM_RETRIES = 1
+_RETRYABLE_LLM_RE = re.compile(
+    r"(?i)(timed? ?out|timeout|expecting value|json was not an object|"
+    r"empty brief|not an object|JSONDecodeError)"
+)
+_AUTH_FAIL_RE = re.compile(r"(?i)(\b401\b|\b403\b|unauthorized|invalid api)")
 
 # Public/LLM article fields. content_snapshot is intentionally absent.
 DAILY_BRIEF_ARTICLE_FIELDS = (
@@ -950,13 +962,52 @@ def _prompt_sections(grouped: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return payload
 
 
+def is_retryable_llm_error(exc: BaseException) -> bool:
+    """Timeout / empty body / JSON parse — retry. Auth errors do not retry."""
+    if _AUTH_FAIL_RE.search(str(exc or "")):
+        return False
+    if isinstance(exc, (TimeoutError, json.JSONDecodeError)):
+        return True
+    if "timeout" in type(exc).__name__.lower():
+        return True
+    return bool(_RETRYABLE_LLM_RE.search(str(exc or "")))
+
+
+def call_llm_with_retry(
+    llm_fn: LlmFn,
+    grouped: list[dict[str, Any]],
+    *,
+    retries: int = LLM_RETRIES,
+    sleep_fn: Callable[[float], None] | None = None,
+) -> dict[str, Any]:
+    """Call llm_fn; retry timeout/empty/parse once per day (default)."""
+    sleeper = sleep_fn if sleep_fn is not None else time.sleep
+    attempts = max(0, int(retries)) + 1
+    last: BaseException | None = None
+    for attempt in range(attempts):
+        try:
+            return llm_fn(grouped)
+        except Exception as exc:
+            last = exc
+            if attempt + 1 >= attempts or not is_retryable_llm_error(exc):
+                raise
+            print(
+                f"⚠ daily brief LLM retry {attempt + 1}/{max(0, int(retries))} "
+                f"after: {redact_secrets(str(exc))}",
+                file=sys.stderr,
+            )
+            sleeper(min(2 ** attempt, 4))
+    assert last is not None
+    raise last
+
+
 def openai_complete(
     grouped: list[dict[str, Any]],
     *,
     api_key: str,
     model: str,
     base_url: str,
-    timeout: float = 45.0,
+    timeout: float = LLM_TIMEOUT_S,
 ) -> dict[str, Any]:
     import httpx
 
@@ -1052,6 +1103,8 @@ def generate_daily_brief(
     model: str = "",
     now: datetime | None = None,
     missing_config: bool = False,
+    retries: int | None = None,
+    sleep_fn: Callable[[float], None] | None = None,
 ) -> dict[str, Any]:
     """Build one daily brief. Never reads content_snapshot.
 
@@ -1092,7 +1145,10 @@ def generate_daily_brief(
         prompt_grouped.append(x_section)
 
     try:
-        llm_payload = llm_fn(prompt_grouped)
+        retry_n = LLM_RETRIES if retries is None else retries
+        llm_payload = call_llm_with_retry(
+            llm_fn, prompt_grouped, retries=retry_n, sleep_fn=sleep_fn
+        )
     except Exception as exc:
         return _with_fp(
             failed_brief(
@@ -1142,6 +1198,7 @@ def make_llm_fn(config: dict[str, str]) -> LlmFn:
                 api_key=config["api_key"],
                 model=config["model"],
                 base_url=config["base_url"],
+                timeout=LLM_TIMEOUT_S,
             )
         except Exception as exc:
             raise RuntimeError(

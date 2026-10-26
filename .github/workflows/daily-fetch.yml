@@ -5,6 +5,15 @@ on:
     # every 4 hours UTC — P0 SLA published_at→fetched_at ≤ 4h
     - cron: "0 */4 * * *"
   workflow_dispatch:
+    inputs:
+      backfill_dates:
+        description: >
+          QA/CEO backfill: comma-separated Asia/Shanghai dates that are
+          failed/missing only (never overwrite status=ok). Example:
+          2026-10-25,2026-10-24,2026-10-23,2026-10-21
+        required: false
+        type: string
+        default: ""
 
 permissions:
   contents: write
@@ -19,7 +28,7 @@ jobs:
     # 45m job cap. RSS is 8-way + 600s wave (runs 39535458475 / 39539744777
     # finished RSS in ~7s then hung on full-archive O(n²) recluster inside
     # this Fetch step). Cluster is now a 24h window + 1500-candidate cap.
-    # Brief has its own 8m step timeout so a hung LLM cannot skip Persist.
+    # Brief has its own 10m step timeout so a hung LLM cannot skip Persist.
     timeout-minutes: 45
     steps:
       - name: Checkout
@@ -77,30 +86,40 @@ jobs:
             --stats data/run-stats.json \
             --output-meta data/validation-meta.json
 
-      - name: Generate daily brief (soft-fail)
-        # Missing DAILY_BRIEF_API_KEY / DAILY_BRIEF_API_BASE, model errors, or
-        # empty day write failed|empty and must not break fetch or persist.
-        # Model id is code-default deepseek/deepseek-flash (not a Secret);
-        # override with env DAILY_BRIEF_MODEL if needed.
+      - name: Generate daily brief
+        # Missing key / empty day still must not skip Persist (see Persist if:).
+        # Today's failed / written failed / LLM timeout exits 1 so THIS step is
+        # red — no continue-on-error green-hide. Model id is code-default
+        # deepseek/deepseek-flash (not a Secret); override DAILY_BRIEF_MODEL.
         # Step + CLI deadlines: a hung LLM must not eat the job timeout and
-        # skip Persist (run 39243037763). continue-on-error keeps fetch green.
+        # skip Persist (run 39243037763). Per-day LLM timeout 90s + 1 retry.
+        # QA/CEO backfill: Actions → daily-fetch → Run workflow →
+        # backfill_dates=2026-10-25,2026-10-24,2026-10-23,2026-10-21
+        # (failed/missing only; never overwrite status=ok). CLI equivalent:
+        # PYTHONPATH=src python -m news_archive.daily_brief --db data/archive.sqlite3 \
+        #   --dates 2026-10-25,2026-10-24,2026-10-23,2026-10-21 --backfill-failed --json
+        id: daily-brief
         if: always() && steps.fetch.outcome == 'success' && hashFiles('data/archive.sqlite3') != ''
-        continue-on-error: true
-        timeout-minutes: 8
+        timeout-minutes: 10
         env:
           DAILY_BRIEF_API_KEY: ${{ secrets.DAILY_BRIEF_API_KEY }}
           DAILY_BRIEF_API_BASE: ${{ secrets.DAILY_BRIEF_API_BASE }}
+          BACKFILL_DATES: ${{ github.event.inputs.backfill_dates }}
         run: |
           set -euo pipefail
-          PYTHONPATH=src python -m news_archive.daily_brief \
-            --db data/archive.sqlite3 \
-            --days 7 \
-            --deadline-seconds 300 \
-            --json
+          ARGS=(--db data/archive.sqlite3 --deadline-seconds 420 --json)
+          if [ -n "${BACKFILL_DATES:-}" ]; then
+            ARGS+=(--dates "$BACKFILL_DATES" --backfill-failed)
+            echo "Backfill failed/missing dates only (never overwrite ok): $BACKFILL_DATES"
+          else
+            ARGS+=(--days 7)
+          fi
+          PYTHONPATH=src python -m news_archive.daily_brief "${ARGS[@]}"
 
       - name: Persist SQLite to data branch
-        # CRITICAL: Persist runs if fetch succeeded, even if latency validation failed
-        # This ensures incremental data is never lost due to SLA violations
+        # CRITICAL: Persist runs if fetch succeeded, even if latency validation
+        # failed OR the daily-brief step is red. The if: below keys off fetch
+        # only — SQLite must still land on the data branch.
         if: always() && steps.fetch.outcome == 'success' && hashFiles('data/archive.sqlite3') != ''
         run: |
           set -euo pipefail
@@ -183,22 +202,27 @@ jobs:
           git checkout "${{ github.ref_name }}"
 
       - name: Test high-frequency dedup
+        if: always()
         run: |
           PYTHONPATH=src python tests/test_dedup.py
 
       - name: Test archive-first page enrich (product gate)
+        if: always()
         run: |
           PYTHONPATH=src python tests/test_enrich.py
 
       - name: Test thin RSS skip (Required Fields)
+        if: always()
         run: |
           PYTHONPATH=src python tests/test_required_fields.py
 
       - name: Test RSS timeout retry + soft-fail (keep persist)
+        if: always()
         run: |
           PYTHONPATH=src python tests/test_fetch_soft_fail.py
 
       - name: Test latency consecutive soft-miss (keep persist green)
+        if: always()
         run: |
           PYTHONPATH=src python tests/test_latency_consecutive.py
 

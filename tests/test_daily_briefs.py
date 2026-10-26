@@ -9,7 +9,14 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
-from news_archive.daily_brief import generate_for_dates
+from news_archive.daily_brief import (
+    brief_run_should_fail,
+    emit_brief_annotations,
+    generate_for_dates,
+    parse_date_list,
+    render_brief_job_summary,
+    write_brief_job_summary,
+)
 from news_archive.daily_brief import main as daily_brief_main
 from news_archive.daily_briefs import (
     API_BASE_ENV,
@@ -18,6 +25,8 @@ from news_archive.daily_briefs import (
     DAILY_BRIEF_ARTICLE_FIELDS,
     DAILY_BRIEF_X_FIELDS,
     DEFAULT_MODEL,
+    LLM_RETRIES,
+    LLM_TIMEOUT_S,
     MODEL_ENV,
     OTHER_TITLE,
     SECTIONS_MAX,
@@ -25,6 +34,8 @@ from news_archive.daily_briefs import (
     X_SECTION_TITLE,
     X_SECTION_TOPIC_ID,
     X_TEXT_SNAPSHOT_MAX,
+    call_llm_with_retry,
+    is_retryable_llm_error,
     articles_for_day,
     daily_brief_fingerprint_input,
     day_input_fingerprint,
@@ -652,7 +663,7 @@ def _restore_brief_env(saved: dict[str, str]) -> None:
         os.environ[name] = value
 
 
-def test_cli_missing_key_exits_zero_and_writes_failed():
+def test_cli_missing_key_exits_nonzero_and_writes_failed():
     saved_env = _clear_brief_env()
     try:
         with tempfile.TemporaryDirectory() as tmp:
@@ -671,13 +682,22 @@ def test_cli_missing_key_exits_zero_and_writes_failed():
                 )
             )
             store.close()
-            rc = daily_brief_main(
-                ["--db", str(db_path), "--date", "2026-10-15", "--json"]
-            )
-            assert rc == 0
+            summary = Path(tmp) / "step-summary.md"
+            os.environ["GITHUB_STEP_SUMMARY"] = str(summary)
+            try:
+                rc = daily_brief_main(
+                    ["--db", str(db_path), "--date", "2026-10-15", "--json"]
+                )
+            finally:
+                os.environ.pop("GITHUB_STEP_SUMMARY", None)
+            assert rc == 1
             saved = Store(db_path).get_daily_brief("2026-10-15")
             assert saved["status"] == "failed"
             assert saved["lede"] == ""
+            text = summary.read_text(encoding="utf-8")
+            assert "Daily brief" in text
+            assert "2026-10-15" in text
+            assert "failed" in text
     finally:
         _restore_brief_env(saved_env)
 
@@ -698,10 +718,10 @@ def test_cli_empty_day_exits_zero():
         _restore_brief_env(saved_env)
 
 
-def test_cli_never_fails_on_corrupt_handler():
-    """main() must return 0 even when the db path cannot be used as sqlite."""
+def test_cli_corrupt_handler_exits_nonzero_visible():
+    """Corrupt db is still soft for Persist, but the brief CLI must exit 1."""
     rc = daily_brief_main(["--db", "/dev/full/not-a-db", "--date", "2026-10-15"])
-    assert rc == 0
+    assert rc == 1
 
 
 def test_workflow_wires_daily_brief_secrets_soft_fail():
@@ -711,10 +731,22 @@ def test_workflow_wires_daily_brief_secrets_soft_fail():
     assert "secrets.DAILY_BRIEF_API_BASE" in yml
     assert "secrets.DAILY_BRIEF_MODEL" not in yml
     assert "deepseek/deepseek-flash" in yml
-    assert "continue-on-error: true" in yml
+    # Brief step must go red on today's failed / timeout — no green-hide.
+    brief_start = yml.index("name: Generate daily brief")
+    persist_start = yml.index("name: Persist SQLite to data branch")
+    brief_block = yml[brief_start:persist_start]
+    assert "continue-on-error:" not in brief_block
+    assert "timeout-minutes: 10" in brief_block
+    assert "--deadline-seconds 420" in brief_block
+    assert "--backfill-failed" in brief_block
+    assert "backfill_dates" in yml
+    assert "id: daily-brief" in brief_block
+    persist_if_line = next(
+        line for line in yml[persist_start:].splitlines() if line.lstrip().startswith("if:")
+    )
+    assert "always() && steps.fetch.outcome == 'success'" in persist_if_line
+    assert "daily-brief" not in persist_if_line
     assert "timeout-minutes: 45" in yml
-    assert "timeout-minutes: 8" in yml
-    assert "--deadline-seconds 300" in yml
     assert "latency_soft_miss" in yml
     assert "OPENAI_API_KEY" not in yml
     assert "X_BEARER" not in yml
@@ -775,6 +807,308 @@ def test_deadline_skips_remaining_days_without_overwrite():
         assert kept["lede"] == "已有日报不应被 deadline skip 覆盖。"
         assert kept["input_fingerprint"] == "keep-me"
         store.close()
+
+
+def test_store_upsert_failed_does_not_overwrite_ok():
+    """Hard invariant: upsert(failed) keeps an existing ok row intact."""
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        store.upsert_daily_brief(
+            {
+                "date": "2026-10-25",
+                "generated_at": "2026-10-25T04:00:00+00:00",
+                "status": "ok",
+                "model": "deepseek/deepseek-flash",
+                "lede": "已有好日报。",
+                "sections": [
+                    {"title": "旧", "bullets": ["保留"], "links": [], "topic_id": None}
+                ],
+                "error": None,
+                "input_fingerprint": "keep-me",
+            }
+        )
+        action = store.upsert_daily_brief(
+            {
+                "date": "2026-10-25",
+                "generated_at": "2026-10-25T08:00:00+00:00",
+                "status": "failed",
+                "model": "deepseek/deepseek-flash",
+                "lede": "",
+                "sections": [],
+                "error": "The read operation timed out",
+                "input_fingerprint": "new-fp",
+            }
+        )
+        assert action == "kept_ok"
+        kept = store.get_daily_brief("2026-10-25")
+        assert kept["status"] == "ok"
+        assert kept["lede"] == "已有好日报。"
+        assert kept["input_fingerprint"] == "keep-me"
+        store.close()
+
+
+def test_llm_failure_keeps_prior_ok():
+    """Fingerprint change re-calls LLM; timeout/parse must not replace ok."""
+    calls = {"n": 0}
+
+    def boom(_grouped):
+        calls["n"] += 1
+        raise RuntimeError("The read operation timed out")
+
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        _seed_article(store)
+        first = generate_for_dates(
+            store,
+            ["2026-10-15"],
+            llm_fn=_ok_llm,
+            model="deepseek/deepseek-flash",
+            sleep_fn=lambda _s: None,
+        )
+        assert first[0]["status"] == "ok"
+        assert first[0]["action"] == "inserted"
+        _seed_article(
+            store,
+            url="https://example.com/2",
+            title="第二篇入选稿件标题足够长",
+            summary="新增稿件改变当日所选集合。",
+            source="tmtpost",
+        )
+        second = generate_for_dates(
+            store,
+            ["2026-10-15"],
+            llm_fn=boom,
+            model="deepseek/deepseek-flash",
+            sleep_fn=lambda _s: None,
+        )
+        assert second[0]["action"] == "kept_ok"
+        assert second[0]["status"] == "ok"
+        assert second[0].get("protected") is True
+        assert "timed out" in (second[0].get("error") or "")
+        assert calls["n"] >= 1
+        kept = store.get_daily_brief("2026-10-15")
+        assert kept["status"] == "ok"
+        assert kept["lede"]
+        assert kept["sections"]
+        store.close()
+
+
+def test_failed_with_no_prior_ok_writes_failed():
+    def boom(_grouped):
+        raise RuntimeError("Expecting value: line 1 column 1 (char 0)")
+
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        _seed_article(store)
+        results = generate_for_dates(
+            store,
+            ["2026-10-15"],
+            llm_fn=boom,
+            model="deepseek/deepseek-flash",
+            sleep_fn=lambda _s: None,
+        )
+        assert results[0]["status"] == "failed"
+        assert results[0]["action"] == "inserted"
+        saved = store.get_daily_brief("2026-10-15")
+        assert saved["status"] == "failed"
+        assert saved["lede"] == ""
+        assert saved["sections"] == []
+        assert "Expecting value" in (saved.get("error") or "")
+        store.close()
+
+
+def test_llm_timeout_retries_then_succeeds():
+    assert LLM_TIMEOUT_S >= 90.0
+    assert LLM_RETRIES == 1
+    assert is_retryable_llm_error(RuntimeError("The read operation timed out"))
+    assert is_retryable_llm_error(
+        RuntimeError("Expecting value: line 1 column 1 (char 0)")
+    )
+    assert not is_retryable_llm_error(RuntimeError("401 Unauthorized"))
+
+    calls = {"n": 0}
+
+    def flaky(grouped):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise RuntimeError("The read operation timed out")
+        return _ok_llm(grouped)
+
+    payload = call_llm_with_retry(flaky, [_art()], retries=1, sleep_fn=lambda _s: None)
+    assert payload["lede"]
+    assert calls["n"] == 2
+
+    calls2 = {"n": 0}
+
+    def flaky2(grouped):
+        calls2["n"] += 1
+        if calls2["n"] == 1:
+            raise RuntimeError("The read operation timed out")
+        return _ok_llm(grouped)
+
+    brief = generate_daily_brief(
+        [_art()],
+        "2026-10-15",
+        llm_fn=flaky2,
+        model="deepseek/deepseek-flash",
+        retries=1,
+        sleep_fn=lambda _s: None,
+    )
+    assert brief["status"] == "ok"
+    assert calls2["n"] == 2
+
+
+def test_backfill_failed_skips_existing_ok():
+    llm, calls = _counting_llm()
+    with tempfile.TemporaryDirectory() as tmp:
+        store = Store(Path(tmp) / "t.sqlite3")
+        _seed_article(store)
+        _seed_article(
+            store,
+            url="https://example.com/day25",
+            published_at="2026-10-25T02:00:00+00:00",
+            fetched_at="2026-10-25T03:00:00+00:00",
+            title="25 日稿件标题足够长",
+            summary="25 日摘要句子足够长了。",
+        )
+        store.upsert_daily_brief(
+            {
+                "date": "2026-10-15",
+                "generated_at": "2026-10-15T04:00:00+00:00",
+                "status": "ok",
+                "model": "deepseek/deepseek-flash",
+                "lede": "已有日报不应被 backfill 覆盖。",
+                "sections": [
+                    {"title": "旧", "bullets": ["保留"], "links": [], "topic_id": None}
+                ],
+                "error": None,
+                "input_fingerprint": "stale-on-purpose",
+            }
+        )
+        results = generate_for_dates(
+            store,
+            ["2026-10-15", "2026-10-25"],
+            llm_fn=llm,
+            model="deepseek/deepseek-flash",
+            backfill_failed=True,
+        )
+        by_date = {row["date"]: row for row in results}
+        assert by_date["2026-10-15"]["action"] == "skipped_ok"
+        assert by_date["2026-10-15"]["status"] == "ok"
+        assert by_date["2026-10-25"]["status"] == "ok"
+        assert by_date["2026-10-25"]["action"] in {"inserted", "updated"}
+        assert calls["n"] == 1
+        kept = store.get_daily_brief("2026-10-15")
+        assert kept["lede"] == "已有日报不应被 backfill 覆盖。"
+        assert kept["input_fingerprint"] == "stale-on-purpose"
+        store.close()
+
+
+def test_parse_date_list_and_cli_backfill_dates():
+    assert parse_date_list("2026-10-25,2026-10-24,2026-10-23,2026-10-21") == [
+        "2026-10-25",
+        "2026-10-24",
+        "2026-10-23",
+        "2026-10-21",
+    ]
+    assert parse_date_list("") == []
+    try:
+        parse_date_list("2026/10/25")
+        raise AssertionError("expected invalid date")
+    except ValueError:
+        pass
+
+    saved_env = _clear_brief_env()
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            db_path = Path(tmp) / "t.sqlite3"
+            store = Store(db_path)
+            store.upsert_daily_brief(
+                {
+                    "date": "2026-10-25",
+                    "generated_at": "2026-10-25T04:00:00+00:00",
+                    "status": "ok",
+                    "model": "deepseek/deepseek-flash",
+                    "lede": "回填不得动 ok。",
+                    "sections": [
+                        {"title": "旧", "bullets": ["保留"], "links": [], "topic_id": None}
+                    ],
+                    "error": None,
+                    "input_fingerprint": "ok-fp",
+                }
+            )
+            store.close()
+            rc = daily_brief_main(
+                [
+                    "--db",
+                    str(db_path),
+                    "--dates",
+                    "2026-10-25,2026-10-24",
+                    "--backfill-failed",
+                    "--json",
+                ]
+            )
+            # 10-25 skipped ok; 10-24 empty day writes empty (not failed) → exit 0
+            assert rc == 0
+            kept = Store(db_path).get_daily_brief("2026-10-25")
+            assert kept["status"] == "ok"
+            assert kept["lede"] == "回填不得动 ok。"
+            empty = Store(db_path).get_daily_brief("2026-10-24")
+            assert empty["status"] == "empty"
+    finally:
+        _restore_brief_env(saved_env)
+
+
+def test_today_failed_is_visible_failure():
+    today = shanghai_calendar_date()
+    stats = {
+        "error": None,
+        "results": [
+            {
+                "date": today,
+                "action": "inserted",
+                "status": "failed",
+                "error": "The read operation timed out",
+            }
+        ],
+    }
+    assert brief_run_should_fail(stats, today=today) is True
+    protected = {
+        "error": None,
+        "results": [
+            {
+                "date": "2026-10-25",
+                "action": "kept_ok",
+                "status": "ok",
+                "error": "The read operation timed out",
+                "protected": True,
+            }
+        ],
+    }
+    assert brief_run_should_fail(protected, today=today) is True
+    ok_only = {
+        "error": None,
+        "results": [{"date": today, "action": "kept_ok", "status": "ok"}],
+    }
+    assert brief_run_should_fail(ok_only, today=today) is False
+
+    import io
+    from contextlib import redirect_stderr
+
+    stderr = io.StringIO()
+    with redirect_stderr(stderr):
+        emit_brief_annotations(stats, today=today)
+    text = stderr.getvalue()
+    assert "::error" in text
+    assert today in text
+    summary = render_brief_job_summary(stats, today=today)
+    assert "status=failed" in summary or "failed" in summary
+    assert today in summary
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "summary.md"
+        write_brief_job_summary(stats, path=path, today=today)
+        assert path.read_text(encoding="utf-8")
+        assert today in path.read_text(encoding="utf-8")
 
 
 def test_cli_deadline_flag_exits_zero():
@@ -853,7 +1187,7 @@ def test_cli_stdout_never_prints_secret_values():
                 rc = daily_brief_main(
                     ["--db", str(db_path), "--date", "2026-10-15", "--json"]
                 )
-            assert rc == 0
+            assert rc == 1
             combined = stdout.getvalue() + stderr.getvalue()
             assert planted not in combined
             assert "Bearer sk-" not in combined
@@ -1513,11 +1847,18 @@ if __name__ == "__main__":
     test_ok_brief_records_default_model_when_unspecified()
     test_ok_brief_from_title_summary_only()
     test_store_daily_brief_query_omits_snapshot()
-    test_cli_missing_key_exits_zero_and_writes_failed()
+    test_cli_missing_key_exits_nonzero_and_writes_failed()
     test_cli_empty_day_exits_zero()
-    test_cli_never_fails_on_corrupt_handler()
+    test_cli_corrupt_handler_exits_nonzero_visible()
     test_workflow_wires_daily_brief_secrets_soft_fail()
     test_deadline_skips_remaining_days_without_overwrite()
+    test_store_upsert_failed_does_not_overwrite_ok()
+    test_llm_failure_keeps_prior_ok()
+    test_failed_with_no_prior_ok_writes_failed()
+    test_llm_timeout_retries_then_succeeds()
+    test_backfill_failed_skips_existing_ok()
+    test_parse_date_list_and_cli_backfill_dates()
+    test_today_failed_is_visible_failure()
     test_cli_deadline_flag_exits_zero()
     test_resolve_llm_config_requires_key_and_base()
     test_resolve_model_defaults_and_env_override()

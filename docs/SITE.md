@@ -40,7 +40,16 @@
    - **新闻 Tab 不插日报 banner**
    - RSS 子弹从 title + summary 生成；**禁止**读/写 `content_snapshot`；公开 JSON 无 Cookie / Authorization / `post_id`
    - `input_fingerprint` 含当日 RSS 所选集合 **和** X selected set；同日 X 增删改会强制重生成（不是 kept_ok）
+   - **硬约束**：LLM 超时 / 空响应 / JSON 解析失败 **不得** 把已有 `status=ok` 覆盖成 `failed`（保留旧导语；只回填 failed/missing）
    - 公开导出：`site/data/daily_briefs.json`（无 `content_snapshot`、无内部 error、无 `input_fingerprint`）
+
+### 日报失败可见性与历史回填
+
+- 上海日历「今天」写成 `failed`、或本轮写入了 `failed`（没有可保留的 prior ok）、或 LLM 超时：`daily-brief` **步骤红灯**（`::error` + `GITHUB_STEP_SUMMARY`）。Fetch/Persist 仍跑（Persist `if: always() && fetch success`，不看 brief 步骤）。
+- 每日期 LLM：90s 读超时 + 失败可重试 1 次，避免一次超时吃光 deadline 后跳过后面的天。
+- **QA/CEO 回填 failed/missing 日**（至少 10-25 / 24 / 23 / 21 与今天；**绝不覆盖已有 ok**）：
+  1. GitHub Actions → `daily-fetch` → Run workflow → `backfill_dates=2026-10-25,2026-10-24,2026-10-23,2026-10-21`（今天可一并写入）
+  2. 或 CLI：`PYTHONPATH=src python -m news_archive.daily_brief --db data/archive.sqlite3 --dates 2026-10-25,2026-10-24,2026-10-23,2026-10-21 --backfill-failed --json`
 
 ### 约束
 
