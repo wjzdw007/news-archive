@@ -39,6 +39,16 @@ DEFAULT_MODEL = "deepseek/deepseek-flash"
 MODEL_ENV = "DAILY_BRIEF_MODEL"
 API_KEY_ENV = "DAILY_BRIEF_API_KEY"
 API_BASE_ENV = "DAILY_BRIEF_API_BASE"
+# Run 40258264336: a 45s read timeout on one LKEAP call, then more 45s
+# misses, burned the 300s CLI deadline and skipped remaining days.
+# Today gets retries; older days stay one-shot so they cannot starve today.
+LLM_READ_TIMEOUT_S = 90.0
+LLM_CONNECT_TIMEOUT_S = 15.0
+LLM_WRITE_TIMEOUT_S = 30.0
+LLM_POOL_TIMEOUT_S = 10.0
+TODAY_LLM_ATTEMPTS = 3
+OLDER_LLM_ATTEMPTS = 1
+LLM_RETRY_BACKOFF_S = 2.0
 
 # Public/LLM article fields. content_snapshot is intentionally absent.
 DAILY_BRIEF_ARTICLE_FIELDS = (
@@ -211,6 +221,87 @@ def shanghai_calendar_date(now: datetime | None = None) -> str:
 def last_n_shanghai_dates(n: int = 7, now: datetime | None = None) -> list[str]:
     today = shanghai_now(now).date()
     return [(today - timedelta(days=i)).isoformat() for i in range(n)]
+
+
+def order_dates_today_first(dates: list[str], today: str | None = None) -> list[str]:
+    """Stable unique order with the current Shanghai day first."""
+    today = today or shanghai_calendar_date()
+    head: list[str] = []
+    tail: list[str] = []
+    seen: set[str] = set()
+    for date in dates:
+        if date in seen:
+            continue
+        seen.add(date)
+        if date == today:
+            head.append(date)
+        else:
+            tail.append(date)
+    return head + tail
+
+
+_BACKFILL_STATUSES = frozenset({"failed", "empty", "skipped"})
+
+
+def prioritize_failed_backfill(
+    dates: list[str],
+    today: str,
+    status_for_date,
+) -> list[str]:
+    """Today first, then failed/empty/missing historical days, then the rest.
+
+    Live 2026-10-25/24/23/21 stayed failed after today's timeout burned the
+    old 300s budget. After today is generated (with retries), spend remaining
+    time regenerating those failed rows — not re-touching already-ok days.
+    """
+    ordered = order_dates_today_first(dates, today=today)
+    head = [date for date in ordered if date == today]
+    rest = [date for date in ordered if date != today]
+    failed: list[str] = []
+    others: list[str] = []
+    for date in rest:
+        status = status_for_date(date)
+        if status in _BACKFILL_STATUSES or not status:
+            failed.append(date)
+        else:
+            others.append(date)
+    return head + failed + others
+
+
+def is_retryable_llm_error(error: str | None) -> bool:
+    """Timeouts / transient upstream errors are retried for today only."""
+    text = (error or "").strip()
+    if not text:
+        return False
+    lowered = text.lower()
+    if "missing" in lowered and (
+        API_KEY_ENV.lower() in lowered or API_BASE_ENV.lower() in lowered
+    ):
+        return False
+    needles = (
+        "timed out",
+        "timeout",
+        "temporar",
+        "429",
+        "500",
+        "502",
+        "503",
+        "504",
+        "connect",
+        "reset",
+        "unavailable",
+        "read operation",
+        "write operation",
+        "connection aborted",
+        "remote protocol",
+        "ssl",
+    )
+    return any(needle in lowered for needle in needles)
+
+
+def today_status_is_success(status: str | None) -> bool:
+    """ok and empty are valid today outcomes. failed/skipped/missing are not."""
+    return status in {"ok", "empty"}
 
 
 def parse_iso_datetime(value: str | None) -> datetime | None:
@@ -956,7 +1047,7 @@ def openai_complete(
     api_key: str,
     model: str,
     base_url: str,
-    timeout: float = 45.0,
+    timeout: float | None = None,
 ) -> dict[str, Any]:
     import httpx
 
@@ -993,7 +1084,14 @@ def openai_complete(
         "messages": messages,
     }
     url = f"{base_url}/chat/completions"
-    with httpx.Client(timeout=timeout) as client:
+    read_timeout = LLM_READ_TIMEOUT_S if timeout is None else float(timeout)
+    client_timeout = httpx.Timeout(
+        connect=LLM_CONNECT_TIMEOUT_S,
+        read=read_timeout,
+        write=LLM_WRITE_TIMEOUT_S,
+        pool=LLM_POOL_TIMEOUT_S,
+    )
+    with httpx.Client(timeout=client_timeout) as client:
         response = client.post(url, headers=headers, json=body)
         response.raise_for_status()
         data = response.json()

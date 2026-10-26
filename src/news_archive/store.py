@@ -526,12 +526,19 @@ class Store:
         return d
 
     def upsert_daily_brief(self, brief: dict) -> str:
-        """Insert or replace one calendar-day brief. Returns inserted|updated."""
+        """Insert or replace one calendar-day brief.
+
+        Never overwrite an existing ok row with failed/empty. A timeout or
+        other error must not clobber a good day. Returns inserted|updated|kept_ok.
+        """
         date = brief["date"]
+        new_status = brief.get("status") or "failed"
         sections_json = json.dumps(brief.get("sections") or [], ensure_ascii=False)
         existing = self._conn.execute(
-            "SELECT date FROM daily_briefs WHERE date = ?", (date,)
+            "SELECT status FROM daily_briefs WHERE date = ?", (date,)
         ).fetchone()
+        if existing and existing["status"] == "ok" and new_status != "ok":
+            return "kept_ok"
         payload = (
             brief.get("generated_at") or "",
             brief.get("status") or "failed",

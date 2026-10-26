@@ -19,7 +19,7 @@ jobs:
     # 45m job cap. RSS is 8-way + 600s wave (runs 39535458475 / 39539744777
     # finished RSS in ~7s then hung on full-archive O(n²) recluster inside
     # this Fetch step). Cluster is now a 24h window + 1500-candidate cap.
-    # Brief has its own 8m step timeout so a hung LLM cannot skip Persist.
+    # Brief has its own 12m step timeout so a hung LLM cannot skip Persist.
     timeout-minutes: 45
     steps:
       - name: Checkout
@@ -77,16 +77,20 @@ jobs:
             --stats data/run-stats.json \
             --output-meta data/validation-meta.json
 
-      - name: Generate daily brief (soft-fail)
-        # Missing DAILY_BRIEF_API_KEY / DAILY_BRIEF_API_BASE, model errors, or
-        # empty day write failed|empty and must not break fetch or persist.
-        # Model id is code-default deepseek/deepseek-flash (not a Secret);
-        # override with env DAILY_BRIEF_MODEL if needed.
-        # Step + CLI deadlines: a hung LLM must not eat the job timeout and
-        # skip Persist (run 39243037763). continue-on-error keeps fetch green.
+      - name: Generate daily brief
+        id: daily-brief
+        # Older days may still soft-fail. Today's failed|missing must not stay
+        # green (run 40258264336: LKEAP read timeout, then "deadline 300s
+        # reached", JSON still "ok": true, live site 「当日摘要生成失败」).
+        # continue-on-error lets Persist write the failed row; the later
+        # "Fail if today's daily brief is failed or missing" step reds the run.
+        # Today is generated first with retries, then failed historical days
+        # (live 2026-10-25/24/23/21) are backfilled. Per-request read timeout
+        # is 90s; CLI deadline 600s so one slow LKEAP call cannot burn the
+        # window. Model id stays code-default deepseek/deepseek-flash.
         if: always() && steps.fetch.outcome == 'success' && hashFiles('data/archive.sqlite3') != ''
         continue-on-error: true
-        timeout-minutes: 8
+        timeout-minutes: 12
         env:
           DAILY_BRIEF_API_KEY: ${{ secrets.DAILY_BRIEF_API_KEY }}
           DAILY_BRIEF_API_BASE: ${{ secrets.DAILY_BRIEF_API_BASE }}
@@ -95,7 +99,8 @@ jobs:
           PYTHONPATH=src python -m news_archive.daily_brief \
             --db data/archive.sqlite3 \
             --days 7 \
-            --deadline-seconds 300 \
+            --deadline-seconds 600 \
+            --write-status "$RUNNER_TEMP/daily-brief-today.json" \
             --json
 
       - name: Persist SQLite to data branch
@@ -201,6 +206,22 @@ jobs:
       - name: Test latency consecutive soft-miss (keep persist green)
         run: |
           PYTHONPATH=src python tests/test_latency_consecutive.py
+
+      - name: Test daily brief today-visibility + timeout
+        run: |
+          PYTHONPATH=src python tests/test_daily_briefs.py
+
+      - name: Fail if today's daily brief is failed or missing
+        # Hard fail so today's hole cannot stay green. Persist already ran.
+        # Status file lives in RUNNER_TEMP so the data-branch checkout cannot
+        # hide today.
+        if: always() && steps.fetch.outcome == 'success' && steps.daily-brief.outcome != 'skipped'
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python -m news_archive.daily_brief \
+            --check-today \
+            --status-file "$RUNNER_TEMP/daily-brief-today.json" \
+            --db data/archive.sqlite3
 
       - name: Upload archive artifact
         if: always() && hashFiles('data/archive.sqlite3') != ''
