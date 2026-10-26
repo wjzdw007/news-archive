@@ -85,6 +85,7 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "verge" in TECH_AI_ALWAYS_SOURCES
     assert "36kr" in TECH_AI_ALWAYS_SOURCES
     assert "nyt_technology" in TECH_AI_ALWAYS_SOURCES
+    assert "nyt_personaltech" in TECH_AI_ALWAYS_SOURCES
     assert "bbc_science" in TECH_AI_KEYWORD_SOURCES
     assert "bloomberg_markets" in TECH_AI_KEYWORD_SOURCES
     assert TECH_AI_ALWAYS_SOURCES.isdisjoint(TECH_AI_KEYWORD_SOURCES)

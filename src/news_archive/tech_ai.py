@@ -39,6 +39,7 @@ TECH_AI_ALWAYS_SOURCES: frozenset[str] = frozenset(
         "mit_tr",
         "bbc_technology",
         "nyt_technology",
+        "nyt_personaltech",
         "guardian_technology",
         "ars_technica",
         "forbes_innovation",
