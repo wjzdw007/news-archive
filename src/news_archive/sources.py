@@ -1605,6 +1605,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="physics_world",
+        name="Physics World",
+        feed_url="https://physicsworld.com/feed/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="kyiv_independent",
+        name="The Kyiv Independent",
+        feed_url="https://kyivindependent.com/feed/rss/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="pitchfork",
+        name="Pitchfork",
+        feed_url="https://pitchfork.com/feed/rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

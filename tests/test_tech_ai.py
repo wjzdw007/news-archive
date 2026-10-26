@@ -371,6 +371,31 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "medicalxpress" not in TECH_AI_SOURCE_WHITELIST
     assert "new_republic" not in TECH_AI_SOURCE_WHITELIST
     assert "howtogeek" not in TECH_AI_SOURCE_WHITELIST
+    # batch74 RSS primaries stay off the tech/AI whitelist.
+    # physics_world lands on the existing 科学
+    # category path (IOP Physics World
+    # magazine, same as phys_org /
+    # science_org / nature_news).
+    # kyiv_independent lands on 国际
+    # (Ukraine / Eastern Europe newsroom,
+    # same as bbc_europe / politico_europe).
+    # pitchfork is the euractiv hard-swap
+    # fill and lands on 综合 (music /
+    # culture newsroom, same as
+    # guardian_music / variety — existing
+    # pattern has no 音乐 / 娱乐 category).
+    # Later-batch science / intl / culture
+    # sources stay off the frozen ALWAYS
+    # set. None of these match the wired /
+    # verge / techcrunch ALWAYS pattern.
+    # euractiv stays off (official 301 to
+    # rapporteur.com; Feedburner stale).
+    assert "physics_world" not in TECH_AI_SOURCE_WHITELIST
+    assert "kyiv_independent" not in TECH_AI_SOURCE_WHITELIST
+    assert "pitchfork" not in TECH_AI_SOURCE_WHITELIST
+    assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
+    assert "scotusblog" not in TECH_AI_SOURCE_WHITELIST
+    assert "infoq" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
