@@ -2922,6 +2922,9 @@ _THE_REGISTER_FOREIGN_AFFAIRS_ALLAFRICA_PRIMARY = {
 # unregistered (product lock). NEWS_SOURCE_CAP display
 # stays 6 — no CAP code change. No X this batch. No
 # LLM this batch. Not tech/AI whitelist.
+# politico_europe / breaking_defense /
+# carbon_brief are batch55 (all three
+# primaries won).
 _PHYS_ORG_GLOBE_MAIL_NEWATLAS_PRIMARY = {
     "phys_org": {
         "name": "Phys.org",
@@ -2943,7 +2946,113 @@ _PHYS_ORG_GLOBE_MAIL_NEWATLAS_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 170
+# CEO-approved Politico Europe / Breaking Defense / Carbon Brief
+# RSS primaries (batch55). These three are the new adds after
+# #112 (phys_org / globe_mail / newatlas) on tip 7a400e9.
+# Do not re-touch that #112 winner. Do not touch zdnet (#110)
+# / the_register / foreign_affairs / allafrica (#111) /
+# digiday_media (#107). ars_science stays hung. nyt_media /
+# guardian_media stay hung.
+# politico_europe is the official Politico Europe site-wide
+# RSS (no prior politico_europe / politico_eu id; bare id
+# politico stays unregistered — X-handle only;
+# politico_politics is the US Politics topic on
+# rss.politico.com). Locked official
+# https://www.politico.eu/feed/ (channel "POLITICO").
+# /feed/rss/ / /rss / apex politico.eu/feed/ remap to the
+# same body. /rss.xml is 404 HTML. /section/news/feed/ is
+# HTTP 200 / 0 items. /section/politics/feed/ is a Politics
+# section (31/31 insertable) — not the general primary.
+# /section/energy/feed/ is Energy. /section/europe/feed/ /
+# /priority/brussels-playbook/feed/ / /section/eu-institution/
+# feed/ / /tag/european-union/feed/ are empty. Official FAQ
+# says add /feed/rss/ to any archive page; the site-wide
+# lock is /feed/. Live-diff winner: HTTP 200 / 10 nonempty
+# / 10 insertable (httpx fetch_source + urllib). Product
+# lock ≥10 nonempty — keep. Distinct from live
+# politico_politics / bbc_europe / guardian_europe /
+# nyt_europe / dw_europe / france24_en / euronews. 0
+# article URL overlap with those.
+# breaking_defense is the official Breaking Defense
+# WordPress site-wide feed (no prior breaking_defense /
+# breakingdefense id). Locked official
+# https://breakingdefense.com/feed/ (channel "Breaking
+# Defense"). Apex + trailing slash. /feed (no slash) and
+# /rss remap to the same body. www.breakingdefense.com/feed/
+# is HTTP 403. /feed/rss/ and /rss.xml are 403 HTML.
+# /full-rss-feed/?v=2 is a denser unofficial variant (30
+# insertable; 15/15 article-URL overlap with /feed/) — not
+# the official WP primary. feeds.feedburner.com/BreakingDefense
+# aliases the same 15-item /feed/ body — lock apex /feed/.
+# Live-diff winner: HTTP 200 / 15 nonempty / 15 insertable
+# (httpx fetch_source + urllib). Product lock ≥10 nonempty
+# — keep. Distinct from live war_on_rocks / foreign_policy /
+# foreign_affairs. 0 article URL overlap with those.
+# carbon_brief is the official Carbon Brief site-wide
+# WordPress feed (no prior carbon_brief / carbonbrief id).
+# Locked official https://www.carbonbrief.org/feed/ (channel
+# "Carbon Brief"). /feed (no slash) remaps to the same body
+# (final URL drops the trailing slash). Apex
+# carbonbrief.org/feed/ remaps to www. /feed/rss/ remaps to
+# /feed. /rss and /rss.xml are 403 HTML. Live-diff winner:
+# HTTP 200 / 12 nonempty / 12 insertable (httpx fetch_source
+# + urllib). Product lock ≥10 nonempty — keep. Distinct
+# from live nyt_climate / guardian_environment /
+# canary_media / bbc_science / nyt_science. 0 article URL
+# overlap with those. Not added to the tech/AI whitelist.
+# Product-locked backups (use only if a primary fails
+# live-diff / fetch / URL-dedup): indian_express official
+# https://indianexpress.com/feed/ is HTTP 200 / 200 items /
+# 0 nonempty / insertable=0 (empty desc — same product skip
+# as prior batches; /section/world/feed/ and
+# /section/india/feed/ are also empty-desc 200/0).
+# al_monitor official https://www.al-monitor.com/rss is
+# HTTP 200 / 20 nonempty / 20 insertable this probe (no
+# 403 this time; previously soft-failed 403 in batch29).
+# Prefer not registering a known-flaky 403 source when
+# primaries already won — unused. rest_of_world official
+# https://restofworld.org/feed/ and /feed/latest/ are
+# httpx 403 JS challenge (same fetch_source fail as prior
+# restofworld probes) — not fetch-compatible; unused.
+# Do not invent other backups. phys_org / globe_mail /
+# newatlas stay registered (batch54 closed).
+# the_register / foreign_affairs / allafrica stay
+# registered (batch53 closed). bbc_australia /
+# bloomberg_technology / zdnet stay registered (batch52
+# after #110). ars_science stays hung. the_diplomat /
+# stat_news / ieee_spectrum stay registered (batch51
+# closed). war_on_rocks / canary_media / space_com stay
+# registered (batch50 closed). foreign_policy / ft_world /
+# abc_australia stay registered (batch49 closed).
+# politico_politics / dw_business / france24_culture stay
+# registered (batch48 closed). atlantic / smh_national /
+# guardian_education stay registered (batch47 closed).
+# digiday_media stays registered (#107). nyt_media /
+# guardian_media stay hung. guardian_games stays
+# unregistered (product: games thin / 不进主源).
+# sunday_review / cnbc (403 known) / ap stay
+# unregistered (product lock). NEWS_SOURCE_CAP display
+# stays 6 — no CAP code change. No X this batch. No
+# LLM this batch. Not tech/AI whitelist.
+_POLITICO_EUROPE_BREAKING_DEFENSE_CARBON_BRIEF_PRIMARY = {
+    "politico_europe": {
+        "name": "Politico Europe",
+        "feed_url": "https://www.politico.eu/feed/",
+        "category": "国际",
+    },
+    "breaking_defense": {
+        "name": "Breaking Defense",
+        "feed_url": "https://breakingdefense.com/feed/",
+        "category": "国际",
+    },
+    "carbon_brief": {
+        "name": "Carbon Brief",
+        "feed_url": "https://www.carbonbrief.org/feed/",
+        "category": "科学",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 173
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -10305,6 +10414,225 @@ def test_phys_org_globe_mail_newatlas_feeds_live_http_200():
         )
 
 
+def test_politico_europe_breaking_defense_carbon_brief_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "politico_europe" in by_id
+    assert by_id["politico_europe"].feed_url == "https://www.politico.eu/feed/"
+    assert "breaking_defense" in by_id
+    assert by_id["breaking_defense"].feed_url == (
+        "https://breakingdefense.com/feed/"
+    )
+    assert "carbon_brief" in by_id
+    assert by_id["carbon_brief"].feed_url == (
+        "https://www.carbonbrief.org/feed/"
+    )
+    # #112 winners stay registered and unchanged.
+    # #111 winners stay registered and unchanged.
+    # #110 hard-swap: zdnet live, ars_science hung.
+    # #107 hard-swap: digiday_media live, nyt_media hung.
+    # Do not touch digiday_media / zdnet / the_register /
+    # foreign_affairs / allafrica / phys_org / globe_mail /
+    # newatlas.
+    assert "phys_org" in by_id
+    assert "globe_mail" in by_id
+    assert "newatlas" in by_id
+    assert "the_register" in by_id
+    assert "foreign_affairs" in by_id
+    assert "allafrica" in by_id
+    assert "bbc_australia" in by_id
+    assert "bloomberg_technology" in by_id
+    assert "zdnet" in by_id
+    assert "ars_science" not in by_id
+    assert "the_diplomat" in by_id
+    assert "stat_news" in by_id
+    assert "ieee_spectrum" in by_id
+    assert "war_on_rocks" in by_id
+    assert "canary_media" in by_id
+    assert "space_com" in by_id
+    assert "foreign_policy" in by_id
+    assert "ft_world" in by_id
+    assert "abc_australia" in by_id
+    assert "politico_politics" in by_id
+    assert "dw_business" in by_id
+    assert "france24_culture" in by_id
+    assert "atlantic" in by_id
+    assert "smh_national" in by_id
+    assert "guardian_education" in by_id
+    assert "digiday_media" in by_id
+    assert "time_top" in by_id
+    assert "nyt_obituaries" in by_id
+    assert "bbc_europe" in by_id
+    assert "guardian_europe" in by_id
+    assert "nyt_europe" in by_id
+    assert "dw_europe" in by_id
+    assert "france24_en" in by_id
+    assert "euronews" in by_id
+    assert "nyt_climate" in by_id
+    assert "guardian_environment" in by_id
+    assert "canary_media" in by_id
+    assert "bbc_science" in by_id
+    assert "nyt_science" in by_id
+    # Bare id politico stays unregistered (X-handle only).
+    assert "politico" not in by_id
+    assert by_id["politico_europe"].feed_url != (
+        by_id["politico_politics"].feed_url
+    )
+    assert by_id["politico_europe"].feed_url != "https://www.politico.eu/feed/rss/"
+    assert by_id["politico_europe"].feed_url != "https://politico.eu/feed/"
+    assert by_id["politico_europe"].feed_url != "https://www.politico.eu/rss"
+    assert by_id["politico_europe"].feed_url != "https://www.politico.eu/rss.xml"
+    assert by_id["politico_europe"].feed_url != (
+        "https://www.politico.eu/section/news/feed/"
+    )
+    assert by_id["politico_europe"].feed_url != (
+        "https://www.politico.eu/section/politics/feed/"
+    )
+    assert by_id["politico_europe"].feed_url != (
+        "https://www.politico.eu/section/energy/feed/"
+    )
+    assert by_id["politico_europe"].feed_url != (
+        "https://rss.politico.com/politics-news.xml"
+    )
+    assert by_id["politico_europe"].feed_url != by_id["bbc_europe"].feed_url
+    assert by_id["politico_europe"].feed_url != by_id["guardian_europe"].feed_url
+    assert by_id["politico_europe"].feed_url != by_id["nyt_europe"].feed_url
+    assert by_id["politico_europe"].feed_url != by_id["dw_europe"].feed_url
+    assert by_id["politico_europe"].feed_url != by_id["france24_en"].feed_url
+    assert by_id["politico_europe"].feed_url != by_id["euronews"].feed_url
+    assert by_id["breaking_defense"].feed_url != (
+        "https://www.breakingdefense.com/feed/"
+    )
+    assert by_id["breaking_defense"].feed_url != "https://breakingdefense.com/feed"
+    assert by_id["breaking_defense"].feed_url != (
+        "https://breakingdefense.com/full-rss-feed/?v=2"
+    )
+    assert by_id["breaking_defense"].feed_url != (
+        "https://feeds.feedburner.com/BreakingDefense"
+    )
+    assert by_id["breaking_defense"].feed_url != "https://breakingdefense.com/rss"
+    assert by_id["breaking_defense"].feed_url != (
+        "https://breakingdefense.com/rss.xml"
+    )
+    assert by_id["breaking_defense"].feed_url != by_id["war_on_rocks"].feed_url
+    assert by_id["breaking_defense"].feed_url != by_id["foreign_policy"].feed_url
+    assert by_id["breaking_defense"].feed_url != (
+        by_id["foreign_affairs"].feed_url
+    )
+    assert by_id["carbon_brief"].feed_url != "https://www.carbonbrief.org/feed"
+    assert by_id["carbon_brief"].feed_url != "https://carbonbrief.org/feed/"
+    assert by_id["carbon_brief"].feed_url != "https://www.carbonbrief.org/rss"
+    assert by_id["carbon_brief"].feed_url != (
+        "https://www.carbonbrief.org/rss.xml"
+    )
+    assert by_id["carbon_brief"].feed_url != (
+        "https://www.carbonbrief.org/feed/rss/"
+    )
+    assert by_id["carbon_brief"].feed_url != by_id["nyt_climate"].feed_url
+    assert by_id["carbon_brief"].feed_url != (
+        by_id["guardian_environment"].feed_url
+    )
+    assert by_id["carbon_brief"].feed_url != by_id["canary_media"].feed_url
+    assert by_id["carbon_brief"].feed_url != by_id["bbc_science"].feed_url
+    assert by_id["carbon_brief"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["politico_europe"].feed_url != (
+        by_id["breaking_defense"].feed_url
+    )
+    assert by_id["politico_europe"].feed_url != by_id["carbon_brief"].feed_url
+    assert by_id["breaking_defense"].feed_url != by_id["carbon_brief"].feed_url
+    # nyt_media hung after #107 — digiday_media live.
+    # zdnet is the batch52 hard-swap lock after #110.
+    # the_register / foreign_affairs / allafrica are
+    # the batch53 locks after #111.
+    # phys_org / globe_mail / newatlas are the
+    # batch54 locks after #112.
+    assert by_id["digiday_media"].feed_url == "https://digiday.com/media/feed/"
+    assert by_id["zdnet"].feed_url == "https://www.zdnet.com/feed/"
+    assert by_id["the_register"].feed_url == (
+        "https://www.theregister.com/headlines.atom"
+    )
+    assert by_id["phys_org"].feed_url == "https://phys.org/rss-feed/"
+    assert by_id["newatlas"].feed_url == "https://newatlas.com/index.rss"
+    assert "guardian_games" not in by_id
+    assert "thehill" not in by_id
+    assert "bbc_culture" not in by_id
+    assert "france24_europe" not in by_id
+    assert "guardian_economics" not in by_id
+    assert "nyt_theater" not in by_id
+    assert "independent_world" not in by_id
+    assert "sundayreview" not in by_id
+    assert "ap" not in by_id
+    # Unused / not-fetch-compatible backups stay
+    # unregistered because all three primaries won.
+    # indian_express is empty-desc insertable=0.
+    # al_monitor is HTTP 200 / 20 this probe but a
+    # known-flaky 403 source — unused (primaries won).
+    # rest_of_world / restofworld are httpx 403.
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "fastcompany" not in by_id
+    assert "sciencedaily" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "euractiv" not in by_id
+    assert "dawn" not in by_id
+    assert "asia_times" not in by_id
+    assert "pbs_newshour" not in by_id
+    assert "economist_intl" not in by_id
+    for source_id, expected in (
+        _POLITICO_EUROPE_BREAKING_DEFENSE_CARBON_BRIEF_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_politico_europe_breaking_defense_carbon_brief_feeds_live_http_200():
+    """Hit the three batch55 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _POLITICO_EUROPE_BREAKING_DEFENSE_CARBON_BRIEF_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (politico_europe / breaking_defense /
+        # carbon_brief) uses the un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # All three live-diff winners were 100% nonempty.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -10362,6 +10690,7 @@ if __name__ == "__main__":
     test_bbc_australia_bloomberg_technology_zdnet_primaries_registered()
     test_the_register_foreign_affairs_allafrica_primaries_registered()
     test_phys_org_globe_mail_newatlas_primaries_registered()
+    test_politico_europe_breaking_defense_carbon_brief_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -10415,4 +10744,5 @@ if __name__ == "__main__":
     test_bbc_australia_bloomberg_technology_zdnet_feeds_live_http_200()
     test_the_register_foreign_affairs_allafrica_feeds_live_http_200()
     test_phys_org_globe_mail_newatlas_feeds_live_http_200()
+    test_politico_europe_breaking_defense_carbon_brief_feeds_live_http_200()
     print("✓ source registry tests PASSED")

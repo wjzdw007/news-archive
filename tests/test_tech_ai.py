@@ -103,6 +103,10 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "phys_org" not in TECH_AI_SOURCE_WHITELIST
     assert "globe_mail" not in TECH_AI_SOURCE_WHITELIST
     assert "newatlas" not in TECH_AI_SOURCE_WHITELIST
+    # batch55 RSS primaries stay off the tech/AI whitelist.
+    assert "politico_europe" not in TECH_AI_SOURCE_WHITELIST
+    assert "breaking_defense" not in TECH_AI_SOURCE_WHITELIST
+    assert "carbon_brief" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
