@@ -912,6 +912,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="france24_middle_east",
+        name="France 24 Middle East",
+        feed_url="https://www.france24.com/en/middle-east/rss",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="nyt_personaltech",
+        name="NYT Personal Technology",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/PersonalTech.xml",
+        category="硬科技",
+        role="primary",
+    ),
+    Source(
+        id="france24_africa",
+        name="France 24 Africa",
+        feed_url="https://www.france24.com/en/africa/rss",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
