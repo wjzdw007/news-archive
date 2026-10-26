@@ -170,6 +170,18 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "the_wire_china" not in TECH_AI_SOURCE_WHITELIST
     assert "literary_hub" not in TECH_AI_SOURCE_WHITELIST
     assert "world_politics_review" not in TECH_AI_SOURCE_WHITELIST
+    # batch63 RSS primaries stay off the tech/AI whitelist.
+    # defense_one / lowy_interpreter land on the
+    # existing 国际 category path. fast_company
+    # lands on 科技商业 but is not added to the
+    # 36kr ALWAYS pattern (broader business /
+    # innovation, not dedicated tech/AI).
+    assert "defense_one" not in TECH_AI_SOURCE_WHITELIST
+    assert "fast_company" not in TECH_AI_SOURCE_WHITELIST
+    assert "lowy_interpreter" not in TECH_AI_SOURCE_WHITELIST
+    assert "japan_forward" not in TECH_AI_SOURCE_WHITELIST
+    assert "artforum" not in TECH_AI_SOURCE_WHITELIST
+    assert "knowable" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

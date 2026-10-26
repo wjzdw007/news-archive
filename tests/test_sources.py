@@ -4156,6 +4156,8 @@ _THE_MARKUP_ATLAS_OBSCURA_UNDARK_PRIMARY = {
 # display stays 6 — no CAP code change.
 # No X this batch. No LLM this batch.
 # Not tech/AI whitelist.
+# defense_one / fast_company /
+# lowy_interpreter are batch63.
 _TECHINASIA_SCIENCE_NEWS_AFRICAN_ARGUMENTS_PRIMARY = {
     "techinasia": {
         "name": "Tech in Asia",
@@ -4174,7 +4176,221 @@ _TECHINASIA_SCIENCE_NEWS_AFRICAN_ARGUMENTS_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 194
+# CEO-approved Defense One / Fast Company /
+# Lowy Interpreter RSS primaries (batch63).
+# These three are the new adds after #120
+# (techinasia / science_news /
+# african_arguments) on tip 1fecc7f. Do
+# not re-touch that #120 winner. Do not
+# touch the_markup / atlas_obscura /
+# undark (#119) / aspi_strategist /
+# nautilus / hyperallergic (#118) /
+# aeon / noema / marketwatch (#117) /
+# mercopress / nature_news /
+# crisis_group (#116) / africa_report /
+# mexico_news_daily / sciencedaily
+# (#115) / mongabay / daily_maverick /
+# oilprice (#114) / politico_europe /
+# breaking_defense / carbon_brief
+# (#113) / phys_org / globe_mail /
+# newatlas (#112) / the_register /
+# foreign_affairs / allafrica (#111) /
+# zdnet (#110) / digiday_media (#107).
+# ars_science stays hung. nyt_media /
+# guardian_media stay hung.
+# defense_one is the official Defense
+# One all-content RSS (no prior
+# defense_one / defenseone id). Locked
+# official https://www.defenseone.com/rss/all/
+# (channel "Defense One - All Content";
+# subtitle "Defense One provides news,
+# analysis, and ideas about the future
+# of national security..."). /rss/all
+# remaps to /rss/all/. Apex
+# defenseone.com/rss/all/ remaps to
+# www. /feed/ / /feed / /rss/ /
+# /rss.xml / /rss/articles/ are HTTP
+# 404 HTML. Live-diff winner: HTTP 200
+# / 23 items / 21 nonempty / 21
+# insertable (2 empty-desc #43 skip;
+# httpx fetch_source + urllib). Product
+# lock ≥10 nonempty — keep (21 is not
+# the 5–9 observe band). Distinct from
+# live breaking_defense / war_on_rocks
+# / aspi_strategist / foreign_affairs /
+# the_diplomat / crisis_group /
+# politico_europe / politico_politics /
+# the_hill / foreign_policy. 0 article
+# URL overlap with those. Lands on the
+# existing 国际 category path (same as
+# breaking_defense / war_on_rocks).
+# Not added to the tech/AI whitelist.
+# fast_company is the official Fast
+# Company latest RSS (no prior
+# fast_company id; unused batch54
+# backup was the alias fastcompany at
+# the same official URL and stays
+# unregistered as that id). Locked
+# official https://www.fastcompany.com/latest/rss
+# (channel "Fast Company"; subtitle
+# "Fast Company inspires a new breed
+# of innovative and creative thought
+# leaders who are actively inventing
+# the future of business."). Apex
+# fastcompany.com/latest/rss remaps to
+# www. /rss / /rss.xml remap to
+# /latest/rss. /feed / /feed/ are
+# HTTP 403. /section/latest/rss /
+# /latest/rss.xml are HTTP 404.
+# feeds.feedburner.com/fastcompany/headlines
+# is the same 20-item body — lock the
+# documented official /latest/rss.
+# Live-diff winner: HTTP 200 / 20
+# nonempty / 20 insertable (httpx
+# fetch_source + urllib). Product lock
+# ≥10 nonempty — keep. Distinct from
+# live techcrunch / verge / wired /
+# newatlas / zdnet / the_register /
+# ieee_spectrum / bloomberg_technology
+# / mit_tr / bbc_technology /
+# nyt_technology / nyt_personaltech /
+# guardian_technology / ars_technica /
+# forbes_innovation / the_markup /
+# techinasia / digiday_media /
+# marketwatch / 36kr / tmtpost. 0
+# article URL overlap with those.
+# Lands on the existing 科技商业
+# category path (English tech/business
+# magazine; same 科技商业 path as
+# 36kr / tmtpost). Not added to the
+# tech/AI whitelist (not the wired /
+# verge / techcrunch ALWAYS pattern;
+# not the 36kr 科技商业 ALWAYS
+# pattern — Fast Company is broader
+# business/innovation).
+# lowy_interpreter is the official
+# Lowy Institute The Interpreter RSS
+# (no prior lowy_interpreter /
+# lowyinterpreter / the_interpreter
+# id). Locked official
+# https://www.lowyinstitute.org/the-interpreter/rss.xml
+# (channel "The Interpreter"; subtitle
+# "Analysis and commentary on
+# international affairs from the Lowy
+# Institute."). /the-interpreter/feed
+# / /the-interpreter/feed/ /
+# /the-interpreter/rss remap to
+# rss.xml. Apex
+# lowyinstitute.org/the-interpreter/rss.xml
+# remaps to www. Apex /rss.xml is
+# HTML 200 / 0 items. lowyinterpreter.org
+# /feed/ and www.lowyinterpreter.org
+# /feed/ handshake timeout. Live-diff
+# winner: HTTP 200 / 50 nonempty / 50
+# insertable (ingest cap 30; httpx
+# fetch_source + urllib). Product lock
+# ≥10 nonempty — keep. Distinct from
+# live aspi_strategist /
+# foreign_affairs / the_diplomat /
+# crisis_group / war_on_rocks /
+# foreign_policy / guardian_world /
+# bbc_world / nyt_world /
+# abc_australia / bbc_australia /
+# smh_national / smh_world. 0 article
+# URL overlap with those. Lands on the
+# existing 国际 category path (same as
+# aspi_strategist / the_diplomat).
+# Not added to the tech/AI whitelist.
+# Product-locked backups (use only if a
+# primary fails live-diff / fetch /
+# URL-dedup): japan_forward /
+# artforum / knowable — unused because
+# all three primaries won (≥10
+# nonempty via fetch_source). Do not
+# probe unused backups.
+# Do NOT use as backups (product skip):
+# bangkok_post (HTTP 451 / prior skip),
+# indian_express (insertable=0
+# empty-desc), rest_of_world (httpx
+# 403 JS challenge), al_monitor
+# (flaky 403), hkfp (HTTP 403),
+# biographic (httpx 403 — 勿再挂),
+# asiatimes / asia_times (httpx 403).
+# Do not invent other backups. Do not
+# restore ars_science. Do not add a
+# second digiday_media.
+# techinasia / science_news /
+# african_arguments stay registered
+# (batch62 closed). the_markup /
+# atlas_obscura / undark stay
+# registered (batch61 closed).
+# aspi_strategist / nautilus /
+# hyperallergic stay registered
+# (batch60 closed). aeon / noema /
+# marketwatch stay registered
+# (batch59 closed). mercopress /
+# nature_news / crisis_group stay
+# registered (batch58 closed).
+# africa_report / mexico_news_daily /
+# sciencedaily stay registered
+# (batch57 closed). mongabay /
+# daily_maverick / oilprice stay
+# registered (batch56 closed).
+# politico_europe / breaking_defense /
+# carbon_brief stay registered
+# (batch55 closed). phys_org /
+# globe_mail / newatlas stay
+# registered (batch54 closed).
+# the_register / foreign_affairs /
+# allafrica stay registered (batch53
+# closed). bbc_australia /
+# bloomberg_technology / zdnet stay
+# registered (batch52 after #110).
+# ars_science stays hung.
+# the_diplomat / stat_news /
+# ieee_spectrum stay registered
+# (batch51 closed). war_on_rocks /
+# canary_media / space_com stay
+# registered (batch50 closed).
+# foreign_policy / ft_world /
+# abc_australia stay registered
+# (batch49 closed). politico_politics /
+# dw_business / france24_culture stay
+# registered (batch48 closed).
+# atlantic / smh_national /
+# guardian_education stay registered
+# (batch47 closed). digiday_media
+# stays registered (#107). nyt_media /
+# guardian_media stay hung.
+# guardian_games stays unregistered
+# (product: games thin / 不进主源).
+# sunday_review / cnbc (403 known) /
+# ap stay unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6 —
+# no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_DEFENSE_ONE_FAST_COMPANY_LOWY_INTERPRETER_PRIMARY = {
+    "defense_one": {
+        "name": "Defense One",
+        "feed_url": "https://www.defenseone.com/rss/all/",
+        "category": "国际",
+    },
+    "fast_company": {
+        "name": "Fast Company",
+        "feed_url": "https://www.fastcompany.com/latest/rss",
+        "category": "科技商业",
+    },
+    "lowy_interpreter": {
+        "name": "Lowy Interpreter",
+        "feed_url": (
+            "https://www.lowyinstitute.org/the-interpreter/rss.xml"
+        ),
+        "category": "国际",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 197
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -11917,9 +12133,11 @@ def test_mongabay_daily_maverick_oilprice_primaries_registered():
     # primaries won. Product-skip sources stay out.
     # aspi_strategist / hyperallergic are now the
     # batch60 primaries (were unused batch56
-    # backups). lowy_interpreter stays unused.
+    # backups). lowy_interpreter is now the
+    # batch63 primary (was an unused batch56
+    # backup).
     assert "aspi_strategist" in by_id
-    assert "lowy_interpreter" not in by_id
+    assert "lowy_interpreter" in by_id
     assert "hyperallergic" in by_id
     assert "indian_express" not in by_id
     assert "al_monitor" not in by_id
@@ -12209,8 +12427,9 @@ def test_africa_report_mexico_news_daily_sciencedaily_primaries_registered():
     # undark is now the batch61 hard-swap
     # primary (asiatimes httpx 403;
     # biographic httpx 403). defense_one
-    # stays unused.
-    assert "defense_one" not in by_id
+    # is now the batch63 primary (was an
+    # unused batch57 backup).
+    assert "defense_one" in by_id
     assert "hkfp" not in by_id
     assert "undark" in by_id
     assert "indian_express" not in by_id
@@ -12522,7 +12741,10 @@ def test_mercopress_nature_news_crisis_group_primaries_registered():
     assert "artnet" not in by_id
     assert "the_new_humanitarian" not in by_id
     assert "military_times" not in by_id
-    assert "defense_one" not in by_id
+    # defense_one is now the batch63
+    # primary (was an unused batch58
+    # backup).
+    assert "defense_one" in by_id
     assert "hkfp" not in by_id
     # undark is now the batch61 hard-swap
     # primary (asiatimes httpx 403;
@@ -12814,9 +13036,10 @@ def test_aeon_noema_marketwatch_primaries_registered():
     # undark is now the batch61 hard-swap
     # primary (asiatimes httpx 403;
     # biographic httpx 403). defense_one
-    # stays unused.
+    # is now the batch63 primary (was an
+    # unused batch59 backup).
     assert "undark" in by_id
-    assert "defense_one" not in by_id
+    assert "defense_one" in by_id
     assert "yale_e360" not in by_id
     assert "yale_360" not in by_id
     assert "artnet" not in by_id
@@ -13096,16 +13319,20 @@ def test_aspi_strategist_nautilus_hyperallergic_primaries_registered():
     assert "ap" not in by_id
     # Unused backups stay unregistered because all three
     # primaries won. Product-skip sources stay out.
-    assert "lowy_interpreter" not in by_id
+    # lowy_interpreter is now the batch63
+    # primary (was an unused batch60
+    # backup).
+    assert "lowy_interpreter" in by_id
     assert "knowable" not in by_id
     assert "knowable_magazine" not in by_id
     assert "artnet" not in by_id
     # undark is now the batch61 hard-swap
     # primary (asiatimes httpx 403;
     # biographic httpx 403). defense_one
-    # stays unused.
+    # is now the batch63 primary (was an
+    # unused batch60 backup).
     assert "undark" in by_id
-    assert "defense_one" not in by_id
+    assert "defense_one" in by_id
     assert "yale_e360" not in by_id
     assert "yale_360" not in by_id
     assert "the_new_humanitarian" not in by_id
@@ -13417,13 +13644,15 @@ def test_the_markup_atlas_obscura_undark_primaries_registered():
     # unregistered. Product-skip sources stay out.
     # asiatimes / asia_times stay out (httpx 403).
     # biographic stays out (httpx 403).
-    # defense_one stays unused.
+    # defense_one / lowy_interpreter are now
+    # the batch63 primaries (were unused
+    # batch61 backups).
     assert "asiatimes" not in by_id
     assert "asia_times" not in by_id
     assert "biographic" not in by_id
     assert "biographic_magazine" not in by_id
-    assert "defense_one" not in by_id
-    assert "lowy_interpreter" not in by_id
+    assert "defense_one" in by_id
+    assert "lowy_interpreter" in by_id
     assert "knowable" not in by_id
     assert "knowable_magazine" not in by_id
     assert "artnet" not in by_id
@@ -13710,7 +13939,10 @@ def test_techinasia_science_news_african_arguments_primaries_registered():
     assert "asia_times" not in by_id
     assert "biographic" not in by_id
     assert "biographic_magazine" not in by_id
-    assert "defense_one" not in by_id
+    # defense_one is now the batch63
+    # primary (was an unused batch62
+    # leftover).
+    assert "defense_one" in by_id
     assert "hkfp" not in by_id
     assert "indian_express" not in by_id
     assert "al_monitor" not in by_id
@@ -13722,6 +13954,352 @@ def test_techinasia_science_news_african_arguments_primaries_registered():
     assert "guardian_games" not in by_id
     for source_id, expected in (
         _TECHINASIA_SCIENCE_NEWS_AFRICAN_ARGUMENTS_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_defense_one_fast_company_lowy_interpreter_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "defense_one" in by_id
+    assert by_id["defense_one"].feed_url == (
+        "https://www.defenseone.com/rss/all/"
+    )
+    assert "fast_company" in by_id
+    assert by_id["fast_company"].feed_url == (
+        "https://www.fastcompany.com/latest/rss"
+    )
+    assert "lowy_interpreter" in by_id
+    assert by_id["lowy_interpreter"].feed_url == (
+        "https://www.lowyinstitute.org/the-interpreter/rss.xml"
+    )
+    # #120 winners stay registered and unchanged.
+    # #119 winners stay registered and unchanged.
+    # #118 winners stay registered and unchanged.
+    # #117 winners stay registered and unchanged.
+    # #116 winners stay registered and unchanged.
+    # #115 winners stay registered and unchanged.
+    # #114 winners stay registered and unchanged.
+    # #113 winners stay registered and unchanged.
+    # #112 winners stay registered and unchanged.
+    # #111 winners stay registered and unchanged.
+    # #110 hard-swap: zdnet live, ars_science hung.
+    # #107 hard-swap: digiday_media live, nyt_media hung.
+    # Do not touch techinasia / science_news /
+    # african_arguments / the_markup /
+    # atlas_obscura / undark / aspi_strategist /
+    # nautilus / hyperallergic / aeon / noema /
+    # marketwatch / mercopress / nature_news /
+    # crisis_group / africa_report /
+    # mexico_news_daily / sciencedaily /
+    # mongabay / daily_maverick / oilprice /
+    # politico_europe / breaking_defense /
+    # carbon_brief / phys_org / globe_mail /
+    # newatlas / the_register / foreign_affairs /
+    # allafrica / zdnet / digiday_media.
+    assert "techinasia" in by_id
+    assert "science_news" in by_id
+    assert "african_arguments" in by_id
+    assert "the_markup" in by_id
+    assert "atlas_obscura" in by_id
+    assert "undark" in by_id
+    assert "aspi_strategist" in by_id
+    assert "nautilus" in by_id
+    assert "hyperallergic" in by_id
+    assert "aeon" in by_id
+    assert "noema" in by_id
+    assert "marketwatch" in by_id
+    assert "mercopress" in by_id
+    assert "nature_news" in by_id
+    assert "crisis_group" in by_id
+    assert "africa_report" in by_id
+    assert "mexico_news_daily" in by_id
+    assert "sciencedaily" in by_id
+    assert "mongabay" in by_id
+    assert "daily_maverick" in by_id
+    assert "oilprice" in by_id
+    assert "politico_europe" in by_id
+    assert "breaking_defense" in by_id
+    assert "carbon_brief" in by_id
+    assert "phys_org" in by_id
+    assert "globe_mail" in by_id
+    assert "newatlas" in by_id
+    assert "the_register" in by_id
+    assert "foreign_affairs" in by_id
+    assert "allafrica" in by_id
+    assert "bbc_australia" in by_id
+    assert "bloomberg_technology" in by_id
+    assert "zdnet" in by_id
+    assert "ars_science" not in by_id
+    assert "the_diplomat" in by_id
+    assert "stat_news" in by_id
+    assert "ieee_spectrum" in by_id
+    assert "war_on_rocks" in by_id
+    assert "canary_media" in by_id
+    assert "space_com" in by_id
+    assert "foreign_policy" in by_id
+    assert "ft_world" in by_id
+    assert "abc_australia" in by_id
+    assert "politico_politics" in by_id
+    assert "dw_business" in by_id
+    assert "france24_culture" in by_id
+    assert "atlantic" in by_id
+    assert "smh_national" in by_id
+    assert "guardian_education" in by_id
+    assert "digiday_media" in by_id
+    assert "time_top" in by_id
+    assert "nyt_obituaries" in by_id
+    assert "nyt_magazine" in by_id
+    assert "theconversation" in by_id
+    assert "guardian_opinion" in by_id
+    assert "nyt_opinion" in by_id
+    assert "intercept" in by_id
+    assert "propublica" in by_id
+    assert "guardian_artanddesign" in by_id
+    assert "nyt_arts" in by_id
+    assert "guardian_film" in by_id
+    assert "npr_arts" in by_id
+    assert "nyt_science" in by_id
+    assert "guardian_science" in by_id
+    assert "bbc_science" in by_id
+    assert "npr_science" in by_id
+    assert "techcrunch" in by_id
+    assert "verge" in by_id
+    assert "wired" in by_id
+    assert "bbc_africa" in by_id
+    assert "nyt_africa" in by_id
+    assert "france24_africa" in by_id
+    assert "guardian_world_africa" in by_id
+    assert by_id["defense_one"].feed_url != (
+        "https://www.defenseone.com/rss/all"
+    )
+    assert by_id["defense_one"].feed_url != (
+        "https://defenseone.com/rss/all/"
+    )
+    assert by_id["defense_one"].feed_url != (
+        "https://www.defenseone.com/feed/"
+    )
+    assert by_id["defense_one"].feed_url != (
+        "https://www.defenseone.com/feed"
+    )
+    assert by_id["defense_one"].feed_url != (
+        "https://www.defenseone.com/rss/"
+    )
+    assert by_id["defense_one"].feed_url != (
+        "https://www.defenseone.com/rss.xml"
+    )
+    assert by_id["defense_one"].feed_url != (
+        "https://www.defenseone.com/rss/articles/"
+    )
+    assert by_id["defense_one"].feed_url != (
+        by_id["breaking_defense"].feed_url
+    )
+    assert by_id["defense_one"].feed_url != by_id["war_on_rocks"].feed_url
+    assert by_id["defense_one"].feed_url != (
+        by_id["aspi_strategist"].feed_url
+    )
+    assert by_id["defense_one"].feed_url != (
+        by_id["foreign_affairs"].feed_url
+    )
+    assert by_id["defense_one"].feed_url != by_id["the_diplomat"].feed_url
+    assert by_id["defense_one"].feed_url != by_id["crisis_group"].feed_url
+    assert by_id["defense_one"].feed_url != (
+        by_id["politico_europe"].feed_url
+    )
+    assert by_id["defense_one"].feed_url != (
+        by_id["politico_politics"].feed_url
+    )
+    assert by_id["defense_one"].feed_url != by_id["the_hill"].feed_url
+    assert by_id["defense_one"].feed_url != by_id["foreign_policy"].feed_url
+    assert by_id["fast_company"].feed_url != (
+        "https://www.fastcompany.com/feed"
+    )
+    assert by_id["fast_company"].feed_url != (
+        "https://www.fastcompany.com/feed/"
+    )
+    assert by_id["fast_company"].feed_url != (
+        "https://fastcompany.com/latest/rss"
+    )
+    assert by_id["fast_company"].feed_url != (
+        "https://www.fastcompany.com/rss"
+    )
+    assert by_id["fast_company"].feed_url != (
+        "https://www.fastcompany.com/rss.xml"
+    )
+    assert by_id["fast_company"].feed_url != (
+        "https://www.fastcompany.com/section/latest/rss"
+    )
+    assert by_id["fast_company"].feed_url != (
+        "https://www.fastcompany.com/latest/rss.xml"
+    )
+    assert by_id["fast_company"].feed_url != (
+        "https://feeds.feedburner.com/fastcompany/headlines"
+    )
+    assert by_id["fast_company"].feed_url != by_id["techcrunch"].feed_url
+    assert by_id["fast_company"].feed_url != by_id["verge"].feed_url
+    assert by_id["fast_company"].feed_url != by_id["wired"].feed_url
+    assert by_id["fast_company"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["fast_company"].feed_url != by_id["zdnet"].feed_url
+    assert by_id["fast_company"].feed_url != by_id["the_register"].feed_url
+    assert by_id["fast_company"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["fast_company"].feed_url != (
+        by_id["bloomberg_technology"].feed_url
+    )
+    assert by_id["fast_company"].feed_url != by_id["mit_tr"].feed_url
+    assert by_id["fast_company"].feed_url != (
+        by_id["bbc_technology"].feed_url
+    )
+    assert by_id["fast_company"].feed_url != (
+        by_id["nyt_technology"].feed_url
+    )
+    assert by_id["fast_company"].feed_url != (
+        by_id["nyt_personaltech"].feed_url
+    )
+    assert by_id["fast_company"].feed_url != (
+        by_id["guardian_technology"].feed_url
+    )
+    assert by_id["fast_company"].feed_url != by_id["ars_technica"].feed_url
+    assert by_id["fast_company"].feed_url != (
+        by_id["forbes_innovation"].feed_url
+    )
+    assert by_id["fast_company"].feed_url != by_id["the_markup"].feed_url
+    assert by_id["fast_company"].feed_url != by_id["techinasia"].feed_url
+    assert by_id["fast_company"].feed_url != by_id["digiday_media"].feed_url
+    assert by_id["fast_company"].feed_url != by_id["marketwatch"].feed_url
+    assert by_id["fast_company"].feed_url != by_id["tmtpost"].feed_url
+    assert by_id["lowy_interpreter"].feed_url != (
+        "https://www.lowyinstitute.org/the-interpreter/feed"
+    )
+    assert by_id["lowy_interpreter"].feed_url != (
+        "https://www.lowyinstitute.org/the-interpreter/feed/"
+    )
+    assert by_id["lowy_interpreter"].feed_url != (
+        "https://lowyinstitute.org/the-interpreter/rss.xml"
+    )
+    assert by_id["lowy_interpreter"].feed_url != (
+        "https://www.lowyinstitute.org/rss.xml"
+    )
+    assert by_id["lowy_interpreter"].feed_url != (
+        "https://www.lowyinstitute.org/the-interpreter/rss"
+    )
+    assert by_id["lowy_interpreter"].feed_url != (
+        "https://lowyinterpreter.org/feed/"
+    )
+    assert by_id["lowy_interpreter"].feed_url != (
+        "https://www.lowyinterpreter.org/feed/"
+    )
+    assert by_id["lowy_interpreter"].feed_url != (
+        by_id["aspi_strategist"].feed_url
+    )
+    assert by_id["lowy_interpreter"].feed_url != (
+        by_id["foreign_affairs"].feed_url
+    )
+    assert by_id["lowy_interpreter"].feed_url != (
+        by_id["the_diplomat"].feed_url
+    )
+    assert by_id["lowy_interpreter"].feed_url != (
+        by_id["crisis_group"].feed_url
+    )
+    assert by_id["lowy_interpreter"].feed_url != (
+        by_id["war_on_rocks"].feed_url
+    )
+    assert by_id["lowy_interpreter"].feed_url != (
+        by_id["foreign_policy"].feed_url
+    )
+    assert by_id["lowy_interpreter"].feed_url != (
+        by_id["guardian_world"].feed_url
+    )
+    assert by_id["lowy_interpreter"].feed_url != by_id["bbc_world"].feed_url
+    assert by_id["lowy_interpreter"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["lowy_interpreter"].feed_url != (
+        by_id["abc_australia"].feed_url
+    )
+    assert by_id["lowy_interpreter"].feed_url != (
+        by_id["bbc_australia"].feed_url
+    )
+    assert by_id["lowy_interpreter"].feed_url != (
+        by_id["smh_national"].feed_url
+    )
+    assert by_id["lowy_interpreter"].feed_url != by_id["smh_world"].feed_url
+    assert by_id["defense_one"].feed_url != by_id["fast_company"].feed_url
+    assert by_id["defense_one"].feed_url != (
+        by_id["lowy_interpreter"].feed_url
+    )
+    assert by_id["fast_company"].feed_url != (
+        by_id["lowy_interpreter"].feed_url
+    )
+    # #120 locks stay exactly as registered.
+    assert by_id["techinasia"].feed_url == (
+        "https://www.techinasia.com/feed"
+    )
+    assert by_id["science_news"].feed_url == (
+        "https://www.sciencenews.org/feed"
+    )
+    assert by_id["african_arguments"].feed_url == (
+        "https://africanarguments.org/feed/"
+    )
+    assert by_id["the_markup"].feed_url == (
+        "https://themarkup.org/feeds/rss.xml"
+    )
+    assert by_id["atlas_obscura"].feed_url == (
+        "https://www.atlasobscura.com/feeds/latest"
+    )
+    assert by_id["undark"].feed_url == "https://undark.org/feed/"
+    assert by_id["aspi_strategist"].feed_url == (
+        "https://www.aspistrategist.org.au/feed/"
+    )
+    assert by_id["nautilus"].feed_url == "https://nautil.us/feed/"
+    assert by_id["hyperallergic"].feed_url == (
+        "https://hyperallergic.com/feed/"
+    )
+    assert by_id["aeon"].feed_url == "https://aeon.co/feed.rss"
+    assert by_id["noema"].feed_url == "https://www.noemamag.com/feed/"
+    assert by_id["marketwatch"].feed_url == (
+        "https://feeds.marketwatch.com/marketwatch/topstories"
+    )
+    assert by_id["africa_report"].feed_url == (
+        "https://www.theafricareport.com/feed/"
+    )
+    assert by_id["sciencedaily"].feed_url == (
+        "https://www.sciencedaily.com/rss/all.xml"
+    )
+    assert by_id["digiday_media"].feed_url == "https://digiday.com/media/feed/"
+    assert by_id["breaking_defense"].feed_url == (
+        "https://breakingdefense.com/feed/"
+    )
+    # Unused backups + product-skip sources stay out.
+    # japan_forward / artforum / knowable unused
+    # because all three primaries KEEP.
+    # asiatimes / asia_times stay out (httpx 403).
+    # biographic stays out (httpx 403).
+    # fastcompany alias stays out (registered as
+    # fast_company).
+    assert "japan_forward" not in by_id
+    assert "japanforward" not in by_id
+    assert "artforum" not in by_id
+    assert "art_forum" not in by_id
+    assert "knowable" not in by_id
+    assert "knowable_magazine" not in by_id
+    assert "fastcompany" not in by_id
+    assert "asiatimes" not in by_id
+    assert "asia_times" not in by_id
+    assert "biographic" not in by_id
+    assert "biographic_magazine" not in by_id
+    assert "hkfp" not in by_id
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "guardian_games" not in by_id
+    for source_id, expected in (
+        _DEFENSE_ONE_FAST_COMPANY_LOWY_INTERPRETER_PRIMARY.items()
     ):
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
@@ -13899,6 +14477,55 @@ def test_techinasia_science_news_african_arguments_feeds_live_http_200():
         )
 
 
+def test_defense_one_fast_company_lowy_interpreter_feeds_live_http_200():
+    """Hit the three batch63 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _DEFENSE_ONE_FAST_COMPANY_LOWY_INTERPRETER_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (defense_one / fast_company / lowy_interpreter)
+        # uses the un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # defense_one live-diff was 21/23 nonempty (2
+        # empty-desc items skipped at ingest).
+        # fast_company / lowy_interpreter were 100%.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        if source_id == "defense_one":
+            assert nonempty >= 10, (
+                f"{source_id} nonempty {nonempty}/{len(items)} below KEEP"
+            )
+        else:
+            assert nonempty == len(items), (
+                f"{source_id} empty description: "
+                f"{len(items) - nonempty}/{len(items)}"
+            )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -13964,6 +14591,7 @@ if __name__ == "__main__":
     test_aspi_strategist_nautilus_hyperallergic_primaries_registered()
     test_the_markup_atlas_obscura_undark_primaries_registered()
     test_techinasia_science_news_african_arguments_primaries_registered()
+    test_defense_one_fast_company_lowy_interpreter_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -14025,4 +14653,5 @@ if __name__ == "__main__":
     test_aspi_strategist_nautilus_hyperallergic_feeds_live_http_200()
     test_the_markup_atlas_obscura_undark_feeds_live_http_200()
     test_techinasia_science_news_african_arguments_feeds_live_http_200()
+    test_defense_one_fast_company_lowy_interpreter_feeds_live_http_200()
     print("✓ source registry tests PASSED")

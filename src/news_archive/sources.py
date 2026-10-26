@@ -1374,6 +1374,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="defense_one",
+        name="Defense One",
+        feed_url="https://www.defenseone.com/rss/all/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="fast_company",
+        name="Fast Company",
+        feed_url="https://www.fastcompany.com/latest/rss",
+        category="科技商业",
+        role="primary",
+    ),
+    Source(
+        id="lowy_interpreter",
+        name="Lowy Interpreter",
+        feed_url="https://www.lowyinstitute.org/the-interpreter/rss.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
