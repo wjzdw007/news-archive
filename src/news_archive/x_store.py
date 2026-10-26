@@ -92,6 +92,28 @@ class XStore:
         ).fetchall()
         return {r["author"]: r["n"] for r in rows}
 
+    def latest_post_id_for_author(self, author: str) -> str | None:
+        """Newest stored post_id for since-id filtering (posted_at, then id)."""
+        handle = author.lstrip("@")
+        row = self._conn.execute(
+            """
+            SELECT post_id FROM x_posts
+            WHERE lower(author) = lower(?)
+            ORDER BY posted_at DESC NULLS LAST, post_id DESC
+            LIMIT 1
+            """,
+            (handle,),
+        ).fetchone()
+        return str(row["post_id"]) if row and row["post_id"] else None
+
+    def latest_post_ids(self, authors: list[str]) -> dict[str, str]:
+        out: dict[str, str] = {}
+        for author in authors:
+            pid = self.latest_post_id_for_author(author)
+            if pid:
+                out[author.lstrip("@").lower()] = pid
+        return out
+
     def get(self, post_id: str) -> dict | None:
         row = self._conn.execute(
             "SELECT * FROM x_posts WHERE post_id = ?", (post_id,)

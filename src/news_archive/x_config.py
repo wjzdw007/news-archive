@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 # News first-cut accounts (product draft; CEO may trim).
-# Ops: the Cookie login account must Follow these handles so HomeLatestTimeline /
-# following can see them. Not a code secret; fetch path is unchanged.
+# Live path: HomeTimeline / following + filter. Cookie login should Follow
+# these news handles so they appear in the home window. Not a code secret.
 X_NEWS_ACCOUNTS: list[str] = [
     "BBCChinese",
     "Reuters",
@@ -34,6 +34,7 @@ X_NEWS_ACCOUNTS: list[str] = [
 ]
 
 # CEO-approved 科技/AI primaries (same x-fetch + existing Bearer/cookies).
+# Live path: UserByScreenName + UserTweets per handle — Follow not required.
 # Displayed on the 科技/AI 专题 page. Not a new RSS CAP batch.
 X_AI_PRIMARY_ACCOUNTS: list[str] = [
     "OpenAI",
@@ -50,8 +51,8 @@ X_AI_PRIMARY_ACCOUNTS: list[str] = [
     "ylecun",
 ]
 
-# Used on the 科技/AI page only when primaries have no usable in-window posts.
-# Still fetched so the DB has them if a primary goes dark.
+# User-timeline fetched only when primaries have no usable in-window posts.
+# Display layer also hides backups unless primaries are empty in-window.
 X_AI_BACKUP_ACCOUNTS: list[str] = [
     "AndrewYNg",
     "miramurati",

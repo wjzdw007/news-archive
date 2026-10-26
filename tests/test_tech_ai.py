@@ -8,16 +8,19 @@ from news_archive.news_display import NEWS_SOURCE_CAP
 from news_archive.tech_ai import (
     AI_KEYWORDS_EN,
     AI_KEYWORDS_ZH,
+    MAX_ITEMS,
     TECH_AI_ALWAYS_SOURCES,
     TECH_AI_KEYWORD_SOURCES,
     TECH_AI_SOURCE_WHITELIST,
     TECH_AI_TITLE,
     TECH_AI_TOPIC_ID,
+    X_RESERVED_SLOTS,
     article_on_topic,
     assert_whitelist_registered,
     build_tech_ai_page,
     empty_tech_ai_payload,
     matches_ai_keywords,
+    merge_reserved_feed,
     tech_ai_topic_card,
 )
 from news_archive.x_config import (
@@ -197,6 +200,48 @@ def test_no_snapshot_or_post_id():
     print("✓ no snapshot / post_id")
 
 
+def test_x_slots_reserved_so_rss_max_cannot_wipe_x():
+    assert NEWS_SOURCE_CAP == 6
+    assert MAX_ITEMS == 100
+    assert X_RESERVED_SLOTS == 25
+
+    rss = [
+        _art(url=f"https://wired/{i}", title=f"WIRED {i}", source="wired", hours_ago=0.1 * i)
+        for i in range(120)
+    ]
+    x_few = [
+        _post(author="OpenAI", text=f"model {i}", hours_ago=0.2 * i, post_id=f"x-{i}")
+        for i in range(5)
+    ]
+    page = build_tech_ai_page(rss, x_few, now=NOW)
+    assert page["x_count"] == 5
+    assert page["rss_count"] == 95
+    assert len(page["items"]) == 100
+    assert page["x_reserved_slots"] == 25
+
+    x_many = [
+        _post(author="karpathy", text=f"note {i}", hours_ago=0.2 * i, post_id=f"k-{i}")
+        for i in range(40)
+    ]
+    page_cap = build_tech_ai_page(rss, x_many, now=NOW)
+    assert page_cap["x_count"] == 25
+    assert page_cap["rss_count"] == 75
+    assert len(page_cap["items"]) == 100
+
+    page_rss_only = build_tech_ai_page(rss, [], now=NOW)
+    assert page_rss_only["x_count"] == 0
+    assert page_rss_only["rss_count"] == 100
+    print("✓ X reserved slots")
+
+
+def test_merge_reserved_feed_keeps_time_order():
+    rss = [_art(url="https://wired/old", title="old rss", source="wired", hours_ago=3)]
+    x = [_post(author="sama", text="new x", hours_ago=1)]
+    items = merge_reserved_feed(rss, x)
+    assert [i["kind"] for i in items] == ["x", "rss"]
+    print("✓ reserved merge time order")
+
+
 def test_x_fetch_accounts_union():
     expected_news = [
         "BBCChinese",
@@ -261,6 +306,8 @@ if __name__ == "__main__":
     test_page_prefers_24h_and_falls_back()
     test_x_primaries_and_backups()
     test_merge_time_order_rss_and_x()
+    test_x_slots_reserved_so_rss_max_cannot_wipe_x()
+    test_merge_reserved_feed_keeps_time_order()
     test_no_snapshot_or_post_id()
     test_x_fetch_accounts_union()
     print("✓ All tech_ai tests passed")

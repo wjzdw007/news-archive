@@ -450,12 +450,16 @@ function renderTechAiDetail() {
         ? techAiData.x_count
         : items.filter(i => i.kind === 'x').length;
 
-    let hint = '';
+    const hints = [];
     if (items.length === 0) {
-        hint = '<div class="topic-empty-hint">专题已就绪。等待下一次 daily-fetch / x-fetch 写入科技与 AI 条目。Cookie 登录账号需 Follow 科技/AI 账号。</div>';
+        hints.push('专题已就绪。等待下一次 daily-fetch / x-fetch 写入科技与 AI 条目。');
     } else if (usedFallback) {
-        hint = '<div class="topic-empty-hint">近 24 小时暂无新条目，以下为最近归档（最多 7 天）。</div>';
+        hints.push('近 24 小时暂无新条目，以下为最近归档（最多 7 天）。');
     }
+    if (xCount === 0) {
+        hints.push('X 段暂无可用帖。已按账号抓取 user timeline（不必 Follow），等待下一次 x-fetch 写入。');
+    }
+    const hint = hints.map(t => `<div class="topic-empty-hint">${t}</div>`).join('');
 
     const itemsHtml = items.map(renderTechAiItemHtml).join('');
     const backupNote = usedBackups ? ' · 含备用账号' : '';

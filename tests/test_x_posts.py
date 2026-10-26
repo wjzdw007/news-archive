@@ -119,10 +119,148 @@ def test_5_no_keyword_search_in_news_config():
     print("✓ 5 account-only config")
 
 
+def test_latest_post_ids_for_since_id():
+    with tempfile.TemporaryDirectory() as tmp:
+        store = XStore(Path(tmp) / "a.sqlite3")
+        now = "2026-10-25T16:00:00+00:00"
+        later = "2026-10-25T17:00:00+00:00"
+        store.upsert(
+            XPost(
+                post_id="100",
+                author="OpenAI",
+                url="https://x.com/OpenAI/status/100",
+                text_snapshot="old",
+                posted_at=now,
+                fetched_at=now,
+            )
+        )
+        store.upsert(
+            XPost(
+                post_id="200",
+                author="OpenAI",
+                url="https://x.com/OpenAI/status/200",
+                text_snapshot="new",
+                posted_at=later,
+                fetched_at=later,
+            )
+        )
+        ids = store.latest_post_ids(["OpenAI", "karpathy"])
+        assert ids == {"openai": "200"}
+        store.close()
+    print("✓ latest_post_ids")
+
+
+def test_6_live_splits_news_hometimeline_and_ai_usertweets():
+    """News stays on HomeTimeline; AI primaries use UserTweets; backups skipped."""
+    from unittest.mock import patch
+
+    from news_archive.x_config import X_AI_PRIMARY_ACCOUNTS, X_NEWS_ACCOUNTS
+
+    news_tweet = {
+        "post_id": "n1",
+        "author": "BBCChinese",
+        "url": "https://x.com/BBCChinese/status/n1",
+        "text": "world brief",
+        "posted_at": "2026-10-25T16:00:00+00:00",
+    }
+    ai_tweet = {
+        "post_id": "a1",
+        "author": "OpenAI",
+        "url": "https://x.com/OpenAI/status/a1",
+        "text": "shipping gpt",
+        "posted_at": "2026-10-25T16:30:00+00:00",
+    }
+
+    with patch("news_archive.x_http_client.fetch_news_accounts", return_value=[news_tweet]) as news:
+        with patch("news_archive.x_http_client.fetch_user_accounts", return_value=[ai_tweet]) as users:
+            posts = fetch_account_posts(mode="live", auth_token="t", ct0="c")
+
+    authors = {p.author for p in posts}
+    assert authors == {"BBCChinese", "OpenAI"}
+    news.assert_called_once()
+    assert news.call_args.kwargs["target_accounts"] == X_NEWS_ACCOUNTS
+    users.assert_called_once()
+    assert users.call_args.kwargs["target_accounts"] == X_AI_PRIMARY_ACCOUNTS
+    print("✓ 6 live split HomeTimeline vs UserTweets")
+
+
+def test_7_backups_only_when_primaries_empty():
+    from unittest.mock import patch
+
+    from news_archive.x_config import X_AI_BACKUP_ACCOUNTS, X_AI_PRIMARY_ACCOUNTS
+
+    backup_tweet = {
+        "post_id": "b1",
+        "author": "AndrewYNg",
+        "url": "https://x.com/AndrewYNg/status/b1",
+        "text": "course note",
+        "posted_at": "2026-10-25T16:00:00+00:00",
+    }
+
+    with patch("news_archive.x_http_client.fetch_news_accounts", return_value=[]):
+        with patch(
+            "news_archive.x_http_client.fetch_user_accounts",
+            side_effect=[[], [backup_tweet]],
+        ) as users:
+            posts = fetch_account_posts(
+                mode="live",
+                accounts=X_AI_PRIMARY_ACCOUNTS + X_AI_BACKUP_ACCOUNTS,
+                auth_token="t",
+                ct0="c",
+            )
+
+    assert [p.author for p in posts] == ["AndrewYNg"]
+    assert users.call_count == 2
+    assert users.call_args_list[0].kwargs["target_accounts"] == X_AI_PRIMARY_ACCOUNTS
+    assert users.call_args_list[1].kwargs["target_accounts"] == X_AI_BACKUP_ACCOUNTS
+    print("✓ 7 backups when primaries empty")
+
+
+def test_8_since_id_drops_older_after_backup_decision():
+    from unittest.mock import patch
+
+    ai_old = {
+        "post_id": "100",
+        "author": "OpenAI",
+        "url": "https://x.com/OpenAI/status/100",
+        "text": "old",
+        "posted_at": "2026-10-25T16:00:00+00:00",
+    }
+    ai_new = {
+        "post_id": "200",
+        "author": "OpenAI",
+        "url": "https://x.com/OpenAI/status/200",
+        "text": "new",
+        "posted_at": "2026-10-25T16:30:00+00:00",
+    }
+
+    with patch("news_archive.x_http_client.fetch_news_accounts", return_value=[]):
+        with patch(
+            "news_archive.x_http_client.fetch_user_accounts",
+            return_value=[ai_old, ai_new],
+        ) as users:
+            posts = fetch_account_posts(
+                mode="live",
+                accounts=["OpenAI"],
+                auth_token="t",
+                ct0="c",
+                since_ids={"openai": "100"},
+            )
+
+    assert [p.post_id for p in posts] == ["200"]
+    # since_id is applied after the window check, so backups are not fetched
+    assert users.call_count == 1
+    print("✓ 8 since_id incremental")
+
+
 if __name__ == "__main__":
     test_1_mock_insert_nonempty_snapshot()
     test_2_dedupe_by_post_id()
     test_3_gone_keeps_snapshot()
     test_4_soft_fail_live_without_creds()
     test_5_no_keyword_search_in_news_config()
+    test_latest_post_ids_for_since_id()
+    test_6_live_splits_news_hometimeline_and_ai_usertweets()
+    test_7_backups_only_when_primaries_empty()
+    test_8_since_id_drops_older_after_backup_decision()
     print("\n✅ All X tests PASSED")
