@@ -327,6 +327,29 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
     assert "passblue" not in TECH_AI_SOURCE_WHITELIST
     assert "inkstick" not in TECH_AI_SOURCE_WHITELIST
+    # batch72 RSS primaries stay off the tech/AI whitelist.
+    # independent lands on the existing 综合
+    # category path (UK newsroom, same as
+    # guardian_uk / bbc_uk / axios).
+    # scientific_american lands on 科学
+    # (science magazine, same as
+    # popular_science / science_news /
+    # knowable). thenewstack lands on 科技
+    # (cloud-native / DevOps newsroom,
+    # same as zdnet / techinasia /
+    # newatlas) but later-batch tech
+    # sources stay off the frozen
+    # ALWAYS set (zdnet / the_register /
+    # techinasia / fast_company were
+    # also not added). None of these
+    # match the wired / verge /
+    # techcrunch ALWAYS pattern.
+    assert "independent" not in TECH_AI_SOURCE_WHITELIST
+    assert "scientific_american" not in TECH_AI_SOURCE_WHITELIST
+    assert "thenewstack" not in TECH_AI_SOURCE_WHITELIST
+    assert "who_news" not in TECH_AI_SOURCE_WHITELIST
+    assert "new_yorker" not in TECH_AI_SOURCE_WHITELIST
+    assert "smithsonian_mag" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
