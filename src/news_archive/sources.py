@@ -1787,10 +1787,10 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
-        id="gizmodo",
-        name="Gizmodo",
-        feed_url="https://gizmodo.com/feed",
-        category="科技",
+        id="smithsonian_mag",
+        name="Smithsonian Magazine",
+        feed_url="https://www.smithsonianmag.com/rss/latest_articles/",
+        category="综合",
         role="primary",
     ),
     Source(

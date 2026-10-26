@@ -547,13 +547,15 @@ def test_whitelist_registered_and_cap_unchanged():
     # Unused backups artnet is now
     # batch81 KEEP (techdirt Cloudflare
     # 403 hard-swap fill) and stays off
-    # the whitelist. smithsonian_mag /
-    # new_yorker stay unused leftovers
-    # (if a later hard-swap falls
-    # through, smithsonian_mag MUST lock
+    # the whitelist. smithsonian_mag is
+    # now the gizmodo official CI httpx
+    # 403 hard-swap fill and stays off
+    # the whitelist (MUST lock
     # /rss/latest_articles/ never stale
-    # /rss/articles/; new_yorker MUST
-    # prefer /feed/everything). medicalxpress stays
+    # /rss/articles/). new_yorker stays
+    # unused leftover (smithsonian_mag
+    # live KEEP). gizmodo stays hung.
+    # medicalxpress stays
     # off the frozen KEYWORD set
     # (already used for the
     # times_of_israel hard-swap; do not
@@ -634,13 +636,18 @@ def test_whitelist_registered_and_cap_unchanged():
     # techdirt official FAIL (Cloudflare
     # 403; do not register Feedburner)
     # — not registered. Unused backups
-    # smithsonian_mag / new_yorker stay
-    # off (first-winner unused stay out;
-    # if a later hard-swap falls through,
-    # smithsonian_mag MUST lock
-    # /rss/latest_articles/ never stale
-    # /rss/articles/; new_yorker MUST
-    # prefer /feed/everything). the_cut
+    # smithsonian_mag is now the gizmodo
+    # official CI httpx 403 hard-swap
+    # fill and stays off the whitelist
+    # (MUST lock /rss/latest_articles/
+    # never stale /rss/articles/).
+    # new_yorker stays unused leftover
+    # (smithsonian_mag live KEEP; if a
+    # later hard-swap falls through MUST
+    # prefer /feed/everything) and stays
+    # off the whitelist. gizmodo stays
+    # hung (do not re-hang; do not hang
+    # Feedburner) and stays off. the_cut
     # stays off (product dropped — all
     # 404). atlantic_council stays off
     # (hard-swapped to grist in #139).
@@ -675,17 +682,24 @@ def test_whitelist_registered_and_cap_unchanged():
     # macrumors / android_authority /
     # howtogeek) but later-batch tech
     # sources stay off the frozen ALWAYS
-    # set. gizmodo lands on 科技
-    # (consumer tech / gadget / culture
-    # newsroom, same as howtogeek /
-    # tomshardware / zdnet) but later-
-    # batch tech sources stay off the
-    # frozen ALWAYS set. None of these
+    # set. smithsonian_mag is the
+    # gizmodo official CI httpx 403
+    # hard-swap fill and lands on 综合
+    # (culture / history / science
+    # magazine, same as atlantic /
+    # nautilus / undark /
+    # atlas_obscura). Not added to the
+    # tech/AI whitelist. None of these
     # match the wired / verge /
     # techcrunch ALWAYS pattern.
-    # engadget official FAIL (CloudFront
-    # 403; do not register Feedburner)
-    # — not registered. digital_trends
+    # gizmodo official FAIL (CI httpx
+    # 403 in daily-fetch #40315044842
+    # → 0 DB rows; do not re-hang; do
+    # not register Feedburner) — not
+    # registered. engadget official
+    # FAIL (CloudFront 403; do not
+    # register Feedburner) — not
+    # registered. digital_trends
     # official FAIL (Cloudflare 403 JS
     # challenge; do not register
     # Feedburner) — not registered.
@@ -693,19 +707,21 @@ def test_whitelist_registered_and_cap_unchanged():
     # (first-winner unused stay out; if
     # a later hard-swap falls through
     # MUST lock /feed/ never
-    # /rss/index.xml). the_verge stays
-    # off (verge already registered).
-    # the_cut stays off (product dropped
-    # — all 404). techdirt stays off
-    # (official Cloudflare 403).
-    # atlantic_council stays off
-    # (hard-swapped to grist in #139).
-    # the_nation stays off (empty
-    # site-wide FAIL). euractiv stays off
-    # (official 301 to rapporteur.com;
-    # Feedburner stale).
+    # /rss/index.xml). new_yorker stays
+    # off (smithsonian_mag won). the_verge
+    # stays off (verge already
+    # registered). the_cut stays off
+    # (product dropped — all 404).
+    # techdirt stays off (official
+    # Cloudflare 403). atlantic_council
+    # stays off (hard-swapped to grist
+    # in #139). the_nation stays off
+    # (empty site-wide FAIL). euractiv
+    # stays off (official 301 to
+    # rapporteur.com; Feedburner stale).
     assert "cnet" not in TECH_AI_SOURCE_WHITELIST
     assert "9to5mac" not in TECH_AI_SOURCE_WHITELIST
+    assert "smithsonian_mag" not in TECH_AI_SOURCE_WHITELIST
     assert "gizmodo" not in TECH_AI_SOURCE_WHITELIST
     assert "engadget" not in TECH_AI_SOURCE_WHITELIST
     assert "digital_trends" not in TECH_AI_SOURCE_WHITELIST
