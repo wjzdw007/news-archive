@@ -41,30 +41,13 @@ def _split_fetch_accounts(
 ) -> tuple[list[str], list[str], list[str]]:
     """Partition requested handles into news / AI primary / AI backup.
 
-    First-listed casing wins. elonmusk is both news and AI primary — it stays
-    on HomeTimeline (news) and is also user-timeline fetched (AI).
+    Canonical config order is kept. elonmusk is both news and AI primary —
+    it stays on HomeTimeline (news) and is also user-timeline fetched (AI).
     """
-    news_keys = {_author_key(a) for a in X_NEWS_ACCOUNTS}
-    primary_keys = {_author_key(a) for a in X_AI_PRIMARY_ACCOUNTS}
-    backup_keys = {_author_key(a) for a in X_AI_BACKUP_ACCOUNTS}
-
-    news: list[str] = []
-    primaries: list[str] = []
-    backups: list[str] = []
-    seen_news: set[str] = set()
-    seen_primary: set[str] = set()
-    seen_backup: set[str] = set()
-    for author in accounts:
-        key = _author_key(author)
-        if key in news_keys and key not in seen_news:
-            seen_news.add(key)
-            news.append(author)
-        if key in primary_keys and key not in seen_primary:
-            seen_primary.add(key)
-            primaries.append(author)
-        if key in backup_keys and key not in seen_backup:
-            seen_backup.add(key)
-            backups.append(author)
+    requested = {_author_key(a) for a in accounts}
+    news = [a for a in X_NEWS_ACCOUNTS if _author_key(a) in requested]
+    primaries = [a for a in X_AI_PRIMARY_ACCOUNTS if _author_key(a) in requested]
+    backups = [a for a in X_AI_BACKUP_ACCOUNTS if _author_key(a) in requested]
     return news, primaries, backups
 
 
