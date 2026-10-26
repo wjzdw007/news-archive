@@ -492,6 +492,43 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "atlantic_council" not in TECH_AI_SOURCE_WHITELIST
     assert "the_nation" not in TECH_AI_SOURCE_WHITELIST
     assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
+    # batch78 RSS primaries stay off the tech/AI whitelist.
+    # scotusblog lands on 综合 (Supreme
+    # Court / legal newsroom, same as
+    # guardian_law / reason / intercept).
+    # medicalxpress is the times_of_israel
+    # hard-swap fill and lands on 科学
+    # (medical / health science newsroom,
+    # same as phys_org / stat_news /
+    # kff_health) but later-batch science
+    # sources stay off the frozen KEYWORD
+    # set. infoq lands on 科技 (software
+    # / architecture newsroom, same as
+    # thenewstack / zdnet / the_register)
+    # but later-batch tech sources stay
+    # off the frozen ALWAYS set. None of
+    # these match the wired / verge /
+    # techcrunch ALWAYS pattern.
+    # times_of_israel official FAIL
+    # (Cloudflare 403; Feedburner stale
+    # 2012) — not registered. Unused
+    # backups howtogeek / new_republic
+    # stay off (first-winner unused stay
+    # out). atlantic_council stays off
+    # (hard-swapped to grist in #139).
+    # the_nation stays off (empty
+    # site-wide FAIL). euractiv stays off
+    # (official 301 to rapporteur.com;
+    # Feedburner stale).
+    assert "scotusblog" not in TECH_AI_SOURCE_WHITELIST
+    assert "medicalxpress" not in TECH_AI_SOURCE_WHITELIST
+    assert "infoq" not in TECH_AI_SOURCE_WHITELIST
+    assert "times_of_israel" not in TECH_AI_SOURCE_WHITELIST
+    assert "howtogeek" not in TECH_AI_SOURCE_WHITELIST
+    assert "new_republic" not in TECH_AI_SOURCE_WHITELIST
+    assert "atlantic_council" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_nation" not in TECH_AI_SOURCE_WHITELIST
+    assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

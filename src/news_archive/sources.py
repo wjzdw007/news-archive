@@ -1689,6 +1689,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="scotusblog",
+        name="SCOTUSblog",
+        feed_url="https://www.scotusblog.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="medicalxpress",
+        name="Medical Xpress",
+        feed_url="https://medicalxpress.com/rss-feed/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="infoq",
+        name="InfoQ",
+        feed_url="https://feed.infoq.com/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
