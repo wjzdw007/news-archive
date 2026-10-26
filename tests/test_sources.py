@@ -2302,8 +2302,12 @@ _ATLANTIC_SMH_NATIONAL_GUARDIAN_EDUCATION_PRIMARY = {
 # guardian_games stays unregistered (product:
 # games thin / 不进主源). sunday_review / cnbc
 # (403 known) / ap stay unregistered (product
-# lock). NEWS_SOURCE_CAP display stays 6 — no CAP
-# code change. No X this batch. No LLM this batch.
+# lock). foreign_policy / ft_world /
+# abc_australia are batch49 (ft_world is the
+# fetch-compatible backup after pbs_newshour
+# CloudFront 202). NEWS_SOURCE_CAP display stays
+# 6 — no CAP code change. No X this batch. No
+# LLM this batch.
 _POLITICO_POLITICS_DW_BUSINESS_FRANCE24_CULTURE_PRIMARY = {
     "politico_politics": {
         "name": "Politico Politics",
@@ -2322,7 +2326,93 @@ _POLITICO_POLITICS_DW_BUSINESS_FRANCE24_CULTURE_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 152
+# CEO-approved Foreign Policy / FT World / ABC
+# Australia RSS primaries (batch49). These three
+# are the new adds after #103 (batch48 CLOSED
+# with politico_politics / dw_business /
+# france24_culture). Do not re-touch those #103
+# winners. Do not hard-swap guardian_media →
+# nyt_media (separate open cloud track).
+# foreign_policy is the official Foreign Policy
+# site-wide RSS (no prior foreign_policy / fp_*
+# id). Locked official
+# https://foreignpolicy.com/feed/ (channel title
+# "Foreign Policy"; robots.txt Allow: /feed/$).
+# /feed (no slash) / /rss / /feed/rss / www.
+# apex 301 to /feed/. /rss.xml / /feed.xml are
+# 404 HTML. /category/news/feed/ is a different
+# News section (channel "News – Foreign Policy")
+# — not the general primary. feedburner thecable
+# is an unofficial alias — lock /feed/.
+# Live-diff winner: HTTP 200 / 25 nonempty / 25
+# content:encoded. Product lock ≥10 nonempty —
+# keep. pbs_newshour official
+# https://www.pbs.org/newshour/feeds/rss/headlines
+# (channel "PBS News Hour - The Latest"; 20 / 20
+# nonempty when fetched *without* the Chrome/120
+# UA) is CloudFront HTTP 202 / empty body with
+# RSS_HEADERS — live-diff FAIL. Cannot change
+# global RSS_HEADERS (Solidot and others need
+# the browser UA). feeds.feedburner.com/NewshourHeadlines
+# is stale (last item 2017-10-18) — do not use.
+# restofworld official /feed/latest/ is urllib
+# 200 / 12 nonempty but httpx (fetch_source) 403
+# JS challenge — not fetch-compatible; unused.
+# ft_world is the first fetch-compatible backup,
+# now promoted. Locked official
+# https://www.ft.com/world?format=rss (channel
+# title "World"). Distinct from live ftchinese.
+# /world/rss.xml and /rss/world 301 to the lock.
+# /world/rss is 403. /rss/home/international is
+# "International homepage" (10 items) — not the
+# World section. abc_australia is the official
+# ABC News Australia Just In feed (no prior
+# abc_australia id; abc_news is US
+# abcnews.go.com topstories; abc_intl stays
+# unregistered). Locked official
+# https://www.abc.net.au/news/feed/51120/rss.xml
+# (channel title "Just In"). Live-diff 25
+# nonempty. /feed/45910 and /feed/10719986 are
+# the same Top Stories body (25 nonempty) — not
+# the Just In primary. /feed/46182 "ABC News" is
+# 3 items (thin <5). /feed/104217382 World is 4
+# items (thin). /news/feed/rss.xml is 500.
+# /news/rss.xml and /news/feed/ are 404.
+# economist_intl official
+# /international/rss.xml is HTTP 200 / 300 items
+# / 290 nonempty (probed only; unused because
+# the backup slot was filled by ft_world).
+# Distinct from live economist_china.
+# politico_politics / dw_business /
+# france24_culture stay registered (batch48
+# closed). atlantic / smh_national /
+# guardian_education stay registered (batch47
+# closed). guardian_media stays registered.
+# guardian_games stays unregistered (product:
+# games thin / 不进主源). sunday_review / cnbc
+# (403 known) / ap stay unregistered (product
+# lock). NEWS_SOURCE_CAP display stays 6 — no
+# CAP code change. No X this batch. No LLM this
+# batch.
+_FOREIGN_POLICY_FT_WORLD_ABC_AUSTRALIA_PRIMARY = {
+    "foreign_policy": {
+        "name": "Foreign Policy",
+        "feed_url": "https://foreignpolicy.com/feed/",
+        "category": "国际",
+    },
+    "ft_world": {
+        "name": "FT World",
+        "feed_url": "https://www.ft.com/world?format=rss",
+        "category": "国际",
+    },
+    "abc_australia": {
+        "name": "ABC Australia",
+        "feed_url": "https://www.abc.net.au/news/feed/51120/rss.xml",
+        "category": "国际",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 155
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -8466,6 +8556,15 @@ def test_politico_politics_dw_business_france24_culture_primaries_registered():
     # bbc_australia / bloomberg_technology / ars_science
     # were live-diff backups (HTTP 200 / ≥10 nonempty) —
     # unused because all three primaries won.
+    # foreign_policy / ft_world / abc_australia are
+    # batch49 (ft_world promoted after pbs_newshour
+    # CloudFront 202). pbs_newshour / restofworld /
+    # economist_intl stay unregistered.
+    assert "foreign_policy" in by_id
+    assert "ft_world" in by_id
+    assert "abc_australia" in by_id
+    assert "pbs_newshour" not in by_id
+    assert "economist_intl" not in by_id
     assert "bbc_australia" not in by_id
     assert "bloomberg_technology" not in by_id
     assert "ars_science" not in by_id
@@ -8539,6 +8638,144 @@ def test_politico_politics_dw_business_france24_culture_feeds_live_http_200():
             )
 
 
+def test_foreign_policy_ft_world_abc_australia_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "foreign_policy" in by_id
+    assert by_id["foreign_policy"].feed_url == "https://foreignpolicy.com/feed/"
+    assert "ft_world" in by_id
+    assert by_id["ft_world"].feed_url == "https://www.ft.com/world?format=rss"
+    assert "abc_australia" in by_id
+    assert by_id["abc_australia"].feed_url == (
+        "https://www.abc.net.au/news/feed/51120/rss.xml"
+    )
+    # #103 winners stay registered and unchanged.
+    assert "politico_politics" in by_id
+    assert "dw_business" in by_id
+    assert "france24_culture" in by_id
+    assert "atlantic" in by_id
+    assert "smh_national" in by_id
+    assert "guardian_education" in by_id
+    assert "guardian_media" in by_id
+    assert "abc_news" in by_id
+    assert "ftchinese" in by_id
+    assert "economist_china" in by_id
+    assert "guardian_australia" in by_id
+    assert "smh_world" in by_id
+    # pbs_newshour official CloudFront 202 with
+    # RSS_HEADERS — not registered. restofworld is
+    # httpx 403 (fetch_source) — not registered.
+    # economist_intl unused because ft_world filled
+    # the backup slot. nyt_media is a separate open
+    # cloud track — not this PR.
+    assert "pbs_newshour" not in by_id
+    assert "restofworld" not in by_id
+    assert "economist_intl" not in by_id
+    assert "nyt_media" not in by_id
+    assert "abc_intl" not in by_id
+    assert by_id["foreign_policy"].feed_url != "https://foreignpolicy.com/feed"
+    assert by_id["foreign_policy"].feed_url != "https://foreignpolicy.com/rss"
+    assert by_id["foreign_policy"].feed_url != "https://foreignpolicy.com/rss.xml"
+    assert by_id["foreign_policy"].feed_url != "https://foreignpolicy.com/feed.xml"
+    assert by_id["foreign_policy"].feed_url != "https://foreignpolicy.com/feed/rss"
+    assert by_id["foreign_policy"].feed_url != (
+        "https://foreignpolicy.com/category/news/feed/"
+    )
+    assert by_id["foreign_policy"].feed_url != (
+        "https://feeds.feedburner.com/foreignpolicy/thecable"
+    )
+    assert by_id["ft_world"].feed_url != by_id["ftchinese"].feed_url
+    assert by_id["ft_world"].feed_url != "https://www.ft.com/world/rss"
+    assert by_id["ft_world"].feed_url != "https://www.ft.com/world/rss.xml"
+    assert by_id["ft_world"].feed_url != "https://www.ft.com/rss/world"
+    assert by_id["ft_world"].feed_url != (
+        "https://www.ft.com/rss/home/international"
+    )
+    assert by_id["abc_australia"].feed_url != by_id["abc_news"].feed_url
+    assert by_id["abc_australia"].feed_url != (
+        "https://www.abc.net.au/news/feed/45910/rss.xml"
+    )
+    assert by_id["abc_australia"].feed_url != (
+        "https://www.abc.net.au/news/feed/10719986/rss.xml"
+    )
+    assert by_id["abc_australia"].feed_url != (
+        "https://www.abc.net.au/news/feed/46182/rss.xml"
+    )
+    assert by_id["abc_australia"].feed_url != (
+        "https://www.abc.net.au/news/feed/104217382/rss.xml"
+    )
+    assert by_id["abc_australia"].feed_url != "https://www.abc.net.au/news/rss.xml"
+    assert by_id["abc_australia"].feed_url != (
+        "https://www.abc.net.au/news/feed/rss.xml"
+    )
+    assert by_id["foreign_policy"].feed_url != by_id["ft_world"].feed_url
+    assert by_id["foreign_policy"].feed_url != by_id["abc_australia"].feed_url
+    assert by_id["ft_world"].feed_url != by_id["abc_australia"].feed_url
+    # guardian_media stays — do not hard-swap.
+    assert by_id["guardian_media"].feed_url == (
+        "https://www.theguardian.com/us/media/rss"
+    )
+    assert "guardian_games" not in by_id
+    assert "thehill" not in by_id
+    assert "politico" not in by_id
+    assert "bbc_culture" not in by_id
+    assert "france24_europe" not in by_id
+    assert "guardian_economics" not in by_id
+    assert "nyt_theater" not in by_id
+    assert "independent_world" not in by_id
+    assert "sundayreview" not in by_id
+    assert "ap" not in by_id
+    for source_id, expected in (
+        _FOREIGN_POLICY_FT_WORLD_ABC_AUSTRALIA_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_foreign_policy_ft_world_abc_australia_feeds_live_http_200():
+    """Hit the three batch49 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _FOREIGN_POLICY_FT_WORLD_ABC_AUSTRALIA_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (foreign_policy / ft_world / abc_australia)
+        # uses the un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # All three live-diff winners were 100% nonempty.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -8590,6 +8827,7 @@ if __name__ == "__main__":
     test_nyt_media_time_top_nyt_obituaries_primaries_registered()
     test_atlantic_smh_national_guardian_education_primaries_registered()
     test_politico_politics_dw_business_france24_culture_primaries_registered()
+    test_foreign_policy_ft_world_abc_australia_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -8637,4 +8875,5 @@ if __name__ == "__main__":
     test_nyt_media_time_top_nyt_obituaries_feeds_live_http_200()
     test_atlantic_smh_national_guardian_education_feeds_live_http_200()
     test_politico_politics_dw_business_france24_culture_feeds_live_http_200()
+    test_foreign_policy_ft_world_abc_australia_feeds_live_http_200()
     print("✓ source registry tests PASSED")
