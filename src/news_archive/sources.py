@@ -1563,6 +1563,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="independent",
+        name="The Independent",
+        feed_url="https://www.independent.co.uk/rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="scientific_american",
+        name="Scientific American",
+        feed_url="https://www.scientificamerican.com/platform/syndication/rss/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="thenewstack",
+        name="The New Stack",
+        feed_url="https://thenewstack.io/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
