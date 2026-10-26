@@ -1710,6 +1710,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="android_authority",
+        name="Android Authority",
+        feed_url="https://www.androidauthority.com/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="unherd",
+        name="UnHerd",
+        feed_url="https://unherd.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="psyche",
+        name="Psyche",
+        feed_url="https://psyche.co/feed.rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
