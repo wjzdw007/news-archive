@@ -1832,11 +1832,13 @@ _GUARDIAN_FOOD_NYT_FASHION_GUARDIAN_MONEY_PRIMARY = {
 # atom/rss-en-asia and xml/rss-en-asia are the same
 # Asia items — lock rdf to match existing dw_*. Live-diff
 # winner on nyt_well / guardian_travel / dw_asia: HTTP
-# 200 / ≥10 nonempty items. Unused backups
-# nyt_automobiles / guardian_games stay unregistered
-# (primaries + named fall-through won). guardian_games
-# official /games/rss is HTTP 200 / 7 nonempty (5–9
-# observe — not promoted). france24_middle_east /
+# 200 / ≥10 nonempty items. Unused batch43 backups
+# nyt_automobiles / guardian_games were probed only
+# then; nyt_automobiles is registered in batch44 after
+# live-diff re-verify. guardian_games official
+# /games/rss is HTTP 200 / 7 nonempty (5–9
+# observe — product: games=7 不进主源, not promoted).
+# france24_middle_east /
 # nyt_personaltech / france24_africa stay registered
 # (batch41 closed). guardian_food / nyt_fashion /
 # guardian_money stay registered (batch42 closed).
@@ -1851,8 +1853,9 @@ _GUARDIAN_FOOD_NYT_FASHION_GUARDIAN_MONEY_PRIMARY = {
 # france24_en). guardian_economics stays unregistered
 # (hard-swapped in batch40). guardian_media stays
 # unregistered (hard-swapped in batch39). npr_business
-# stays unregistered (hard-swapped in batch37).
-# al_monitor stays unregistered (replaced in batch29;
+# was hard-swapped in batch37; re-registered in
+# batch44 after official 1006 re-probe. al_monitor
+# stays unregistered (replaced in batch29;
 # not a live CAP slot; not registered as a backup).
 # independent_world stays unregistered (replaced in
 # batch28; 429). nikkei / indian_express stay
@@ -1862,7 +1865,9 @@ _GUARDIAN_FOOD_NYT_FASHION_GUARDIAN_MONEY_PRIMARY = {
 # batch20). sky_tech / restofworld / ars_science /
 # thehill / politico / abc_intl / sunday_review /
 # nyt_sports stay unregistered (politico has no
-# qualifying general official RSS; still not registered).
+# qualifying general official RSS; still not
+# registered). thehill (no underscore) stays
+# unregistered — batch44 locks id the_hill.
 # NEWS_SOURCE_CAP display stays 6 — no CAP code change.
 # No X this batch. No LLM this batch.
 _NYT_WELL_GUARDIAN_TRAVEL_DW_ASIA_PRIMARY = {
@@ -1883,7 +1888,93 @@ _NYT_WELL_GUARDIAN_TRAVEL_DW_ASIA_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 137
+# CEO-approved NYT Automobiles / The Hill / NPR Business
+# RSS primaries (batch44). These three are the new adds.
+# nyt_automobiles is a same-outlet NYT section distinct
+# from existing nyt_world / nyt_technology / nyt_business /
+# nyt_science / nyt_climate / nyt_health / nyt_education /
+# nyt_politics / nyt_us / nyt_europe / nyt_upshot /
+# nyt_africa / nyt_arts / nyt_opinion / nyt_movies /
+# nyt_books / nyt_food / nyt_travel / nyt_economy /
+# nyt_realestate / nyt_magazine / nyt_personaltech /
+# nyt_fashion / nyt_well. Locked official nyt_* feed
+# pattern
+# https://rss.nytimes.com/services/xml/rss/nyt/Automobiles.xml
+# (channel title "NYT > Automobiles"). Autos.xml is 404
+# — do not use that. Was the unused batch43 backup; now
+# registered here after live-diff re-verify. the_hill is
+# the official The Hill general site feed from
+# thehill.com/resources/rss-feeds/ (rel=alternate
+# "The Hill » Feed"). Locked official
+# https://thehill.com/feed/ (channel title "The Hill
+# News"). /feed and /rss rewrite to the same partner
+# news feed; lock the trailing-slash root. Official
+# directory "All News" is /homenews/feed/ (Just In,
+# 15 items) and topic feeds (Senate / House / …) are
+# not the general primary. Prior registry notes used
+# unregistered id thehill — batch44 locks the_hill.
+# Do not invent a Google News proxy. npr_business is
+# the official NPR Business topic 1006, re-hung after
+# the batch37 hard-swap (then public fetch count <5).
+# Locked official https://feeds.npr.org/1006/rss.xml
+# (channel title "NPR Topics: Business"). Distinct from
+# live npr_news (1001) / npr_world (1004) / npr_arts
+# (1008) / npr_science (1007). www.npr.org/rss/rss.php
+# ?id=1006 302s to the same 1006 url — lock feeds.npr.org.
+# Live-diff winner on all three primaries: HTTP 200 /
+# ≥10 nonempty items — do not fall through to unused
+# backup guardian_games. guardian_games official
+# /games/rss is HTTP 200 / 7 nonempty (5–9 observe —
+# product: games=7 不进主源, not promoted).
+# nyt_well / guardian_travel / dw_asia stay registered
+# (batch43 closed). guardian_food / nyt_fashion /
+# guardian_money stay registered (batch42 closed;
+# guardian_money observe kept). france24_middle_east /
+# nyt_personaltech / france24_africa stay registered
+# (batch41 closed). bloomberg_markets /
+# guardian_opinion / nyt_magazine stay registered
+# (batch40 closed; guardian_opinion hard-swap kept).
+# cbs_world / france24_asia / cnbc_top stay registered
+# (batch39 closed; cbs_world observe kept).
+# bbc_entertainment stays registered (batch38 closed;
+# thin-observe kept). bbc_culture stays unregistered
+# (duplicate of bbc_entertainment). france24_europe
+# stays unregistered (duplicate of france24_en).
+# guardian_economics stays unregistered (hard-swapped
+# in batch40). guardian_media stays unregistered
+# (hard-swapped in batch39). al_monitor stays
+# unregistered (replaced in batch29; not a live CAP
+# slot; not registered as a backup). independent_world
+# stays unregistered (replaced in batch28; 429).
+# nikkei / indian_express stay unregistered (empty
+# desc — product skipped). nikkei_asia stays
+# unregistered (title+link only). nyt_world_asia stays
+# unregistered (replaced in batch20). sky_tech /
+# restofworld / ars_science / thehill / politico /
+# abc_intl / sunday_review / nyt_sports stay
+# unregistered (thehill is the old unused id; politico
+# has no qualifying general official RSS).
+# NEWS_SOURCE_CAP display stays 6 — no CAP code change.
+# No X this batch. No LLM this batch.
+_NYT_AUTOMOBILES_THE_HILL_NPR_BUSINESS_PRIMARY = {
+    "nyt_automobiles": {
+        "name": "NYT Automobiles",
+        "feed_url": "https://rss.nytimes.com/services/xml/rss/nyt/Automobiles.xml",
+        "category": "综合",
+    },
+    "the_hill": {
+        "name": "The Hill",
+        "feed_url": "https://thehill.com/feed/",
+        "category": "综合",
+    },
+    "npr_business": {
+        "name": "NPR Business",
+        "feed_url": "https://feeds.npr.org/1006/rss.xml",
+        "category": "财经",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 140
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -5773,7 +5864,7 @@ def test_nyt_travel_guardian_fashion_nyt_economy_primaries_registered():
     # sky_tech / restofworld / ars_science / thehill /
     # politico / abc_intl / sunday_review / nyt_sports
     # are not this batch (politico is X-handle only).
-    assert "npr_business" not in by_id
+    assert "npr_business" in by_id
     assert "guardian_media" not in by_id
     assert "guardian_economics" not in by_id
     assert "reuters_world" not in by_id
@@ -6042,7 +6133,7 @@ def test_nyt_realestate_guardian_lifeandstyle_bbc_entertainment_primaries_regist
     # ars_science / thehill / politico / abc_intl /
     # sunday_review / nyt_sports are not this batch
     # (politico is X-handle only).
-    assert "npr_business" not in by_id
+    assert "npr_business" in by_id
     assert "guardian_media" not in by_id
     assert "guardian_economics" not in by_id
     assert "reuters_world" not in by_id
@@ -6186,7 +6277,7 @@ def test_cbs_world_france24_asia_cnbc_top_primaries_registered():
     # product skipped. sky_tech / restofworld / ars_science /
     # thehill / politico / abc_intl / sunday_review /
     # nyt_sports are not this batch (politico is X-handle only).
-    assert "npr_business" not in by_id
+    assert "npr_business" in by_id
     assert "guardian_media" not in by_id
     assert "guardian_economics" not in by_id
     assert "reuters_world" not in by_id
@@ -6427,7 +6518,7 @@ def test_bloomberg_markets_guardian_opinion_nyt_magazine_primaries_registered():
     # sky_tech / restofworld / ars_science / thehill /
     # politico / abc_intl / sunday_review / nyt_sports are
     # not this batch (politico is X-handle only).
-    assert "npr_business" not in by_id
+    assert "npr_business" in by_id
     assert "guardian_media" not in by_id
     assert "guardian_economics" not in by_id
     assert "reuters_world" not in by_id
@@ -6628,7 +6719,7 @@ def test_france24_middle_east_nyt_personaltech_france24_africa_primaries_registe
     # sky_tech / restofworld / ars_science / thehill /
     # politico / abc_intl / sunday_review are not this
     # batch (politico is X-handle only).
-    assert "npr_business" not in by_id
+    assert "npr_business" in by_id
     assert "guardian_media" not in by_id
     assert "guardian_economics" not in by_id
     assert "reuters_world" not in by_id
@@ -6837,14 +6928,18 @@ def test_guardian_food_nyt_fashion_guardian_money_primaries_registered():
     # (/en/europe/rss already live as france24_en).
     # nyt_well / guardian_travel / dw_asia are batch43
     # (nyt_well was an unused batch42 backup and is now
-    # registered there). Unused batch43 backups
-    # nyt_automobiles / guardian_games stay unregistered.
-    # reuters_world official public RSS is dead — do not
-    # invent a Google News proxy. nyt_sports Sports.xml
-    # is HTTP 200 / 0 items. guardian_economics was
-    # hard-swapped out in batch40. guardian_media was
-    # hard-swapped out in batch39. npr_business was
-    # hard-swapped out in batch37. al_monitor stays
+    # registered there). nyt_automobiles / the_hill /
+    # npr_business are batch44 (nyt_automobiles was an
+    # unused batch43 backup; npr_business was
+    # hard-swapped in batch37 and re-registered after
+    # official 1006 re-probe). guardian_games stays
+    # unregistered (5–9 observe; product: games=7
+    # 不进主源). reuters_world official public RSS is
+    # dead — do not invent a Google News proxy.
+    # nyt_sports Sports.xml is HTTP 200 / 0 items.
+    # guardian_economics was hard-swapped out in
+    # batch40. guardian_media was hard-swapped out in
+    # batch39. al_monitor stays
     # unregistered (replaced in batch29; not a live CAP
     # slot). independent_world is the daily-fetch RED
     # slot — do not keep live. nikkei / indian_express
@@ -6857,9 +6952,9 @@ def test_guardian_food_nyt_fashion_guardian_money_primaries_registered():
     assert "nyt_well" in by_id
     assert "guardian_travel" in by_id
     assert "dw_asia" in by_id
-    assert "nyt_automobiles" not in by_id
+    assert "nyt_automobiles" in by_id
     assert "guardian_games" not in by_id
-    assert "npr_business" not in by_id
+    assert "npr_business" in by_id
     assert "guardian_media" not in by_id
     assert "guardian_economics" not in by_id
     assert "reuters_world" not in by_id
@@ -7039,28 +7134,31 @@ def test_nyt_well_guardian_travel_dw_asia_primaries_registered():
     # politico is dropped (no qualifying general official RSS
     # with all items nonempty — do not invent a Google News
     # proxy; do not register congress/topic feeds as politico).
-    # nyt_automobiles / guardian_games were probed only
-    # (primaries + named dw_asia fall-through won).
-    # guardian_games /games/rss is 7 nonempty (5–9 observe).
+    # nyt_automobiles / the_hill / npr_business are
+    # batch44 (nyt_automobiles was an unused batch43
+    # backup; npr_business was hard-swapped in batch37
+    # and re-registered after official 1006 re-probe).
+    # guardian_games /games/rss is 7 nonempty (5–9
+    # observe — product: games=7 不进主源, not promoted).
     # bbc_culture is dropped (duplicate of bbc_entertainment).
     # france24_europe is dropped (duplicate of france24_en).
     # reuters_world official public RSS is dead. nyt_sports
     # Sports.xml is HTTP 200 / 0 items. guardian_economics
     # was hard-swapped out in batch40. guardian_media was
-    # hard-swapped out in batch39. npr_business was
-    # hard-swapped out in batch37. al_monitor stays
+    # hard-swapped out in batch39. al_monitor stays
     # unregistered (replaced in batch29; not a live CAP
     # slot). independent_world is the daily-fetch RED
     # slot — do not keep live. nikkei / indian_express
     # are empty-desc — product skipped. sky_tech /
     # restofworld / ars_science / thehill / abc_intl /
-    # sunday_review are not this batch.
+    # sunday_review are not this batch (thehill is the
+    # old unused id; batch44 locks the_hill).
     assert "politico" not in by_id
-    assert "nyt_automobiles" not in by_id
+    assert "nyt_automobiles" in by_id
     assert "guardian_games" not in by_id
     assert "bbc_culture" not in by_id
     assert "france24_europe" not in by_id
-    assert "npr_business" not in by_id
+    assert "npr_business" in by_id
     assert "guardian_media" not in by_id
     assert "guardian_economics" not in by_id
     assert "reuters_world" not in by_id
@@ -7129,6 +7227,169 @@ def test_nyt_well_guardian_travel_dw_asia_feeds_live_http_200():
         )
 
 
+def test_nyt_automobiles_the_hill_npr_business_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "nyt_automobiles" in by_id
+    assert by_id["nyt_automobiles"].feed_url == (
+        "https://rss.nytimes.com/services/xml/rss/nyt/Automobiles.xml"
+    )
+    assert "the_hill" in by_id
+    assert by_id["the_hill"].feed_url == "https://thehill.com/feed/"
+    assert "npr_business" in by_id
+    assert by_id["npr_business"].feed_url == "https://feeds.npr.org/1006/rss.xml"
+    assert "nyt_well" in by_id
+    assert "guardian_travel" in by_id
+    assert "dw_asia" in by_id
+    assert "guardian_food" in by_id
+    assert "nyt_fashion" in by_id
+    assert "guardian_money" in by_id
+    assert "france24_middle_east" in by_id
+    assert "nyt_personaltech" in by_id
+    assert "france24_africa" in by_id
+    assert "npr_news" in by_id
+    assert "npr_world" in by_id
+    assert "npr_arts" in by_id
+    assert "npr_science" in by_id
+    assert by_id["npr_news"].feed_url == "https://feeds.npr.org/1001/rss.xml"
+    assert by_id["npr_world"].feed_url == "https://feeds.npr.org/1004/rss.xml"
+    assert by_id["npr_arts"].feed_url == "https://feeds.npr.org/1008/rss.xml"
+    assert by_id["npr_science"].feed_url == "https://feeds.npr.org/1007/rss.xml"
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_business"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_climate"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_health"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_education"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_politics"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_us"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_europe"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_upshot"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_africa"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_arts"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_opinion"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_movies"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_books"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_food"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_travel"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_economy"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_realestate"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_magazine"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_personaltech"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_fashion"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["nyt_well"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != (
+        "https://rss.nytimes.com/services/xml/rss/nyt/Autos.xml"
+    )
+    assert by_id["the_hill"].feed_url != by_id["nyt_automobiles"].feed_url
+    assert by_id["the_hill"].feed_url != by_id["npr_business"].feed_url
+    assert by_id["the_hill"].feed_url != "https://thehill.com/homenews/feed/"
+    assert by_id["the_hill"].feed_url != "https://thehill.com/news/feed/"
+    assert by_id["the_hill"].feed_url != "https://thehill.com/rss/syndicator/19109/"
+    assert by_id["npr_business"].feed_url != by_id["npr_news"].feed_url
+    assert by_id["npr_business"].feed_url != by_id["npr_world"].feed_url
+    assert by_id["npr_business"].feed_url != by_id["npr_arts"].feed_url
+    assert by_id["npr_business"].feed_url != by_id["npr_science"].feed_url
+    assert by_id["npr_business"].feed_url != by_id["nyt_business"].feed_url
+    assert by_id["npr_business"].feed_url != by_id["bbc_business"].feed_url
+    assert by_id["npr_business"].feed_url != by_id["guardian_business"].feed_url
+    assert by_id["npr_business"].feed_url != by_id["nyt_economy"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["the_hill"].feed_url
+    assert by_id["nyt_automobiles"].feed_url != by_id["npr_business"].feed_url
+    assert by_id["the_hill"].feed_url != by_id["npr_business"].feed_url
+    # Unused backups / replaced / title+link-only / empty-desc /
+    # colliding / not-this-batch feeds stay unregistered.
+    # guardian_games stays unregistered (official /games/rss
+    # is 7 nonempty — 5–9 observe; product: games=7 不进
+    # 主源 — do not promote). thehill (no underscore) is
+    # the old unused id — batch44 locks the_hill.
+    # politico is dropped (no qualifying general official
+    # RSS). bbc_culture is dropped (duplicate of
+    # bbc_entertainment). france24_europe is dropped
+    # (duplicate of france24_en). reuters_world official
+    # public RSS is dead. nyt_sports Sports.xml is HTTP
+    # 200 / 0 items. guardian_economics was hard-swapped
+    # out in batch40. guardian_media was hard-swapped
+    # out in batch39. al_monitor stays unregistered
+    # (replaced in batch29; not a live CAP slot).
+    # independent_world is the daily-fetch RED slot —
+    # do not keep live. nikkei / indian_express are
+    # empty-desc — product skipped. sky_tech /
+    # restofworld / ars_science / abc_intl /
+    # sunday_review are not this batch.
+    assert "guardian_games" not in by_id
+    assert "thehill" not in by_id
+    assert "politico" not in by_id
+    assert "bbc_culture" not in by_id
+    assert "france24_europe" not in by_id
+    assert "guardian_media" not in by_id
+    assert "guardian_economics" not in by_id
+    assert "reuters_world" not in by_id
+    assert "independent_world" not in by_id
+    assert "al_monitor" not in by_id
+    assert "indian_express" not in by_id
+    assert "nikkei" not in by_id
+    assert "nyt_world_asia" not in by_id
+    assert "nikkei_asia" not in by_id
+    assert "sky_tech" not in by_id
+    assert "restofworld" not in by_id
+    assert "ars_science" not in by_id
+    assert "abc_intl" not in by_id
+    assert "sunday_review" not in by_id
+    assert "nyt_sports" not in by_id
+    for source_id, expected in (
+        _NYT_AUTOMOBILES_THE_HILL_NPR_BUSINESS_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_nyt_automobiles_the_hill_npr_business_feeds_live_http_200():
+    """Hit the three batch44 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _NYT_AUTOMOBILES_THE_HILL_NPR_BUSINESS_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (nyt_automobiles / the_hill / npr_business)
+        # uses the un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0. Product
+        # lock requires non-empty RSS description/summary on these
+        # three feeds (all live-diff winners were 100% nonempty).
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -7175,6 +7436,7 @@ if __name__ == "__main__":
     test_france24_middle_east_nyt_personaltech_france24_africa_primaries_registered()
     test_guardian_food_nyt_fashion_guardian_money_primaries_registered()
     test_nyt_well_guardian_travel_dw_asia_primaries_registered()
+    test_nyt_automobiles_the_hill_npr_business_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -7217,4 +7479,5 @@ if __name__ == "__main__":
     test_france24_middle_east_nyt_personaltech_france24_africa_feeds_live_http_200()
     test_guardian_food_nyt_fashion_guardian_money_feeds_live_http_200()
     test_nyt_well_guardian_travel_dw_asia_feeds_live_http_200()
+    test_nyt_automobiles_the_hill_npr_business_feeds_live_http_200()
     print("✓ source registry tests PASSED")
