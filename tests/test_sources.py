@@ -4990,6 +4990,8 @@ _JAPAN_FORWARD_ARTFORUM_KNOWABLE_PRIMARY = {
 # no CAP code change. No X this
 # batch. No LLM this batch. Not
 # tech/AI whitelist.
+# the_new_humanitarian / salon /
+# mother_jones are batch67.
 _WORLD_POLITICS_REVIEW_CLIMATE_HOME_PROJECT_SYNDICATE_PRIMARY = {
     "world_politics_review": {
         "name": "World Politics Review",
@@ -5008,7 +5010,234 @@ _WORLD_POLITICS_REVIEW_CLIMATE_HOME_PROJECT_SYNDICATE_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 206
+# CEO-approved The New Humanitarian / Salon /
+# Mother Jones RSS primaries (batch67). These
+# three are the new adds after #124
+# (world_politics_review / climate_home /
+# project_syndicate) on tip b8fde88. Do not
+# re-touch that #124 winner. Do not touch
+# japan_forward / artforum / knowable (#123)
+# / the_wire_china / literary_hub / himal
+# (#122) / defense_one / fast_company /
+# lowy_interpreter (#121) / techinasia /
+# science_news / african_arguments (#120) /
+# the_markup / atlas_obscura / undark (#119)
+# / aspi_strategist / nautilus /
+# hyperallergic (#118) / aeon / noema /
+# marketwatch (#117) / mercopress /
+# nature_news / crisis_group (#116) /
+# africa_report / mexico_news_daily /
+# sciencedaily (#115) / mongabay /
+# daily_maverick / oilprice (#114) /
+# politico_europe / breaking_defense /
+# carbon_brief (#113) / phys_org /
+# globe_mail / newatlas (#112) /
+# the_register / foreign_affairs /
+# allafrica (#111) / zdnet (#110) /
+# digiday_media (#107). ars_science
+# stays hung. nyt_media / guardian_media
+# stay hung.
+# the_new_humanitarian is the official
+# The New Humanitarian English-all RSS
+# (no prior the_new_humanitarian /
+# new_humanitarian / tnh id; unused
+# batch58 / batch65 leftover at this
+# official URL stays unregistered as
+# those leftover ids). Locked official
+# documented English-all
+# https://www.thenewhumanitarian.org/rss/all.xml
+# (channel "The New Humanitarian").
+# /rss/all.xml/ remaps to /rss/all.xml.
+# Apex thenewhumanitarian.org/rss/all.xml
+# remaps to www. /rss.xml is a different
+# older 10-item body — lock the documented
+# English-all feed, not /rss.xml. /rss /
+# /feed / /feed/ / /feeds/all.xml /
+# /top10.xml are HTTP 403 JS challenge.
+# /rss/all is HTTP 404 HTML. Live-diff
+# winner: HTTP 200 / 10 nonempty / 10
+# insertable (httpx fetch_source +
+# urllib). Product lock ≥10 nonempty —
+# keep (10 is not the 5–9 observe band).
+# Distinct from live crisis_group /
+# guardian_global_dev / intercept /
+# aljazeera / middleeasteye /
+# foreign_affairs / foreign_policy /
+# bbc_world / nyt_world / guardian_world
+# / himal / african_arguments. 0 article
+# URL overlap with those. Lands on the
+# existing 国际 category path
+# (humanitarian / crisis reporting, same
+# as crisis_group / guardian_global_dev).
+# Not added to the tech/AI whitelist.
+# dawn official
+# https://www.dawn.com/feeds/home / /feed
+# / /rss (and apex / section feeds) are
+# Cloudflare HTTP 403 JS challenge
+# (urllib + httpx) — not
+# fetch-compatible. Same as the batch53
+# leftover note. Feedburner
+# https://feeds.feedburner.com/dawn-news
+# is a working mirror (26 insertable) —
+# lock official, not Feedburner; do not
+# register dawn. Hard-swap fill is salon.
+# salon is the official Salon WordPress
+# site-wide RSS (no prior salon /
+# salon_com id). Locked official
+# https://www.salon.com/feed (channel
+# "Salon.com"; subtitle "In-depth news,
+# politics, business, technology &
+# culture"). /feed/ remaps to /feed.
+# Apex salon.com/feed/ remaps to www
+# /feed. /rss / /feed/rss/ remap to
+# /feed. /rss.xml / /atom.xml are HTTP
+# 404. ?feed=rss / ?feed=rss2 are HTML
+# 200 homepage / 0 insertable.
+# /feed?post_type=all is the same body —
+# lock official /feed, not the query
+# variant. /news/feed/ is a comments
+# feed (0 items). Live-diff winner: HTTP
+# 200 / 30 nonempty / 30 insertable
+# (ingest cap 30; httpx fetch_source +
+# urllib). Product lock ≥10 nonempty —
+# keep. Distinct from live atlantic /
+# nyt_opinion / guardian_opinion /
+# intercept / propublica / the_hill /
+# politico_politics / project_syndicate.
+# 0 article URL overlap with those.
+# Lands on the existing 综合 category
+# path (news / politics / culture, same
+# as atlantic / intercept). Not added
+# to the tech/AI whitelist.
+# mother_jones is the official Mother
+# Jones WordPress RSS (no prior
+# mother_jones / motherjones id). Locked
+# official https://www.motherjones.com/feed/
+# (channel "Mother Jones"; subtitle
+# "Smart, fearless journalism"). /feed
+# remaps to /feed/. Apex
+# motherjones.com/feed/ remaps to www.
+# /rss / ?feed=rss / ?feed=rss2 /
+# /feed/rss/ remap to /feed/. /rss.xml /
+# /atom.xml / /feeds/ / /feed.xml are
+# HTTP 404. /politics/feed/ is a
+# different Politics section feed —
+# lock the site-wide /feed/.
+# /feed/atom/ is Atom (same 10
+# insertable via feedparser) — lock
+# the RSS 2.0 /feed/, not Atom.
+# link.motherjones.com/feed remaps to
+# the HTML homepage / 0 insertable.
+# Live-diff winner: HTTP 200 / 10
+# nonempty / 10 insertable (httpx
+# fetch_source + urllib). Product lock
+# ≥10 nonempty — keep (10 is not the
+# 5–9 observe band). Distinct from live
+# intercept / propublica / atlantic /
+# nyt_opinion / guardian_opinion /
+# the_hill / salon. 0 article URL
+# overlap with those. Lands on the
+# existing 综合 category path
+# (investigative magazine, same as
+# intercept / propublica). Not added
+# to the tech/AI whitelist.
+# Product-locked backups (use only if a
+# primary fails live-diff / fetch /
+# URL-dedup): kff_health / niemanlab —
+# unused because the two winning
+# primaries plus the salon hard-swap
+# fill already hold the three slots
+# (≥10 nonempty via fetch_source). Do
+# not probe unused backups.
+# Do NOT use as backups (product skip):
+# bangkok_post (HTTP 451 / prior skip),
+# indian_express (insertable=0
+# empty-desc), rest_of_world (httpx
+# 403 JS challenge), al_monitor
+# (flaky 403), hkfp (HTTP 403),
+# biographic (httpx 403 — 勿再挂),
+# asiatimes / asia_times (httpx 403).
+# Do not invent other backups. Do not
+# restore ars_science. Do not add a
+# second digiday_media. Do not register
+# dawn Feedburner.
+# world_politics_review / climate_home /
+# project_syndicate stay registered
+# (batch66 closed). japan_forward /
+# artforum / knowable stay registered
+# (batch65 closed). the_wire_china /
+# literary_hub / himal stay registered
+# (batch64 closed). defense_one /
+# fast_company / lowy_interpreter stay
+# registered (batch63 closed).
+# techinasia / science_news /
+# african_arguments stay registered
+# (batch62 closed). the_markup /
+# atlas_obscura / undark stay
+# registered (batch61 closed).
+# aspi_strategist / nautilus /
+# hyperallergic stay registered
+# (batch60 closed). aeon / noema /
+# marketwatch stay registered (batch59
+# closed). mercopress / nature_news /
+# crisis_group stay registered (batch58
+# closed). africa_report /
+# mexico_news_daily / sciencedaily stay
+# registered (batch57 closed). mongabay
+# / daily_maverick / oilprice stay
+# registered (batch56 closed).
+# politico_europe / breaking_defense /
+# carbon_brief stay registered (batch55
+# closed). phys_org / globe_mail /
+# newatlas stay registered (batch54
+# closed). the_register /
+# foreign_affairs / allafrica stay
+# registered (batch53 closed).
+# bbc_australia / bloomberg_technology /
+# zdnet stay registered (batch52 after
+# #110). ars_science stays hung.
+# the_diplomat / stat_news /
+# ieee_spectrum stay registered
+# (batch51 closed). war_on_rocks /
+# canary_media / space_com stay
+# registered (batch50 closed).
+# foreign_policy / ft_world /
+# abc_australia stay registered
+# (batch49 closed). politico_politics /
+# dw_business / france24_culture stay
+# registered (batch48 closed).
+# atlantic / smh_national /
+# guardian_education stay registered
+# (batch47 closed). digiday_media
+# stays registered (#107). nyt_media /
+# guardian_media stay hung.
+# guardian_games stays unregistered
+# (product: games thin / 不进主源).
+# sunday_review / cnbc (403 known) /
+# ap stay unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6 —
+# no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_THE_NEW_HUMANITARIAN_SALON_MOTHER_JONES_PRIMARY = {
+    "the_new_humanitarian": {
+        "name": "The New Humanitarian",
+        "feed_url": "https://www.thenewhumanitarian.org/rss/all.xml",
+        "category": "国际",
+    },
+    "salon": {
+        "name": "Salon",
+        "feed_url": "https://www.salon.com/feed",
+        "category": "综合",
+    },
+    "mother_jones": {
+        "name": "Mother Jones",
+        "feed_url": "https://www.motherjones.com/feed/",
+        "category": "综合",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 209
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -13357,7 +13586,10 @@ def test_mercopress_nature_news_crisis_group_primaries_registered():
     # Unused backups stay unregistered because all three
     # primaries won. Product-skip sources stay out.
     assert "artnet" not in by_id
-    assert "the_new_humanitarian" not in by_id
+    # the_new_humanitarian is now the
+    # batch67 primary (was an unused
+    # batch58 leftover).
+    assert "the_new_humanitarian" in by_id
     assert "military_times" not in by_id
     # defense_one is now the batch63
     # primary (was an unused batch58
@@ -13661,7 +13893,10 @@ def test_aeon_noema_marketwatch_primaries_registered():
     assert "yale_e360" not in by_id
     assert "yale_360" not in by_id
     assert "artnet" not in by_id
-    assert "the_new_humanitarian" not in by_id
+    # the_new_humanitarian is now the
+    # batch67 primary (was an unused
+    # leftover).
+    assert "the_new_humanitarian" in by_id
     assert "military_times" not in by_id
     assert "hkfp" not in by_id
     assert "indian_express" not in by_id
@@ -13955,7 +14190,10 @@ def test_aspi_strategist_nautilus_hyperallergic_primaries_registered():
     assert "defense_one" in by_id
     assert "yale_e360" not in by_id
     assert "yale_360" not in by_id
-    assert "the_new_humanitarian" not in by_id
+    # the_new_humanitarian is now the
+    # batch67 primary (was an unused
+    # leftover).
+    assert "the_new_humanitarian" in by_id
     assert "military_times" not in by_id
     assert "hkfp" not in by_id
     assert "indian_express" not in by_id
@@ -14280,7 +14518,10 @@ def test_the_markup_atlas_obscura_undark_primaries_registered():
     assert "artnet" not in by_id
     assert "yale_e360" not in by_id
     assert "yale_360" not in by_id
-    assert "the_new_humanitarian" not in by_id
+    # the_new_humanitarian is now the
+    # batch67 primary (was an unused
+    # leftover).
+    assert "the_new_humanitarian" in by_id
     assert "military_times" not in by_id
     assert "hkfp" not in by_id
     assert "indian_express" not in by_id
@@ -15789,11 +16030,15 @@ def test_japan_forward_artforum_knowable_primaries_registered():
         "https://breakingdefense.com/feed/"
     )
     # Unused backups + product-skip sources stay out.
-    # the_new_humanitarian / dawn / grist unused
-    # because all three primaries KEEP.
+    # the_new_humanitarian is now the batch67
+    # primary (was an unused leftover).
+    # dawn / grist unused because all three
+    # batch65 primaries KEEP (dawn later
+    # failed batch67 official 403 hard-swap
+    # and stays unregistered).
     # asiatimes / asia_times stay out (httpx 403).
     # biographic stays out (httpx 403).
-    assert "the_new_humanitarian" not in by_id
+    assert "the_new_humanitarian" in by_id
     assert "new_humanitarian" not in by_id
     assert "dawn" not in by_id
     assert "dawn_com" not in by_id
@@ -16231,7 +16476,11 @@ def test_world_politics_review_climate_home_project_syndicate_primaries_register
     assert "climatechangenews" not in by_id
     assert "projectsyndicate" not in by_id
     assert "project_syndicate_org" not in by_id
-    assert "the_new_humanitarian" not in by_id
+    # the_new_humanitarian is now the
+    # batch67 primary (was an unused
+    # leftover). dawn stays out (batch67
+    # official httpx 403 hard-swap).
+    assert "the_new_humanitarian" in by_id
     assert "new_humanitarian" not in by_id
     assert "dawn" not in by_id
     assert "dawn_com" not in by_id
@@ -16287,6 +16536,446 @@ def test_world_politics_review_climate_home_project_syndicate_feeds_live_http_20
         # Required: parseable title / url / published on each item.
         # RSS 2.0 (world_politics_review / climate_home /
         # project_syndicate) uses the un-namespaced
+        # element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # All three winners were 100% nonempty this probe.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= 10, (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP"
+        )
+
+
+def test_the_new_humanitarian_salon_mother_jones_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "the_new_humanitarian" in by_id
+    assert by_id["the_new_humanitarian"].feed_url == (
+        "https://www.thenewhumanitarian.org/rss/all.xml"
+    )
+    assert "salon" in by_id
+    assert by_id["salon"].feed_url == "https://www.salon.com/feed"
+    assert "mother_jones" in by_id
+    assert by_id["mother_jones"].feed_url == (
+        "https://www.motherjones.com/feed/"
+    )
+    # #124 winners stay registered and unchanged.
+    # #123 winners stay registered and unchanged.
+    # #122 winners stay registered and unchanged.
+    # #121 winners stay registered and unchanged.
+    # #120 winners stay registered and unchanged.
+    # #119 winners stay registered and unchanged.
+    # #118 winners stay registered and unchanged.
+    # #117 winners stay registered and unchanged.
+    # #116 winners stay registered and unchanged.
+    # #115 winners stay registered and unchanged.
+    # #114 winners stay registered and unchanged.
+    # #113 winners stay registered and unchanged.
+    # #112 winners stay registered and unchanged.
+    # #111 winners stay registered and unchanged.
+    # #110 hard-swap: zdnet live, ars_science hung.
+    # #107 hard-swap: digiday_media live, nyt_media hung.
+    # Do not touch world_politics_review /
+    # climate_home / project_syndicate /
+    # japan_forward / artforum / knowable /
+    # the_wire_china / literary_hub / himal /
+    # defense_one / fast_company /
+    # lowy_interpreter / techinasia /
+    # science_news / african_arguments /
+    # the_markup / atlas_obscura / undark /
+    # aspi_strategist / nautilus /
+    # hyperallergic / aeon / noema /
+    # marketwatch / mercopress / nature_news /
+    # crisis_group / africa_report /
+    # mexico_news_daily / sciencedaily /
+    # mongabay / daily_maverick / oilprice /
+    # politico_europe / breaking_defense /
+    # carbon_brief / phys_org / globe_mail /
+    # newatlas / the_register / foreign_affairs /
+    # allafrica / zdnet / digiday_media.
+    assert "world_politics_review" in by_id
+    assert "climate_home" in by_id
+    assert "project_syndicate" in by_id
+    assert "japan_forward" in by_id
+    assert "artforum" in by_id
+    assert "knowable" in by_id
+    assert "the_wire_china" in by_id
+    assert "literary_hub" in by_id
+    assert "himal" in by_id
+    assert "defense_one" in by_id
+    assert "fast_company" in by_id
+    assert "lowy_interpreter" in by_id
+    assert "techinasia" in by_id
+    assert "science_news" in by_id
+    assert "african_arguments" in by_id
+    assert "the_markup" in by_id
+    assert "atlas_obscura" in by_id
+    assert "undark" in by_id
+    assert "aspi_strategist" in by_id
+    assert "nautilus" in by_id
+    assert "hyperallergic" in by_id
+    assert "aeon" in by_id
+    assert "noema" in by_id
+    assert "marketwatch" in by_id
+    assert "mercopress" in by_id
+    assert "nature_news" in by_id
+    assert "crisis_group" in by_id
+    assert "africa_report" in by_id
+    assert "mexico_news_daily" in by_id
+    assert "sciencedaily" in by_id
+    assert "mongabay" in by_id
+    assert "daily_maverick" in by_id
+    assert "oilprice" in by_id
+    assert "politico_europe" in by_id
+    assert "breaking_defense" in by_id
+    assert "carbon_brief" in by_id
+    assert "phys_org" in by_id
+    assert "globe_mail" in by_id
+    assert "newatlas" in by_id
+    assert "the_register" in by_id
+    assert "foreign_affairs" in by_id
+    assert "allafrica" in by_id
+    assert "bbc_australia" in by_id
+    assert "bloomberg_technology" in by_id
+    assert "zdnet" in by_id
+    assert "ars_science" not in by_id
+    assert "the_diplomat" in by_id
+    assert "stat_news" in by_id
+    assert "ieee_spectrum" in by_id
+    assert "war_on_rocks" in by_id
+    assert "canary_media" in by_id
+    assert "space_com" in by_id
+    assert "foreign_policy" in by_id
+    assert "ft_world" in by_id
+    assert "abc_australia" in by_id
+    assert "politico_politics" in by_id
+    assert "dw_business" in by_id
+    assert "france24_culture" in by_id
+    assert "atlantic" in by_id
+    assert "smh_national" in by_id
+    assert "guardian_education" in by_id
+    assert "digiday_media" in by_id
+    assert "time_top" in by_id
+    assert "nyt_obituaries" in by_id
+    assert "nyt_magazine" in by_id
+    assert "theconversation" in by_id
+    assert "guardian_opinion" in by_id
+    assert "nyt_opinion" in by_id
+    assert "intercept" in by_id
+    assert "propublica" in by_id
+    assert "guardian_artanddesign" in by_id
+    assert "nyt_arts" in by_id
+    assert "guardian_film" in by_id
+    assert "npr_arts" in by_id
+    assert "nyt_science" in by_id
+    assert "guardian_science" in by_id
+    assert "bbc_science" in by_id
+    assert "npr_science" in by_id
+    assert "techcrunch" in by_id
+    assert "verge" in by_id
+    assert "wired" in by_id
+    assert "bbc_africa" in by_id
+    assert "nyt_africa" in by_id
+    assert "france24_africa" in by_id
+    assert "guardian_world_africa" in by_id
+    assert "scmp_china" in by_id
+    assert "economist_china" in by_id
+    assert "bbc_china" in by_id
+    assert "guardian_books" in by_id
+    assert "nyt_books" in by_id
+    assert "hindu_international" in by_id
+    assert "japan_times" in by_id
+    assert "guardian_global_dev" in by_id
+    assert "middleeasteye" in by_id
+    assert "the_hill" in by_id
+    assert by_id["the_new_humanitarian"].feed_url != (
+        "https://www.thenewhumanitarian.org/rss.xml"
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        "https://www.thenewhumanitarian.org/rss"
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        "https://www.thenewhumanitarian.org/feed"
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        "https://www.thenewhumanitarian.org/feed/"
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        "https://thenewhumanitarian.org/rss/all.xml"
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        "https://www.thenewhumanitarian.org/rss/all"
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        "https://www.thenewhumanitarian.org/top10.xml"
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        "https://www.thenewhumanitarian.org/feeds/all.xml"
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        by_id["crisis_group"].feed_url
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        by_id["guardian_global_dev"].feed_url
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        by_id["intercept"].feed_url
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        by_id["aljazeera"].feed_url
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        by_id["middleeasteye"].feed_url
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        by_id["foreign_affairs"].feed_url
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        by_id["foreign_policy"].feed_url
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        by_id["bbc_world"].feed_url
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        by_id["nyt_world"].feed_url
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        by_id["guardian_world"].feed_url
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        by_id["himal"].feed_url
+    )
+    assert by_id["the_new_humanitarian"].feed_url != (
+        by_id["african_arguments"].feed_url
+    )
+    assert by_id["salon"].feed_url != "https://www.salon.com/feed/"
+    assert by_id["salon"].feed_url != "https://salon.com/feed/"
+    assert by_id["salon"].feed_url != "https://www.salon.com/rss"
+    assert by_id["salon"].feed_url != "https://www.salon.com/rss.xml"
+    assert by_id["salon"].feed_url != "https://www.salon.com/?feed=rss"
+    assert by_id["salon"].feed_url != "https://www.salon.com/?feed=rss2"
+    assert by_id["salon"].feed_url != "https://www.salon.com/atom.xml"
+    assert by_id["salon"].feed_url != (
+        "https://www.salon.com/feed?post_type=all"
+    )
+    assert by_id["salon"].feed_url != "https://www.salon.com/news/feed/"
+    assert by_id["salon"].feed_url != by_id["atlantic"].feed_url
+    assert by_id["salon"].feed_url != by_id["nyt_opinion"].feed_url
+    assert by_id["salon"].feed_url != by_id["guardian_opinion"].feed_url
+    assert by_id["salon"].feed_url != by_id["intercept"].feed_url
+    assert by_id["salon"].feed_url != by_id["propublica"].feed_url
+    assert by_id["salon"].feed_url != by_id["the_hill"].feed_url
+    assert by_id["salon"].feed_url != by_id["politico_politics"].feed_url
+    assert by_id["salon"].feed_url != by_id["project_syndicate"].feed_url
+    assert by_id["mother_jones"].feed_url != (
+        "https://www.motherjones.com/feed"
+    )
+    assert by_id["mother_jones"].feed_url != (
+        "https://motherjones.com/feed/"
+    )
+    assert by_id["mother_jones"].feed_url != (
+        "https://www.motherjones.com/rss"
+    )
+    assert by_id["mother_jones"].feed_url != (
+        "https://www.motherjones.com/rss.xml"
+    )
+    assert by_id["mother_jones"].feed_url != (
+        "https://www.motherjones.com/?feed=rss"
+    )
+    assert by_id["mother_jones"].feed_url != (
+        "https://www.motherjones.com/?feed=rss2"
+    )
+    assert by_id["mother_jones"].feed_url != (
+        "https://www.motherjones.com/atom.xml"
+    )
+    assert by_id["mother_jones"].feed_url != (
+        "https://www.motherjones.com/feeds/"
+    )
+    assert by_id["mother_jones"].feed_url != (
+        "https://www.motherjones.com/feed.xml"
+    )
+    assert by_id["mother_jones"].feed_url != (
+        "https://www.motherjones.com/politics/feed/"
+    )
+    assert by_id["mother_jones"].feed_url != (
+        "https://www.motherjones.com/feed/atom/"
+    )
+    assert by_id["mother_jones"].feed_url != (
+        "https://link.motherjones.com/feed"
+    )
+    assert by_id["mother_jones"].feed_url != by_id["intercept"].feed_url
+    assert by_id["mother_jones"].feed_url != by_id["propublica"].feed_url
+    assert by_id["mother_jones"].feed_url != by_id["atlantic"].feed_url
+    assert by_id["mother_jones"].feed_url != by_id["nyt_opinion"].feed_url
+    assert by_id["mother_jones"].feed_url != (
+        by_id["guardian_opinion"].feed_url
+    )
+    assert by_id["mother_jones"].feed_url != by_id["the_hill"].feed_url
+    assert by_id["the_new_humanitarian"].feed_url != by_id["salon"].feed_url
+    assert by_id["the_new_humanitarian"].feed_url != (
+        by_id["mother_jones"].feed_url
+    )
+    assert by_id["salon"].feed_url != by_id["mother_jones"].feed_url
+    # #124 locks stay exactly as registered.
+    assert by_id["world_politics_review"].feed_url == (
+        "https://www.worldpoliticsreview.com/feed/"
+    )
+    assert by_id["climate_home"].feed_url == (
+        "https://www.climatechangenews.com/feed/"
+    )
+    assert by_id["project_syndicate"].feed_url == (
+        "https://www.project-syndicate.org/rss"
+    )
+    assert by_id["japan_forward"].feed_url == (
+        "https://japan-forward.com/feed/"
+    )
+    assert by_id["artforum"].feed_url == "https://www.artforum.com/feed/"
+    assert by_id["knowable"].feed_url == "https://knowablemagazine.org/rss"
+    assert by_id["the_wire_china"].feed_url == (
+        "https://www.thewirechina.com/feed/"
+    )
+    assert by_id["literary_hub"].feed_url == "https://lithub.com/feed/"
+    assert by_id["himal"].feed_url == "https://www.himalmag.com/rss/"
+    assert by_id["defense_one"].feed_url == (
+        "https://www.defenseone.com/rss/all/"
+    )
+    assert by_id["fast_company"].feed_url == (
+        "https://www.fastcompany.com/latest/rss"
+    )
+    assert by_id["lowy_interpreter"].feed_url == (
+        "https://www.lowyinstitute.org/the-interpreter/rss.xml"
+    )
+    assert by_id["techinasia"].feed_url == (
+        "https://www.techinasia.com/feed"
+    )
+    assert by_id["science_news"].feed_url == (
+        "https://www.sciencenews.org/feed"
+    )
+    assert by_id["african_arguments"].feed_url == (
+        "https://africanarguments.org/feed/"
+    )
+    assert by_id["the_markup"].feed_url == (
+        "https://themarkup.org/feeds/rss.xml"
+    )
+    assert by_id["atlas_obscura"].feed_url == (
+        "https://www.atlasobscura.com/feeds/latest"
+    )
+    assert by_id["undark"].feed_url == "https://undark.org/feed/"
+    assert by_id["aspi_strategist"].feed_url == (
+        "https://www.aspistrategist.org.au/feed/"
+    )
+    assert by_id["nautilus"].feed_url == "https://nautil.us/feed/"
+    assert by_id["hyperallergic"].feed_url == (
+        "https://hyperallergic.com/feed/"
+    )
+    assert by_id["aeon"].feed_url == "https://aeon.co/feed.rss"
+    assert by_id["noema"].feed_url == "https://www.noemamag.com/feed/"
+    assert by_id["marketwatch"].feed_url == (
+        "https://feeds.marketwatch.com/marketwatch/topstories"
+    )
+    assert by_id["africa_report"].feed_url == (
+        "https://www.theafricareport.com/feed/"
+    )
+    assert by_id["sciencedaily"].feed_url == (
+        "https://www.sciencedaily.com/rss/all.xml"
+    )
+    assert by_id["digiday_media"].feed_url == "https://digiday.com/media/feed/"
+    assert by_id["breaking_defense"].feed_url == (
+        "https://breakingdefense.com/feed/"
+    )
+    assert by_id["carbon_brief"].feed_url == (
+        "https://www.carbonbrief.org/feed/"
+    )
+    # Unused backups + product-skip sources stay out.
+    # dawn official is Cloudflare 403 —
+    # hard-swapped to salon. kff_health /
+    # niemanlab unused because the two
+    # winning primaries plus the salon
+    # hard-swap fill already hold the
+    # three slots.
+    # asiatimes / asia_times stay out (httpx 403).
+    # biographic stays out (httpx 403).
+    assert "dawn" not in by_id
+    assert "dawn_com" not in by_id
+    assert "kff_health" not in by_id
+    assert "kff" not in by_id
+    assert "kffhealthnews" not in by_id
+    assert "niemanlab" not in by_id
+    assert "nieman_lab" not in by_id
+    assert "new_humanitarian" not in by_id
+    assert "tnh" not in by_id
+    assert "salon_com" not in by_id
+    assert "motherjones" not in by_id
+    assert "grist" not in by_id
+    assert "grist_org" not in by_id
+    assert "wpr" not in by_id
+    assert "worldpoliticsreview" not in by_id
+    assert "climate_home_news" not in by_id
+    assert "climatechangenews" not in by_id
+    assert "projectsyndicate" not in by_id
+    assert "project_syndicate_org" not in by_id
+    assert "japanforward" not in by_id
+    assert "art_forum" not in by_id
+    assert "knowable_magazine" not in by_id
+    assert "asiatimes" not in by_id
+    assert "asia_times" not in by_id
+    assert "biographic" not in by_id
+    assert "biographic_magazine" not in by_id
+    assert "hkfp" not in by_id
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "guardian_games" not in by_id
+    for source_id, expected in (
+        _THE_NEW_HUMANITARIAN_SALON_MOTHER_JONES_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_the_new_humanitarian_salon_mother_jones_feeds_live_http_200():
+    """Hit the three batch67 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _THE_NEW_HUMANITARIAN_SALON_MOTHER_JONES_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (the_new_humanitarian / salon /
+        # mother_jones) uses the un-namespaced
         # element text.
         for i, item in enumerate(items):
             title = _item_title(item)
@@ -16379,6 +17068,7 @@ if __name__ == "__main__":
     test_the_wire_china_literary_hub_himal_primaries_registered()
     test_japan_forward_artforum_knowable_primaries_registered()
     test_world_politics_review_climate_home_project_syndicate_primaries_registered()
+    test_the_new_humanitarian_salon_mother_jones_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -16444,4 +17134,5 @@ if __name__ == "__main__":
     test_the_wire_china_literary_hub_himal_feeds_live_http_200()
     test_japan_forward_artforum_knowable_feeds_live_http_200()
     test_world_politics_review_climate_home_project_syndicate_feeds_live_http_200()
+    test_the_new_humanitarian_salon_mother_jones_feeds_live_http_200()
     print("✓ source registry tests PASSED")
