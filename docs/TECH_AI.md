@@ -29,7 +29,7 @@
 
 标题或摘要命中下方关键词才入专题：
 
-`bbc_science` · `nyt_science` · `guardian_science` · `npr_science` · `bbc_business` · `nyt_business` · `nyt_economy` · `cnbc_top` · `scmp_business` · `ftchinese` · `theconversation` · `axios` · `bloomberg_markets` · `guardian_economics`
+`bbc_science` · `nyt_science` · `guardian_science` · `npr_science` · `bbc_business` · `nyt_business` · `nyt_economy` · `cnbc_top` · `scmp_business` · `ftchinese` · `theconversation` · `axios` · `bloomberg_markets`
 
 ## AI 关键词
 

@@ -898,10 +898,10 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
-        id="guardian_economics",
-        name="Guardian Economics",
-        feed_url="https://www.theguardian.com/business/economics/rss",
-        category="财经",
+        id="guardian_opinion",
+        name="Guardian Opinion",
+        feed_url="https://www.theguardian.com/commentisfree/rss",
+        category="综合",
         role="primary",
     ),
     Source(

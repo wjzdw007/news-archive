@@ -58,7 +58,6 @@ TECH_AI_KEYWORD_SOURCES: frozenset[str] = frozenset(
         "theconversation",
         "axios",
         "bloomberg_markets",
-        "guardian_economics",
     }
 )
 
