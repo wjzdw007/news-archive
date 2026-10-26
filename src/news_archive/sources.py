@@ -1017,9 +1017,9 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
-        id="guardian_media",
-        name="Guardian Media",
-        feed_url="https://www.theguardian.com/us/media/rss",
+        id="nyt_media",
+        name="NYT Media and Advertising",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/MediaandAdvertising.xml",
         category="综合",
         role="primary",
     ),

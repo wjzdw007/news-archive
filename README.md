@@ -149,7 +149,7 @@
 | `guardian_artanddesign` | Guardian Art and Design | https://www.theguardian.com/artanddesign/rss | primary |
 | `dw_europe` | Deutsche Welle Europe | https://rss.dw.com/rdf/rss-en-eu | primary |
 | `guardian_football` | Guardian Football | https://www.theguardian.com/football/rss | primary |
-| `guardian_media` | Guardian Media | https://www.theguardian.com/us/media/rss | primary |
+| `nyt_media` | NYT Media and Advertising | https://rss.nytimes.com/services/xml/rss/nyt/MediaandAdvertising.xml | primary |
 | `time_top` | TIME Top Stories | https://time.com/feed/ | primary |
 | `nyt_obituaries` | NYT Obituaries | https://rss.nytimes.com/services/xml/rss/nyt/Obituaries.xml | primary |
 | `atlantic` | The Atlantic | https://www.theatlantic.com/feed/all/ | primary |
