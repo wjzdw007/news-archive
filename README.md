@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（143 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（146 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -149,6 +149,9 @@
 | `guardian_artanddesign` | Guardian Art and Design | https://www.theguardian.com/artanddesign/rss | primary |
 | `nyt_theater` | NYT Theater | https://rss.nytimes.com/services/xml/rss/nyt/Theater.xml | primary |
 | `independent_world` | Independent World | https://www.independent.co.uk/news/world/rss | primary |
+| `guardian_media` | Guardian Media | https://www.theguardian.com/us/media/rss | primary |
+| `time_top` | TIME Top Stories | https://time.com/feed/ | primary |
+| `nyt_obituaries` | NYT Obituaries | https://rss.nytimes.com/services/xml/rss/nyt/Obituaries.xml | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
