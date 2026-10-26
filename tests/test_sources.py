@@ -2341,7 +2341,7 @@ _POLITICO_POLITICS_DW_BUSINESS_FRANCE24_CULTURE_PRIMARY = {
 # france24_culture). Do not re-touch those #103
 # winners. guardian_media / nyt_media stay
 # unregistered (nyt_media hard-swapped to
-# digiday_media after URL collision).
+# digiday_media after URL collision; #107).
 # foreign_policy is the official Foreign Policy
 # site-wide RSS (no prior foreign_policy / fp_*
 # id). Locked official
@@ -2397,13 +2397,14 @@ _POLITICO_POLITICS_DW_BUSINESS_FRANCE24_CULTURE_PRIMARY = {
 # closed). atlantic / smh_national /
 # guardian_education stay registered (batch47
 # closed). digiday_media stays registered
-# (nyt_media / guardian_media unregistered).
-# guardian_games stays unregistered (product:
-# games thin / 不进主源). sunday_review / cnbc
-# (403 known) / ap stay unregistered (product
-# lock). NEWS_SOURCE_CAP display stays 6 — no
-# CAP code change. No X this batch. No LLM this
-# batch.
+# (nyt_media / guardian_media hung after #107).
+# war_on_rocks / canary_media / space_com are
+# batch50. guardian_games stays unregistered
+# (product: games thin / 不进主源).
+# sunday_review / cnbc (403 known) / ap stay
+# unregistered (product lock). NEWS_SOURCE_CAP
+# display stays 6 — no CAP code change. No X
+# this batch. No LLM this batch.
 _FOREIGN_POLICY_FT_WORLD_ABC_AUSTRALIA_PRIMARY = {
     "foreign_policy": {
         "name": "Foreign Policy",
@@ -2422,7 +2423,100 @@ _FOREIGN_POLICY_FT_WORLD_ABC_AUSTRALIA_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 155
+# CEO-approved War on the Rocks / Canary Media /
+# Space.com RSS primaries (batch50). These three
+# are the new adds after #105 (batch49 CLOSED
+# with foreign_policy / ft_world /
+# abc_australia) on tip 677902c after #107.
+# Do not re-touch those #105 winners.
+# digiday_media stays live (nyt_media hung
+# after #107 URL-collision hard-swap;
+# guardian_media stays hung).
+# war_on_rocks is the official War on the Rocks
+# site-wide WordPress RSS (no prior
+# war_on_rocks / wotr_* id). Locked official
+# https://warontherocks.com/feed/ (channel title
+# "War on the Rocks"). /feed (no slash) / /rss /
+# /feed/rss / www. apex 301 to /feed/.
+# comments/feed/ is a different comments feed
+# (channel "Comments for War on the Rocks") —
+# not the article primary. Live-diff winner:
+# HTTP 200 / 100 nonempty / 100 insertable
+# (httpx fetch_source + urllib). Product lock
+# ≥10 nonempty — keep. canary_media is the
+# official Canary Media site-wide RSS (no prior
+# canary_* id). Locked official
+# https://www.canarymedia.com/rss.rss (channel
+# title "Canary Media"). /rss / /feed / /feed/
+# /rss.xml / apex 301 to /rss.rss. /rss-feed
+# is the HTML landing page (not a feed).
+# Live-diff winner: HTTP 200 / 100 nonempty /
+# 100 insertable. space_com is the official
+# Space.com all-content RSS (no prior space_*
+# id). Locked official
+# https://www.space.com/feeds.xml (channel
+# title "Latest from Space.com"). /feeds/all
+# 301 to /feeds.xml (same body). /feeds/all.xml
+# is urllib 403 / httpx 404. /feed and
+# /feeds/articles are 403 HTML. /feeds/news
+# urllib 403 / httpx 200 same all-content body
+# — not a distinct News section. /rss urllib
+# 403 / httpx 301 to /feeds.xml. Live-diff
+# winner: HTTP 200 / 50 nonempty / 50
+# insertable. Distinct from live nyt_science /
+# bbc_science / guardian_science / npr_science.
+# the_register official
+# https://www.theregister.com/headlines.atom
+# (and headlines.rss; both remap to the same
+# api.theregister.com RSS 2.0 body; channel
+# "www.theregister.com - Articles") is HTTP 200
+# / 50 nonempty (probed only; unused because
+# all three primaries won). /feed.rss and /rss
+# are 404 HTML. /software/headlines.atom is a
+# Software section — not the general primary.
+# asia_times official /feed/ is urllib 200 /
+# 20 nonempty but httpx (fetch_source) 403 JS
+# challenge — not fetch-compatible; unused.
+# allafrica official
+# https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf
+# (channel "AllAfrica News: Latest") is HTTP
+# 200 / 33 nonempty (probed only; unused
+# because all three primaries won).
+# /rdf/africa is a different Africa section.
+# /rdf/lateststories / /misc/scan/headlines.rss
+# / /feed are 404. foreign_policy / ft_world /
+# abc_australia stay registered (batch49
+# closed). politico_politics / dw_business /
+# france24_culture stay registered (batch48
+# closed). atlantic / smh_national /
+# guardian_education stay registered (batch47
+# closed). digiday_media stays registered
+# (#107). nyt_media / guardian_media stay hung.
+# guardian_games stays unregistered (product:
+# games thin / 不进主源). sunday_review / cnbc
+# (403 known) / ap stay unregistered (product
+# lock). NEWS_SOURCE_CAP display stays 6 — no
+# CAP code change. No X this batch. No LLM this
+# batch.
+_WAR_ON_ROCKS_CANARY_MEDIA_SPACE_COM_PRIMARY = {
+    "war_on_rocks": {
+        "name": "War on the Rocks",
+        "feed_url": "https://warontherocks.com/feed/",
+        "category": "国际",
+    },
+    "canary_media": {
+        "name": "Canary Media",
+        "feed_url": "https://www.canarymedia.com/rss.rss",
+        "category": "科学",
+    },
+    "space_com": {
+        "name": "Space.com",
+        "feed_url": "https://www.space.com/feeds.xml",
+        "category": "科学",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 158
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -8568,11 +8662,16 @@ def test_politico_politics_dw_business_france24_culture_primaries_registered():
     # unused because all three primaries won.
     # foreign_policy / ft_world / abc_australia are
     # batch49 (ft_world promoted after pbs_newshour
-    # CloudFront 202). pbs_newshour / restofworld /
+    # CloudFront 202). war_on_rocks / canary_media /
+    # space_com are batch50 (all three primaries
+    # won). pbs_newshour / restofworld /
     # economist_intl stay unregistered.
     assert "foreign_policy" in by_id
     assert "ft_world" in by_id
     assert "abc_australia" in by_id
+    assert "war_on_rocks" in by_id
+    assert "canary_media" in by_id
+    assert "space_com" in by_id
     assert "pbs_newshour" not in by_id
     assert "economist_intl" not in by_id
     assert "bbc_australia" not in by_id
@@ -8678,11 +8777,18 @@ def test_foreign_policy_ft_world_abc_australia_primaries_registered():
     # httpx 403 (fetch_source) — not registered.
     # economist_intl unused because ft_world filled
     # the backup slot. nyt_media / guardian_media stay
-    # unregistered (nyt_media hard-swapped to
-    # digiday_media after URL collision).
+    # hung (nyt_media hard-swapped to digiday_media
+    # after URL collision; #107). war_on_rocks /
+    # canary_media / space_com are batch50.
     assert "pbs_newshour" not in by_id
     assert "restofworld" not in by_id
     assert "economist_intl" not in by_id
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "digiday_media" in by_id
+    assert "war_on_rocks" in by_id
+    assert "canary_media" in by_id
+    assert "space_com" in by_id
     assert "abc_intl" not in by_id
     assert by_id["foreign_policy"].feed_url != "https://foreignpolicy.com/feed"
     assert by_id["foreign_policy"].feed_url != "https://foreignpolicy.com/rss"
@@ -8722,6 +8828,7 @@ def test_foreign_policy_ft_world_abc_australia_primaries_registered():
     assert by_id["foreign_policy"].feed_url != by_id["ft_world"].feed_url
     assert by_id["foreign_policy"].feed_url != by_id["abc_australia"].feed_url
     assert by_id["ft_world"].feed_url != by_id["abc_australia"].feed_url
+    # nyt_media hung after #107 — digiday_media live.
     assert by_id["digiday_media"].feed_url == "https://digiday.com/media/feed/"
     assert "guardian_games" not in by_id
     assert "thehill" not in by_id
@@ -8766,6 +8873,140 @@ def test_foreign_policy_ft_world_abc_australia_feeds_live_http_200():
         assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
         # Required: parseable title / url / published on each item.
         # RSS 2.0 (foreign_policy / ft_world / abc_australia)
+        # uses the un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # All three live-diff winners were 100% nonempty.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
+def test_war_on_rocks_canary_media_space_com_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "war_on_rocks" in by_id
+    assert by_id["war_on_rocks"].feed_url == "https://warontherocks.com/feed/"
+    assert "canary_media" in by_id
+    assert by_id["canary_media"].feed_url == "https://www.canarymedia.com/rss.rss"
+    assert "space_com" in by_id
+    assert by_id["space_com"].feed_url == "https://www.space.com/feeds.xml"
+    # #105 winners stay registered and unchanged.
+    # #107 hard-swap: digiday_media live, nyt_media hung.
+    assert "foreign_policy" in by_id
+    assert "ft_world" in by_id
+    assert "abc_australia" in by_id
+    assert "politico_politics" in by_id
+    assert "dw_business" in by_id
+    assert "france24_culture" in by_id
+    assert "atlantic" in by_id
+    assert "smh_national" in by_id
+    assert "guardian_education" in by_id
+    assert "digiday_media" in by_id
+    assert "time_top" in by_id
+    assert "nyt_obituaries" in by_id
+    assert "nyt_science" in by_id
+    assert "bbc_science" in by_id
+    assert "guardian_science" in by_id
+    assert "npr_science" in by_id
+    # nyt_media / guardian_media hung after #107.
+    # Unused backups / not-fetch-compatible /
+    # not-this-batch feeds stay unregistered.
+    # the_register / allafrica were live-diff
+    # backups (HTTP 200 / ≥10 nonempty) — unused
+    # because all three primaries won. asia_times
+    # is httpx 403 (fetch_source) — not registered.
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "the_register" not in by_id
+    assert "asia_times" not in by_id
+    assert "allafrica" not in by_id
+    assert "pbs_newshour" not in by_id
+    assert "restofworld" not in by_id
+    assert "economist_intl" not in by_id
+    assert by_id["war_on_rocks"].feed_url != "https://warontherocks.com/feed"
+    assert by_id["war_on_rocks"].feed_url != "https://warontherocks.com/rss"
+    assert by_id["war_on_rocks"].feed_url != "https://warontherocks.com/feed/rss"
+    assert by_id["war_on_rocks"].feed_url != (
+        "https://www.warontherocks.com/feed/"
+    )
+    assert by_id["war_on_rocks"].feed_url != (
+        "https://warontherocks.com/comments/feed/"
+    )
+    assert by_id["canary_media"].feed_url != "https://www.canarymedia.com/rss"
+    assert by_id["canary_media"].feed_url != "https://www.canarymedia.com/feed"
+    assert by_id["canary_media"].feed_url != "https://www.canarymedia.com/feed/"
+    assert by_id["canary_media"].feed_url != "https://www.canarymedia.com/rss.xml"
+    assert by_id["canary_media"].feed_url != "https://canarymedia.com/rss.rss"
+    assert by_id["canary_media"].feed_url != (
+        "https://www.canarymedia.com/rss-feed"
+    )
+    assert by_id["space_com"].feed_url != "https://www.space.com/feeds/all"
+    assert by_id["space_com"].feed_url != "https://www.space.com/feeds/all.xml"
+    assert by_id["space_com"].feed_url != "https://www.space.com/feeds/news"
+    assert by_id["space_com"].feed_url != "https://www.space.com/feeds/articles"
+    assert by_id["space_com"].feed_url != "https://www.space.com/feed"
+    assert by_id["space_com"].feed_url != "https://www.space.com/rss"
+    assert by_id["space_com"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["space_com"].feed_url != by_id["bbc_science"].feed_url
+    assert by_id["space_com"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["space_com"].feed_url != by_id["npr_science"].feed_url
+    assert by_id["war_on_rocks"].feed_url != by_id["foreign_policy"].feed_url
+    assert by_id["war_on_rocks"].feed_url != by_id["canary_media"].feed_url
+    assert by_id["war_on_rocks"].feed_url != by_id["space_com"].feed_url
+    assert by_id["canary_media"].feed_url != by_id["space_com"].feed_url
+    assert "guardian_games" not in by_id
+    assert "thehill" not in by_id
+    assert "politico" not in by_id
+    assert "bbc_culture" not in by_id
+    assert "france24_europe" not in by_id
+    assert "guardian_economics" not in by_id
+    assert "nyt_theater" not in by_id
+    assert "independent_world" not in by_id
+    assert "sundayreview" not in by_id
+    assert "ap" not in by_id
+    for source_id, expected in (
+        _WAR_ON_ROCKS_CANARY_MEDIA_SPACE_COM_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_war_on_rocks_canary_media_space_com_feeds_live_http_200():
+    """Hit the three batch50 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _WAR_ON_ROCKS_CANARY_MEDIA_SPACE_COM_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (war_on_rocks / canary_media / space_com)
         # uses the un-namespaced element text.
         for i, item in enumerate(items):
             title = _item_title(item)
@@ -8837,6 +9078,7 @@ if __name__ == "__main__":
     test_atlantic_smh_national_guardian_education_primaries_registered()
     test_politico_politics_dw_business_france24_culture_primaries_registered()
     test_foreign_policy_ft_world_abc_australia_primaries_registered()
+    test_war_on_rocks_canary_media_space_com_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -8885,4 +9127,5 @@ if __name__ == "__main__":
     test_atlantic_smh_national_guardian_education_feeds_live_http_200()
     test_politico_politics_dw_business_france24_culture_feeds_live_http_200()
     test_foreign_policy_ft_world_abc_australia_feeds_live_http_200()
+    test_war_on_rocks_canary_media_space_com_feeds_live_http_200()
     print("✓ source registry tests PASSED")
