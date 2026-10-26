@@ -5971,6 +5971,8 @@ _KFF_HEALTH_NIEMANLAB_REASON_PRIMARY = {
 # no CAP code change. No X this
 # batch. No LLM this batch. Not
 # tech/AI whitelist.
+# texas_tribune / pew_research /
+# defector are batch71.
 _MEDIA404_HRW_UN_NEWS_PRIMARY = {
     "media404": {
         "name": "404 Media",
@@ -5989,7 +5991,263 @@ _MEDIA404_HRW_UN_NEWS_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 218
+# CEO-approved Texas Tribune / Pew
+# Research Center / Defector RSS
+# primaries (batch71). These three are
+# the new adds after #128 (media404 /
+# hrw / un_news) on tip
+# 1ba55ec0c1e02f880b408404b095ba453101ba5e.
+# Do not re-touch that #128 winner. Do
+# not touch kff_health / niemanlab /
+# reason (#127) / popular_science /
+# slate / the_19th (#126) /
+# the_new_humanitarian / salon /
+# mother_jones (#125) /
+# world_politics_review / climate_home /
+# project_syndicate (#124) /
+# japan_forward / artforum / knowable
+# (#123) / the_wire_china / literary_hub
+# / himal (#122) / defense_one /
+# fast_company / lowy_interpreter (#121)
+# / techinasia / science_news /
+# african_arguments (#120) / the_markup
+# / atlas_obscura / undark (#119) /
+# aspi_strategist / nautilus /
+# hyperallergic (#118) / aeon / noema /
+# marketwatch (#117) / mercopress /
+# nature_news / crisis_group (#116) /
+# africa_report / mexico_news_daily /
+# sciencedaily (#115) / mongabay /
+# daily_maverick / oilprice (#114) /
+# politico_europe / breaking_defense /
+# carbon_brief (#113) / phys_org /
+# globe_mail / newatlas (#112) /
+# the_register / foreign_affairs /
+# allafrica (#111) / zdnet (#110) /
+# digiday_media (#107). ars_science
+# stays hung. nyt_media / guardian_media
+# stay hung.
+# texas_tribune is the official Texas
+# Tribune site-wide main RSS (no prior
+# texas_tribune / texastribune /
+# texas_tribune_org id). Locked official
+# https://feeds.texastribune.org/feeds/main/
+# (channel "The Texas Tribune"; subtitle
+# "Independent news. Trusted by Texans.").
+# The site's own /feeds/ HTML page lists
+# this FeedPress main feed as "Everything
+# we publish in one feed." MUST lock
+# feeds.texastribune.org + trailing
+# slash: /feeds/main (no slash)
+# ConnectTimeout. /feeds/main/rss is
+# HTTP 404. www /feed/ /feed /rss /
+# /rss.xml /feed/rss/ /feeds/ /atom.xml
+# /feed.xml / ?feed=rss / ?feed=rss2
+# and apex /feed/ are httpx 403 (WAF).
+# Product note: www /feeds/ is the HTML
+# listing page (also httpx 403) — lock
+# the official FeedPress RSS, not the
+# HTML /feeds/ index. Topic / author /
+# tag / series /feed paths are section
+# feeds — lock site-wide main. Feedburner
+# https://feeds.feedburner.com/texastribune
+# is a stale 1-insertable hiatus note —
+# lock official FeedPress, not
+# Feedburner. /TheTexasTribune is HTTP
+# 404. Live-diff winner: HTTP 200 / 20
+# nonempty / 20 insertable (httpx
+# fetch_source + urllib). Product lock
+# ≥10 nonempty — keep (20 is not the
+# 5–9 observe band). Distinct from live
+# propublica / intercept / the_19th /
+# salon / reason / slate / the_hill /
+# politico_politics / mother_jones. 0
+# article URL overlap with those. Lands
+# on the existing 综合 category path
+# (state newsroom / investigative, same
+# as propublica / intercept /
+# the_19th). Not added to the tech/AI
+# whitelist.
+# pew_research is the official Pew
+# Research Center site-wide RSS (no
+# prior pew_research / pew /
+# pewresearch id). Locked official
+# https://www.pewresearch.org/feed/
+# (channel "Pew Research Center";
+# subtitle "Numbers, Facts and Trends
+# Shaping Your World"). MUST lock www +
+# trailing slash: /feed remaps to
+# /feed/. apex pewresearch.org remaps
+# to www. /rss/ /rss.xml /feed/rss/
+# ?feed=rss / ?feed=rss2 /
+# /latest/feed/ remaps to /feed/.
+# /publications/feed/ is a publications
+# section — lock site-wide, not a
+# section. /feed/atom/ is Atom (same
+# 95 insertable before cap) — lock RSS
+# 2.0 /feed/, not Atom. /atom.xml /
+# /feed.xml / /feeds/ are HTTP 404.
+# Feedburner
+# https://feeds.feedburner.com/pewresearch
+# and /PewResearch are HTTP 404. Live-
+# diff winner: HTTP 200 / 95 nonempty /
+# 30 insertable (ingest cap 30; 100
+# items, 5 empty-desc thin-skip; httpx
+# fetch_source + urllib). Product lock
+# ≥10 nonempty — keep (95 is not the
+# 5–9 observe band). Distinct from live
+# theconversation / atlantic / noema /
+# aeon / niemanlab / undark / knowable /
+# the_markup. 0 article URL overlap
+# with those. Lands on the existing 综合
+# category path (public-opinion / social
+# research newsroom, same as
+# theconversation / niemanlab). Not
+# added to the tech/AI whitelist.
+# defector is the official Defector
+# site-wide RSS (no prior defector /
+# defector_com / defector_media id).
+# Locked official
+# https://defector.com/feed (channel
+# "Defector"; subtitle "The last good
+# website."; footer "RSS Feed").
+# /feed/ remaps 308 to /feed. www
+# remaps to apex. /rss/ remaps to /rss
+# (same 10 insertable body). /feed/rss/
+# remaps to /feed/rss (same body).
+# /rss.xml / /feed.xml / /atom.xml /
+# /latest/feed/ are HTTP 404. /feeds/
+# remaps to HTML. ?feed=rss /
+# ?feed=rss2 are HTTP 200 HTML (0
+# insertable). Feedburner
+# https://feeds.feedburner.com/defector
+# is HTTP 404. Live-diff winner: HTTP
+# 200 / 10 nonempty / 10 insertable
+# (httpx fetch_source + urllib).
+# Product lock ≥10 nonempty — keep (10
+# is the KEEP floor, not the 5–9
+# observe band). Distinct from live
+# salon / slate / atlantic /
+# guardian_sport / guardian_football /
+# mother_jones / reason. 0 article URL
+# overlap with those. Lands on the
+# existing 综合 category path (sports /
+# culture independent newsroom, same as
+# salon / slate / guardian_sport). Not
+# added to the tech/AI whitelist.
+# Product-locked backups (use only if a
+# primary fails live-diff / fetch /
+# URL-dedup): vox / euractiv /
+# passblue — unused because all three
+# primaries won (≥10 nonempty via
+# fetch_source). Do not probe unused
+# backups. euractiv official
+# https://www.euractiv.com/feed/ 301s
+# to rapporteur.com historically
+# (batch53 / batch69) — unused, so not
+# re-probed this batch.
+# Do NOT use as backups (product skip):
+# bangkok_post (HTTP 451 / prior skip),
+# indian_express (insertable=0
+# empty-desc), rest_of_world (httpx
+# 403 JS challenge), al_monitor
+# (flaky 403), hkfp (HTTP 403),
+# biographic (httpx 403 — 勿再挂),
+# asiatimes / asia_times (httpx 403),
+# dawn (Cloudflare 403), longreads
+# (httpx 403). Do not invent other
+# backups. Do not restore ars_science.
+# Do not add a second digiday_media
+# (digiday0观察). Do not register
+# dawn Feedburner. Do not register
+# inkstick (product dropped — FP niche
+# overlap).
+# media404 / hrw / un_news stay
+# registered (batch70 closed).
+# kff_health / niemanlab / reason stay
+# registered (batch69 closed).
+# popular_science / slate / the_19th
+# stay registered (batch68 closed).
+# the_new_humanitarian / salon /
+# mother_jones stay registered
+# (batch67 closed).
+# world_politics_review / climate_home /
+# project_syndicate stay registered
+# (batch66 closed). japan_forward /
+# artforum / knowable stay registered
+# (batch65 closed). the_wire_china /
+# literary_hub / himal stay registered
+# (batch64 closed). defense_one /
+# fast_company / lowy_interpreter stay
+# registered (batch63 closed).
+# techinasia / science_news /
+# african_arguments stay registered
+# (batch62 closed). the_markup /
+# atlas_obscura / undark stay
+# registered (batch61 closed).
+# aspi_strategist / nautilus /
+# hyperallergic stay registered
+# (batch60 closed). aeon / noema /
+# marketwatch stay registered (batch59
+# closed). mercopress / nature_news /
+# crisis_group stay registered (batch58
+# closed). africa_report /
+# mexico_news_daily / sciencedaily stay
+# registered (batch57 closed). mongabay
+# / daily_maverick / oilprice stay
+# registered (batch56 closed).
+# politico_europe / breaking_defense /
+# carbon_brief stay registered (batch55
+# closed). phys_org / globe_mail /
+# newatlas stay registered (batch54
+# closed). the_register /
+# foreign_affairs / allafrica stay
+# registered (batch53 closed).
+# bbc_australia / bloomberg_technology /
+# zdnet stay registered (batch52 after
+# #110). ars_science stays hung.
+# the_diplomat / stat_news /
+# ieee_spectrum stay registered
+# (batch51 closed). war_on_rocks /
+# canary_media / space_com stay
+# registered (batch50 closed).
+# foreign_policy / ft_world /
+# abc_australia stay registered
+# (batch49 closed). politico_politics /
+# dw_business / france24_culture stay
+# registered (batch48 closed).
+# atlantic / smh_national /
+# guardian_education stay registered
+# (batch47 closed). digiday_media
+# stays registered (#107). nyt_media /
+# guardian_media stay hung.
+# guardian_games stays unregistered
+# (product: games thin / 不进主源).
+# sunday_review / cnbc (403 known) /
+# ap stay unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6 —
+# no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_TEXAS_TRIBUNE_PEW_RESEARCH_DEFECTOR_PRIMARY = {
+    "texas_tribune": {
+        "name": "The Texas Tribune",
+        "feed_url": "https://feeds.texastribune.org/feeds/main/",
+        "category": "综合",
+    },
+    "pew_research": {
+        "name": "Pew Research Center",
+        "feed_url": "https://www.pewresearch.org/feed/",
+        "category": "综合",
+    },
+    "defector": {
+        "name": "Defector",
+        "feed_url": "https://defector.com/feed",
+        "category": "综合",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 221
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -17661,11 +17919,12 @@ def test_the_new_humanitarian_salon_mother_jones_primaries_registered():
     # popular_science / slate / the_19th
     # are now batch68. longreads stays
     # out (batch68 official httpx 403
-    # hard-swap). new_republic /
-    # texas_tribune unused because the
-    # two winning primaries plus the
-    # slate hard-swap fill already hold
-    # the three batch68 slots.
+    # hard-swap). new_republic unused
+    # because the two winning primaries
+    # plus the slate hard-swap fill
+    # already hold the three batch68
+    # slots. texas_tribune is now
+    # batch71.
     # asiatimes / asia_times stay out (httpx 403).
     # biographic stays out (httpx 403).
     assert "popular_science" in by_id
@@ -17676,7 +17935,7 @@ def test_the_new_humanitarian_salon_mother_jones_primaries_registered():
     assert "reason" in by_id
     assert "longreads" not in by_id
     assert "new_republic" not in by_id
-    assert "texas_tribune" not in by_id
+    assert "texas_tribune" in by_id
     assert "dawn" not in by_id
     assert "dawn_com" not in by_id
     assert "kff" not in by_id
@@ -18095,11 +18354,11 @@ def test_popular_science_slate_the_19th_primaries_registered():
     )
     # Unused backups + product-skip sources stay out.
     # longreads official is httpx 403 —
-    # hard-swapped to slate. new_republic /
-    # texas_tribune unused because the two
-    # winning primaries plus the slate
-    # hard-swap fill already hold the
-    # three slots.
+    # hard-swapped to slate. new_republic
+    # unused because the two winning
+    # primaries plus the slate hard-swap
+    # fill already hold the three slots.
+    # texas_tribune is now batch71.
     # dawn stays out (batch67 official
     # Cloudflare 403). Do not register
     # dawn Feedburner.
@@ -18112,7 +18371,7 @@ def test_popular_science_slate_the_19th_primaries_registered():
     assert "new_republic" not in by_id
     assert "newrepublic" not in by_id
     assert "new_republic_com" not in by_id
-    assert "texas_tribune" not in by_id
+    assert "texas_tribune" in by_id
     assert "texastribune" not in by_id
     assert "texas_tribune_org" not in by_id
     assert "popsci" not in by_id
@@ -18541,10 +18800,11 @@ def test_kff_health_niemanlab_reason_primaries_registered():
     )
     # Unused backups + product-skip sources stay out.
     # All three batch69 primaries KEEP, so
-    # vox / euractiv / pew_research stay
-    # unused (do not probe unused backups).
-    # media404 / hrw / un_news are now
-    # batch70. jacobin / psyche /
+    # vox / euractiv stay unused (do not
+    # probe unused backups). pew_research
+    # / texas_tribune / defector are now
+    # batch71. media404 / hrw / un_news
+    # are now batch70. jacobin / psyche /
     # new_republic stay unused because
     # all three batch70 primaries KEEP.
     # longreads stays out (batch68 official
@@ -18562,13 +18822,13 @@ def test_kff_health_niemanlab_reason_primaries_registered():
     assert "vox_com" not in by_id
     assert "euractiv" not in by_id
     assert "euractiv_com" not in by_id
-    assert "pew_research" not in by_id
+    assert "pew_research" in by_id
     assert "pew" not in by_id
     assert "pewresearch" not in by_id
     assert "longreads" not in by_id
     assert "longreads_com" not in by_id
     assert "new_republic" not in by_id
-    assert "texas_tribune" not in by_id
+    assert "texas_tribune" in by_id
     assert "kff" not in by_id
     assert "kffhealthnews" not in by_id
     assert "khn" not in by_id
@@ -18996,10 +19256,14 @@ def test_media404_hrw_un_news_primaries_registered():
     # All three batch70 primaries KEEP, so
     # jacobin / psyche / new_republic stay
     # unused (do not probe unused backups).
-    # longreads stays out (batch68 official
-    # httpx 403). dawn stays out (batch67
-    # official Cloudflare 403). Do not
-    # register dawn Feedburner.
+    # texas_tribune / pew_research /
+    # defector are now batch71. vox /
+    # euractiv / passblue stay unused
+    # because all three batch71 primaries
+    # KEEP. longreads stays out (batch68
+    # official httpx 403). dawn stays out
+    # (batch67 official Cloudflare 403).
+    # Do not register dawn Feedburner.
     # asiatimes / asia_times stay out (httpx 403).
     # biographic stays out (httpx 403).
     assert "jacobin" not in by_id
@@ -19026,12 +19290,12 @@ def test_media404_hrw_un_news_primaries_registered():
     assert "vox_com" not in by_id
     assert "euractiv" not in by_id
     assert "euractiv_com" not in by_id
-    assert "pew_research" not in by_id
+    assert "pew_research" in by_id
     assert "pew" not in by_id
     assert "pewresearch" not in by_id
     assert "longreads" not in by_id
     assert "longreads_com" not in by_id
-    assert "texas_tribune" not in by_id
+    assert "texas_tribune" in by_id
     assert "kff" not in by_id
     assert "kffhealthnews" not in by_id
     assert "khn" not in by_id
@@ -19132,6 +19396,341 @@ def test_media404_hrw_un_news_feeds_live_http_200():
         )
 
 
+def test_texas_tribune_pew_research_defector_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "texas_tribune" in by_id
+    assert by_id["texas_tribune"].feed_url == (
+        "https://feeds.texastribune.org/feeds/main/"
+    )
+    assert "pew_research" in by_id
+    assert by_id["pew_research"].feed_url == (
+        "https://www.pewresearch.org/feed/"
+    )
+    assert "defector" in by_id
+    assert by_id["defector"].feed_url == "https://defector.com/feed"
+    # #128 winners stay registered and unchanged.
+    # #127 winners stay registered and unchanged.
+    # #126 winners stay registered and unchanged.
+    # #125 winners stay registered and unchanged.
+    # #124 winners stay registered and unchanged.
+    # #123 winners stay registered and unchanged.
+    # #122 winners stay registered and unchanged.
+    # #121 winners stay registered and unchanged.
+    # #120 winners stay registered and unchanged.
+    # #119 winners stay registered and unchanged.
+    # #118 winners stay registered and unchanged.
+    # #117 winners stay registered and unchanged.
+    # #116 winners stay registered and unchanged.
+    # #115 winners stay registered and unchanged.
+    # #114 winners stay registered and unchanged.
+    # #113 winners stay registered and unchanged.
+    # #112 winners stay registered and unchanged.
+    # #111 winners stay registered and unchanged.
+    # #110 hard-swap: zdnet live, ars_science hung.
+    # #107 hard-swap: digiday_media live, nyt_media hung.
+    # Do not touch media404 / hrw / un_news /
+    # kff_health / niemanlab / reason /
+    # popular_science / slate / the_19th /
+    # the_new_humanitarian / salon /
+    # mother_jones / world_politics_review /
+    # climate_home / project_syndicate /
+    # japan_forward / artforum / knowable /
+    # the_wire_china / literary_hub / himal /
+    # defense_one / fast_company /
+    # lowy_interpreter / techinasia /
+    # science_news / african_arguments /
+    # the_markup / atlas_obscura / undark /
+    # aspi_strategist / nautilus /
+    # hyperallergic / aeon / noema /
+    # marketwatch / mercopress / nature_news /
+    # crisis_group / africa_report /
+    # mexico_news_daily / sciencedaily /
+    # mongabay / daily_maverick / oilprice /
+    # politico_europe / breaking_defense /
+    # carbon_brief / phys_org / globe_mail /
+    # newatlas / the_register / foreign_affairs /
+    # allafrica / zdnet / digiday_media.
+    assert "media404" in by_id
+    assert "hrw" in by_id
+    assert "un_news" in by_id
+    assert "kff_health" in by_id
+    assert "niemanlab" in by_id
+    assert "reason" in by_id
+    assert "popular_science" in by_id
+    assert "slate" in by_id
+    assert "the_19th" in by_id
+    assert "the_new_humanitarian" in by_id
+    assert "salon" in by_id
+    assert "mother_jones" in by_id
+    assert "world_politics_review" in by_id
+    assert "climate_home" in by_id
+    assert "project_syndicate" in by_id
+    assert "japan_forward" in by_id
+    assert "artforum" in by_id
+    assert "knowable" in by_id
+    assert "the_wire_china" in by_id
+    assert "literary_hub" in by_id
+    assert "himal" in by_id
+    assert "defense_one" in by_id
+    assert "fast_company" in by_id
+    assert "lowy_interpreter" in by_id
+    assert "techinasia" in by_id
+    assert "science_news" in by_id
+    assert "african_arguments" in by_id
+    assert "the_markup" in by_id
+    assert "atlas_obscura" in by_id
+    assert "undark" in by_id
+    assert "aspi_strategist" in by_id
+    assert "nautilus" in by_id
+    assert "hyperallergic" in by_id
+    assert "aeon" in by_id
+    assert "noema" in by_id
+    assert "marketwatch" in by_id
+    assert "africa_report" in by_id
+    assert "sciencedaily" in by_id
+    assert "digiday_media" in by_id
+    assert "breaking_defense" in by_id
+    assert "carbon_brief" in by_id
+    assert by_id["media404"].feed_url == "https://www.404media.co/rss/"
+    assert by_id["hrw"].feed_url == "https://www.hrw.org/rss/news"
+    assert by_id["un_news"].feed_url == (
+        "https://news.un.org/feed/subscribe/en/news/all/rss.xml"
+    )
+    assert by_id["kff_health"].feed_url == "https://kffhealthnews.org/feed/"
+    assert by_id["niemanlab"].feed_url == "https://www.niemanlab.org/feed/"
+    assert by_id["reason"].feed_url == "https://reason.com/feed/"
+    assert by_id["popular_science"].feed_url == "https://www.popsci.com/feed/"
+    assert by_id["slate"].feed_url == "https://slate.com/feeds/all.rss"
+    assert by_id["the_19th"].feed_url == "https://19thnews.org/feed/"
+    assert by_id["the_new_humanitarian"].feed_url == (
+        "https://www.thenewhumanitarian.org/rss/all.xml"
+    )
+    assert by_id["salon"].feed_url == "https://www.salon.com/feed"
+    assert by_id["mother_jones"].feed_url == (
+        "https://www.motherjones.com/feed/"
+    )
+    assert by_id["world_politics_review"].feed_url == (
+        "https://www.worldpoliticsreview.com/feed/"
+    )
+    assert by_id["climate_home"].feed_url == (
+        "https://www.climatechangenews.com/feed/"
+    )
+    assert by_id["project_syndicate"].feed_url == (
+        "https://www.project-syndicate.org/rss"
+    )
+    assert by_id["japan_forward"].feed_url == (
+        "https://japan-forward.com/feed/"
+    )
+    assert by_id["artforum"].feed_url == "https://www.artforum.com/feed/"
+    assert by_id["knowable"].feed_url == "https://knowablemagazine.org/rss"
+    assert by_id["the_wire_china"].feed_url == (
+        "https://www.thewirechina.com/feed/"
+    )
+    assert by_id["literary_hub"].feed_url == "https://lithub.com/feed/"
+    assert by_id["himal"].feed_url == "https://www.himalmag.com/rss/"
+    assert by_id["defense_one"].feed_url == (
+        "https://www.defenseone.com/rss/all/"
+    )
+    assert by_id["fast_company"].feed_url == (
+        "https://www.fastcompany.com/latest/rss"
+    )
+    assert by_id["lowy_interpreter"].feed_url == (
+        "https://www.lowyinstitute.org/the-interpreter/rss.xml"
+    )
+    assert by_id["techinasia"].feed_url == (
+        "https://www.techinasia.com/feed"
+    )
+    assert by_id["science_news"].feed_url == (
+        "https://www.sciencenews.org/feed"
+    )
+    assert by_id["african_arguments"].feed_url == (
+        "https://africanarguments.org/feed/"
+    )
+    assert by_id["the_markup"].feed_url == (
+        "https://themarkup.org/feeds/rss.xml"
+    )
+    assert by_id["atlas_obscura"].feed_url == (
+        "https://www.atlasobscura.com/feeds/latest"
+    )
+    assert by_id["undark"].feed_url == "https://undark.org/feed/"
+    assert by_id["aspi_strategist"].feed_url == (
+        "https://www.aspistrategist.org.au/feed/"
+    )
+    assert by_id["nautilus"].feed_url == "https://nautil.us/feed/"
+    assert by_id["hyperallergic"].feed_url == (
+        "https://hyperallergic.com/feed/"
+    )
+    assert by_id["aeon"].feed_url == "https://aeon.co/feed.rss"
+    assert by_id["noema"].feed_url == "https://www.noemamag.com/feed/"
+    assert by_id["marketwatch"].feed_url == (
+        "https://feeds.marketwatch.com/marketwatch/topstories"
+    )
+    assert by_id["africa_report"].feed_url == (
+        "https://www.theafricareport.com/feed/"
+    )
+    assert by_id["sciencedaily"].feed_url == (
+        "https://www.sciencedaily.com/rss/all.xml"
+    )
+    assert by_id["digiday_media"].feed_url == "https://digiday.com/media/feed/"
+    assert by_id["breaking_defense"].feed_url == (
+        "https://breakingdefense.com/feed/"
+    )
+    assert by_id["carbon_brief"].feed_url == (
+        "https://www.carbonbrief.org/feed/"
+    )
+    # Unused backups + product-skip sources stay out.
+    # All three batch71 primaries KEEP, so
+    # vox / euractiv / passblue stay unused
+    # (do not probe unused backups).
+    # longreads stays out (batch68 official
+    # httpx 403). dawn stays out (batch67
+    # official Cloudflare 403). Do not
+    # register dawn Feedburner.
+    # asiatimes / asia_times stay out (httpx 403).
+    # biographic stays out (httpx 403).
+    # inkstick stays out (product dropped).
+    assert "vox" not in by_id
+    assert "vox_com" not in by_id
+    assert "euractiv" not in by_id
+    assert "euractiv_com" not in by_id
+    assert "passblue" not in by_id
+    assert "pass_blue" not in by_id
+    assert "passblue_com" not in by_id
+    assert "inkstick" not in by_id
+    assert "inkstickmedia" not in by_id
+    assert "texastribune" not in by_id
+    assert "texas_tribune_org" not in by_id
+    assert "pew" not in by_id
+    assert "pewresearch" not in by_id
+    assert "defector_com" not in by_id
+    assert "defector_media" not in by_id
+    assert "jacobin" not in by_id
+    assert "jacobin_mag" not in by_id
+    assert "jacobin_com" not in by_id
+    assert "psyche" not in by_id
+    assert "psyche_co" not in by_id
+    assert "psyche_magazine" not in by_id
+    assert "new_republic" not in by_id
+    assert "newrepublic" not in by_id
+    assert "new_republic_com" not in by_id
+    assert "media_404" not in by_id
+    assert "four_oh_four_media" not in by_id
+    assert "four04_media" not in by_id
+    assert "404_media" not in by_id
+    assert "human_rights_watch" not in by_id
+    assert "hrw_org" not in by_id
+    assert "humanrightswatch" not in by_id
+    assert "unnews" not in by_id
+    assert "united_nations_news" not in by_id
+    assert "un_org_news" not in by_id
+    assert "news_un" not in by_id
+    assert "longreads" not in by_id
+    assert "longreads_com" not in by_id
+    assert "kff" not in by_id
+    assert "kffhealthnews" not in by_id
+    assert "khn" not in by_id
+    assert "kff_org" not in by_id
+    assert "nieman_lab" not in by_id
+    assert "nieman" not in by_id
+    assert "reason_com" not in by_id
+    assert "reason_magazine" not in by_id
+    assert "popsci" not in by_id
+    assert "popularscience" not in by_id
+    assert "slate_com" not in by_id
+    assert "the19th" not in by_id
+    assert "19th_news" not in by_id
+    assert "dawn" not in by_id
+    assert "dawn_com" not in by_id
+    assert "new_humanitarian" not in by_id
+    assert "tnh" not in by_id
+    assert "salon_com" not in by_id
+    assert "motherjones" not in by_id
+    assert "grist" not in by_id
+    assert "grist_org" not in by_id
+    assert "wpr" not in by_id
+    assert "worldpoliticsreview" not in by_id
+    assert "climate_home_news" not in by_id
+    assert "climatechangenews" not in by_id
+    assert "projectsyndicate" not in by_id
+    assert "project_syndicate_org" not in by_id
+    assert "japanforward" not in by_id
+    assert "art_forum" not in by_id
+    assert "knowable_magazine" not in by_id
+    assert "asiatimes" not in by_id
+    assert "asia_times" not in by_id
+    assert "biographic" not in by_id
+    assert "biographic_magazine" not in by_id
+    assert "hkfp" not in by_id
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "guardian_games" not in by_id
+    for source_id, expected in (
+        _TEXAS_TRIBUNE_PEW_RESEARCH_DEFECTOR_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_texas_tribune_pew_research_defector_feeds_live_http_200():
+    """Hit the three batch71 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _TEXAS_TRIBUNE_PEW_RESEARCH_DEFECTOR_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (texas_tribune / pew_research /
+        # defector) uses the un-namespaced
+        # element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # texas_tribune / defector were 100%
+        # nonempty this probe. pew_research is
+        # 95/100 nonempty (5 empty-desc items
+        # skipped by fetch_source) — still ≥10
+        # KEEP.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        if source_id != "pew_research":
+            assert nonempty == len(items), (
+                f"{source_id} empty description: "
+                f"{len(items) - nonempty}/{len(items)}"
+            )
+        assert nonempty >= 10, (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -19205,6 +19804,7 @@ if __name__ == "__main__":
     test_popular_science_slate_the_19th_primaries_registered()
     test_kff_health_niemanlab_reason_primaries_registered()
     test_media404_hrw_un_news_primaries_registered()
+    test_texas_tribune_pew_research_defector_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -19274,4 +19874,5 @@ if __name__ == "__main__":
     test_popular_science_slate_the_19th_feeds_live_http_200()
     test_kff_health_niemanlab_reason_feeds_live_http_200()
     test_media404_hrw_un_news_feeds_live_http_200()
+    test_texas_tribune_pew_research_defector_feeds_live_http_200()
     print("✓ source registry tests PASSED")

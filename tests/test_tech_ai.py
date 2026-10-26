@@ -305,6 +305,26 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "jacobin" not in TECH_AI_SOURCE_WHITELIST
     assert "psyche" not in TECH_AI_SOURCE_WHITELIST
     assert "new_republic" not in TECH_AI_SOURCE_WHITELIST
+    # batch71 RSS primaries stay off the tech/AI whitelist.
+    # texas_tribune lands on the existing 综合
+    # category path (state newsroom /
+    # investigative, same as propublica /
+    # intercept / the_19th). pew_research
+    # lands on 综合 (public-opinion /
+    # social research newsroom, same as
+    # theconversation / niemanlab).
+    # defector lands on 综合 (sports /
+    # culture independent newsroom, same
+    # as salon / slate / guardian_sport).
+    # None of these match the wired /
+    # verge / techcrunch ALWAYS pattern.
+    assert "texas_tribune" not in TECH_AI_SOURCE_WHITELIST
+    assert "pew_research" not in TECH_AI_SOURCE_WHITELIST
+    assert "defector" not in TECH_AI_SOURCE_WHITELIST
+    assert "vox" not in TECH_AI_SOURCE_WHITELIST
+    assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
+    assert "passblue" not in TECH_AI_SOURCE_WHITELIST
+    assert "inkstick" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

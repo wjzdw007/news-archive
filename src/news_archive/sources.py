@@ -1542,6 +1542,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="texas_tribune",
+        name="The Texas Tribune",
+        feed_url="https://feeds.texastribune.org/feeds/main/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="pew_research",
+        name="Pew Research Center",
+        feed_url="https://www.pewresearch.org/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="defector",
+        name="Defector",
+        feed_url="https://defector.com/feed",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
