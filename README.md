@@ -169,7 +169,7 @@
 | `ieee_spectrum` | IEEE Spectrum | https://spectrum.ieee.org/feeds/feed.rss | primary |
 | `bbc_australia` | BBC Australia | https://feeds.bbci.co.uk/news/world/australia/rss.xml | primary |
 | `bloomberg_technology` | Bloomberg Technology | https://feeds.bloomberg.com/technology/news.rss | primary |
-| `ars_science` | Ars Technica Science | https://feeds.arstechnica.com/arstechnica/science | primary |
+| `zdnet` | ZDNet | https://www.zdnet.com/feed/ | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema

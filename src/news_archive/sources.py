@@ -1157,10 +1157,10 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
-        id="ars_science",
-        name="Ars Technica Science",
-        feed_url="https://feeds.arstechnica.com/arstechnica/science",
-        category="科学",
+        id="zdnet",
+        name="ZDNet",
+        feed_url="https://www.zdnet.com/feed/",
+        category="科技",
         role="primary",
     ),
     Source(
