@@ -1647,6 +1647,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="livescience",
+        name="Live Science",
+        feed_url="https://www.livescience.com/feeds.xml",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="thehackernews",
+        name="The Hacker News",
+        feed_url="https://feeds.feedburner.com/TheHackersNews",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="stereogum",
+        name="Stereogum",
+        feed_url="https://stereogum.com/feed",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

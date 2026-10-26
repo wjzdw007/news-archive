@@ -425,6 +425,39 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "dezeen" not in TECH_AI_SOURCE_WHITELIST
     assert "moscow_times" not in TECH_AI_SOURCE_WHITELIST
     assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
+    # batch76 RSS primaries stay off the tech/AI whitelist.
+    # livescience lands on the existing 科学
+    # category path (science newsroom, same
+    # as space_com / popular_science /
+    # science_news) but later-batch science
+    # sources stay off the frozen KEYWORD
+    # set. thehackernews lands on 科技
+    # (security newsroom, same as
+    # thenewstack / zdnet / techinasia)
+    # but later-batch tech sources stay
+    # off the frozen ALWAYS set.
+    # stereogum lands on 综合 (music /
+    # culture newsroom, same as pitchfork
+    # / variety). None of these match the
+    # wired / verge / techcrunch ALWAYS
+    # pattern. the_nation official /feed/
+    # FAIL — not registered. Unused
+    # backups scotusblog / times_of_israel
+    # stay off (first-winner unused stay
+    # out). atlantic_council stays off
+    # (hard-swapped to grist in #139).
+    # grist stays off the frozen KEYWORD
+    # set. euractiv stays off (official
+    # 301 to rapporteur.com; Feedburner stale).
+    assert "livescience" not in TECH_AI_SOURCE_WHITELIST
+    assert "thehackernews" not in TECH_AI_SOURCE_WHITELIST
+    assert "stereogum" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_nation" not in TECH_AI_SOURCE_WHITELIST
+    assert "atlantic_council" not in TECH_AI_SOURCE_WHITELIST
+    assert "grist" not in TECH_AI_SOURCE_WHITELIST
+    assert "scotusblog" not in TECH_AI_SOURCE_WHITELIST
+    assert "times_of_israel" not in TECH_AI_SOURCE_WHITELIST
+    assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

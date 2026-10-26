@@ -7449,7 +7449,127 @@ _GRIST_BALKAN_INSIGHT_TOMSHARDWARE_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 233
+# CEO-approved Live Science / The
+# Hacker News / Stereogum RSS
+# primaries (batch76). These three
+# are the new adds after #139
+# (atlantic_council → grist hard-swap)
+# on tip
+# 56dafaa210dae9f710a61c325bc3f9d8ef4e9cdc
+# (that squash sits on #137
+# 0cc8a3dd36c48948d79ca83e89c2edef09e00cf2
+# batch75). Do not restore
+# atlantic_council. Do not re-touch
+# grist / balkan_insight /
+# tomshardware (#139 / #137).
+# Do not restore independent. Do not
+# restore hrw. Do not restore
+# euractiv. Do not touch
+# grist / balkan_insight /
+# tomshardware (#139 / #137) /
+# physics_world / kyiv_independent /
+# pitchfork (#136) / irish_times /
+# science_org / variety (#135) /
+# who_news / scientific_american /
+# thenewstack (#134 / #131) /
+# texas_tribune / pew_research /
+# defector (#129) / media404 /
+# jacobin / un_news (#128 after the
+# hard-swap) / kff_health /
+# niemanlab / reason (#127) /
+# popular_science / slate / the_19th
+# (#126) / the_new_humanitarian /
+# salon / mother_jones (#125) /
+# world_politics_review / climate_home /
+# project_syndicate (#124) /
+# japan_forward / artforum / knowable
+# (#123) / the_wire_china / literary_hub
+# / himal (#122) / defense_one /
+# fast_company / lowy_interpreter (#121)
+# / techinasia / science_news /
+# african_arguments (#120) / the_markup
+# / atlas_obscura / undark (#119) /
+# aspi_strategist / nautilus /
+# hyperallergic (#118) / aeon / noema /
+# marketwatch (#117) / mercopress /
+# nature_news / crisis_group (#116) /
+# africa_report / mexico_news_daily /
+# sciencedaily (#115) / mongabay /
+# daily_maverick / oilprice (#114) /
+# politico_europe / breaking_defense /
+# carbon_brief (#113) / phys_org /
+# globe_mail / newatlas (#112) /
+# the_register / foreign_affairs /
+# allafrica (#111) / bbc_australia /
+# bloomberg_technology / zdnet (#110
+# after the ars_science hard-swap).
+# livescience is the official Future
+# site-wide feeds.xml (homepage
+# <link>); lock www /feeds.xml; apex
+# and /feeds/all remap to it. Do not
+# lock Feedburner /livescience (stale
+# unrelated Khan / HAPPY BIRTHDAY
+# mirror). /feed /rss.xml /rss 403.
+# thehackernews is the official
+# advertised site-wide RSS (homepage
+# <link> type rss+xml "The Hacker
+# News RSS Feeds"); lock Feedburner
+# /TheHackersNews. This Feedburner is
+# live official (2026 items), not a
+# stale mirror. First-party Atom
+# /feeds/posts/default remaps to it;
+# /rss.xml /atom.xml also remap.
+# /feed 404. lowercase Feedburner
+# /thehackernews is empty. the_nation
+# official advertised site-wide
+# /feed/ is empty RSS (channel "The
+# Nation", 0 items / 0 insertable) —
+# FAIL <5, hard-swap. Do not lock
+# section-only /article/feed/ or
+# /feed/?post_type=article (channel
+# "Article | The Nation") when
+# site-wide exists. First unused
+# backup stereogum won: official
+# homepage <link> "Stereogum | Home"
+# locks apex /feed (no trailing
+# slash); www /feed/ remaps to apex
+# /feed. Feedburner /stereogum is
+# HTML (0 insertable). Unused
+# backups scotusblog / times_of_israel
+# stay out (first-winner unused stay
+# out). Product-skip (do not probe /
+# register): bangkok_post /
+# indian_express / rest_of_world /
+# al_monitor / hkfp / biographic /
+# asiatimes / dawn / longreads / hrw /
+# independent (429) / euractiv
+# (301→rapporteur FAIL). digiday0观察
+# — do not add a second digiday.
+# sunday_review / cnbc (403 known) /
+# ap stay unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6 —
+# no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_LIVESCIENCE_THEHACKERNEWS_STEREOGUM_PRIMARY = {
+    "livescience": {
+        "name": "Live Science",
+        "feed_url": "https://www.livescience.com/feeds.xml",
+        "category": "科学",
+    },
+    "thehackernews": {
+        "name": "The Hacker News",
+        "feed_url": "https://feeds.feedburner.com/TheHackersNews",
+        "category": "科技",
+    },
+    "stereogum": {
+        "name": "Stereogum",
+        "feed_url": "https://stereogum.com/feed",
+        "category": "综合",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 236
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -22812,6 +22932,442 @@ def test_grist_balkan_insight_tomshardware_feeds_live_http_200():
         )
 
 
+def test_livescience_thehackernews_stereogum_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "livescience" in by_id
+    assert by_id["livescience"].feed_url == (
+        "https://www.livescience.com/feeds.xml"
+    )
+    assert "thehackernews" in by_id
+    assert by_id["thehackernews"].feed_url == (
+        "https://feeds.feedburner.com/TheHackersNews"
+    )
+    assert "stereogum" in by_id
+    assert by_id["stereogum"].feed_url == "https://stereogum.com/feed"
+    # #139 hard-swap: grist live, atlantic_council hung.
+    # #137 / batch75 winners stay registered
+    # (grist / balkan_insight / tomshardware)
+    # and unchanged after the swap.
+    # #136 / batch74 winners stay registered and unchanged.
+    # #135 / batch73 winners stay registered and unchanged.
+    # #134 / #131 winners stay registered and unchanged.
+    # #129 / #130 winners stay registered and unchanged.
+    # #128 winners stay registered and unchanged.
+    # #127 winners stay registered and unchanged.
+    # #126 winners stay registered and unchanged.
+    # #125 winners stay registered and unchanged.
+    # #124 winners stay registered and unchanged.
+    # #123 winners stay registered and unchanged.
+    # #122 winners stay registered and unchanged.
+    # #121 winners stay registered and unchanged.
+    # #120 winners stay registered and unchanged.
+    # #119 winners stay registered and unchanged.
+    # #118 winners stay registered and unchanged.
+    # #117 winners stay registered and unchanged.
+    # #116 winners stay registered and unchanged.
+    # #115 winners stay registered and unchanged.
+    # #114 winners stay registered and unchanged.
+    # #113 winners stay registered and unchanged.
+    # #112 winners stay registered and unchanged.
+    # #111 winners stay registered and unchanged.
+    # #110 hard-swap: zdnet live, ars_science hung.
+    # #107 hard-swap: digiday_media live, nyt_media hung.
+    # Do not touch grist / balkan_insight /
+    # tomshardware / physics_world / kyiv_independent /
+    # pitchfork / irish_times / science_org /
+    # variety / who_news / scientific_american /
+    # thenewstack / texas_tribune / pew_research /
+    # defector / media404 / jacobin / un_news /
+    # kff_health / niemanlab / reason /
+    # popular_science / slate / the_19th /
+    # the_new_humanitarian / salon /
+    # mother_jones / world_politics_review /
+    # climate_home / project_syndicate /
+    # japan_forward / artforum / knowable /
+    # the_wire_china / literary_hub / himal /
+    # defense_one / fast_company /
+    # lowy_interpreter / techinasia /
+    # science_news / african_arguments /
+    # the_markup / atlas_obscura / undark /
+    # aspi_strategist / nautilus /
+    # hyperallergic / aeon / noema /
+    # marketwatch / mercopress / nature_news /
+    # crisis_group / africa_report /
+    # mexico_news_daily / sciencedaily /
+    # mongabay / daily_maverick / oilprice /
+    # politico_europe / breaking_defense /
+    # carbon_brief / phys_org / globe_mail /
+    # newatlas / the_register / foreign_affairs /
+    # allafrica / zdnet / digiday_media.
+    assert "grist" in by_id
+    assert "atlantic_council" not in by_id
+    assert "balkan_insight" in by_id
+    assert "tomshardware" in by_id
+    assert "physics_world" in by_id
+    assert "kyiv_independent" in by_id
+    assert "pitchfork" in by_id
+    assert "irish_times" in by_id
+    assert "science_org" in by_id
+    assert "variety" in by_id
+    assert "who_news" in by_id
+    assert "independent" not in by_id
+    assert "scientific_american" in by_id
+    assert "thenewstack" in by_id
+    assert "texas_tribune" in by_id
+    assert "pew_research" in by_id
+    assert "defector" in by_id
+    assert "media404" in by_id
+    assert "jacobin" in by_id
+    assert "un_news" in by_id
+    assert "hrw" not in by_id
+    assert "kff_health" in by_id
+    assert "niemanlab" in by_id
+    assert "reason" in by_id
+    assert "popular_science" in by_id
+    assert "slate" in by_id
+    assert "the_19th" in by_id
+    assert "the_new_humanitarian" in by_id
+    assert "salon" in by_id
+    assert "mother_jones" in by_id
+    assert "world_politics_review" in by_id
+    assert "climate_home" in by_id
+    assert "project_syndicate" in by_id
+    assert "japan_forward" in by_id
+    assert "artforum" in by_id
+    assert "knowable" in by_id
+    assert "the_wire_china" in by_id
+    assert "literary_hub" in by_id
+    assert "himal" in by_id
+    assert "defense_one" in by_id
+    assert "fast_company" in by_id
+    assert "lowy_interpreter" in by_id
+    assert "techinasia" in by_id
+    assert "science_news" in by_id
+    assert "african_arguments" in by_id
+    assert "the_markup" in by_id
+    assert "atlas_obscura" in by_id
+    assert "undark" in by_id
+    assert "aspi_strategist" in by_id
+    assert "nautilus" in by_id
+    assert "hyperallergic" in by_id
+    assert "aeon" in by_id
+    assert "noema" in by_id
+    assert "marketwatch" in by_id
+    assert "africa_report" in by_id
+    assert "sciencedaily" in by_id
+    assert "digiday_media" in by_id
+    assert "breaking_defense" in by_id
+    assert "carbon_brief" in by_id
+    assert "zdnet" in by_id
+    assert "the_register" in by_id
+    assert "newatlas" in by_id
+    assert "phys_org" in by_id
+    assert "nature_news" in by_id
+    assert "space_com" in by_id
+    assert "atlantic" in by_id
+    assert by_id["grist"].feed_url == "https://grist.org/feed/"
+    assert by_id["balkan_insight"].feed_url == (
+        "https://balkaninsight.com/feed/"
+    )
+    assert by_id["tomshardware"].feed_url == (
+        "https://www.tomshardware.com/feeds.xml"
+    )
+    assert by_id["physics_world"].feed_url == "https://physicsworld.com/feed/"
+    assert by_id["kyiv_independent"].feed_url == (
+        "https://kyivindependent.com/feed/rss/"
+    )
+    assert by_id["pitchfork"].feed_url == "https://pitchfork.com/feed/rss"
+    assert by_id["irish_times"].feed_url == (
+        "https://www.irishtimes.com/arc/outboundfeeds/rss/?outputType=xml"
+    )
+    assert by_id["science_org"].feed_url == (
+        "https://www.science.org/rss/news_current.xml"
+    )
+    assert by_id["variety"].feed_url == "https://variety.com/feed/"
+    assert by_id["who_news"].feed_url == (
+        "https://www.who.int/rss-feeds/news-english.xml"
+    )
+    assert by_id["scientific_american"].feed_url == (
+        "https://www.scientificamerican.com/platform/syndication/rss/"
+    )
+    assert by_id["thenewstack"].feed_url == "https://thenewstack.io/feed/"
+    assert by_id["texas_tribune"].feed_url == (
+        "https://feeds.texastribune.org/feeds/main/"
+    )
+    assert by_id["pew_research"].feed_url == (
+        "https://www.pewresearch.org/feed/"
+    )
+    assert by_id["defector"].feed_url == "https://defector.com/feed"
+    assert by_id["media404"].feed_url == "https://www.404media.co/rss/"
+    assert by_id["jacobin"].feed_url == "https://jacobin.com/feed/"
+    assert by_id["un_news"].feed_url == (
+        "https://news.un.org/feed/subscribe/en/news/all/rss.xml"
+    )
+    assert by_id["kff_health"].feed_url == "https://kffhealthnews.org/feed/"
+    assert by_id["niemanlab"].feed_url == "https://www.niemanlab.org/feed/"
+    assert by_id["reason"].feed_url == "https://reason.com/feed/"
+    assert by_id["popular_science"].feed_url == "https://www.popsci.com/feed/"
+    assert by_id["slate"].feed_url == "https://slate.com/feeds/all.rss"
+    assert by_id["the_19th"].feed_url == "https://19thnews.org/feed/"
+    assert by_id["zdnet"].feed_url == "https://www.zdnet.com/feed/"
+    assert by_id["the_register"].feed_url == (
+        "https://www.theregister.com/headlines.atom"
+    )
+    assert by_id["newatlas"].feed_url == "https://newatlas.com/index.rss"
+    assert by_id["phys_org"].feed_url == "https://phys.org/rss-feed/"
+    assert by_id["space_com"].feed_url == "https://www.space.com/feeds.xml"
+    assert by_id["atlantic"].feed_url == "https://www.theatlantic.com/feed/all/"
+    assert by_id["livescience"].feed_url != "https://www.livescience.com/feeds.xml/"
+    assert by_id["livescience"].feed_url != "https://livescience.com/feeds.xml"
+    assert by_id["livescience"].feed_url != "https://www.livescience.com/feed"
+    assert by_id["livescience"].feed_url != "https://www.livescience.com/feed/"
+    assert by_id["livescience"].feed_url != "https://www.livescience.com/rss.xml"
+    assert by_id["livescience"].feed_url != "https://www.livescience.com/rss"
+    assert by_id["livescience"].feed_url != "https://www.livescience.com/rss/"
+    assert by_id["livescience"].feed_url != "https://www.livescience.com/?feed=rss"
+    assert by_id["livescience"].feed_url != (
+        "https://www.livescience.com/?feed=rss2"
+    )
+    assert by_id["livescience"].feed_url != "https://www.livescience.com/feeds/all"
+    assert by_id["livescience"].feed_url != (
+        "https://www.livescience.com/feeds/news.xml"
+    )
+    assert by_id["livescience"].feed_url != (
+        "https://www.livescience.com/news/feeds.xml"
+    )
+    assert by_id["livescience"].feed_url != (
+        "https://feeds.feedburner.com/livescience"
+    )
+    assert by_id["livescience"].feed_url != (
+        "https://feeds.feedburner.com/LiveScience"
+    )
+    assert by_id["livescience"].feed_url != by_id["space_com"].feed_url
+    assert by_id["livescience"].feed_url != by_id["popular_science"].feed_url
+    assert by_id["livescience"].feed_url != by_id["sciencedaily"].feed_url
+    assert by_id["livescience"].feed_url != by_id["science_news"].feed_url
+    assert by_id["livescience"].feed_url != by_id["science_org"].feed_url
+    assert by_id["livescience"].feed_url != by_id["phys_org"].feed_url
+    assert by_id["livescience"].feed_url != by_id["nature_news"].feed_url
+    assert by_id["livescience"].feed_url != (
+        by_id["scientific_american"].feed_url
+    )
+    assert by_id["livescience"].feed_url != by_id["bbc_science"].feed_url
+    assert by_id["livescience"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["livescience"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["livescience"].feed_url != by_id["npr_science"].feed_url
+    assert by_id["livescience"].feed_url != by_id["knowable"].feed_url
+    assert by_id["livescience"].feed_url != by_id["undark"].feed_url
+    assert by_id["livescience"].feed_url != by_id["nautilus"].feed_url
+    assert by_id["livescience"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["livescience"].feed_url != by_id["physics_world"].feed_url
+    assert by_id["livescience"].feed_url != by_id["grist"].feed_url
+    assert by_id["thehackernews"].feed_url != (
+        "https://thehackernews.com/feeds/posts/default"
+    )
+    assert by_id["thehackernews"].feed_url != (
+        "https://thehackernews.com/feeds/posts/default?alt=rss"
+    )
+    assert by_id["thehackernews"].feed_url != "https://thehackernews.com/feed"
+    assert by_id["thehackernews"].feed_url != "https://thehackernews.com/feed/"
+    assert by_id["thehackernews"].feed_url != "https://thehackernews.com/rss.xml"
+    assert by_id["thehackernews"].feed_url != "https://thehackernews.com/rss"
+    assert by_id["thehackernews"].feed_url != "https://thehackernews.com/atom.xml"
+    assert by_id["thehackernews"].feed_url != "https://www.thehackernews.com/feed"
+    assert by_id["thehackernews"].feed_url != "https://thehackernews.com/?feed=rss"
+    assert by_id["thehackernews"].feed_url != (
+        "https://feeds.feedburner.com/thehackernews"
+    )
+    assert by_id["thehackernews"].feed_url != by_id["thenewstack"].feed_url
+    assert by_id["thehackernews"].feed_url != by_id["media404"].feed_url
+    assert by_id["thehackernews"].feed_url != by_id["zdnet"].feed_url
+    assert by_id["thehackernews"].feed_url != by_id["the_register"].feed_url
+    assert by_id["thehackernews"].feed_url != by_id["ars_technica"].feed_url
+    assert by_id["thehackernews"].feed_url != by_id["wired"].feed_url
+    assert by_id["thehackernews"].feed_url != by_id["verge"].feed_url
+    assert by_id["thehackernews"].feed_url != by_id["techcrunch"].feed_url
+    assert by_id["thehackernews"].feed_url != by_id["techinasia"].feed_url
+    assert by_id["thehackernews"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["thehackernews"].feed_url != by_id["mit_tr"].feed_url
+    assert by_id["thehackernews"].feed_url != by_id["bbc_technology"].feed_url
+    assert by_id["thehackernews"].feed_url != (
+        by_id["guardian_technology"].feed_url
+    )
+    assert by_id["thehackernews"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["thehackernews"].feed_url != by_id["nyt_personaltech"].feed_url
+    assert by_id["thehackernews"].feed_url != by_id["tomshardware"].feed_url
+    assert by_id["stereogum"].feed_url != "https://stereogum.com/feed/"
+    assert by_id["stereogum"].feed_url != "https://www.stereogum.com/feed/"
+    assert by_id["stereogum"].feed_url != "https://www.stereogum.com/feed"
+    assert by_id["stereogum"].feed_url != "https://www.stereogum.com/rss.xml"
+    assert by_id["stereogum"].feed_url != "https://stereogum.com/rss.xml"
+    assert by_id["stereogum"].feed_url != "https://www.stereogum.com/?feed=rss"
+    assert by_id["stereogum"].feed_url != "https://www.stereogum.com/?feed=rss2"
+    assert by_id["stereogum"].feed_url != "https://feeds.feedburner.com/stereogum"
+    assert by_id["stereogum"].feed_url != (
+        "https://feeds.feedburner.com/Stereogum"
+    )
+    assert by_id["stereogum"].feed_url != by_id["pitchfork"].feed_url
+    assert by_id["stereogum"].feed_url != by_id["variety"].feed_url
+    assert by_id["stereogum"].feed_url != by_id["guardian_music"].feed_url
+    assert by_id["stereogum"].feed_url != by_id["literary_hub"].feed_url
+    assert by_id["stereogum"].feed_url != by_id["defector"].feed_url
+    assert by_id["livescience"].feed_url != by_id["thehackernews"].feed_url
+    assert by_id["livescience"].feed_url != by_id["stereogum"].feed_url
+    assert by_id["thehackernews"].feed_url != by_id["stereogum"].feed_url
+    # Unused backups + product-skip sources stay out.
+    # the_nation official /feed/ FAIL (empty
+    # site-wide) — hard-swap to stereogum.
+    # scotusblog / times_of_israel stay unused
+    # (first-winner unused stay out; do not
+    # probe unused backups). grist /
+    # balkan_insight / tomshardware stay
+    # registered (batch75 after #139
+    # hard-swap KEEP). atlantic_council
+    # stays hung (daily-fetch
+    # #40299450300 RSS 403 勿再挂).
+    # physics_world /
+    # kyiv_independent / pitchfork stay
+    # registered (batch74 KEEP). irish_times /
+    # science_org / variety stay registered
+    # (batch73 KEEP). medicalxpress /
+    # new_republic / howtogeek stay unused
+    # (batch73 leftovers). who_news stays
+    # registered (batch72 hard-swap KEEP).
+    # new_yorker / smithsonian_mag stay unused
+    # (batch72 leftovers). independent stays
+    # hung (daily-fetch #40291069350 httpx 429
+    # 勿再挂). independent_world stays hung
+    # (prior 429; World section — do not
+    # restore). vox / passblue stay unused
+    # (batch71 leftovers). longreads stays out
+    # (batch68 official httpx 403). dawn stays
+    # out (batch67 official Cloudflare 403).
+    # Do not register dawn Feedburner. Do not
+    # register euractiv Feedburner.
+    # asiatimes / asia_times stay out (httpx 403).
+    # biographic stays out (httpx 403).
+    # inkstick stays out (product dropped).
+    # hrw stays hung. euractiv stays unused
+    # (official www.euractiv.com 301s to
+    # rapporteur.com; Feedburner stale
+    # 2025-12 — do not register).
+    # dezeen / moscow_times stay unused
+    # (batch75 leftovers / reserved
+    # batch77). grist is registered
+    # (#139 KEEP). infoq stays unused
+    # (batch74 leftover).
+    assert "the_nation" not in by_id
+    assert "thenation" not in by_id
+    assert "the_nation_com" not in by_id
+    assert "nation" not in by_id
+    assert "scotusblog" not in by_id
+    assert "scotus_blog" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "timesofisrael" not in by_id
+    assert "dezeen" not in by_id
+    assert "dezeen_com" not in by_id
+    assert "moscow_times" not in by_id
+    assert "the_moscow_times" not in by_id
+    assert "moscowtimes" not in by_id
+    assert "grist" in by_id
+    assert "grist_org" not in by_id
+    assert "atlantic_council" not in by_id
+    assert "infoq" not in by_id
+    assert "info_q" not in by_id
+    assert "euractiv" not in by_id
+    assert "euractiv_com" not in by_id
+    assert "rapporteur" not in by_id
+    assert "live_science" not in by_id
+    assert "livescience_com" not in by_id
+    assert "the_hacker_news" not in by_id
+    assert "hackernews" not in by_id
+    assert "stereogum_com" not in by_id
+    assert "medicalxpress" not in by_id
+    assert "new_republic" not in by_id
+    assert "howtogeek" not in by_id
+    assert "who_news" in by_id
+    assert "new_yorker" not in by_id
+    assert "smithsonian_mag" not in by_id
+    assert "independent" not in by_id
+    assert "independent_world" not in by_id
+    assert "vox" not in by_id
+    assert "passblue" not in by_id
+    assert "inkstick" not in by_id
+    assert "hrw" not in by_id
+    assert "longreads" not in by_id
+    assert "dawn" not in by_id
+    assert "asiatimes" not in by_id
+    assert "asia_times" not in by_id
+    assert "biographic" not in by_id
+    assert "hkfp" not in by_id
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "guardian_games" not in by_id
+    for source_id, expected in (
+        _LIVESCIENCE_THEHACKERNEWS_STEREOGUM_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_livescience_thehackernews_stereogum_feeds_live_http_200():
+    """Hit the three batch76 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _LIVESCIENCE_THEHACKERNEWS_STEREOGUM_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (livescience / thehackernews
+        # / stereogum) uses the un-namespaced
+        # element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # All three winners were 100% nonempty
+        # this probe (livescience 50/50;
+        # thehackernews 50/50; stereogum
+        # 40/40).
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= 10, (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -22893,6 +23449,7 @@ if __name__ == "__main__":
     test_physics_world_kyiv_independent_pitchfork_primaries_registered()
     test_grist_balkan_insight_tomshardware_primaries_registered()
     test_atlantic_council_hard_swapped_to_grist()
+    test_livescience_thehackernews_stereogum_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -22967,4 +23524,5 @@ if __name__ == "__main__":
     test_irish_times_science_org_variety_feeds_live_http_200()
     test_physics_world_kyiv_independent_pitchfork_feeds_live_http_200()
     test_grist_balkan_insight_tomshardware_feeds_live_http_200()
+    test_livescience_thehackernews_stereogum_feeds_live_http_200()
     print("✓ source registry tests PASSED")
