@@ -7272,15 +7272,21 @@ _PHYSICS_WORLD_KYIV_INDEPENDENT_PITCHFORK_PRIMARY = {
     },
 }
 
-# CEO-approved Atlantic Council /
-# Balkan Insight / Tom's Hardware
-# RSS primaries (batch75). These
-# three are the new adds after #136
-# (batch74 physics_world /
-# kyiv_independent / pitchfork
-# squash) on tip
-# df1cadd9caad9c2de2a6b6a92575307ca4d932db.
+# CEO-approved Grist / Balkan Insight /
+# Tom's Hardware RSS primaries
+# (batch75 after the Product+QA
+# locked hard-swap atlantic_council
+# → grist). balkan_insight /
+# tomshardware stay. atlantic_council
+# stays hung (daily-fetch
+# #40299450300 RSS 403 → soft-fail
+# → DB 0). These three are the
+# batch75 set after #136 (batch74
+# physics_world / kyiv_independent /
+# pitchfork squash) on tip
+# 0cc8a3dd36c48948d79ca83e89c2edef09e00cf2.
 # Do not re-touch that #136 winner.
+# Do not restore atlantic_council.
 # Do not restore independent. Do not
 # restore hrw. Do not restore
 # euractiv. Do not touch
@@ -7320,11 +7326,67 @@ _PHYSICS_WORLD_KYIV_INDEPENDENT_PITCHFORK_PRIMARY = {
 # allafrica (#111) / bbc_australia /
 # bloomberg_technology / zdnet (#110
 # after the ars_science hard-swap).
-# atlantic_council is official
-# WordPress site-wide RSS (homepage
-# <link> "Atlantic Council » Feed");
-# lock www /feed/; apex /feed/
-# remaps to the homepage HTML.
+# atlantic_council official
+# https://www.atlanticcouncil.org/feed/
+# is unregistered (hard-swapped;
+# daily-fetch #40299450300 RSS 403
+# → soft-fail → DB 0). Do not
+# re-probe atlantic_council.
+# Product-skip: atlantic_council 403
+# 勿再挂. grist is the
+# product-approved batch75 backup,
+# now promoted (was an unused
+# leftover id; no prior grist_org /
+# gristmagazine id). Locked official
+# https://grist.org/feed/ (channel
+# "Grist"; subtitle "25 Years on the
+# Climate Beat"). MUST lock apex +
+# trailing slash: /feed (no slash)
+# remaps to /feed/. www remaps to
+# apex /feed/. /rss / /rss/ /
+# ?feed=rss / ?feed=rss2 /
+# /feed/rss/ remap to /feed/.
+# /rss.xml /feed.xml /atom.xml /
+# /index.rss /feeds/ are HTTP 404.
+# /feed/atom/ is the Atom alias
+# (same 20-insertable body) — lock
+# official RSS /feed/, not Atom.
+# /climate/feed/ / /science/feed/
+# are section feeds — lock
+# site-wide, not a section.
+# /comments/feed/ is comments.
+# /latest/feed/ /news/feed/ /
+# /blog/feed/ remap to article HTML
+# (0 insertable). Feedburner
+# https://feeds.feedburner.com/grist
+# (and /Grist) is a stale 2008
+# blogspot mirror (2 insertable) —
+# lock official, not Feedburner.
+# feeds.feedburner.com/gristmagazine
+# is a stale old mirror (19
+# insertable, Feedburner ~r URLs) —
+# lock official, not Feedburner.
+# Live-diff winner: HTTP 200 / 20
+# nonempty / 20 insertable (httpx
+# fetch_source + urllib). Product
+# lock ≥10 nonempty — keep (20 is
+# not the 5–9 observe band).
+# Distinct from live climate_home /
+# carbon_brief / mongabay /
+# guardian_environment / nyt_climate
+# / canary_media / sciencedaily /
+# nature_news / popular_science /
+# bbc_science / nyt_science /
+# guardian_science / npr_science /
+# phys_org / science_news /
+# knowable / nautilus / undark.
+# 0 article URL overlap with those.
+# Lands on the existing 科学
+# category path (climate /
+# environment journalism, same as
+# climate_home / carbon_brief /
+# mongabay). Not added to the
+# tech/AI whitelist.
 # balkan_insight is official
 # WordPress site-wide RSS (homepage
 # <link> "Balkan Insight » Feed");
@@ -7334,30 +7396,46 @@ _PHYSICS_WORLD_KYIV_INDEPENDENT_PITCHFORK_PRIMARY = {
 # (homepage <link>); lock
 # /feeds.xml. Do not lock
 # Feedburner /tomshardware (stale
-# French 2019-era mirror). Unused
-# backups dezeen / moscow_times /
-# grist stay out (all three
-# primaries KEEP; first-winner
-# unused stay out). Product-skip
-# (do not probe / register):
-# bangkok_post / indian_express /
-# rest_of_world / al_monitor / hkfp
-# / biographic / asiatimes / dawn /
-# longreads / hrw / independent
-# (429) / euractiv (301→rapporteur
+# French 2019-era mirror).
+# Product-locked backups (use only if a
+# primary fails live-diff / fetch /
+# URL-dedup): grist — used as the
+# atlantic_council RSS 403 hard-swap
+# fill. dezeen / moscow_times stay
+# unused (reserved for hung
+# batch77). Do not probe unused
+# backups. Do not invent another
+# swap target. Do NOT use as
+# backups (product skip):
+# atlantic_council (daily-fetch
+# #40299450300 RSS 403 勿再挂),
+# bangkok_post (HTTP 451 / prior skip),
+# indian_express (insertable=0
+# empty-desc), rest_of_world (httpx
+# 403 JS challenge), al_monitor
+# (flaky 403), hkfp (HTTP 403),
+# biographic (httpx 403 — 勿再挂),
+# asiatimes / asia_times (httpx 403),
+# dawn (Cloudflare 403), longreads
+# (httpx 403), hrw (daily-fetch
+# httpx 403 hard-swap), independent
+# (429), euractiv (301→rapporteur
 # FAIL). digiday0观察 — do not add
 # a second digiday. sunday_review /
 # cnbc (403 known) / ap stay
-# unregistered (product lock).
-# NEWS_SOURCE_CAP display stays 6 —
-# no CAP code change. No X this
-# batch. No LLM this batch. Not
-# tech/AI whitelist.
-_ATLANTIC_COUNCIL_BALKAN_INSIGHT_TOMSHARDWARE_PRIMARY = {
-    "atlantic_council": {
-        "name": "Atlantic Council",
-        "feed_url": "https://www.atlanticcouncil.org/feed/",
-        "category": "国际",
+# unregistered (product lock). Do
+# not restore atlantic_council. Do
+# not touch Open PR #138 batch76
+# (livescience / thehackernews /
+# stereogum). NEWS_SOURCE_CAP
+# display stays 6 — no CAP code
+# change. No X this batch. No LLM
+# this batch. Not tech/AI whitelist.
+_GRIST_BALKAN_INSIGHT_TOMSHARDWARE_PRIMARY = {
+    "grist": {
+        "name": "Grist",
+        "feed_url": "https://grist.org/feed/",
+        "category": "科学",
     },
     "balkan_insight": {
         "name": "Balkan Insight",
@@ -18166,17 +18244,19 @@ def test_japan_forward_artforum_knowable_primaries_registered():
     # Unused backups + product-skip sources stay out.
     # the_new_humanitarian is now the batch67
     # primary (was an unused leftover).
-    # dawn / grist unused because all three
+    # dawn unused because all three
     # batch65 primaries KEEP (dawn later
     # failed batch67 official 403 hard-swap
     # and stays unregistered).
+    # grist is now the atlantic_council
+    # hard-swap fill (batch75 KEEP).
     # asiatimes / asia_times stay out (httpx 403).
     # biographic stays out (httpx 403).
     assert "the_new_humanitarian" in by_id
     assert "new_humanitarian" not in by_id
     assert "dawn" not in by_id
     assert "dawn_com" not in by_id
-    assert "grist" not in by_id
+    assert "grist" in by_id
     assert "grist_org" not in by_id
     assert "vox" not in by_id
     # reason is now the batch69 primary
@@ -18621,7 +18701,7 @@ def test_world_politics_review_climate_home_project_syndicate_primaries_register
     assert "new_humanitarian" not in by_id
     assert "dawn" not in by_id
     assert "dawn_com" not in by_id
-    assert "grist" not in by_id
+    assert "grist" in by_id
     assert "grist_org" not in by_id
     assert "japanforward" not in by_id
     assert "art_forum" not in by_id
@@ -19069,7 +19149,7 @@ def test_the_new_humanitarian_salon_mother_jones_primaries_registered():
     assert "tnh" not in by_id
     assert "salon_com" not in by_id
     assert "motherjones" not in by_id
-    assert "grist" not in by_id
+    assert "grist" in by_id
     assert "grist_org" not in by_id
     assert "wpr" not in by_id
     assert "worldpoliticsreview" not in by_id
@@ -19514,7 +19594,7 @@ def test_popular_science_slate_the_19th_primaries_registered():
     assert "tnh" not in by_id
     assert "salon_com" not in by_id
     assert "motherjones" not in by_id
-    assert "grist" not in by_id
+    assert "grist" in by_id
     assert "grist_org" not in by_id
     assert "wpr" not in by_id
     assert "worldpoliticsreview" not in by_id
@@ -19974,7 +20054,7 @@ def test_kff_health_niemanlab_reason_primaries_registered():
     assert "tnh" not in by_id
     assert "salon_com" not in by_id
     assert "motherjones" not in by_id
-    assert "grist" not in by_id
+    assert "grist" in by_id
     assert "grist_org" not in by_id
     assert "wpr" not in by_id
     assert "worldpoliticsreview" not in by_id
@@ -20459,7 +20539,7 @@ def test_media404_jacobin_un_news_primaries_registered():
     assert "tnh" not in by_id
     assert "salon_com" not in by_id
     assert "motherjones" not in by_id
-    assert "grist" not in by_id
+    assert "grist" in by_id
     assert "grist_org" not in by_id
     assert "wpr" not in by_id
     assert "worldpoliticsreview" not in by_id
@@ -20858,7 +20938,7 @@ def test_texas_tribune_pew_research_defector_primaries_registered():
     assert "tnh" not in by_id
     assert "salon_com" not in by_id
     assert "motherjones" not in by_id
-    assert "grist" not in by_id
+    assert "grist" in by_id
     assert "grist_org" not in by_id
     assert "wpr" not in by_id
     assert "worldpoliticsreview" not in by_id
@@ -21346,7 +21426,7 @@ def test_who_news_scientific_american_thenewstack_primaries_registered():
     assert "tnh" not in by_id
     assert "salon_com" not in by_id
     assert "motherjones" not in by_id
-    assert "grist" not in by_id
+    assert "grist" in by_id
     assert "grist_org" not in by_id
     assert "wpr" not in by_id
     assert "worldpoliticsreview" not in by_id
@@ -22251,12 +22331,11 @@ def test_physics_world_kyiv_independent_pitchfork_feeds_live_http_200():
         )
 
 
-def test_atlantic_council_balkan_insight_tomshardware_primaries_registered():
+def test_grist_balkan_insight_tomshardware_primaries_registered():
     by_id = {s.id: s for s in SOURCES}
-    assert "atlantic_council" in by_id
-    assert by_id["atlantic_council"].feed_url == (
-        "https://www.atlanticcouncil.org/feed/"
-    )
+    assert "grist" in by_id
+    assert by_id["grist"].feed_url == "https://grist.org/feed/"
+    assert "atlantic_council" not in by_id
     assert "balkan_insight" in by_id
     assert by_id["balkan_insight"].feed_url == (
         "https://balkaninsight.com/feed/"
@@ -22420,78 +22499,47 @@ def test_atlantic_council_balkan_insight_tomshardware_primaries_registered():
     assert by_id["newatlas"].feed_url == "https://newatlas.com/index.rss"
     assert by_id["phys_org"].feed_url == "https://phys.org/rss-feed/"
     assert by_id["atlantic"].feed_url == "https://www.theatlantic.com/feed/all/"
-    assert by_id["atlantic_council"].feed_url != (
-        "https://www.atlanticcouncil.org/feed"
+    assert by_id["grist"].feed_url != "https://grist.org/feed"
+    assert by_id["grist"].feed_url != "https://www.grist.org/feed/"
+    assert by_id["grist"].feed_url != "https://www.grist.org/feed"
+    assert by_id["grist"].feed_url != "https://grist.org/rss"
+    assert by_id["grist"].feed_url != "https://grist.org/rss/"
+    assert by_id["grist"].feed_url != "https://grist.org/rss.xml"
+    assert by_id["grist"].feed_url != "https://grist.org/feed.xml"
+    assert by_id["grist"].feed_url != "https://grist.org/atom.xml"
+    assert by_id["grist"].feed_url != "https://grist.org/?feed=rss"
+    assert by_id["grist"].feed_url != "https://grist.org/?feed=rss2"
+    assert by_id["grist"].feed_url != "https://grist.org/feed/rss/"
+    assert by_id["grist"].feed_url != "https://grist.org/feed/atom/"
+    assert by_id["grist"].feed_url != "https://grist.org/comments/feed/"
+    assert by_id["grist"].feed_url != "https://grist.org/climate/feed/"
+    assert by_id["grist"].feed_url != "https://grist.org/science/feed/"
+    assert by_id["grist"].feed_url != "https://grist.org/latest/feed/"
+    assert by_id["grist"].feed_url != "https://grist.org/news/feed/"
+    assert by_id["grist"].feed_url != "https://grist.org/blog/feed/"
+    assert by_id["grist"].feed_url != "https://feeds.feedburner.com/grist"
+    assert by_id["grist"].feed_url != "https://feeds.feedburner.com/Grist"
+    assert by_id["grist"].feed_url != (
+        "https://feeds.feedburner.com/gristmagazine"
     )
-    assert by_id["atlantic_council"].feed_url != (
-        "https://atlanticcouncil.org/feed/"
-    )
-    assert by_id["atlantic_council"].feed_url != (
-        "https://www.atlanticcouncil.org/rss"
-    )
-    assert by_id["atlantic_council"].feed_url != (
-        "https://www.atlanticcouncil.org/rss/"
-    )
-    assert by_id["atlantic_council"].feed_url != (
-        "https://www.atlanticcouncil.org/rss.xml"
-    )
-    assert by_id["atlantic_council"].feed_url != (
-        "https://www.atlanticcouncil.org/?feed=rss"
-    )
-    assert by_id["atlantic_council"].feed_url != (
-        "https://www.atlanticcouncil.org/?feed=rss2"
-    )
-    assert by_id["atlantic_council"].feed_url != (
-        "https://www.atlanticcouncil.org/feed/rss/"
-    )
-    assert by_id["atlantic_council"].feed_url != (
-        "https://www.atlanticcouncil.org/feed/atom/"
-    )
-    assert by_id["atlantic_council"].feed_url != (
-        "https://www.atlanticcouncil.org/comments/feed/"
-    )
-    assert by_id["atlantic_council"].feed_url != (
-        "https://www.atlanticcouncil.org/blogs/feed/"
-    )
-    assert by_id["atlantic_council"].feed_url != (
-        "https://feeds.feedburner.com/atlanticcouncil"
-    )
-    assert by_id["atlantic_council"].feed_url != (
-        "https://feeds.feedburner.com/AtlanticCouncil"
-    )
-    assert by_id["atlantic_council"].feed_url != by_id["atlantic"].feed_url
-    assert by_id["atlantic_council"].feed_url != (
-        by_id["foreign_affairs"].feed_url
-    )
-    assert by_id["atlantic_council"].feed_url != (
-        by_id["foreign_policy"].feed_url
-    )
-    assert by_id["atlantic_council"].feed_url != by_id["crisis_group"].feed_url
-    assert by_id["atlantic_council"].feed_url != (
-        by_id["aspi_strategist"].feed_url
-    )
-    assert by_id["atlantic_council"].feed_url != (
-        by_id["world_politics_review"].feed_url
-    )
-    assert by_id["atlantic_council"].feed_url != by_id["defense_one"].feed_url
-    assert by_id["atlantic_council"].feed_url != (
-        by_id["breaking_defense"].feed_url
-    )
-    assert by_id["atlantic_council"].feed_url != (
-        by_id["lowy_interpreter"].feed_url
-    )
-    assert by_id["atlantic_council"].feed_url != by_id["the_diplomat"].feed_url
-    assert by_id["atlantic_council"].feed_url != by_id["war_on_rocks"].feed_url
-    assert by_id["atlantic_council"].feed_url != (
-        by_id["politico_europe"].feed_url
-    )
-    assert by_id["atlantic_council"].feed_url != by_id["un_news"].feed_url
-    assert by_id["atlantic_council"].feed_url != by_id["bbc_world"].feed_url
-    assert by_id["atlantic_council"].feed_url != (
-        by_id["guardian_world"].feed_url
-    )
-    assert by_id["atlantic_council"].feed_url != by_id["nyt_world"].feed_url
-    assert by_id["atlantic_council"].feed_url != by_id["aljazeera"].feed_url
+    assert by_id["grist"].feed_url != by_id["climate_home"].feed_url
+    assert by_id["grist"].feed_url != by_id["carbon_brief"].feed_url
+    assert by_id["grist"].feed_url != by_id["mongabay"].feed_url
+    assert by_id["grist"].feed_url != by_id["guardian_environment"].feed_url
+    assert by_id["grist"].feed_url != by_id["nyt_climate"].feed_url
+    assert by_id["grist"].feed_url != by_id["canary_media"].feed_url
+    assert by_id["grist"].feed_url != by_id["sciencedaily"].feed_url
+    assert by_id["grist"].feed_url != by_id["nature_news"].feed_url
+    assert by_id["grist"].feed_url != by_id["popular_science"].feed_url
+    assert by_id["grist"].feed_url != by_id["bbc_science"].feed_url
+    assert by_id["grist"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["grist"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["grist"].feed_url != by_id["npr_science"].feed_url
+    assert by_id["grist"].feed_url != by_id["phys_org"].feed_url
+    assert by_id["grist"].feed_url != by_id["science_news"].feed_url
+    assert by_id["grist"].feed_url != by_id["knowable"].feed_url
+    assert by_id["grist"].feed_url != by_id["nautilus"].feed_url
+    assert by_id["grist"].feed_url != by_id["undark"].feed_url
     assert by_id["balkan_insight"].feed_url != "https://balkaninsight.com/feed"
     assert by_id["balkan_insight"].feed_url != (
         "https://www.balkaninsight.com/feed/"
@@ -22599,13 +22647,14 @@ def test_atlantic_council_balkan_insight_tomshardware_primaries_registered():
     )
     assert by_id["tomshardware"].feed_url != by_id["mit_tr"].feed_url
     assert by_id["tomshardware"].feed_url != by_id["media404"].feed_url
-    assert by_id["atlantic_council"].feed_url != by_id["balkan_insight"].feed_url
-    assert by_id["atlantic_council"].feed_url != by_id["tomshardware"].feed_url
+    assert by_id["grist"].feed_url != by_id["balkan_insight"].feed_url
+    assert by_id["grist"].feed_url != by_id["tomshardware"].feed_url
     assert by_id["balkan_insight"].feed_url != by_id["tomshardware"].feed_url
     # Unused backups + product-skip sources stay out.
-    # All three primaries KEEP — no hard-swap.
-    # dezeen / moscow_times / grist stay
-    # unused (do not probe unused backups).
+    # atlantic_council hung; grist KEEP.
+    # dezeen / moscow_times stay unused
+    # (reserved for hung batch77; do not
+    # probe unused backups).
     # physics_world / kyiv_independent /
     # pitchfork stay registered (batch74
     # KEEP). irish_times / science_org /
@@ -22641,8 +22690,10 @@ def test_atlantic_council_balkan_insight_tomshardware_primaries_registered():
     assert "moscow_times" not in by_id
     assert "the_moscow_times" not in by_id
     assert "moscowtimes" not in by_id
-    assert "grist" not in by_id
+    assert "grist" in by_id
     assert "grist_org" not in by_id
+    assert "gristmagazine" not in by_id
+    assert "atlantic_council" not in by_id
     assert "scotusblog" not in by_id
     assert "scotus_blog" not in by_id
     assert "infoq" not in by_id
@@ -22683,7 +22734,7 @@ def test_atlantic_council_balkan_insight_tomshardware_primaries_registered():
     assert "guardian_media" not in by_id
     assert "guardian_games" not in by_id
     for source_id, expected in (
-        _ATLANTIC_COUNCIL_BALKAN_INSIGHT_TOMSHARDWARE_PRIMARY.items()
+        _GRIST_BALKAN_INSIGHT_TOMSHARDWARE_PRIMARY.items()
     ):
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
@@ -22693,10 +22744,29 @@ def test_atlantic_council_balkan_insight_tomshardware_primaries_registered():
         assert source.category == expected["category"]
 
 
-def test_atlantic_council_balkan_insight_tomshardware_feeds_live_http_200():
+def test_atlantic_council_hard_swapped_to_grist():
+    """Product lock: atlantic_council is gone; grist is the KEEP replacement."""
+    by_id = {s.id: s for s in SOURCES}
+    assert "atlantic_council" not in by_id
+    assert "atlanticcouncil" not in by_id
+    assert "atlantic_council_org" not in by_id
+    assert "grist" in by_id
+    source = by_id["grist"]
+    assert source.role == "primary"
+    assert source.name == "Grist"
+    assert source.feed_url == "https://grist.org/feed/"
+    assert source.category == "科学"
+    assert "https://www.atlanticcouncil.org/feed/" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "balkan_insight" in by_id
+    assert "tomshardware" in by_id
+
+
+def test_grist_balkan_insight_tomshardware_feeds_live_http_200():
     """Hit the three batch75 feeds with the same headers fetch_source sends (not stubs)."""
     by_id = {s.id: s for s in SOURCES}
-    for source_id in _ATLANTIC_COUNCIL_BALKAN_INSIGHT_TOMSHARDWARE_PRIMARY:
+    for source_id in _GRIST_BALKAN_INSIGHT_TOMSHARDWARE_PRIMARY:
         source = by_id[source_id]
         request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
         try:
@@ -22714,7 +22784,7 @@ def test_atlantic_council_balkan_insight_tomshardware_feeds_live_http_200():
         count = len(items)
         assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
         # Required: parseable title / url / published on each item.
-        # RSS 2.0 (atlantic_council / balkan_insight
+        # RSS 2.0 (grist / balkan_insight
         # / tomshardware) uses the un-namespaced
         # element text.
         for i, item in enumerate(items):
@@ -22726,7 +22796,7 @@ def test_atlantic_council_balkan_insight_tomshardware_feeds_live_http_200():
             assert published, f"{source_id} item[{i}] missing published"
         # #43 thin-skip: empty description would insert 0.
         # All three winners were 100% nonempty
-        # this probe (atlantic_council 100/100;
+        # this probe (grist 20/20;
         # balkan_insight 90/90; tomshardware
         # 50/50).
         nonempty = 0
@@ -22821,7 +22891,8 @@ if __name__ == "__main__":
     test_independent_hard_swapped_to_who_news()
     test_irish_times_science_org_variety_primaries_registered()
     test_physics_world_kyiv_independent_pitchfork_primaries_registered()
-    test_atlantic_council_balkan_insight_tomshardware_primaries_registered()
+    test_grist_balkan_insight_tomshardware_primaries_registered()
+    test_atlantic_council_hard_swapped_to_grist()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -22895,5 +22966,5 @@ if __name__ == "__main__":
     test_who_news_scientific_american_thenewstack_feeds_live_http_200()
     test_irish_times_science_org_variety_feeds_live_http_200()
     test_physics_world_kyiv_independent_pitchfork_feeds_live_http_200()
-    test_atlantic_council_balkan_insight_tomshardware_feeds_live_http_200()
+    test_grist_balkan_insight_tomshardware_feeds_live_http_200()
     print("✓ source registry tests PASSED")
