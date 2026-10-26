@@ -954,6 +954,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="nyt_well",
+        name="NYT Well",
+        feed_url="https://rss.nytimes.com/services/xml/rss/nyt/Well.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="guardian_travel",
+        name="Guardian Travel",
+        feed_url="https://www.theguardian.com/travel/rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="dw_asia",
+        name="Deutsche Welle Asia",
+        feed_url="https://rss.dw.com/rdf/rss-en-asia",
+        category="国际·亚太",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

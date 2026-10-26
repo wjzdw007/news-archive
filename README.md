@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（134 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（137 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -140,6 +140,9 @@
 | `guardian_food` | Guardian Food | https://www.theguardian.com/food/rss | primary |
 | `nyt_fashion` | NYT Fashion | https://rss.nytimes.com/services/xml/rss/nyt/FashionandStyle.xml | primary |
 | `guardian_money` | Guardian Money | https://www.theguardian.com/money/rss | primary |
+| `nyt_well` | NYT Well | https://rss.nytimes.com/services/xml/rss/nyt/Well.xml | primary |
+| `guardian_travel` | Guardian Travel | https://www.theguardian.com/travel/rss | primary |
+| `dw_asia` | Deutsche Welle Asia | https://rss.dw.com/rdf/rss-en-asia | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
