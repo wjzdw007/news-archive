@@ -1773,6 +1773,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="cnet",
+        name="CNET",
+        feed_url="https://www.cnet.com/rss/news/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="9to5mac",
+        name="9to5Mac",
+        feed_url="https://9to5mac.com/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="gizmodo",
+        name="Gizmodo",
+        feed_url="https://gizmodo.com/feed",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

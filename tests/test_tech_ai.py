@@ -661,6 +661,64 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "atlantic_council" not in TECH_AI_SOURCE_WHITELIST
     assert "the_nation" not in TECH_AI_SOURCE_WHITELIST
     assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
+    # batch82 RSS primaries stay off the tech/AI whitelist.
+    # cnet is the engadget official
+    # CloudFront 403 → digital_trends
+    # official Cloudflare 403 hard-swap
+    # fill and lands on 科技 (consumer
+    # tech / gadget newsroom, same as
+    # howtogeek / tomshardware / zdnet)
+    # but later-batch tech sources stay
+    # off the frozen ALWAYS set.
+    # 9to5mac lands on 科技 (Apple /
+    # consumer tech newsroom, same as
+    # macrumors / android_authority /
+    # howtogeek) but later-batch tech
+    # sources stay off the frozen ALWAYS
+    # set. gizmodo lands on 科技
+    # (consumer tech / gadget / culture
+    # newsroom, same as howtogeek /
+    # tomshardware / zdnet) but later-
+    # batch tech sources stay off the
+    # frozen ALWAYS set. None of these
+    # match the wired / verge /
+    # techcrunch ALWAYS pattern.
+    # engadget official FAIL (CloudFront
+    # 403; do not register Feedburner)
+    # — not registered. digital_trends
+    # official FAIL (Cloudflare 403 JS
+    # challenge; do not register
+    # Feedburner) — not registered.
+    # Unused leftover polygon stays off
+    # (first-winner unused stay out; if
+    # a later hard-swap falls through
+    # MUST lock /feed/ never
+    # /rss/index.xml). the_verge stays
+    # off (verge already registered).
+    # the_cut stays off (product dropped
+    # — all 404). techdirt stays off
+    # (official Cloudflare 403).
+    # atlantic_council stays off
+    # (hard-swapped to grist in #139).
+    # the_nation stays off (empty
+    # site-wide FAIL). euractiv stays off
+    # (official 301 to rapporteur.com;
+    # Feedburner stale).
+    assert "cnet" not in TECH_AI_SOURCE_WHITELIST
+    assert "9to5mac" not in TECH_AI_SOURCE_WHITELIST
+    assert "gizmodo" not in TECH_AI_SOURCE_WHITELIST
+    assert "engadget" not in TECH_AI_SOURCE_WHITELIST
+    assert "digital_trends" not in TECH_AI_SOURCE_WHITELIST
+    assert "polygon" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_verge" not in TECH_AI_SOURCE_WHITELIST
+    assert "techdirt" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_cut" not in TECH_AI_SOURCE_WHITELIST
+    assert "artnet" not in TECH_AI_SOURCE_WHITELIST
+    assert "macrumors" not in TECH_AI_SOURCE_WHITELIST
+    assert "quillette" not in TECH_AI_SOURCE_WHITELIST
+    assert "atlantic_council" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_nation" not in TECH_AI_SOURCE_WHITELIST
+    assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
