@@ -1945,7 +1945,8 @@ _NYT_WELL_GUARDIAN_TRAVEL_DW_ASIA_PRIMARY = {
 # (hard-swapped in batch39). al_monitor stays
 # unregistered (replaced in batch29; not a live CAP
 # slot; not registered as a backup). independent_world
-# stays unregistered (replaced in batch28; 429).
+# was replaced in batch28 (429); re-registered in
+# batch45 after official /news/world/rss re-probe.
 # nikkei / indian_express stay unregistered (empty
 # desc — product skipped). nikkei_asia stays
 # unregistered (title+link only). nyt_world_asia stays
@@ -1974,7 +1975,121 @@ _NYT_AUTOMOBILES_THE_HILL_NPR_BUSINESS_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 140
+# CEO-approved Guardian Art and Design / NYT Theater /
+# Independent World RSS primaries (batch45). These three
+# are the new adds. guardian_artanddesign is a same-outlet
+# Guardian section distinct from existing guardian_world /
+# guardian_technology / guardian_us /
+# guardian_environment / guardian_business /
+# guardian_science / guardian_australia /
+# guardian_americas / guardian_uk / guardian_europe /
+# guardian_global_dev / guardian_law / guardian_society /
+# guardian_cities / guardian_world_africa /
+# guardian_politics / guardian_middle_east /
+# guardian_sport / guardian_film / guardian_music /
+# guardian_stage / guardian_books / guardian_tv /
+# guardian_fashion / guardian_lifeandstyle /
+# guardian_opinion / guardian_food / guardian_money /
+# guardian_travel, and from same-outlet nyt_arts /
+# guardian_stage. Locked official guardian_* section
+# root https://www.theguardian.com/artanddesign/rss
+# (channel title "Art and design | The Guardian").
+# /uk/artanddesign/rss / /us/artanddesign/rss /
+# /culture/artanddesign/rss are 404 — do not use those.
+# /arts/rss 302s to /us/culture/rss (Culture, not Art
+# and design) — do not use that. nyt_theater is a
+# same-outlet NYT section distinct from existing
+# nyt_world / nyt_technology / nyt_business /
+# nyt_science / nyt_climate / nyt_health /
+# nyt_education / nyt_politics / nyt_us / nyt_europe /
+# nyt_upshot / nyt_africa / nyt_arts / nyt_opinion /
+# nyt_movies / nyt_books / nyt_food / nyt_travel /
+# nyt_economy / nyt_realestate / nyt_magazine /
+# nyt_personaltech / nyt_fashion / nyt_well /
+# nyt_automobiles, and from same-outlet guardian_stage.
+# Locked official nyt_* feed pattern
+# https://rss.nytimes.com/services/xml/rss/nyt/Theater.xml
+# (channel title "NYT > Theater"). Theatre.xml is 404
+# — do not use that. ArtandDesign.xml is a different
+# NYT Arts subsection (channel "NYT > Arts > Art &
+# Design") — not Theater; do not swap. independent_world
+# is the official Independent World section, re-hung
+# after the batch28 replace (then HTTP 429 / daily-fetch
+# RED). Locked official
+# https://www.independent.co.uk/news/world/rss (channel
+# title "The Independent World"). /world/rss is HTTP
+# 200 / 0 items — do not use that. /rss is the general
+# Independent front (empty-desc items). /news/rss is
+# News, not World. /news/world/rss.xml is 404.
+# the-independent.com/news/world/rss is the same World
+# body — lock independent.co.uk official. Distinct from
+# live bbc_world / guardian_world / nyt_world /
+# dw_world. Live-diff winner on all three primaries:
+# HTTP 200 / ≥10 nonempty items — do not fall through
+# to unused backups guardian_football / dw_europe.
+# guardian_football official /football/rss is HTTP 200
+# / ≥10 nonempty (probed only; unused because
+# primaries won). dw_europe official rdf
+# https://rss.dw.com/rdf/rss-en-eu (channel title
+# "Deutsche Welle: DW.com - Europe") is HTTP 200 /
+# ≥10 nonempty (probed only; unused). Distinct from
+# live dw_en (rss-en-all) / dw_world (rss-en-world) /
+# dw_asia (rss-en-asia). atom/rss-en-eu and
+# xml/rss-en-eu are the same Europe items — lock rdf
+# to match existing dw_*. rss-en-europe is "Error: no
+# feed by that name." — do not use that.
+# guardian_games stays unregistered (product: games
+# thin / 不进主源). sunday_review / cnbc (403 known) /
+# ap stay unregistered (product lock). nyt_automobiles /
+# the_hill / npr_business stay registered (batch44
+# closed). nyt_well / guardian_travel / dw_asia stay
+# registered (batch43 closed). guardian_food /
+# nyt_fashion / guardian_money stay registered
+# (batch42 closed; guardian_money observe kept).
+# france24_middle_east / nyt_personaltech /
+# france24_africa stay registered (batch41 closed).
+# bloomberg_markets / guardian_opinion / nyt_magazine
+# stay registered (batch40 closed; guardian_opinion
+# hard-swap kept). cbs_world / france24_asia / cnbc_top
+# stay registered (batch39 closed; cbs_world observe
+# kept). bbc_entertainment stays registered (batch38
+# closed; thin-observe kept). bbc_culture stays
+# unregistered (duplicate of bbc_entertainment).
+# france24_europe stays unregistered (duplicate of
+# france24_en). guardian_economics stays unregistered
+# (hard-swapped in batch40). guardian_media stays
+# unregistered (hard-swapped in batch39). al_monitor
+# stays unregistered (replaced in batch29; not a live
+# CAP slot; not registered as a backup). nikkei /
+# indian_express stay unregistered (empty desc —
+# product skipped). nikkei_asia stays unregistered
+# (title+link only). nyt_world_asia stays unregistered
+# (replaced in batch20). sky_tech / restofworld /
+# ars_science / thehill / politico / abc_intl /
+# sunday_review / nyt_sports stay unregistered
+# (thehill is the old unused id; politico has no
+# qualifying general official RSS).
+# NEWS_SOURCE_CAP display stays 6 — no CAP code change.
+# No X this batch. No LLM this batch.
+_GUARDIAN_ARTANDDESIGN_NYT_THEATER_INDEPENDENT_WORLD_PRIMARY = {
+    "guardian_artanddesign": {
+        "name": "Guardian Art and Design",
+        "feed_url": "https://www.theguardian.com/artanddesign/rss",
+        "category": "综合",
+    },
+    "nyt_theater": {
+        "name": "NYT Theater",
+        "feed_url": "https://rss.nytimes.com/services/xml/rss/nyt/Theater.xml",
+        "category": "综合",
+    },
+    "independent_world": {
+        "name": "Independent World",
+        "feed_url": "https://www.independent.co.uk/news/world/rss",
+        "category": "国际",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 143
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -4303,7 +4418,7 @@ def test_cbc_cna_elpais_primaries_registered():
     # replaced france24_asia / al_monitor after daily-fetch
     # inserted=0). Unused backups / replaced / title+link-only
     # feeds stay unregistered.
-    assert "independent_world" not in by_id
+    assert "independent_world" in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -4423,7 +4538,7 @@ def test_yonhap_anadolu_trt_primaries_registered():
     # al_monitor stays unregistered (replaced in batch29; not a live CAP slot).
     # nikkei / indian_express stay unregistered (empty desc — product skipped).
     # semafor / france24_americas / middleeasteye are batch29 (primaries).
-    assert "independent_world" not in by_id
+    assert "independent_world" in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -4534,7 +4649,7 @@ def test_semafor_france24_americas_middleeasteye_primaries_registered():
     # independent_world is the daily-fetch RED slot — do not keep live.
     # cbs_world / france24_asia / guardian_media are batch39.
     # nikkei / indian_express are empty-desc — product skipped.
-    assert "independent_world" not in by_id
+    assert "independent_world" in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -4645,7 +4760,7 @@ def test_scmp_business_rfi_asia_theconversation_primaries_registered():
     # independent_world is the daily-fetch RED slot — do not keep live.
     # cbs_world / france24_asia / guardian_media are batch39.
     # nikkei / indian_express are empty-desc — product skipped.
-    assert "independent_world" not in by_id
+    assert "independent_world" in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -4793,7 +4908,7 @@ def test_nyt_arts_guardian_sport_intercept_primaries_registered():
     # daily-fetch RED slot — do not keep live. nikkei /
     # indian_express are empty-desc — product skipped.
     # sky_tech / restofworld / ars_science are not this batch.
-    assert "independent_world" not in by_id
+    assert "independent_world" in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -4949,7 +5064,7 @@ def test_nyt_opinion_guardian_film_propublica_primaries_registered():
     # product skipped. sky_tech / restofworld / ars_science /
     # thehill / politico are not this batch (politico is
     # X-handle only).
-    assert "independent_world" not in by_id
+    assert "independent_world" in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -5068,7 +5183,7 @@ def test_forbes_innovation_dw_world_rfi_americas_primaries_registered():
     # empty-desc — product skipped. sky_tech /
     # restofworld / ars_science / thehill / politico are
     # not this batch (politico is X-handle only).
-    assert "independent_world" not in by_id
+    assert "independent_world" in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -5258,7 +5373,7 @@ def test_nyt_movies_guardian_music_guardian_stage_primaries_registered():
     # product skipped. sky_tech / restofworld / ars_science /
     # thehill / politico / abc_intl / sunday_review are not
     # this batch (politico is X-handle only).
-    assert "independent_world" not in by_id
+    assert "independent_world" in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -5442,7 +5557,7 @@ def test_nyt_books_guardian_books_npr_arts_primaries_registered():
     # sky_tech / restofworld / ars_science / thehill / politico /
     # abc_intl / sunday_review / nyt_sports
     # are not this batch (politico is X-handle only).
-    assert "independent_world" not in by_id
+    assert "independent_world" in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -5637,7 +5752,7 @@ def test_nyt_food_guardian_tv_npr_science_primaries_registered():
     # sky_tech / restofworld / ars_science / thehill / politico /
     # abc_intl / sunday_review / nyt_sports
     # are not this batch (politico is X-handle only).
-    assert "independent_world" not in by_id
+    assert "independent_world" in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -5868,7 +5983,7 @@ def test_nyt_travel_guardian_fashion_nyt_economy_primaries_registered():
     assert "guardian_media" not in by_id
     assert "guardian_economics" not in by_id
     assert "reuters_world" not in by_id
-    assert "independent_world" not in by_id
+    assert "independent_world" in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -6137,7 +6252,7 @@ def test_nyt_realestate_guardian_lifeandstyle_bbc_entertainment_primaries_regist
     assert "guardian_media" not in by_id
     assert "guardian_economics" not in by_id
     assert "reuters_world" not in by_id
-    assert "independent_world" not in by_id
+    assert "independent_world" in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -6281,7 +6396,7 @@ def test_cbs_world_france24_asia_cnbc_top_primaries_registered():
     assert "guardian_media" not in by_id
     assert "guardian_economics" not in by_id
     assert "reuters_world" not in by_id
-    assert "independent_world" not in by_id
+    assert "independent_world" in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -6522,7 +6637,7 @@ def test_bloomberg_markets_guardian_opinion_nyt_magazine_primaries_registered():
     assert "guardian_media" not in by_id
     assert "guardian_economics" not in by_id
     assert "reuters_world" not in by_id
-    assert "independent_world" not in by_id
+    assert "independent_world" in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -6723,7 +6838,7 @@ def test_france24_middle_east_nyt_personaltech_france24_africa_primaries_registe
     assert "guardian_media" not in by_id
     assert "guardian_economics" not in by_id
     assert "reuters_world" not in by_id
-    assert "independent_world" not in by_id
+    assert "independent_world" in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -6958,7 +7073,7 @@ def test_guardian_food_nyt_fashion_guardian_money_primaries_registered():
     assert "guardian_media" not in by_id
     assert "guardian_economics" not in by_id
     assert "reuters_world" not in by_id
-    assert "independent_world" not in by_id
+    assert "independent_world" in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -7147,12 +7262,15 @@ def test_nyt_well_guardian_travel_dw_asia_primaries_registered():
     # was hard-swapped out in batch40. guardian_media was
     # hard-swapped out in batch39. al_monitor stays
     # unregistered (replaced in batch29; not a live CAP
-    # slot). independent_world is the daily-fetch RED
-    # slot — do not keep live. nikkei / indian_express
-    # are empty-desc — product skipped. sky_tech /
-    # restofworld / ars_science / thehill / abc_intl /
-    # sunday_review are not this batch (thehill is the
-    # old unused id; batch44 locks the_hill).
+    # slot). guardian_artanddesign / nyt_theater /
+    # independent_world are batch45 (independent_world
+    # was replaced in batch28 / 429 and re-registered
+    # after official /news/world/rss re-probe). nikkei /
+    # indian_express are empty-desc — product skipped.
+    # sky_tech / restofworld / ars_science / thehill /
+    # abc_intl / sunday_review are not this batch
+    # (thehill is the old unused id; batch44 locks
+    # the_hill).
     assert "politico" not in by_id
     assert "nyt_automobiles" in by_id
     assert "guardian_games" not in by_id
@@ -7162,7 +7280,9 @@ def test_nyt_well_guardian_travel_dw_asia_primaries_registered():
     assert "guardian_media" not in by_id
     assert "guardian_economics" not in by_id
     assert "reuters_world" not in by_id
-    assert "independent_world" not in by_id
+    assert "guardian_artanddesign" in by_id
+    assert "nyt_theater" in by_id
+    assert "independent_world" in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -7312,10 +7432,12 @@ def test_nyt_automobiles_the_hill_npr_business_primaries_registered():
     # out in batch40. guardian_media was hard-swapped
     # out in batch39. al_monitor stays unregistered
     # (replaced in batch29; not a live CAP slot).
-    # independent_world is the daily-fetch RED slot —
-    # do not keep live. nikkei / indian_express are
-    # empty-desc — product skipped. sky_tech /
-    # restofworld / ars_science / abc_intl /
+    # guardian_artanddesign / nyt_theater /
+    # independent_world are batch45 (independent_world
+    # was replaced in batch28 / 429 and re-registered
+    # after official /news/world/rss re-probe). nikkei /
+    # indian_express are empty-desc — product skipped.
+    # sky_tech / restofworld / ars_science / abc_intl /
     # sunday_review are not this batch.
     assert "guardian_games" not in by_id
     assert "thehill" not in by_id
@@ -7325,7 +7447,9 @@ def test_nyt_automobiles_the_hill_npr_business_primaries_registered():
     assert "guardian_media" not in by_id
     assert "guardian_economics" not in by_id
     assert "reuters_world" not in by_id
-    assert "independent_world" not in by_id
+    assert "guardian_artanddesign" in by_id
+    assert "nyt_theater" in by_id
+    assert "independent_world" in by_id
     assert "al_monitor" not in by_id
     assert "indian_express" not in by_id
     assert "nikkei" not in by_id
@@ -7371,6 +7495,252 @@ def test_nyt_automobiles_the_hill_npr_business_feeds_live_http_200():
         # Required: parseable title / url / published on each item.
         # RSS 2.0 (nyt_automobiles / the_hill / npr_business)
         # uses the un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0. Product
+        # lock requires non-empty RSS description/summary on these
+        # three feeds (all live-diff winners were 100% nonempty).
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
+def test_guardian_artanddesign_nyt_theater_independent_world_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "guardian_artanddesign" in by_id
+    assert by_id["guardian_artanddesign"].feed_url == (
+        "https://www.theguardian.com/artanddesign/rss"
+    )
+    assert "nyt_theater" in by_id
+    assert by_id["nyt_theater"].feed_url == (
+        "https://rss.nytimes.com/services/xml/rss/nyt/Theater.xml"
+    )
+    assert "independent_world" in by_id
+    assert by_id["independent_world"].feed_url == (
+        "https://www.independent.co.uk/news/world/rss"
+    )
+    assert "nyt_automobiles" in by_id
+    assert "the_hill" in by_id
+    assert "npr_business" in by_id
+    assert "nyt_well" in by_id
+    assert "guardian_travel" in by_id
+    assert "dw_asia" in by_id
+    assert "guardian_food" in by_id
+    assert "nyt_fashion" in by_id
+    assert "guardian_money" in by_id
+    assert "france24_middle_east" in by_id
+    assert "nyt_personaltech" in by_id
+    assert "france24_africa" in by_id
+    assert "guardian_stage" in by_id
+    assert "nyt_arts" in by_id
+    assert "guardian_world" in by_id
+    assert "bbc_world" in by_id
+    assert "nyt_world" in by_id
+    assert "dw_world" in by_id
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != (
+        by_id["guardian_technology"].feed_url
+    )
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_us"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != (
+        by_id["guardian_environment"].feed_url
+    )
+    assert by_id["guardian_artanddesign"].feed_url != (
+        by_id["guardian_business"].feed_url
+    )
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != (
+        by_id["guardian_australia"].feed_url
+    )
+    assert by_id["guardian_artanddesign"].feed_url != (
+        by_id["guardian_americas"].feed_url
+    )
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_uk"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_europe"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != (
+        by_id["guardian_global_dev"].feed_url
+    )
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_law"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_society"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_cities"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != (
+        by_id["guardian_world_africa"].feed_url
+    )
+    assert by_id["guardian_artanddesign"].feed_url != (
+        by_id["guardian_politics"].feed_url
+    )
+    assert by_id["guardian_artanddesign"].feed_url != (
+        by_id["guardian_middle_east"].feed_url
+    )
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_sport"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_film"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_music"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_stage"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_books"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_tv"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_fashion"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != (
+        by_id["guardian_lifeandstyle"].feed_url
+    )
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_opinion"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_food"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_money"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != by_id["guardian_travel"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != by_id["nyt_arts"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != (
+        "https://www.theguardian.com/uk/artanddesign/rss"
+    )
+    assert by_id["guardian_artanddesign"].feed_url != (
+        "https://www.theguardian.com/us/artanddesign/rss"
+    )
+    assert by_id["guardian_artanddesign"].feed_url != (
+        "https://www.theguardian.com/culture/artanddesign/rss"
+    )
+    assert by_id["guardian_artanddesign"].feed_url != (
+        "https://www.theguardian.com/arts/rss"
+    )
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_business"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_climate"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_health"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_education"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_politics"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_us"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_europe"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_upshot"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_africa"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_arts"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_opinion"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_movies"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_books"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_food"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_travel"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_economy"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_realestate"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_magazine"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_personaltech"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_fashion"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_well"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["nyt_automobiles"].feed_url
+    assert by_id["nyt_theater"].feed_url != by_id["guardian_stage"].feed_url
+    assert by_id["nyt_theater"].feed_url != (
+        "https://rss.nytimes.com/services/xml/rss/nyt/Theatre.xml"
+    )
+    assert by_id["nyt_theater"].feed_url != (
+        "https://rss.nytimes.com/services/xml/rss/nyt/ArtandDesign.xml"
+    )
+    assert by_id["independent_world"].feed_url != by_id["bbc_world"].feed_url
+    assert by_id["independent_world"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["independent_world"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["independent_world"].feed_url != by_id["dw_world"].feed_url
+    assert by_id["independent_world"].feed_url != by_id["aljazeera"].feed_url
+    assert by_id["independent_world"].feed_url != (
+        "https://www.independent.co.uk/world/rss"
+    )
+    assert by_id["independent_world"].feed_url != "https://www.independent.co.uk/rss"
+    assert by_id["independent_world"].feed_url != (
+        "https://www.independent.co.uk/news/rss"
+    )
+    assert by_id["independent_world"].feed_url != (
+        "https://www.independent.co.uk/news/world/rss.xml"
+    )
+    assert by_id["independent_world"].feed_url != (
+        "https://www.the-independent.com/news/world/rss"
+    )
+    assert by_id["guardian_artanddesign"].feed_url != by_id["nyt_theater"].feed_url
+    assert by_id["guardian_artanddesign"].feed_url != (
+        by_id["independent_world"].feed_url
+    )
+    assert by_id["nyt_theater"].feed_url != by_id["independent_world"].feed_url
+    # Unused backups / replaced / title+link-only / empty-desc /
+    # colliding / not-this-batch feeds stay unregistered.
+    # guardian_football / dw_europe were live-diff backups
+    # (HTTP 200 / ≥10 nonempty) — unused because all three
+    # primaries won. guardian_games stays unregistered
+    # (product: games thin / 不进主源). thehill (no
+    # underscore) is the old unused id — batch44 locks
+    # the_hill. politico is dropped (no qualifying
+    # general official RSS). bbc_culture is dropped
+    # (duplicate of bbc_entertainment). france24_europe
+    # is dropped (duplicate of france24_en). reuters_world
+    # official public RSS is dead. nyt_sports Sports.xml
+    # is HTTP 200 / 0 items. guardian_economics was
+    # hard-swapped out in batch40. guardian_media was
+    # hard-swapped out in batch39. al_monitor stays
+    # unregistered (replaced in batch29; not a live CAP
+    # slot). nikkei / indian_express are empty-desc —
+    # product skipped. sky_tech / restofworld /
+    # ars_science / abc_intl / sunday_review are not
+    # this batch. sundayreview / cnbc (403 known) / ap
+    # stay unregistered (product lock).
+    assert "guardian_football" not in by_id
+    assert "dw_europe" not in by_id
+    assert "guardian_games" not in by_id
+    assert "thehill" not in by_id
+    assert "politico" not in by_id
+    assert "bbc_culture" not in by_id
+    assert "france24_europe" not in by_id
+    assert "guardian_media" not in by_id
+    assert "guardian_economics" not in by_id
+    assert "reuters_world" not in by_id
+    assert "al_monitor" not in by_id
+    assert "indian_express" not in by_id
+    assert "nikkei" not in by_id
+    assert "nyt_world_asia" not in by_id
+    assert "nikkei_asia" not in by_id
+    assert "sky_tech" not in by_id
+    assert "restofworld" not in by_id
+    assert "ars_science" not in by_id
+    assert "abc_intl" not in by_id
+    assert "sunday_review" not in by_id
+    assert "sundayreview" not in by_id
+    assert "nyt_sports" not in by_id
+    assert "ap" not in by_id
+    for source_id, expected in (
+        _GUARDIAN_ARTANDDESIGN_NYT_THEATER_INDEPENDENT_WORLD_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_guardian_artanddesign_nyt_theater_independent_world_feeds_live_http_200():
+    """Hit the three batch45 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _GUARDIAN_ARTANDDESIGN_NYT_THEATER_INDEPENDENT_WORLD_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (guardian_artanddesign / nyt_theater /
+        # independent_world) uses the un-namespaced element text.
         for i, item in enumerate(items):
             title = _item_title(item)
             url = _item_link(item)
@@ -7437,6 +7807,7 @@ if __name__ == "__main__":
     test_guardian_food_nyt_fashion_guardian_money_primaries_registered()
     test_nyt_well_guardian_travel_dw_asia_primaries_registered()
     test_nyt_automobiles_the_hill_npr_business_primaries_registered()
+    test_guardian_artanddesign_nyt_theater_independent_world_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -7480,4 +7851,5 @@ if __name__ == "__main__":
     test_guardian_food_nyt_fashion_guardian_money_feeds_live_http_200()
     test_nyt_well_guardian_travel_dw_asia_feeds_live_http_200()
     test_nyt_automobiles_the_hill_npr_business_feeds_live_http_200()
+    test_guardian_artanddesign_nyt_theater_independent_world_feeds_live_http_200()
     print("✓ source registry tests PASSED")
