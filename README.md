@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（176 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（179 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -182,6 +182,9 @@
 | `mongabay` | Mongabay | https://news.mongabay.com/feed/ | primary |
 | `daily_maverick` | Daily Maverick | https://www.dailymaverick.co.za/dmrss/ | primary |
 | `oilprice` | Oilprice.com | https://oilprice.com/rss/main | primary |
+| `africa_report` | The Africa Report | https://www.theafricareport.com/feed/ | primary |
+| `mexico_news_daily` | Mexico News Daily | https://mexiconewsdaily.com/feed/ | primary |
+| `sciencedaily` | ScienceDaily | https://www.sciencedaily.com/rss/all.xml | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
