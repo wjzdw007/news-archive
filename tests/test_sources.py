@@ -2467,38 +2467,28 @@ _FOREIGN_POLICY_FT_WORLD_ABC_AUSTRALIA_PRIMARY = {
 # winner: HTTP 200 / 50 nonempty / 50
 # insertable. Distinct from live nyt_science /
 # bbc_science / guardian_science / npr_science.
-# the_register official
-# https://www.theregister.com/headlines.atom
-# (and headlines.rss; both remap to the same
-# api.theregister.com RSS 2.0 body; channel
-# "www.theregister.com - Articles") is HTTP 200
-# / 50 nonempty (probed only; unused because
-# all three primaries won). /feed.rss and /rss
-# are 404 HTML. /software/headlines.atom is a
-# Software section — not the general primary.
-# asia_times official /feed/ is urllib 200 /
-# 20 nonempty but httpx (fetch_source) 403 JS
-# challenge — not fetch-compatible; unused.
-# allafrica official
-# https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf
-# (channel "AllAfrica News: Latest") is HTTP
-# 200 / 33 nonempty (probed only; unused
-# because all three primaries won).
-# /rdf/africa is a different Africa section.
-# /rdf/lateststories / /misc/scan/headlines.rss
-# / /feed are 404. foreign_policy / ft_world /
-# abc_australia stay registered (batch49
-# closed). politico_politics / dw_business /
+# the_register / allafrica were unused
+# live-diff backups here and are now
+# batch53 primaries. asia_times official
+# /feed/ is urllib 200 / 20 nonempty but
+# httpx (fetch_source) 403 JS challenge —
+# not fetch-compatible; unused.
+# foreign_policy / ft_world / abc_australia
+# stay registered (batch49 closed).
+# politico_politics / dw_business /
 # france24_culture stay registered (batch48
 # closed). atlantic / smh_national /
-# guardian_education stay registered (batch47
-# closed). digiday_media stays registered
-# (#107). nyt_media / guardian_media stay hung.
-# guardian_games stays unregistered (product:
-# games thin / 不进主源). sunday_review / cnbc
-# (403 known) / ap stay unregistered (product
+# guardian_education stay registered
+# (batch47 closed). digiday_media stays
+# registered (#107). nyt_media /
+# guardian_media stay hung. guardian_games
+# stays unregistered (product: games thin /
+# 不进主源). sunday_review / cnbc (403
+# known) / ap stay unregistered (product
 # lock). the_diplomat / stat_news /
-# ieee_spectrum are batch51. NEWS_SOURCE_CAP
+# ieee_spectrum are batch51.
+# bbc_australia / bloomberg_technology /
+# ars_science are batch52. NEWS_SOURCE_CAP
 # display stays 6 — no CAP code change. No X
 # this batch. No LLM this batch.
 _WAR_ON_ROCKS_CANARY_MEDIA_SPACE_COM_PRIMARY = {
@@ -2628,10 +2618,10 @@ _THE_DIPLOMAT_STAT_NEWS_IEEE_SPECTRUM_PRIMARY = {
 # was 20/20 nonempty). bloomberg_technology
 # =15 KEEP. bbc_australia=6 thin-observe
 # (do not remove). digiday_media observe
-# only — do not hard-swap. Do not touch
-# batch53 primaries (the_register /
-# foreign_affairs / allafrica stay
-# unregistered here). bbc_australia is the
+# only — do not hard-swap. the_register /
+# foreign_affairs / allafrica were unused
+# here and are now batch53 primaries.
+# bbc_australia is the
 # official BBC News Australia / World
 # Australia RSS (no prior bbc_australia
 # id; bbc_asia is World Asia; abc_australia
@@ -2706,11 +2696,11 @@ _THE_DIPLOMAT_STAT_NEWS_IEEE_SPECTRUM_PRIMARY = {
 # sunday_review / cnbc (403 known) / ap
 # stay unregistered (product lock).
 # the_register / foreign_affairs / allafrica
-# stay unregistered (batch53 primaries —
-# do not touch). NEWS_SOURCE_CAP display
-# stays 6 — no CAP code change. No X this
-# batch. No LLM this batch. Not tech/AI
-# whitelist.
+# were unused live-diff backups here and
+# are now batch53 primaries. NEWS_SOURCE_CAP
+# display stays 6 — no CAP code change. No
+# X this batch. No LLM this batch. Not
+# tech/AI whitelist.
 _BBC_AUSTRALIA_BLOOMBERG_TECHNOLOGY_ZDNET_PRIMARY = {
     "bbc_australia": {
         "name": "BBC Australia",
@@ -2729,7 +2719,126 @@ _BBC_AUSTRALIA_BLOOMBERG_TECHNOLOGY_ZDNET_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 164
+# CEO-approved The Register / Foreign Affairs /
+# AllAfrica RSS primaries (batch53). These three
+# are the new adds after #110 (ars_science →
+# zdnet hard-swap) on tip 82b2859. Do not
+# re-touch that #110 winner. Do not touch
+# digiday_media / zdnet. ars_science stays
+# hung. digiday_media stays live (nyt_media
+# hung after #107 URL-collision hard-swap;
+# guardian_media stays hung).
+# the_register is the official The Register
+# site-wide headlines feed (no prior
+# the_register / register_* id). Locked
+# official https://www.theregister.com/headlines.atom
+# (and headlines.rss; both remap to the
+# same api.theregister.com RSS 2.0 body;
+# channel "www.theregister.com - Articles").
+# theregister.com/headlines.atom (no www.)
+# remaps to the same body — lock www.
+# /feed.rss and /rss are 404 HTML.
+# /software/headlines.atom is a Software
+# section — not the general primary.
+# Live-diff winner: HTTP 200 / 50 nonempty
+# / 50 insertable (httpx fetch_source +
+# urllib). Product lock ≥10 nonempty —
+# keep. Distinct from live ars_technica /
+# bbc_technology / nyt_technology /
+# ieee_spectrum / wired /
+# bloomberg_technology. 0 article URL
+# overlap with those. Not added to the
+# tech/AI whitelist.
+# foreign_affairs is the official Foreign
+# Affairs site-wide RSS (no prior
+# foreign_affairs / fa_* id). Locked
+# official https://www.foreignaffairs.com/rss.xml
+# (channel "FA RSS"). /feed / /feed/ /
+# /rss / /rss/ /articles/rss.xml /
+# /feed.xml are 404 HTML. apex
+# foreignaffairs.com/rss.xml aliases to
+# www. — lock www. Live-diff winner: HTTP
+# 200 / 20 nonempty / 20 insertable.
+# Distinct from live foreign_policy /
+# war_on_rocks / the_diplomat. 0 article
+# URL overlap.
+# allafrica is the official AllAfrica
+# Latest headlines feed (no prior
+# allafrica / all_africa id). Locked
+# official
+# https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf
+# (channel "AllAfrica News: Latest"; path
+# says rdf but body is RSS 2.0).
+# /rdf/africa is a different Africa
+# section. /rdf/lateststories /
+# /misc/scan/headlines.rss / /feed /
+# /feed/ / /rss are 404. Live-diff winner:
+# HTTP 200 / 33 nonempty / 33 insertable.
+# Distinct from live bbc_africa /
+# nyt_africa / france24_africa /
+# guardian_world_africa. 0 article URL
+# overlap.
+# Product-locked backups (use only if a
+# primary fails live-diff / fetch /
+# URL-dedup): euractiv official
+# https://www.euractiv.com/feed/ 301s to
+# www.rapporteur.com/feed/ (HTTP 200 / 100
+# insertable; probed only; unused because
+# all three primaries won). Not a clean
+# official EURACTIV lock after the
+# rebrand — do not promote unless a
+# primary fails. /feed (no slash) /
+# section feeds / /rss.xml are 403. dawn
+# official www.dawn.com/feeds/home /
+# /feed / /rss are Cloudflare HTTP 403 JS
+# challenge (urllib + httpx) — not
+# fetch-compatible; unused. asia_times
+# skipped (known httpx 403). Do not invent
+# other backups. bbc_australia /
+# bloomberg_technology / zdnet stay
+# registered (batch52 after #110).
+# ars_science stays hung. the_diplomat /
+# stat_news / ieee_spectrum stay
+# registered (batch51 closed).
+# war_on_rocks / canary_media / space_com
+# stay registered (batch50 closed).
+# foreign_policy / ft_world / abc_australia
+# stay registered (batch49 closed).
+# politico_politics / dw_business /
+# france24_culture stay registered
+# (batch48 closed). atlantic /
+# smh_national / guardian_education stay
+# registered (batch47 closed).
+# digiday_media stays registered (#107).
+# nyt_media / guardian_media stay hung.
+# guardian_games stays unregistered
+# (product: games thin / 不进主源).
+# sunday_review / cnbc (403 known) / ap
+# stay unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6 — no CAP
+# code change. No X this batch. No LLM
+# this batch. Not tech/AI whitelist.
+_THE_REGISTER_FOREIGN_AFFAIRS_ALLAFRICA_PRIMARY = {
+    "the_register": {
+        "name": "The Register",
+        "feed_url": "https://www.theregister.com/headlines.atom",
+        "category": "硬科技",
+    },
+    "foreign_affairs": {
+        "name": "Foreign Affairs",
+        "feed_url": "https://www.foreignaffairs.com/rss.xml",
+        "category": "国际",
+    },
+    "allafrica": {
+        "name": "AllAfrica",
+        "feed_url": (
+            "https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf"
+        ),
+        "category": "国际",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 167
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -8889,7 +8998,10 @@ def test_politico_politics_dw_business_france24_culture_primaries_registered():
     # bbc_australia / bloomberg_technology were unused
     # live-diff backups here and are now batch52
     # primaries. ars_science was batch52 then
-    # hard-swapped to zdnet.
+    # hard-swapped to zdnet. the_register /
+    # foreign_affairs / allafrica were unused
+    # live-diff backups in later batches and
+    # are now batch53 primaries (all three won).
     # foreign_policy / ft_world / abc_australia are
     # batch49 (ft_world promoted after pbs_newshour
     # CloudFront 202). war_on_rocks / canary_media /
@@ -8913,6 +9025,9 @@ def test_politico_politics_dw_business_france24_culture_primaries_registered():
     assert "bloomberg_technology" in by_id
     assert "ars_science" not in by_id
     assert "zdnet" in by_id
+    assert "the_register" in by_id
+    assert "foreign_affairs" in by_id
+    assert "allafrica" in by_id
     assert "guardian_games" not in by_id
     assert "thehill" not in by_id
     assert "bbc_culture" not in by_id
@@ -9020,6 +9135,8 @@ def test_foreign_policy_ft_world_abc_australia_primaries_registered():
     # are batch51. bbc_australia /
     # bloomberg_technology / zdnet are
     # batch52 (ars_science hung).
+    # the_register / foreign_affairs /
+    # allafrica are batch53.
     assert "pbs_newshour" not in by_id
     assert "restofworld" not in by_id
     assert "economist_intl" not in by_id
@@ -9036,6 +9153,9 @@ def test_foreign_policy_ft_world_abc_australia_primaries_registered():
     assert "bloomberg_technology" in by_id
     assert "ars_science" not in by_id
     assert "zdnet" in by_id
+    assert "the_register" in by_id
+    assert "foreign_affairs" in by_id
+    assert "allafrica" in by_id
     assert "abc_intl" not in by_id
     assert by_id["foreign_policy"].feed_url != "https://foreignpolicy.com/feed"
     assert by_id["foreign_policy"].feed_url != "https://foreignpolicy.com/rss"
@@ -9153,6 +9273,8 @@ def test_war_on_rocks_canary_media_space_com_primaries_registered():
     # ieee_spectrum stay registered.
     # batch52: bbc_australia / bloomberg_technology /
     # zdnet stay registered (ars_science hung).
+    # batch53: the_register / foreign_affairs /
+    # allafrica stay registered.
     assert "foreign_policy" in by_id
     assert "ft_world" in by_id
     assert "abc_australia" in by_id
@@ -9179,15 +9301,16 @@ def test_war_on_rocks_canary_media_space_com_primaries_registered():
     # nyt_media / guardian_media hung after #107.
     # Unused backups / not-fetch-compatible /
     # not-this-batch feeds stay unregistered.
-    # the_register / allafrica were live-diff
-    # backups (HTTP 200 / ≥10 nonempty) — unused
-    # because all three primaries won. asia_times
-    # is httpx 403 (fetch_source) — not registered.
+    # the_register / allafrica were unused
+    # live-diff backups here and are now
+    # batch53 primaries. asia_times is httpx
+    # 403 (fetch_source) — not registered.
     assert "nyt_media" not in by_id
     assert "guardian_media" not in by_id
-    assert "the_register" not in by_id
+    assert "the_register" in by_id
+    assert "foreign_affairs" in by_id
+    assert "allafrica" in by_id
     assert "asia_times" not in by_id
-    assert "allafrica" not in by_id
     assert "pbs_newshour" not in by_id
     assert "restofworld" not in by_id
     assert "economist_intl" not in by_id
@@ -9323,17 +9446,20 @@ def test_the_diplomat_stat_news_ieee_spectrum_primaries_registered():
     # nyt_media / guardian_media hung after #107.
     # bbc_australia / bloomberg_technology stay
     # batch52. ars_science hung after hard-swap
-    # to zdnet.
+    # to zdnet. the_register / foreign_affairs /
+    # allafrica were unused live-diff backups
+    # in later batches and are now batch53
+    # primaries.
     assert "nyt_media" not in by_id
     assert "guardian_media" not in by_id
     assert "bbc_australia" in by_id
     assert "bloomberg_technology" in by_id
     assert "ars_science" not in by_id
     assert "zdnet" in by_id
-    assert "the_register" not in by_id
-    assert "foreign_affairs" not in by_id
+    assert "the_register" in by_id
+    assert "foreign_affairs" in by_id
+    assert "allafrica" in by_id
     assert "asia_times" not in by_id
-    assert "allafrica" not in by_id
     assert "pbs_newshour" not in by_id
     assert "restofworld" not in by_id
     assert "economist_intl" not in by_id
@@ -9509,15 +9635,20 @@ def test_bbc_australia_bloomberg_technology_zdnet_primaries_registered():
     assert "ieee_spectrum" in by_id
     # hung/live: digiday_media live; nyt_media /
     # guardian_media hung; ars_science hung;
-    # zdnet live. batch53 primaries stay
-    # unregistered (do not touch).
+    # zdnet live. Product-locked backups
+    # the_register / foreign_affairs / allafrica
+    # were unused here and are now batch53
+    # primaries (all three won). asia_times
+    # skipped (known httpx 403). Do not invent
+    # other backups. pbs_newshour is CloudFront
+    # 202. restofworld is httpx 403.
     assert "nyt_media" not in by_id
     assert "guardian_media" not in by_id
     assert "ars_science" not in by_id
-    assert "the_register" not in by_id
-    assert "foreign_affairs" not in by_id
+    assert "the_register" in by_id
+    assert "foreign_affairs" in by_id
+    assert "allafrica" in by_id
     assert "asia_times" not in by_id
-    assert "allafrica" not in by_id
     assert "pbs_newshour" not in by_id
     assert "restofworld" not in by_id
     assert "economist_intl" not in by_id
@@ -9647,6 +9778,209 @@ def test_bbc_australia_bloomberg_technology_zdnet_feeds_live_http_200():
         )
 
 
+def test_the_register_foreign_affairs_allafrica_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "the_register" in by_id
+    assert by_id["the_register"].feed_url == (
+        "https://www.theregister.com/headlines.atom"
+    )
+    assert "foreign_affairs" in by_id
+    assert by_id["foreign_affairs"].feed_url == (
+        "https://www.foreignaffairs.com/rss.xml"
+    )
+    assert "allafrica" in by_id
+    assert by_id["allafrica"].feed_url == (
+        "https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf"
+    )
+    # #110 hard-swap: zdnet live, ars_science hung.
+    # #107 hard-swap: digiday_media live, nyt_media hung.
+    # Do not touch digiday_media / zdnet.
+    assert "bbc_australia" in by_id
+    assert "bloomberg_technology" in by_id
+    assert "zdnet" in by_id
+    assert "ars_science" not in by_id
+    assert "the_diplomat" in by_id
+    assert "stat_news" in by_id
+    assert "ieee_spectrum" in by_id
+    assert "war_on_rocks" in by_id
+    assert "canary_media" in by_id
+    assert "space_com" in by_id
+    assert "foreign_policy" in by_id
+    assert "ft_world" in by_id
+    assert "abc_australia" in by_id
+    assert "politico_politics" in by_id
+    assert "dw_business" in by_id
+    assert "france24_culture" in by_id
+    assert "atlantic" in by_id
+    assert "smh_national" in by_id
+    assert "guardian_education" in by_id
+    assert "digiday_media" in by_id
+    assert "time_top" in by_id
+    assert "nyt_obituaries" in by_id
+    assert "ars_technica" in by_id
+    assert "bbc_technology" in by_id
+    assert "nyt_technology" in by_id
+    assert "ieee_spectrum" in by_id
+    assert "wired" in by_id
+    assert "bloomberg_technology" in by_id
+    assert "bbc_africa" in by_id
+    assert "nyt_africa" in by_id
+    assert "france24_africa" in by_id
+    assert "guardian_world_africa" in by_id
+    assert "the_diplomat" in by_id
+    assert "war_on_rocks" in by_id
+    # nyt_media / guardian_media hung after #107.
+    # Unused / not-fetch-compatible backups stay
+    # unregistered because all three primaries won.
+    # euractiv 301s to rapporteur.com — not a
+    # clean official lock. dawn is Cloudflare 403.
+    # asia_times is httpx 403. Do not invent
+    # other backups. zdnet is live after #110.
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "euractiv" not in by_id
+    assert "dawn" not in by_id
+    assert "asia_times" not in by_id
+    assert "zdnet" in by_id
+    assert "ars_science" not in by_id
+    assert "pbs_newshour" not in by_id
+    assert "restofworld" not in by_id
+    assert "economist_intl" not in by_id
+    assert by_id["the_register"].feed_url != (
+        "https://www.theregister.com/headlines.rss"
+    )
+    assert by_id["the_register"].feed_url != (
+        "https://www.theregister.com/feed.rss"
+    )
+    assert by_id["the_register"].feed_url != "https://www.theregister.com/rss"
+    assert by_id["the_register"].feed_url != (
+        "https://www.theregister.com/software/headlines.atom"
+    )
+    assert by_id["the_register"].feed_url != (
+        "https://theregister.com/headlines.atom"
+    )
+    assert by_id["the_register"].feed_url != by_id["ars_technica"].feed_url
+    assert by_id["the_register"].feed_url != by_id["bbc_technology"].feed_url
+    assert by_id["the_register"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["the_register"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["the_register"].feed_url != by_id["wired"].feed_url
+    assert by_id["the_register"].feed_url != (
+        by_id["bloomberg_technology"].feed_url
+    )
+    assert by_id["foreign_affairs"].feed_url != (
+        "https://foreignaffairs.com/rss.xml"
+    )
+    assert by_id["foreign_affairs"].feed_url != (
+        "https://www.foreignaffairs.com/feed"
+    )
+    assert by_id["foreign_affairs"].feed_url != (
+        "https://www.foreignaffairs.com/feed/"
+    )
+    assert by_id["foreign_affairs"].feed_url != (
+        "https://www.foreignaffairs.com/rss"
+    )
+    assert by_id["foreign_affairs"].feed_url != (
+        "https://www.foreignaffairs.com/rss/"
+    )
+    assert by_id["foreign_affairs"].feed_url != (
+        "https://www.foreignaffairs.com/articles/rss.xml"
+    )
+    assert by_id["foreign_affairs"].feed_url != (
+        "https://www.foreignaffairs.com/feed.xml"
+    )
+    assert by_id["foreign_affairs"].feed_url != by_id["foreign_policy"].feed_url
+    assert by_id["foreign_affairs"].feed_url != by_id["war_on_rocks"].feed_url
+    assert by_id["foreign_affairs"].feed_url != by_id["the_diplomat"].feed_url
+    assert by_id["allafrica"].feed_url != (
+        "https://allafrica.com/tools/headlines/rdf/africa/headlines.rdf"
+    )
+    assert by_id["allafrica"].feed_url != (
+        "https://allafrica.com/tools/headlines/rdf/lateststories/headlines.rdf"
+    )
+    assert by_id["allafrica"].feed_url != (
+        "https://allafrica.com/misc/scan/headlines.rss"
+    )
+    assert by_id["allafrica"].feed_url != "https://allafrica.com/feed"
+    assert by_id["allafrica"].feed_url != "https://allafrica.com/feed/"
+    assert by_id["allafrica"].feed_url != "https://allafrica.com/rss"
+    assert by_id["allafrica"].feed_url != by_id["bbc_africa"].feed_url
+    assert by_id["allafrica"].feed_url != by_id["nyt_africa"].feed_url
+    assert by_id["allafrica"].feed_url != by_id["france24_africa"].feed_url
+    assert by_id["allafrica"].feed_url != (
+        by_id["guardian_world_africa"].feed_url
+    )
+    assert by_id["the_register"].feed_url != by_id["foreign_affairs"].feed_url
+    assert by_id["the_register"].feed_url != by_id["allafrica"].feed_url
+    assert by_id["foreign_affairs"].feed_url != by_id["allafrica"].feed_url
+    # nyt_media hung after #107 — digiday_media live.
+    # zdnet is the batch52 hard-swap lock after #110.
+    assert by_id["digiday_media"].feed_url == "https://digiday.com/media/feed/"
+    assert by_id["zdnet"].feed_url == "https://www.zdnet.com/feed/"
+    assert by_id["the_register"].feed_url != by_id["zdnet"].feed_url
+    assert "guardian_games" not in by_id
+    assert "thehill" not in by_id
+    assert "politico" not in by_id
+    assert "bbc_culture" not in by_id
+    assert "france24_europe" not in by_id
+    assert "guardian_economics" not in by_id
+    assert "nyt_theater" not in by_id
+    assert "independent_world" not in by_id
+    assert "sundayreview" not in by_id
+    assert "ap" not in by_id
+    for source_id, expected in (
+        _THE_REGISTER_FOREIGN_AFFAIRS_ALLAFRICA_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_the_register_foreign_affairs_allafrica_feeds_live_http_200():
+    """Hit the three batch53 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _THE_REGISTER_FOREIGN_AFFAIRS_ALLAFRICA_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (the_register remaps atom→RSS 2.0;
+        # foreign_affairs; allafrica path says rdf
+        # but body is RSS 2.0) uses the un-namespaced
+        # element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # All three live-diff winners were 100% nonempty.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -9702,6 +10036,7 @@ if __name__ == "__main__":
     test_war_on_rocks_canary_media_space_com_primaries_registered()
     test_the_diplomat_stat_news_ieee_spectrum_primaries_registered()
     test_bbc_australia_bloomberg_technology_zdnet_primaries_registered()
+    test_the_register_foreign_affairs_allafrica_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -9753,4 +10088,5 @@ if __name__ == "__main__":
     test_war_on_rocks_canary_media_space_com_feeds_live_http_200()
     test_the_diplomat_stat_news_ieee_spectrum_feeds_live_http_200()
     test_bbc_australia_bloomberg_technology_zdnet_feeds_live_http_200()
+    test_the_register_foreign_affairs_allafrica_feeds_live_http_200()
     print("✓ source registry tests PASSED")

@@ -1164,6 +1164,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="the_register",
+        name="The Register",
+        feed_url="https://www.theregister.com/headlines.atom",
+        category="硬科技",
+        role="primary",
+    ),
+    Source(
+        id="foreign_affairs",
+        name="Foreign Affairs",
+        feed_url="https://www.foreignaffairs.com/rss.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="allafrica",
+        name="AllAfrica",
+        feed_url="https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
