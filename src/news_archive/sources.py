@@ -1668,6 +1668,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="moscow_times",
+        name="The Moscow Times",
+        feed_url="https://www.themoscowtimes.com/rss/news",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="dezeen",
+        name="Dezeen",
+        feed_url="https://www.dezeen.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="eff",
+        name="EFF",
+        feed_url="https://www.eff.org/rss/updates.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
