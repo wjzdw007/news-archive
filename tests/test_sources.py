@@ -6244,8 +6244,10 @@ _MEDIA404_JACOBIN_UN_NEWS_PRIMARY = {
 # no CAP code change. No X this
 # batch. No LLM this batch. Not
 # tech/AI whitelist.
-# independent / scientific_american /
-# thenewstack are batch72.
+# who_news / scientific_american /
+# thenewstack are batch72 after the
+# independent → who_news hard-swap.
+# independent stays hung.
 _TEXAS_TRIBUNE_PEW_RESEARCH_DEFECTOR_PRIMARY = {
     "texas_tribune": {
         "name": "The Texas Tribune",
@@ -6264,18 +6266,25 @@ _TEXAS_TRIBUNE_PEW_RESEARCH_DEFECTOR_PRIMARY = {
     },
 }
 
-# CEO-approved The Independent /
-# Scientific American / The New Stack
-# RSS primaries (batch72). These three
-# are the new adds after #129 (batch71
-# texas_tribune / pew_research /
-# defector) + #130 (hrw → jacobin
-# hard-swap) on tip
-# e08bc9340210725c664aa963563c3fcdc24e4424.
-# Do not re-touch that #129 winner.
-# Do not restore hrw. Do not touch
-# media404 / jacobin / un_news (#128
-# after the hard-swap) / kff_health /
+# CEO-approved WHO News / Scientific
+# American / The New Stack RSS
+# primaries (batch72 after the
+# Product+QA locked hard-swap
+# independent → who_news).
+# scientific_american / thenewstack
+# stay. independent stays hung
+# (daily-fetch #40291069350 httpx
+# 429 → soft-fail → DB 0). These
+# three are the batch72 set after
+# #129 (batch71 texas_tribune /
+# pew_research / defector) + #130
+# (hrw → jacobin hard-swap) on tip
+# 8ed344ef5d5acfeda64c7fa9c95a9f7d198a563c. Do not re-touch that
+# #129 winner. Do not restore hrw.
+# Do not restore independent. Do
+# not touch media404 / jacobin /
+# un_news (#128 after the
+# hard-swap) / kff_health /
 # niemanlab / reason (#127) /
 # popular_science / slate / the_19th
 # (#126) / the_new_humanitarian /
@@ -6304,51 +6313,79 @@ _TEXAS_TRIBUNE_PEW_RESEARCH_DEFECTOR_PRIMARY = {
 # digiday_media (#107). ars_science
 # stays hung. nyt_media / guardian_media
 # stay hung.
-# independent is the official The
-# Independent site-wide RSS (no prior
-# independent / independent_co_uk /
-# the_independent id). Distinct from
-# hung independent_world (batch20 /
-# batch28 hard-swap; /news/world/rss
-# was the World section). Locked
-# official https://www.independent.co.uk/rss
-# (channel "The Independent"; subtitle
-# "Visit now for the latest news
-# direct from The Independent and
-# updated throughout the day"). MUST
-# lock www + no trailing slash: /rss/
-# remaps to /rss. apex
-# independent.co.uk/rss remaps to www.
-# /feed / /feed/ /rss.xml /feed.xml
-# /atom.xml are HTTP 404. ?feed=rss /
-# ?feed=rss2 remap to HTML /us (0
-# insertable). /news/rss is a News
-# section (100 insertable before cap)
-# — lock site-wide, not a section.
-# /news/world/rss is the hung
-# independent_world World section —
-# do not restore. /news/uk/rss is a
-# UK section. /service/rss is an
-# empty channel (0 insertable).
+# independent official
+# https://www.independent.co.uk/rss
+# is unregistered (hard-swapped;
+# daily-fetch #40291069350 httpx
+# 429 → soft-fail → DB 0). Do not
+# re-probe independent. Product-skip:
+# independent 429 勿再挂. Distinct
+# from hung independent_world
+# (batch20 / batch28 hard-swap;
+# /news/world/rss was the World
+# section) — do not restore that
+# either. who_news is the
+# product-approved batch72 backup,
+# now promoted (no prior who_news /
+# who / who_int /
+# world_health_organization id).
+# Locked official
+# https://www.who.int/rss-feeds/news-english.xml
+# (channel "News (English) - World
+# Health Organization"; subtitle
+# "Corporate news releases,
+# statements, and notes for media
+# issued by the World Health
+# Organization."). MUST lock www +
+# no trailing slash:
+# /rss-feeds/news-english.xml/ is
+# HTTP 404. apex who.int remaps to
+# www (same 109-insertable body).
+# /rss-feeds/news-english.rss /
+# /rss-feeds/news-english (no .xml)
+# / /rss-feeds/news.xml /
+# /rss-feeds/news-en.xml are HTTP
+# 404. /feeds/entity/mediacentre/news/en/rss.xml
+# is HTTP 404. /news/rss /
+# /news/rss.xml / /news/feed /
+# /news/feed/ / /news-room/rss /
+# /news-room/releases/feed are
+# HTTP 404. /news-room/releases/rss
+# is HTTP 500. /rss.xml / /feed /
+# /feed/ / /rss / /rss/ are HTTP
+# 404. ?feed=rss / ?feed=rss2 are
+# HTTP 200 HTML (0 insertable).
 # Feedburner
-# https://feeds.feedburner.com/independent
-# (and /Independent) is empty (0
+# https://feeds.feedburner.com/who
+# (and /WHO) is empty (0
 # insertable) — lock official, not
-# Feedburner. Live-diff winner: HTTP
-# 200 / 88 nonempty / 30 insertable
-# (ingest cap 30; 100 items, 12
-# empty-desc thin-skip; httpx
-# fetch_source + urllib). Product
-# lock ≥10 nonempty — keep (88 is
-# not the 5–9 observe band). Distinct
-# from live guardian_uk / bbc_uk /
-# bbc_world / guardian_world /
-# nyt_world / sky_world / the_19th /
-# axios / npr_news / atlantic. 0
-# article URL overlap with those.
-# Lands on the existing 综合 category
-# path (UK general newsroom, same as
-# guardian_uk / bbc_uk / axios). Not
+# Feedburner.
+# feeds.feedburner.com/whonews is a
+# stale 2018 mirror (15 insertable,
+# old articles) — lock official,
+# not Feedburner.
+# /rss-feeds/news-french.xml is the
+# French language feed — lock
+# English news-english.xml, not a
+# language section. Live-diff
+# winner: HTTP 200 / 109 nonempty /
+# 30 insertable (ingest cap 30; 109
+# items; httpx fetch_source +
+# urllib). Product lock ≥10
+# nonempty — keep (109 is not the
+# 5–9 observe band). Distinct from
+# live un_news / bbc_health /
+# nyt_health / kff_health /
+# stat_news / guardian_global_dev /
+# crisis_group /
+# the_new_humanitarian / bbc_world /
+# guardian_world / nyt_world /
+# aljazeera / sciencedaily /
+# nature_news / scientific_american.
+# 0 article URL overlap with those.
+# Lands on the existing 国际
+# category path (WHO global health
+# newsroom, same as un_news). Not
 # added to the tech/AI whitelist.
 # scientific_american is the official
 # Scientific American site-wide RSS
@@ -6451,12 +6488,16 @@ _TEXAS_TRIBUNE_PEW_RESEARCH_DEFECTOR_PRIMARY = {
 # whitelist.
 # Product-locked backups (use only if a
 # primary fails live-diff / fetch /
-# URL-dedup): who_news / new_yorker /
-# smithsonian_mag — unused because
-# all three primaries won (≥10
-# nonempty via fetch_source). Do
-# not probe unused backups.
+# URL-dedup): who_news — used as the
+# independent httpx 429 hard-swap
+# fill. new_yorker / smithsonian_mag
+# stay unused because who_news won
+# (≥10 nonempty via fetch_source).
+# Do not probe unused backups. Do
+# not invent another swap target.
 # Do NOT use as backups (product skip):
+# independent (daily-fetch
+# #40291069350 httpx 429 勿再挂),
 # bangkok_post (HTTP 451 / prior skip),
 # indian_express (insertable=0
 # empty-desc), rest_of_world (httpx
@@ -6471,9 +6512,12 @@ _TEXAS_TRIBUNE_PEW_RESEARCH_DEFECTOR_PRIMARY = {
 # restore ars_science. Do not add a
 # second digiday_media (digiday0观察).
 # Do not register dawn Feedburner.
-# Do not restore independent_world
+# Do not restore independent. Do not
+# restore independent_world
 # (/news/world/rss is a World
-# section + prior 429 hang).
+# section + prior 429 hang). Do not
+# touch irish_times / science_org /
+# variety (#132 batch73 draft).
 # texas_tribune / pew_research /
 # defector stay registered (batch71
 # closed). media404 / jacobin /
@@ -6545,11 +6589,11 @@ _TEXAS_TRIBUNE_PEW_RESEARCH_DEFECTOR_PRIMARY = {
 # no CAP code change. No X this
 # batch. No LLM this batch. Not
 # tech/AI whitelist.
-_INDEPENDENT_SCIENTIFIC_AMERICAN_THENEWSTACK_PRIMARY = {
-    "independent": {
-        "name": "The Independent",
-        "feed_url": "https://www.independent.co.uk/rss",
-        "category": "综合",
+_WHO_NEWS_SCIENTIFIC_AMERICAN_THENEWSTACK_PRIMARY = {
+    "who_news": {
+        "name": "WHO News",
+        "feed_url": "https://www.who.int/rss-feeds/news-english.xml",
+        "category": "国际",
     },
     "scientific_american": {
         "name": "Scientific American",
@@ -19762,8 +19806,11 @@ def test_texas_tribune_pew_research_defector_primaries_registered():
     )
     assert "defector" in by_id
     assert by_id["defector"].feed_url == "https://defector.com/feed"
-    # #131 / batch72 winners stay registered.
-    assert "independent" in by_id
+    # #131 / batch72 winners stay registered
+    # after the independent → who_news
+    # hard-swap. independent stays hung.
+    assert "who_news" in by_id
+    assert "independent" not in by_id
     assert "scientific_american" in by_id
     assert "thenewstack" in by_id
     # #128 winners stay registered and unchanged.
@@ -19941,22 +19988,25 @@ def test_texas_tribune_pew_research_defector_primaries_registered():
     # All three batch71 primaries KEEP, so
     # vox / euractiv / passblue stay unused
     # (do not probe unused backups).
-    # independent / scientific_american /
-    # thenewstack are now batch72. who_news
-    # / new_yorker / smithsonian_mag stay
-    # unused because all three batch72
-    # primaries KEEP. longreads stays out
-    # (batch68 official httpx 403). dawn
-    # stays out (batch67 official
+    # who_news / scientific_american /
+    # thenewstack are now batch72 after
+    # the independent → who_news
+    # hard-swap. independent stays hung
+    # (daily-fetch #40291069350 httpx
+    # 429). new_yorker / smithsonian_mag
+    # stay unused because who_news won
+    # the hard-swap fill. longreads stays
+    # out (batch68 official httpx 403).
+    # dawn stays out (batch67 official
     # Cloudflare 403). Do not register
     # dawn Feedburner.
     # asiatimes / asia_times stay out (httpx 403).
     # biographic stays out (httpx 403).
     # inkstick stays out (product dropped).
-    assert "independent" in by_id
+    assert "who_news" in by_id
+    assert "independent" not in by_id
     assert "scientific_american" in by_id
     assert "thenewstack" in by_id
-    assert "who_news" not in by_id
     assert "new_yorker" not in by_id
     assert "smithsonian_mag" not in by_id
     assert "vox" not in by_id
@@ -20102,12 +20152,13 @@ def test_texas_tribune_pew_research_defector_feeds_live_http_200():
         )
 
 
-def test_independent_scientific_american_thenewstack_primaries_registered():
+def test_who_news_scientific_american_thenewstack_primaries_registered():
     by_id = {s.id: s for s in SOURCES}
-    assert "independent" in by_id
-    assert by_id["independent"].feed_url == (
-        "https://www.independent.co.uk/rss"
+    assert "who_news" in by_id
+    assert by_id["who_news"].feed_url == (
+        "https://www.who.int/rss-feeds/news-english.xml"
     )
+    assert "independent" not in by_id
     assert "scientific_american" in by_id
     assert by_id["scientific_american"].feed_url == (
         "https://www.scientificamerican.com/platform/syndication/rss/"
@@ -20229,42 +20280,62 @@ def test_independent_scientific_american_thenewstack_primaries_registered():
         "https://www.theregister.com/headlines.atom"
     )
     assert by_id["newatlas"].feed_url == "https://newatlas.com/index.rss"
-    assert by_id["independent"].feed_url != "https://www.independent.co.uk/rss/"
-    assert by_id["independent"].feed_url != "https://independent.co.uk/rss"
-    assert by_id["independent"].feed_url != "https://www.independent.co.uk/news/rss"
-    assert by_id["independent"].feed_url != (
-        "https://www.independent.co.uk/news/rss/"
+    assert by_id["who_news"].feed_url != (
+        "https://www.who.int/rss-feeds/news-english.xml/"
     )
-    assert by_id["independent"].feed_url != (
-        "https://www.independent.co.uk/news/world/rss"
+    assert by_id["who_news"].feed_url != (
+        "https://who.int/rss-feeds/news-english.xml"
     )
-    assert by_id["independent"].feed_url != (
-        "https://www.independent.co.uk/news/uk/rss"
+    assert by_id["who_news"].feed_url != (
+        "https://www.who.int/rss-feeds/news-english.rss"
     )
-    assert by_id["independent"].feed_url != "https://www.independent.co.uk/feed"
-    assert by_id["independent"].feed_url != "https://www.independent.co.uk/feed/"
-    assert by_id["independent"].feed_url != (
-        "https://www.independent.co.uk/rss.xml"
+    assert by_id["who_news"].feed_url != (
+        "https://www.who.int/rss-feeds/news-english"
     )
-    assert by_id["independent"].feed_url != (
-        "https://www.independent.co.uk/?feed=rss"
+    assert by_id["who_news"].feed_url != (
+        "https://www.who.int/rss-feeds/news.xml"
     )
-    assert by_id["independent"].feed_url != (
-        "https://feeds.feedburner.com/independent"
+    assert by_id["who_news"].feed_url != (
+        "https://www.who.int/rss-feeds/news-en.xml"
     )
-    assert by_id["independent"].feed_url != (
-        "https://feeds.feedburner.com/Independent"
+    assert by_id["who_news"].feed_url != (
+        "https://www.who.int/rss-feeds/news-french.xml"
     )
-    assert by_id["independent"].feed_url != by_id["guardian_uk"].feed_url
-    assert by_id["independent"].feed_url != by_id["bbc_uk"].feed_url
-    assert by_id["independent"].feed_url != by_id["bbc_world"].feed_url
-    assert by_id["independent"].feed_url != by_id["guardian_world"].feed_url
-    assert by_id["independent"].feed_url != by_id["nyt_world"].feed_url
-    assert by_id["independent"].feed_url != by_id["sky_world"].feed_url
-    assert by_id["independent"].feed_url != by_id["the_19th"].feed_url
-    assert by_id["independent"].feed_url != by_id["axios"].feed_url
-    assert by_id["independent"].feed_url != by_id["npr_news"].feed_url
-    assert by_id["independent"].feed_url != by_id["atlantic"].feed_url
+    assert by_id["who_news"].feed_url != (
+        "https://www.who.int/feeds/entity/mediacentre/news/en/rss.xml"
+    )
+    assert by_id["who_news"].feed_url != "https://www.who.int/news/rss"
+    assert by_id["who_news"].feed_url != "https://www.who.int/news/rss.xml"
+    assert by_id["who_news"].feed_url != "https://www.who.int/news/feed"
+    assert by_id["who_news"].feed_url != "https://www.who.int/news/feed/"
+    assert by_id["who_news"].feed_url != "https://www.who.int/news-room/rss"
+    assert by_id["who_news"].feed_url != (
+        "https://www.who.int/news-room/releases/rss"
+    )
+    assert by_id["who_news"].feed_url != "https://www.who.int/rss.xml"
+    assert by_id["who_news"].feed_url != "https://www.who.int/feed"
+    assert by_id["who_news"].feed_url != "https://www.who.int/feed/"
+    assert by_id["who_news"].feed_url != "https://www.who.int/rss"
+    assert by_id["who_news"].feed_url != "https://www.who.int/rss/"
+    assert by_id["who_news"].feed_url != "https://www.who.int/?feed=rss"
+    assert by_id["who_news"].feed_url != "https://www.who.int/?feed=rss2"
+    assert by_id["who_news"].feed_url != "https://feeds.feedburner.com/who"
+    assert by_id["who_news"].feed_url != "https://feeds.feedburner.com/WHO"
+    assert by_id["who_news"].feed_url != "https://feeds.feedburner.com/whonews"
+    assert by_id["who_news"].feed_url != by_id["un_news"].feed_url
+    assert by_id["who_news"].feed_url != by_id["bbc_health"].feed_url
+    assert by_id["who_news"].feed_url != by_id["nyt_health"].feed_url
+    assert by_id["who_news"].feed_url != by_id["kff_health"].feed_url
+    assert by_id["who_news"].feed_url != by_id["stat_news"].feed_url
+    assert by_id["who_news"].feed_url != by_id["guardian_global_dev"].feed_url
+    assert by_id["who_news"].feed_url != by_id["crisis_group"].feed_url
+    assert by_id["who_news"].feed_url != by_id["the_new_humanitarian"].feed_url
+    assert by_id["who_news"].feed_url != by_id["bbc_world"].feed_url
+    assert by_id["who_news"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["who_news"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["who_news"].feed_url != by_id["aljazeera"].feed_url
+    assert by_id["who_news"].feed_url != by_id["sciencedaily"].feed_url
+    assert by_id["who_news"].feed_url != by_id["nature_news"].feed_url
     assert by_id["scientific_american"].feed_url != (
         "https://www.scientificamerican.com/platform/syndication/rss"
     )
@@ -20348,19 +20419,22 @@ def test_independent_scientific_american_thenewstack_primaries_registered():
     assert by_id["thenewstack"].feed_url != by_id["mit_tr"].feed_url
     assert by_id["thenewstack"].feed_url != by_id["media404"].feed_url
     assert by_id["thenewstack"].feed_url != by_id["the_markup"].feed_url
-    assert by_id["independent"].feed_url != (
+    assert by_id["who_news"].feed_url != (
         by_id["scientific_american"].feed_url
     )
-    assert by_id["independent"].feed_url != by_id["thenewstack"].feed_url
+    assert by_id["who_news"].feed_url != by_id["thenewstack"].feed_url
     assert by_id["scientific_american"].feed_url != (
         by_id["thenewstack"].feed_url
     )
     # Unused backups + product-skip sources stay out.
-    # All three batch72 primaries KEEP, so
-    # who_news / new_yorker / smithsonian_mag
-    # stay unused (do not probe unused
-    # backups). independent_world stays hung
-    # (prior 429; World section — do not
+    # who_news is the independent hard-swap
+    # fill (KEEP). new_yorker /
+    # smithsonian_mag stay unused (do not
+    # probe unused backups). independent
+    # stays hung (daily-fetch
+    # #40291069350 httpx 429 勿再挂).
+    # independent_world stays hung (prior
+    # 429; World section — do not
     # restore). vox / euractiv / passblue
     # stay unused (batch71 leftovers).
     # longreads stays out (batch68 official
@@ -20371,10 +20445,11 @@ def test_independent_scientific_american_thenewstack_primaries_registered():
     # biographic stays out (httpx 403).
     # inkstick stays out (product dropped).
     # hrw stays hung.
-    assert "who_news" not in by_id
+    assert "who_news" in by_id
     assert "who" not in by_id
     assert "who_int" not in by_id
     assert "world_health_organization" not in by_id
+    assert "independent" not in by_id
     assert "new_yorker" not in by_id
     assert "newyorker" not in by_id
     assert "the_new_yorker" not in by_id
@@ -20475,7 +20550,7 @@ def test_independent_scientific_american_thenewstack_primaries_registered():
     assert "guardian_media" not in by_id
     assert "guardian_games" not in by_id
     for source_id, expected in (
-        _INDEPENDENT_SCIENTIFIC_AMERICAN_THENEWSTACK_PRIMARY.items()
+        _WHO_NEWS_SCIENTIFIC_AMERICAN_THENEWSTACK_PRIMARY.items()
     ):
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
@@ -20485,10 +20560,29 @@ def test_independent_scientific_american_thenewstack_primaries_registered():
         assert source.category == expected["category"]
 
 
-def test_independent_scientific_american_thenewstack_feeds_live_http_200():
+def test_independent_hard_swapped_to_who_news():
+    """Product lock: independent is gone; who_news is the KEEP replacement."""
+    by_id = {s.id: s for s in SOURCES}
+    assert "independent" not in by_id
+    assert "independent_co_uk" not in by_id
+    assert "the_independent" not in by_id
+    assert "independent_uk" not in by_id
+    assert "independent_world" not in by_id
+    assert "who_news" in by_id
+    source = by_id["who_news"]
+    assert source.role == "primary"
+    assert source.name == "WHO News"
+    assert source.feed_url == "https://www.who.int/rss-feeds/news-english.xml"
+    assert source.category == "国际"
+    assert "https://www.independent.co.uk/rss" not in {s.feed_url for s in SOURCES}
+    assert "scientific_american" in by_id
+    assert "thenewstack" in by_id
+
+
+def test_who_news_scientific_american_thenewstack_feeds_live_http_200():
     """Hit the three batch72 feeds with the same headers fetch_source sends (not stubs)."""
     by_id = {s.id: s for s in SOURCES}
-    for source_id in _INDEPENDENT_SCIENTIFIC_AMERICAN_THENEWSTACK_PRIMARY:
+    for source_id in _WHO_NEWS_SCIENTIFIC_AMERICAN_THENEWSTACK_PRIMARY:
         source = by_id[source_id]
         request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
         try:
@@ -20506,7 +20600,7 @@ def test_independent_scientific_american_thenewstack_feeds_live_http_200():
         count = len(items)
         assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
         # Required: parseable title / url / published on each item.
-        # RSS 2.0 (independent / scientific_american /
+        # RSS 2.0 (who_news / scientific_american /
         # thenewstack) uses the un-namespaced
         # element text.
         for i, item in enumerate(items):
@@ -20517,20 +20611,18 @@ def test_independent_scientific_american_thenewstack_feeds_live_http_200():
             assert url, f"{source_id} item[{i}] missing url"
             assert published, f"{source_id} item[{i}] missing published"
         # #43 thin-skip: empty description would insert 0.
-        # scientific_american / thenewstack were
-        # 100% nonempty this probe. independent
-        # is 88/100 nonempty (12 empty-desc
-        # items skipped by fetch_source) — still
-        # ≥10 KEEP.
+        # All three winners were 100% nonempty
+        # this probe (who_news 109/109;
+        # scientific_american / thenewstack
+        # also 100%).
         nonempty = 0
         for item in items:
             if _item_description(item):
                 nonempty += 1
-        if source_id != "independent":
-            assert nonempty == len(items), (
-                f"{source_id} empty description: "
-                f"{len(items) - nonempty}/{len(items)}"
-            )
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
         assert nonempty >= 10, (
             f"{source_id} nonempty {nonempty}/{len(items)} below KEEP"
         )
@@ -20611,7 +20703,8 @@ if __name__ == "__main__":
     test_media404_jacobin_un_news_primaries_registered()
     test_hrw_hard_swapped_to_jacobin()
     test_texas_tribune_pew_research_defector_primaries_registered()
-    test_independent_scientific_american_thenewstack_primaries_registered()
+    test_who_news_scientific_american_thenewstack_primaries_registered()
+    test_independent_hard_swapped_to_who_news()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -20682,5 +20775,5 @@ if __name__ == "__main__":
     test_kff_health_niemanlab_reason_feeds_live_http_200()
     test_media404_jacobin_un_news_feeds_live_http_200()
     test_texas_tribune_pew_research_defector_feeds_live_http_200()
-    test_independent_scientific_american_thenewstack_feeds_live_http_200()
+    test_who_news_scientific_american_thenewstack_feeds_live_http_200()
     print("✓ source registry tests PASSED")
