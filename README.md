@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（203 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（206 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -209,6 +209,9 @@
 | `japan_forward` | Japan Forward | https://japan-forward.com/feed/ | primary |
 | `artforum` | Artforum | https://www.artforum.com/feed/ | primary |
 | `knowable` | Knowable Magazine | https://knowablemagazine.org/rss | primary |
+| `world_politics_review` | World Politics Review | https://www.worldpoliticsreview.com/feed/ | primary |
+| `climate_home` | Climate Home News | https://www.climatechangenews.com/feed/ | primary |
+| `project_syndicate` | Project Syndicate | https://www.project-syndicate.org/rss | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema

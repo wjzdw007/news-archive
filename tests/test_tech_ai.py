@@ -214,6 +214,26 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "the_new_humanitarian" not in TECH_AI_SOURCE_WHITELIST
     assert "dawn" not in TECH_AI_SOURCE_WHITELIST
     assert "grist" not in TECH_AI_SOURCE_WHITELIST
+    # batch66 RSS primaries stay off the tech/AI whitelist.
+    # world_politics_review lands on the existing
+    # 国际 category path (international-affairs
+    # analysis; same as foreign_affairs /
+    # foreign_policy / the_diplomat).
+    # climate_home lands on 科学 (climate news,
+    # same as carbon_brief / nyt_climate /
+    # guardian_environment) and is not added
+    # to TECH_AI_KEYWORD_SOURCES.
+    # project_syndicate lands on 综合 (world
+    # opinion / commentary, same as atlantic /
+    # nyt_opinion / guardian_opinion). None of
+    # these match the wired / verge / techcrunch
+    # ALWAYS pattern.
+    assert "world_politics_review" not in TECH_AI_SOURCE_WHITELIST
+    assert "climate_home" not in TECH_AI_SOURCE_WHITELIST
+    assert "project_syndicate" not in TECH_AI_SOURCE_WHITELIST
+    assert "artnet" not in TECH_AI_SOURCE_WHITELIST
+    assert "reason" not in TECH_AI_SOURCE_WHITELIST
+    assert "vox" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

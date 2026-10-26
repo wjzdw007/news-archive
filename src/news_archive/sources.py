@@ -1437,6 +1437,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="world_politics_review",
+        name="World Politics Review",
+        feed_url="https://www.worldpoliticsreview.com/feed/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="climate_home",
+        name="Climate Home News",
+        feed_url="https://www.climatechangenews.com/feed/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="project_syndicate",
+        name="Project Syndicate",
+        feed_url="https://www.project-syndicate.org/rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
