@@ -544,11 +544,16 @@ def test_whitelist_registered_and_cap_unchanged():
     # aeon / nautilus / noema). None of
     # these match the wired / verge /
     # techcrunch ALWAYS pattern.
-    # Unused backups artnet /
-    # smithsonian_mag / new_yorker stay
-    # off (first-winner unused stay out;
-    # do not probe unused backups after
-    # three KEEP). medicalxpress stays
+    # Unused backups artnet is now
+    # batch81 KEEP (techdirt Cloudflare
+    # 403 hard-swap fill) and stays off
+    # the whitelist. smithsonian_mag /
+    # new_yorker stay unused leftovers
+    # (if a later hard-swap falls
+    # through, smithsonian_mag MUST lock
+    # /rss/latest_articles/ never stale
+    # /rss/articles/; new_yorker MUST
+    # prefer /feed/everything). medicalxpress stays
     # off the frozen KEYWORD set
     # (already used for the
     # times_of_israel hard-swap; do not
@@ -583,11 +588,13 @@ def test_whitelist_registered_and_cap_unchanged():
     # None of these match the wired /
     # verge / techcrunch ALWAYS pattern.
     # Unused backups techdirt / macrumors
-    # / quillette stay off (first-winner
-    # unused stay out; do not probe unused
-    # backups after three KEEP). the_cut
-    # stays off (product dropped — all
-    # 404; do not probe / register).
+    # / quillette are now batch81
+    # (techdirt official Cloudflare 403
+    # hard-swap to artnet; macrumors /
+    # quillette KEEP) and stay off the
+    # whitelist. the_cut stays off
+    # (product dropped — all 404; do
+    # not probe / register).
     # atlantic_council stays off
     # (hard-swapped to grist in #139).
     # the_nation stays off (empty
@@ -604,6 +611,53 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "android_authority" not in TECH_AI_SOURCE_WHITELIST
     assert "unherd" not in TECH_AI_SOURCE_WHITELIST
     assert "psyche" not in TECH_AI_SOURCE_WHITELIST
+    assert "atlantic_council" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_nation" not in TECH_AI_SOURCE_WHITELIST
+    assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
+    # batch81 RSS primaries stay off the tech/AI whitelist.
+    # artnet is the techdirt official
+    # Cloudflare 403 hard-swap fill and
+    # lands on 综合 (art newsroom, same
+    # as artforum / hyperallergic /
+    # guardian_artanddesign). macrumors
+    # lands on 科技 (Apple / consumer
+    # tech newsroom, same as
+    # android_authority / howtogeek /
+    # tomshardware) but later-batch tech
+    # sources stay off the frozen ALWAYS
+    # set. quillette lands on 综合
+    # (ideas / culture / politics
+    # magazine, same as unherd /
+    # atlantic / new_republic). None of
+    # these match the wired / verge /
+    # techcrunch ALWAYS pattern.
+    # techdirt official FAIL (Cloudflare
+    # 403; do not register Feedburner)
+    # — not registered. Unused backups
+    # smithsonian_mag / new_yorker stay
+    # off (first-winner unused stay out;
+    # if a later hard-swap falls through,
+    # smithsonian_mag MUST lock
+    # /rss/latest_articles/ never stale
+    # /rss/articles/; new_yorker MUST
+    # prefer /feed/everything). the_cut
+    # stays off (product dropped — all
+    # 404). atlantic_council stays off
+    # (hard-swapped to grist in #139).
+    # the_nation stays off (empty
+    # site-wide FAIL). euractiv stays off
+    # (official 301 to rapporteur.com;
+    # Feedburner stale).
+    assert "artnet" not in TECH_AI_SOURCE_WHITELIST
+    assert "macrumors" not in TECH_AI_SOURCE_WHITELIST
+    assert "quillette" not in TECH_AI_SOURCE_WHITELIST
+    assert "techdirt" not in TECH_AI_SOURCE_WHITELIST
+    assert "smithsonian_mag" not in TECH_AI_SOURCE_WHITELIST
+    assert "new_yorker" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_cut" not in TECH_AI_SOURCE_WHITELIST
+    assert "howtogeek" not in TECH_AI_SOURCE_WHITELIST
+    assert "new_republic" not in TECH_AI_SOURCE_WHITELIST
+    assert "vox" not in TECH_AI_SOURCE_WHITELIST
     assert "atlantic_council" not in TECH_AI_SOURCE_WHITELIST
     assert "the_nation" not in TECH_AI_SOURCE_WHITELIST
     assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
