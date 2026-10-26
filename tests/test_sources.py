@@ -6909,6 +6909,8 @@ _WHO_NEWS_SCIENTIFIC_AMERICAN_THENEWSTACK_PRIMARY = {
 # no CAP code change. No X this
 # batch. No LLM this batch. Not
 # tech/AI whitelist.
+# physics_world / kyiv_independent /
+# pitchfork are batch74.
 _IRISH_TIMES_SCIENCE_ORG_VARIETY_PRIMARY = {
     "irish_times": {
         "name": "The Irish Times",
@@ -6929,7 +6931,348 @@ _IRISH_TIMES_SCIENCE_ORG_VARIETY_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 227
+# CEO-approved Physics World / The
+# Kyiv Independent / Pitchfork RSS
+# primaries (batch74). These three
+# are the new adds after #135
+# (batch73 irish_times / science_org
+# / variety squash) on tip
+# 32fcf14565e66758d761a0435ea88e5f6375b39d
+# (that squash sits on #134
+# 9aac1b63a47a333bb6100e7ecac57a2d03dcb075
+# who_news). Do not re-touch that
+# #135 winner. Do not restore
+# independent. Do not restore hrw.
+# Do not touch irish_times /
+# science_org / variety (#135) /
+# who_news / scientific_american /
+# thenewstack (#134 / #131) /
+# texas_tribune / pew_research /
+# defector (#129) / media404 /
+# jacobin / un_news (#128 after the
+# hard-swap) / kff_health /
+# niemanlab / reason (#127) /
+# popular_science / slate / the_19th
+# (#126) / the_new_humanitarian /
+# salon / mother_jones (#125) /
+# world_politics_review / climate_home /
+# project_syndicate (#124) /
+# japan_forward / artforum / knowable
+# (#123) / the_wire_china / literary_hub
+# / himal (#122) / defense_one /
+# fast_company / lowy_interpreter (#121)
+# / techinasia / science_news /
+# african_arguments (#120) / the_markup
+# / atlas_obscura / undark (#119) /
+# aspi_strategist / nautilus /
+# hyperallergic (#118) / aeon / noema /
+# marketwatch (#117) / mercopress /
+# nature_news / crisis_group (#116) /
+# africa_report / mexico_news_daily /
+# sciencedaily (#115) / mongabay /
+# daily_maverick / oilprice (#114) /
+# politico_europe / breaking_defense /
+# carbon_brief (#113) / phys_org /
+# globe_mail / newatlas (#112) /
+# the_register / foreign_affairs /
+# allafrica (#111) / zdnet (#110) /
+# digiday_media (#107). ars_science
+# stays hung. nyt_media / guardian_media
+# stay hung.
+# physics_world is the official
+# Physics World (IOP) WordPress
+# site-wide RSS (no prior
+# physics_world / physicsworld /
+# physics_world_com / iop_physics
+# id). Locked official
+# https://physicsworld.com/feed/
+# (channel "Physics World"). MUST
+# lock apex + trailing slash: /feed
+# remaps to /feed/. www remaps to
+# apex /feed/. /rss / /rss/ /
+# ?feed=rss / ?feed=rss2 /
+# /latest/feed/ remap to /feed/.
+# /rss.xml /feed.xml /atom.xml /
+# /index.rss /feeds/ /news/feed/ /
+# /c/news/feed/ are HTTP 404.
+# /l/news/feed/ is a News Archives
+# section (channel "News Archives –
+# Physics World") — lock site-wide,
+# not a section. /comments/feed/ is
+# comments (not articles).
+# /a/feed/ remaps to article HTML.
+# /blog/feed/ remaps to /l/blog/
+# HTML. blog.physicsworld.com does
+# not resolve. Feedburner
+# https://feeds.feedburner.com/physicsworld
+# (and /PhysicsWorld) is a stale
+# 10-item mirror (channel
+# "physicsworld.com: all content")
+# — lock official WordPress
+# /feed/, not Feedburner.
+# Live-diff winner: HTTP 200 / 160
+# nonempty / 30 insertable (ingest
+# cap 30; 160 items; httpx
+# fetch_source + urllib). Product
+# lock ≥10 nonempty — keep (160 is
+# not the 5–9 observe band).
+# Distinct from live phys_org /
+# science_org / scientific_american
+# / nature_news / sciencedaily /
+# science_news / popular_science /
+# nyt_science / bbc_science /
+# guardian_science / npr_science /
+# knowable / space_com /
+# ieee_spectrum. 0 article URL
+# overlap with those. Lands on the
+# existing 科学 category path (IOP
+# Physics World magazine, same as
+# phys_org / science_org /
+# nature_news). Not added to the
+# tech/AI whitelist.
+# kyiv_independent is the official
+# The Kyiv Independent site-wide
+# RSS (no prior kyiv_independent /
+# kyivindependent /
+# the_kyiv_independent /
+# kyiv_independent_com id). Locked
+# official
+# https://kyivindependent.com/feed/rss/
+# (channel "The Kyiv Independent -
+# News from Ukraine, Eastern
+# Europe"; subtitle "News,
+# analyses, investigations,
+# opinions, podcasts and more.
+# On-the-ground reporting from
+# Ukraine"). MUST lock apex +
+# trailing slash: /feed/rss remaps
+# to /feed/rss/. www remaps to
+# apex /feed/rss/. /feed / /feed/
+# /rss / /rss/ /news-archive/feed/
+# /rss.xml /feed.xml /atom.xml /
+# /feed/rss.xml /feed/atom/ are
+# HTTP 404. ?feed=rss / ?feed=rss2
+# are HTTP 200 HTML (0 insertable).
+# /news-archive/rss/ is a News
+# Feed section (15 insertable;
+# channel "The Kyiv Independent")
+# — lock site-wide /feed/rss/, not
+# the news-archive section.
+# Feedburner
+# https://feeds.feedburner.com/kyivindependent
+# (and /KyivIndependent) is HTTP
+# 404. Live-diff winner: HTTP 200
+# / 100 nonempty / 30 insertable
+# (ingest cap 30; 100 items; httpx
+# fetch_source + urllib). Product
+# lock ≥10 nonempty — keep (100 is
+# not the 5–9 observe band).
+# Distinct from live bbc_europe /
+# guardian_europe / politico_europe
+# / dw_europe / bbc_world /
+# guardian_world / nyt_world /
+# nyt_europe / aljazeera / un_news
+# / crisis_group /
+# the_new_humanitarian. 0 article
+# URL overlap with those. Lands on
+# the existing 国际 category path
+# (Ukraine / Eastern Europe
+# newsroom, same as bbc_europe /
+# politico_europe). Not added to
+# the tech/AI whitelist.
+# Product-hung primary euractiv
+# FAIL: entire www.euractiv.com
+# (homepage + /feed/ + /rss +
+# ?feed=mcfeed) 301s to
+# www.rapporteur.com. /feed/
+# channel is "Rapporteur", not
+# EURACTIV — not a clean official
+# EURACTIV lock after the rebrand.
+# Feedburner
+# https://feeds.feedburner.com/euractiv
+# (and /Euractiv) is a stale
+# mirror (channel "Euractiv"; last
+# items 2025-12-20) — lock
+# official, not a stale
+# Feedburner. Do not register
+# rapporteur.com as euractiv. Do
+# not register euractiv
+# Feedburner. Hard-swap fill is
+# pitchfork.
+# pitchfork is the official
+# Pitchfork site-wide RSS (no
+# prior pitchfork / pitchfork_com
+# / pitchfork_magazine id). Locked
+# official https://pitchfork.com/feed/rss
+# (channel "Pitchfork"; subtitle
+# "The latest from
+# pitchfork.com"). MUST lock apex
+# + no trailing slash: /feed/rss/
+# is the same 30-item body — lock
+# official no-slash URL (robots.txt
+# + www remap target). www remaps
+# to apex /feed/rss. /feed/ /
+# www /feed/ are HTTP 400 JSON (0
+# insertable). /rss remaps to HTML
+# /info/rss/ (0 insertable).
+# ?feed=rss is HTTP 200 HTML (0
+# insertable). /feed/feed-news/rss
+# is a News section (channel
+# "RSS: News") — lock site-wide,
+# not a section.
+# /feed/feed-album-reviews/rss is
+# an Album Reviews section.
+# /rss/news/ remaps to the News
+# section. Feedburner
+# https://feeds.feedburner.com/pitchfork
+# (and /Pitchfork) is empty (0
+# insertable; channel "PF") —
+# lock official, not Feedburner.
+# Live-diff winner: HTTP 200 / 30
+# nonempty / 30 insertable (httpx
+# fetch_source + urllib). Product
+# lock ≥10 nonempty — keep (30 is
+# not the 5–9 observe band).
+# Distinct from live variety /
+# guardian_music / guardian_film /
+# nyt_arts / nyt_movies / npr_arts
+# / bbc_entertainment /
+# guardian_tv / hyperallergic /
+# artforum / literary_hub /
+# defector. 0 article URL overlap
+# with those. Lands on the
+# existing 综合 category path
+# (music / culture newsroom, same
+# as guardian_music / variety —
+# existing pattern has no 音乐 /
+# 娱乐 category). Not added to
+# the tech/AI whitelist.
+# Product-locked backups (use only
+# if a primary fails live-diff /
+# fetch / URL-dedup): scotusblog /
+# infoq — unused because pitchfork
+# won the euractiv hard-swap fill
+# (≥10 nonempty via fetch_source).
+# Do not probe unused backups.
+# Do NOT use as backups (product skip):
+# independent (daily-fetch
+# #40291069350 httpx 429 勿再挂),
+# bangkok_post (HTTP 451 / prior skip),
+# indian_express (insertable=0
+# empty-desc), rest_of_world (httpx
+# 403 JS challenge), al_monitor
+# (flaky 403), hkfp (HTTP 403),
+# biographic (httpx 403 — 勿再挂),
+# asiatimes / asia_times (httpx 403),
+# dawn (Cloudflare 403), longreads
+# (httpx 403), hrw (daily-fetch
+# httpx 403 hard-swap). Do not
+# invent other backups. Do not
+# restore ars_science. Do not add a
+# second digiday_media (digiday0观察).
+# Do not register dawn Feedburner.
+# Do not register euractiv
+# Feedburner. Do not restore
+# independent. Do not restore
+# independent_world
+# (/news/world/rss is a World
+# section + prior 429 hang).
+# irish_times / science_org /
+# variety stay registered (batch73
+# closed). who_news /
+# scientific_american / thenewstack
+# stay registered (batch72 after
+# #134 hard-swap; independent
+# hung). texas_tribune /
+# pew_research / defector stay
+# registered (batch71 closed).
+# media404 / jacobin / un_news stay
+# registered (batch70 after the
+# hrw → jacobin hard-swap; hrw hung).
+# kff_health / niemanlab / reason stay
+# registered (batch69 closed).
+# popular_science / slate / the_19th
+# stay registered (batch68 closed).
+# the_new_humanitarian / salon /
+# mother_jones stay registered
+# (batch67 closed).
+# world_politics_review / climate_home /
+# project_syndicate stay registered
+# (batch66 closed). japan_forward /
+# artforum / knowable stay registered
+# (batch65 closed). the_wire_china /
+# literary_hub / himal stay registered
+# (batch64 closed). defense_one /
+# fast_company / lowy_interpreter stay
+# registered (batch63 closed).
+# techinasia / science_news /
+# african_arguments stay registered
+# (batch62 closed). the_markup /
+# atlas_obscura / undark stay
+# registered (batch61 closed).
+# aspi_strategist / nautilus /
+# hyperallergic stay registered
+# (batch60 closed). aeon / noema /
+# marketwatch stay registered (batch59
+# closed). mercopress / nature_news /
+# crisis_group stay registered (batch58
+# closed). africa_report /
+# mexico_news_daily / sciencedaily stay
+# registered (batch57 closed). mongabay
+# / daily_maverick / oilprice stay
+# registered (batch56 closed).
+# politico_europe / breaking_defense /
+# carbon_brief stay registered (batch55
+# closed). phys_org / globe_mail /
+# newatlas stay registered (batch54
+# closed). the_register /
+# foreign_affairs / allafrica stay
+# registered (batch53 closed).
+# bbc_australia / bloomberg_technology /
+# zdnet stay registered (batch52 after
+# #110). ars_science stays hung.
+# the_diplomat / stat_news /
+# ieee_spectrum stay registered
+# (batch51 closed). war_on_rocks /
+# canary_media / space_com stay
+# registered (batch50 closed).
+# foreign_policy / ft_world /
+# abc_australia stay registered
+# (batch49 closed). politico_politics /
+# dw_business / france24_culture stay
+# registered (batch48 closed).
+# atlantic / smh_national /
+# guardian_education stay registered
+# (batch47 closed). digiday_media
+# stays registered (#107). nyt_media /
+# guardian_media stay hung.
+# guardian_games stays unregistered
+# (product: games thin / 不进主源).
+# sunday_review / cnbc (403 known) /
+# ap stay unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6 —
+# no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_PHYSICS_WORLD_KYIV_INDEPENDENT_PITCHFORK_PRIMARY = {
+    "physics_world": {
+        "name": "Physics World",
+        "feed_url": "https://physicsworld.com/feed/",
+        "category": "科学",
+    },
+    "kyiv_independent": {
+        "name": "The Kyiv Independent",
+        "feed_url": "https://kyivindependent.com/feed/rss/",
+        "category": "国际",
+    },
+    "pitchfork": {
+        "name": "Pitchfork",
+        "feed_url": "https://pitchfork.com/feed/rss",
+        "category": "综合",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 230
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -20130,7 +20473,8 @@ def test_texas_tribune_pew_research_defector_primaries_registered():
     # registered after the independent →
     # who_news hard-swap. independent
     # stays hung. batch73 winners
-    # stay registered.
+    # stay registered. batch74
+    # winners stay registered.
     assert "who_news" in by_id
     assert "independent" not in by_id
     assert "scientific_american" in by_id
@@ -20138,6 +20482,9 @@ def test_texas_tribune_pew_research_defector_primaries_registered():
     assert "irish_times" in by_id
     assert "science_org" in by_id
     assert "variety" in by_id
+    assert "physics_world" in by_id
+    assert "kyiv_independent" in by_id
+    assert "pitchfork" in by_id
     # #128 winners stay registered and unchanged.
     # #127 winners stay registered and unchanged.
     # #126 winners stay registered and unchanged.
@@ -20325,11 +20672,17 @@ def test_texas_tribune_pew_research_defector_primaries_registered():
     # batch73. medicalxpress /
     # new_republic / howtogeek stay
     # unused because all three batch73
-    # primaries KEEP. longreads stays
-    # out (batch68 official httpx 403).
-    # dawn stays out (batch67 official
-    # Cloudflare 403). Do not register
-    # dawn Feedburner.
+    # primaries KEEP. physics_world /
+    # kyiv_independent / pitchfork are
+    # now batch74. pitchfork is the
+    # euractiv hard-swap fill.
+    # scotusblog / infoq stay unused
+    # because pitchfork won. longreads
+    # stays out (batch68 official httpx
+    # 403). dawn stays out (batch67
+    # official Cloudflare 403). Do not
+    # register dawn Feedburner. Do not
+    # register euractiv Feedburner.
     # asiatimes / asia_times stay out (httpx 403).
     # biographic stays out (httpx 403).
     # inkstick stays out (product dropped).
@@ -20340,6 +20693,11 @@ def test_texas_tribune_pew_research_defector_primaries_registered():
     assert "irish_times" in by_id
     assert "science_org" in by_id
     assert "variety" in by_id
+    assert "physics_world" in by_id
+    assert "kyiv_independent" in by_id
+    assert "pitchfork" in by_id
+    assert "scotusblog" not in by_id
+    assert "infoq" not in by_id
     assert "medicalxpress" not in by_id
     assert "howtogeek" not in by_id
     assert "new_yorker" not in by_id
@@ -20504,6 +20862,10 @@ def test_who_news_scientific_american_thenewstack_primaries_registered():
     assert "irish_times" in by_id
     assert "science_org" in by_id
     assert "variety" in by_id
+    # batch74 winners stay registered.
+    assert "physics_world" in by_id
+    assert "kyiv_independent" in by_id
+    assert "pitchfork" in by_id
     # #129 / #130 winners stay registered and unchanged.
     # #128 winners stay registered and unchanged.
     # #127 winners stay registered and unchanged.
@@ -20776,10 +21138,17 @@ def test_who_news_scientific_american_thenewstack_primaries_registered():
     # are now batch73. medicalxpress /
     # new_republic / howtogeek stay unused
     # because all three batch73 primaries
-    # KEEP. independent_world stays hung
+    # KEEP. physics_world /
+    # kyiv_independent / pitchfork are now
+    # batch74. pitchfork is the euractiv
+    # hard-swap fill. scotusblog / infoq
+    # stay unused because pitchfork won.
+    # independent_world stays hung
     # (prior 429; World section — do not
     # restore). vox / euractiv / passblue
-    # stay unused (batch71 leftovers).
+    # stay unused (batch71 leftovers;
+    # euractiv re-probed in batch74 and
+    # still FAIL).
     # longreads stays out (batch68 official
     # httpx 403). dawn stays out (batch67
     # official Cloudflare 403). Do not
@@ -20791,6 +21160,11 @@ def test_who_news_scientific_american_thenewstack_primaries_registered():
     assert "irish_times" in by_id
     assert "science_org" in by_id
     assert "variety" in by_id
+    assert "physics_world" in by_id
+    assert "kyiv_independent" in by_id
+    assert "pitchfork" in by_id
+    assert "scotusblog" not in by_id
+    assert "infoq" not in by_id
     assert "medicalxpress" not in by_id
     assert "howtogeek" not in by_id
     assert "who_news" in by_id
@@ -20988,6 +21362,10 @@ def test_irish_times_science_org_variety_primaries_registered():
     )
     assert "variety" in by_id
     assert by_id["variety"].feed_url == "https://variety.com/feed/"
+    # batch74 winners stay registered.
+    assert "physics_world" in by_id
+    assert "kyiv_independent" in by_id
+    assert "pitchfork" in by_id
     # #134 / #131 winners stay registered and unchanged.
     # #129 / #130 winners stay registered and unchanged.
     # #128 winners stay registered and unchanged.
@@ -21242,17 +21620,31 @@ def test_irish_times_science_org_variety_primaries_registered():
     # (daily-fetch #40291069350 httpx 429
     # 勿再挂). independent_world stays
     # hung (prior 429; World section — do
-    # not restore). vox / euractiv /
-    # passblue stay unused (batch71
-    # leftovers). longreads stays out
+    # not restore). physics_world /
+    # kyiv_independent / pitchfork are now
+    # batch74. pitchfork is the euractiv
+    # hard-swap fill (official euractiv.com
+    # 301s to rapporteur.com; Feedburner
+    # stale 2025-12). scotusblog / infoq
+    # stay unused because pitchfork won.
+    # vox / euractiv / passblue stay unused
+    # (batch71 leftovers; euractiv
+    # re-probed in batch74 and still
+    # FAIL). longreads stays out
     # (batch68 official httpx 403). dawn
     # stays out (batch67 official
     # Cloudflare 403). Do not register
-    # dawn Feedburner.
+    # dawn Feedburner. Do not register
+    # euractiv Feedburner.
     # asiatimes / asia_times stay out (httpx 403).
     # biographic stays out (httpx 403).
     # inkstick stays out (product dropped).
     # hrw stays hung.
+    assert "physics_world" in by_id
+    assert "kyiv_independent" in by_id
+    assert "pitchfork" in by_id
+    assert "scotusblog" not in by_id
+    assert "infoq" not in by_id
     assert "medicalxpress" not in by_id
     assert "medical_xpress" not in by_id
     assert "medicalxpress_com" not in by_id
@@ -21355,6 +21747,411 @@ def test_irish_times_science_org_variety_feeds_live_http_200():
         )
 
 
+def test_physics_world_kyiv_independent_pitchfork_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "physics_world" in by_id
+    assert by_id["physics_world"].feed_url == "https://physicsworld.com/feed/"
+    assert "kyiv_independent" in by_id
+    assert by_id["kyiv_independent"].feed_url == (
+        "https://kyivindependent.com/feed/rss/"
+    )
+    assert "pitchfork" in by_id
+    assert by_id["pitchfork"].feed_url == "https://pitchfork.com/feed/rss"
+    # #135 / batch73 winners stay registered and unchanged.
+    # #134 / #131 winners stay registered and unchanged.
+    # #129 / #130 winners stay registered and unchanged.
+    # #128 winners stay registered and unchanged.
+    # #127 winners stay registered and unchanged.
+    # #126 winners stay registered and unchanged.
+    # #125 winners stay registered and unchanged.
+    # #124 winners stay registered and unchanged.
+    # #123 winners stay registered and unchanged.
+    # #122 winners stay registered and unchanged.
+    # #121 winners stay registered and unchanged.
+    # #120 winners stay registered and unchanged.
+    # #119 winners stay registered and unchanged.
+    # #118 winners stay registered and unchanged.
+    # #117 winners stay registered and unchanged.
+    # #116 winners stay registered and unchanged.
+    # #115 winners stay registered and unchanged.
+    # #114 winners stay registered and unchanged.
+    # #113 winners stay registered and unchanged.
+    # #112 winners stay registered and unchanged.
+    # #111 winners stay registered and unchanged.
+    # #110 hard-swap: zdnet live, ars_science hung.
+    # #107 hard-swap: digiday_media live, nyt_media hung.
+    # Do not touch irish_times / science_org /
+    # variety / who_news / scientific_american /
+    # thenewstack / texas_tribune / pew_research /
+    # defector / media404 / jacobin / un_news /
+    # kff_health / niemanlab / reason /
+    # popular_science / slate / the_19th /
+    # the_new_humanitarian / salon /
+    # mother_jones / world_politics_review /
+    # climate_home / project_syndicate /
+    # japan_forward / artforum / knowable /
+    # the_wire_china / literary_hub / himal /
+    # defense_one / fast_company /
+    # lowy_interpreter / techinasia /
+    # science_news / african_arguments /
+    # the_markup / atlas_obscura / undark /
+    # aspi_strategist / nautilus /
+    # hyperallergic / aeon / noema /
+    # marketwatch / mercopress / nature_news /
+    # crisis_group / africa_report /
+    # mexico_news_daily / sciencedaily /
+    # mongabay / daily_maverick / oilprice /
+    # politico_europe / breaking_defense /
+    # carbon_brief / phys_org / globe_mail /
+    # newatlas / the_register / foreign_affairs /
+    # allafrica / zdnet / digiday_media.
+    assert "irish_times" in by_id
+    assert "science_org" in by_id
+    assert "variety" in by_id
+    assert "who_news" in by_id
+    assert "independent" not in by_id
+    assert "scientific_american" in by_id
+    assert "thenewstack" in by_id
+    assert "texas_tribune" in by_id
+    assert "pew_research" in by_id
+    assert "defector" in by_id
+    assert "media404" in by_id
+    assert "jacobin" in by_id
+    assert "un_news" in by_id
+    assert "hrw" not in by_id
+    assert "kff_health" in by_id
+    assert "niemanlab" in by_id
+    assert "reason" in by_id
+    assert "popular_science" in by_id
+    assert "slate" in by_id
+    assert "the_19th" in by_id
+    assert "the_new_humanitarian" in by_id
+    assert "salon" in by_id
+    assert "mother_jones" in by_id
+    assert "world_politics_review" in by_id
+    assert "climate_home" in by_id
+    assert "project_syndicate" in by_id
+    assert "japan_forward" in by_id
+    assert "artforum" in by_id
+    assert "knowable" in by_id
+    assert "the_wire_china" in by_id
+    assert "literary_hub" in by_id
+    assert "himal" in by_id
+    assert "defense_one" in by_id
+    assert "fast_company" in by_id
+    assert "lowy_interpreter" in by_id
+    assert "techinasia" in by_id
+    assert "science_news" in by_id
+    assert "african_arguments" in by_id
+    assert "the_markup" in by_id
+    assert "atlas_obscura" in by_id
+    assert "undark" in by_id
+    assert "aspi_strategist" in by_id
+    assert "nautilus" in by_id
+    assert "hyperallergic" in by_id
+    assert "aeon" in by_id
+    assert "noema" in by_id
+    assert "marketwatch" in by_id
+    assert "africa_report" in by_id
+    assert "sciencedaily" in by_id
+    assert "digiday_media" in by_id
+    assert "breaking_defense" in by_id
+    assert "carbon_brief" in by_id
+    assert "zdnet" in by_id
+    assert "the_register" in by_id
+    assert "newatlas" in by_id
+    assert "phys_org" in by_id
+    assert "nature_news" in by_id
+    assert by_id["irish_times"].feed_url == (
+        "https://www.irishtimes.com/arc/outboundfeeds/rss/?outputType=xml"
+    )
+    assert by_id["science_org"].feed_url == (
+        "https://www.science.org/rss/news_current.xml"
+    )
+    assert by_id["variety"].feed_url == "https://variety.com/feed/"
+    assert by_id["who_news"].feed_url == (
+        "https://www.who.int/rss-feeds/news-english.xml"
+    )
+    assert by_id["scientific_american"].feed_url == (
+        "https://www.scientificamerican.com/platform/syndication/rss/"
+    )
+    assert by_id["thenewstack"].feed_url == "https://thenewstack.io/feed/"
+    assert by_id["texas_tribune"].feed_url == (
+        "https://feeds.texastribune.org/feeds/main/"
+    )
+    assert by_id["pew_research"].feed_url == (
+        "https://www.pewresearch.org/feed/"
+    )
+    assert by_id["defector"].feed_url == "https://defector.com/feed"
+    assert by_id["media404"].feed_url == "https://www.404media.co/rss/"
+    assert by_id["jacobin"].feed_url == "https://jacobin.com/feed/"
+    assert by_id["un_news"].feed_url == (
+        "https://news.un.org/feed/subscribe/en/news/all/rss.xml"
+    )
+    assert by_id["kff_health"].feed_url == "https://kffhealthnews.org/feed/"
+    assert by_id["niemanlab"].feed_url == "https://www.niemanlab.org/feed/"
+    assert by_id["reason"].feed_url == "https://reason.com/feed/"
+    assert by_id["popular_science"].feed_url == "https://www.popsci.com/feed/"
+    assert by_id["slate"].feed_url == "https://slate.com/feeds/all.rss"
+    assert by_id["the_19th"].feed_url == "https://19thnews.org/feed/"
+    assert by_id["zdnet"].feed_url == "https://www.zdnet.com/feed/"
+    assert by_id["the_register"].feed_url == (
+        "https://www.theregister.com/headlines.atom"
+    )
+    assert by_id["newatlas"].feed_url == "https://newatlas.com/index.rss"
+    assert by_id["phys_org"].feed_url == "https://phys.org/rss-feed/"
+    assert by_id["physics_world"].feed_url != "https://physicsworld.com/feed"
+    assert by_id["physics_world"].feed_url != (
+        "https://www.physicsworld.com/feed/"
+    )
+    assert by_id["physics_world"].feed_url != "https://physicsworld.com/rss"
+    assert by_id["physics_world"].feed_url != "https://physicsworld.com/rss/"
+    assert by_id["physics_world"].feed_url != "https://physicsworld.com/?feed=rss"
+    assert by_id["physics_world"].feed_url != (
+        "https://physicsworld.com/?feed=rss2"
+    )
+    assert by_id["physics_world"].feed_url != (
+        "https://physicsworld.com/latest/feed/"
+    )
+    assert by_id["physics_world"].feed_url != (
+        "https://physicsworld.com/l/news/feed/"
+    )
+    assert by_id["physics_world"].feed_url != (
+        "https://physicsworld.com/comments/feed/"
+    )
+    assert by_id["physics_world"].feed_url != (
+        "https://feeds.feedburner.com/physicsworld"
+    )
+    assert by_id["physics_world"].feed_url != (
+        "https://feeds.feedburner.com/PhysicsWorld"
+    )
+    assert by_id["physics_world"].feed_url != by_id["phys_org"].feed_url
+    assert by_id["physics_world"].feed_url != by_id["science_org"].feed_url
+    assert by_id["physics_world"].feed_url != (
+        by_id["scientific_american"].feed_url
+    )
+    assert by_id["physics_world"].feed_url != by_id["nature_news"].feed_url
+    assert by_id["physics_world"].feed_url != by_id["sciencedaily"].feed_url
+    assert by_id["physics_world"].feed_url != by_id["science_news"].feed_url
+    assert by_id["physics_world"].feed_url != by_id["popular_science"].feed_url
+    assert by_id["physics_world"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["physics_world"].feed_url != by_id["bbc_science"].feed_url
+    assert by_id["physics_world"].feed_url != (
+        by_id["guardian_science"].feed_url
+    )
+    assert by_id["physics_world"].feed_url != by_id["npr_science"].feed_url
+    assert by_id["physics_world"].feed_url != by_id["knowable"].feed_url
+    assert by_id["physics_world"].feed_url != by_id["space_com"].feed_url
+    assert by_id["physics_world"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["kyiv_independent"].feed_url != (
+        "https://kyivindependent.com/feed/rss"
+    )
+    assert by_id["kyiv_independent"].feed_url != (
+        "https://www.kyivindependent.com/feed/rss/"
+    )
+    assert by_id["kyiv_independent"].feed_url != (
+        "https://kyivindependent.com/feed/"
+    )
+    assert by_id["kyiv_independent"].feed_url != (
+        "https://kyivindependent.com/rss/"
+    )
+    assert by_id["kyiv_independent"].feed_url != (
+        "https://kyivindependent.com/news-archive/rss/"
+    )
+    assert by_id["kyiv_independent"].feed_url != (
+        "https://kyivindependent.com/news-archive/rss"
+    )
+    assert by_id["kyiv_independent"].feed_url != (
+        "https://kyivindependent.com/?feed=rss"
+    )
+    assert by_id["kyiv_independent"].feed_url != (
+        "https://feeds.feedburner.com/kyivindependent"
+    )
+    assert by_id["kyiv_independent"].feed_url != by_id["bbc_europe"].feed_url
+    assert by_id["kyiv_independent"].feed_url != (
+        by_id["guardian_europe"].feed_url
+    )
+    assert by_id["kyiv_independent"].feed_url != (
+        by_id["politico_europe"].feed_url
+    )
+    assert by_id["kyiv_independent"].feed_url != by_id["dw_europe"].feed_url
+    assert by_id["kyiv_independent"].feed_url != by_id["bbc_world"].feed_url
+    assert by_id["kyiv_independent"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["kyiv_independent"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["kyiv_independent"].feed_url != by_id["nyt_europe"].feed_url
+    assert by_id["kyiv_independent"].feed_url != by_id["aljazeera"].feed_url
+    assert by_id["kyiv_independent"].feed_url != by_id["un_news"].feed_url
+    assert by_id["kyiv_independent"].feed_url != by_id["crisis_group"].feed_url
+    assert by_id["kyiv_independent"].feed_url != (
+        by_id["the_new_humanitarian"].feed_url
+    )
+    assert by_id["pitchfork"].feed_url != "https://pitchfork.com/feed/rss/"
+    assert by_id["pitchfork"].feed_url != "https://www.pitchfork.com/feed/rss"
+    assert by_id["pitchfork"].feed_url != "https://pitchfork.com/feed/"
+    assert by_id["pitchfork"].feed_url != "https://pitchfork.com/rss"
+    assert by_id["pitchfork"].feed_url != "https://pitchfork.com/?feed=rss"
+    assert by_id["pitchfork"].feed_url != (
+        "https://pitchfork.com/feed/feed-news/rss"
+    )
+    assert by_id["pitchfork"].feed_url != (
+        "https://pitchfork.com/feed/feed-album-reviews/rss"
+    )
+    assert by_id["pitchfork"].feed_url != "https://pitchfork.com/rss/news/"
+    assert by_id["pitchfork"].feed_url != (
+        "https://feeds.feedburner.com/pitchfork"
+    )
+    assert by_id["pitchfork"].feed_url != (
+        "https://feeds.feedburner.com/Pitchfork"
+    )
+    assert by_id["pitchfork"].feed_url != by_id["variety"].feed_url
+    assert by_id["pitchfork"].feed_url != by_id["guardian_music"].feed_url
+    assert by_id["pitchfork"].feed_url != by_id["guardian_film"].feed_url
+    assert by_id["pitchfork"].feed_url != by_id["nyt_arts"].feed_url
+    assert by_id["pitchfork"].feed_url != by_id["nyt_movies"].feed_url
+    assert by_id["pitchfork"].feed_url != by_id["npr_arts"].feed_url
+    assert by_id["pitchfork"].feed_url != by_id["bbc_entertainment"].feed_url
+    assert by_id["pitchfork"].feed_url != by_id["guardian_tv"].feed_url
+    assert by_id["pitchfork"].feed_url != by_id["hyperallergic"].feed_url
+    assert by_id["pitchfork"].feed_url != by_id["artforum"].feed_url
+    assert by_id["pitchfork"].feed_url != by_id["literary_hub"].feed_url
+    assert by_id["pitchfork"].feed_url != by_id["defector"].feed_url
+    assert by_id["physics_world"].feed_url != by_id["kyiv_independent"].feed_url
+    assert by_id["physics_world"].feed_url != by_id["pitchfork"].feed_url
+    assert by_id["kyiv_independent"].feed_url != by_id["pitchfork"].feed_url
+    # Unused backups + product-skip sources stay out.
+    # pitchfork is the euractiv hard-swap
+    # fill (KEEP). scotusblog / infoq stay
+    # unused (do not probe unused backups).
+    # euractiv stays unused (official
+    # www.euractiv.com 301s to
+    # rapporteur.com; Feedburner stale
+    # 2025-12 — do not register).
+    # irish_times / science_org / variety
+    # stay registered (batch73 KEEP).
+    # medicalxpress / new_republic /
+    # howtogeek stay unused (batch73
+    # leftovers). who_news stays
+    # registered (batch72 hard-swap KEEP).
+    # new_yorker / smithsonian_mag stay
+    # unused (batch72 leftovers).
+    # independent stays hung (daily-fetch
+    # #40291069350 httpx 429 勿再挂).
+    # independent_world stays hung (prior
+    # 429; World section — do not
+    # restore). vox / passblue stay unused
+    # (batch71 leftovers). longreads stays
+    # out (batch68 official httpx 403).
+    # dawn stays out (batch67 official
+    # Cloudflare 403). Do not register
+    # dawn Feedburner. Do not register
+    # euractiv Feedburner.
+    # asiatimes / asia_times stay out (httpx 403).
+    # biographic stays out (httpx 403).
+    # inkstick stays out (product dropped).
+    # hrw stays hung.
+    assert "scotusblog" not in by_id
+    assert "scotus_blog" not in by_id
+    assert "scotusblog_com" not in by_id
+    assert "infoq" not in by_id
+    assert "info_q" not in by_id
+    assert "infoq_com" not in by_id
+    assert "euractiv" not in by_id
+    assert "euractiv_com" not in by_id
+    assert "rapporteur" not in by_id
+    assert "physicsworld" not in by_id
+    assert "physics_world_com" not in by_id
+    assert "iop_physics" not in by_id
+    assert "kyivindependent" not in by_id
+    assert "the_kyiv_independent" not in by_id
+    assert "kyiv_independent_com" not in by_id
+    assert "pitchfork_com" not in by_id
+    assert "pitchfork_magazine" not in by_id
+    assert "medicalxpress" not in by_id
+    assert "new_republic" not in by_id
+    assert "howtogeek" not in by_id
+    assert "who_news" in by_id
+    assert "new_yorker" not in by_id
+    assert "smithsonian_mag" not in by_id
+    assert "independent" not in by_id
+    assert "independent_world" not in by_id
+    assert "vox" not in by_id
+    assert "passblue" not in by_id
+    assert "inkstick" not in by_id
+    assert "hrw" not in by_id
+    assert "longreads" not in by_id
+    assert "dawn" not in by_id
+    assert "asiatimes" not in by_id
+    assert "asia_times" not in by_id
+    assert "biographic" not in by_id
+    assert "hkfp" not in by_id
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "guardian_games" not in by_id
+    for source_id, expected in (
+        _PHYSICS_WORLD_KYIV_INDEPENDENT_PITCHFORK_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_physics_world_kyiv_independent_pitchfork_feeds_live_http_200():
+    """Hit the three batch74 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _PHYSICS_WORLD_KYIV_INDEPENDENT_PITCHFORK_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (physics_world / kyiv_independent
+        # / pitchfork) uses the un-namespaced
+        # element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # All three winners were 100% nonempty
+        # this probe (physics_world 160/160;
+        # kyiv_independent 100/100; pitchfork
+        # 30/30).
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= 10, (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -21433,6 +22230,7 @@ if __name__ == "__main__":
     test_who_news_scientific_american_thenewstack_primaries_registered()
     test_independent_hard_swapped_to_who_news()
     test_irish_times_science_org_variety_primaries_registered()
+    test_physics_world_kyiv_independent_pitchfork_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -21505,4 +22303,5 @@ if __name__ == "__main__":
     test_texas_tribune_pew_research_defector_feeds_live_http_200()
     test_who_news_scientific_american_thenewstack_feeds_live_http_200()
     test_irish_times_science_org_variety_feeds_live_http_200()
+    test_physics_world_kyiv_independent_pitchfork_feeds_live_http_200()
     print("✓ source registry tests PASSED")
