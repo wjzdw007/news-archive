@@ -1059,6 +1059,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="politico_politics",
+        name="Politico Politics",
+        feed_url="https://rss.politico.com/politics-news.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="dw_business",
+        name="Deutsche Welle Business",
+        feed_url="https://rss.dw.com/rdf/rss-en-bus",
+        category="财经",
+        role="primary",
+    ),
+    Source(
+        id="france24_culture",
+        name="France 24 Culture",
+        feed_url="https://www.france24.com/en/culture/rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

@@ -2178,18 +2178,20 @@ _GUARDIAN_MEDIA_TIME_TOP_NYT_OBITUARIES_PRIMARY = {
 # / /us/education/rss / /education/us/rss are 404.
 # Live-diff winner on all three primaries: HTTP 200 /
 # ≥10 nonempty items — do not fall through to leftover
-# board backup dw_business. dw_europe is consumed by
-# the nyt_theater hard-swap — not a batch47 backup.
+# board backup dw_business (that leftover is now the
+# batch48 primary). dw_europe is consumed by the
+# nyt_theater hard-swap — not a batch47 backup.
 # dw_business official rdf rss-en-bus (channel
 # "Deutsche Welle: DW.com - Business") is HTTP 200 /
-# ≥10 nonempty (probed only; unused because primaries
-# won). rss-en-business / eco / economy / biz are
-# "Error: no feed by that name." — do not use those.
-# guardian_games stays unregistered (product: games
-# thin / 不进主源). sunday_review / cnbc (403 known)
-# / ap stay unregistered (product lock).
-# NEWS_SOURCE_CAP display stays 6 — no CAP code
-# change. No X this batch. No LLM this batch.
+# ≥10 nonempty (probed in batch47; unused then because
+# primaries won; registered in batch48). rss-en-business
+# / eco / economy / biz are "Error: no feed by that
+# name." — do not use those. guardian_games stays
+# unregistered (product: games thin / 不进主源).
+# sunday_review / cnbc (403 known) / ap stay
+# unregistered (product lock). NEWS_SOURCE_CAP display
+# stays 6 — no CAP code change. No X this batch. No
+# LLM this batch.
 _ATLANTIC_SMH_NATIONAL_GUARDIAN_EDUCATION_PRIMARY = {
     "atlantic": {
         "name": "The Atlantic",
@@ -2208,7 +2210,105 @@ _ATLANTIC_SMH_NATIONAL_GUARDIAN_EDUCATION_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 149
+# CEO-approved Politico Politics / Deutsche Welle
+# Business / France 24 Culture RSS primaries (batch48).
+# These three are the new adds after #102 (batch47
+# CLOSED with atlantic / smh_national /
+# guardian_education; combined-knife hard-swaps
+# independent_world → guardian_football and
+# nyt_theater → dw_europe stay closed). Do not
+# re-touch those #102 winners. politico_politics is
+# the official Politico Politics topic RSS (no prior
+# politico_* RSS id; bare id politico stays
+# unregistered — that id is X-handle only). Locked
+# official https://rss.politico.com/politics-news.xml
+# (channel title "Politics"). rss.politico.com/politics.xml
+# / politico.xml / news.xml / legal.xml /
+# politicopicks.xml are 404. www.politico.com/rss*
+# is Cloudflare 403. congress.xml / healthcare.xml
+# are official topic feeds (not the politics
+# primary). politico.eu /feed/ is a different EU
+# outlet — do not invent a Google News proxy.
+# Live-diff is 30 items / 21 nonempty / 9 empty-desc
+# that still carry content:encoded so #43
+# skip-insert does not fire (same pattern as
+# time_top; feedparser kept 30/30). Product lock
+# ≥10 nonempty — keep, do not promote a backup.
+# Previously rejected as a *general* politico
+# primary in batch43; now registered as the
+# politics topic. dw_business is the leftover
+# batch47 board backup, now promoted. Locked
+# official DW rdf https://rss.dw.com/rdf/rss-en-bus
+# (channel title "Deutsche Welle: DW.com -
+# Business"). Distinct from live dw_en
+# (rss-en-all) / dw_world (rss-en-world) / dw_asia
+# (rss-en-asia) / dw_europe (rss-en-eu). atom/rss-en-bus
+# and xml/rss-en-bus are the same Business items —
+# lock rdf to match existing dw_*. rss-en-business
+# / eco / economy / biz are "Error: no feed by that
+# name." — do not use those. france24_culture is a
+# same-outlet France 24 English Culture section
+# distinct from live france24_en (europe) /
+# france24_americas / france24_asia /
+# france24_middle_east / france24_africa. Locked
+# official https://www.france24.com/en/culture/rss
+# (channel title "News and stories on CULTURE,
+# movies, music, literature - France 24").
+# /en/arts/rss / /en/culture-and-arts/rss /
+# /en/entertainment/rss / /en/lifestyle/rss are
+# 404. france24_europe stays unregistered
+# (duplicate of france24_en). Live-diff winner on
+# all three primaries: HTTP 200 / ≥10 nonempty
+# items — do not fall through to unused backups
+# bbc_australia / bloomberg_technology /
+# ars_science. bbc_australia official
+# feeds.bbci.co.uk/news/world/australia/rss.xml is
+# HTTP 200 / 17 nonempty (probed only).
+# /news/australia/rss.xml and
+# /news/world/asia/australia/rss.xml are 404.
+# bloomberg_technology official
+# feeds.bloomberg.com/technology/news.rss is HTTP
+# 200 / 16 nonempty (probed only; 302s to
+# www.bloomberg.com/feeds/technology/news.rss —
+# lock the feeds.bloomberg.com path to match
+# bloomberg_markets). /tech/news.rss and
+# /technology.rss are 404. ars_science official
+# feeds.arstechnica.com/arstechnica/science is
+# HTTP 200 / 20 nonempty (probed only; same body
+# as arstechnica.com/science/feed/). Distinct from
+# live ars_technica index. atlantic /
+# smh_national / guardian_education stay
+# registered (batch47 closed). guardian_football /
+# dw_europe stay registered (batch45 hard-swap
+# replacements; #102). guardian_artanddesign stays
+# registered (batch45 KEEP). guardian_media /
+# time_top / nyt_obituaries stay registered
+# (batch46 closed). nyt_automobiles / the_hill /
+# npr_business stay registered (batch44 closed).
+# guardian_games stays unregistered (product:
+# games thin / 不进主源). sunday_review / cnbc
+# (403 known) / ap stay unregistered (product
+# lock). NEWS_SOURCE_CAP display stays 6 — no CAP
+# code change. No X this batch. No LLM this batch.
+_POLITICO_POLITICS_DW_BUSINESS_FRANCE24_CULTURE_PRIMARY = {
+    "politico_politics": {
+        "name": "Politico Politics",
+        "feed_url": "https://rss.politico.com/politics-news.xml",
+        "category": "综合",
+    },
+    "dw_business": {
+        "name": "Deutsche Welle Business",
+        "feed_url": "https://rss.dw.com/rdf/rss-en-bus",
+        "category": "财经",
+    },
+    "france24_culture": {
+        "name": "France 24 Culture",
+        "feed_url": "https://www.france24.com/en/culture/rss",
+        "category": "综合",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 152
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -7792,7 +7892,8 @@ def test_guardian_artanddesign_dw_europe_guardian_football_primaries_registered(
     # ars_science / abc_intl / sunday_review are not
     # this batch. sundayreview / cnbc (403 known) / ap
     # stay unregistered (product lock). dw_business was
-    # the leftover board backup (unused — primaries won).
+    # the leftover board backup (unused in batch47 —
+    # primaries won) and is now the batch48 primary.
     assert "guardian_football" in by_id
     assert "dw_europe" in by_id
     assert "guardian_games" not in by_id
@@ -7821,7 +7922,9 @@ def test_guardian_artanddesign_dw_europe_guardian_football_primaries_registered(
     assert "atlantic" in by_id
     assert "smh_national" in by_id
     assert "guardian_education" in by_id
-    assert "dw_business" not in by_id
+    assert "dw_business" in by_id
+    assert "politico_politics" in by_id
+    assert "france24_culture" in by_id
     for source_id, expected in (
         _GUARDIAN_ARTANDDESIGN_DW_EUROPE_GUARDIAN_FOOTBALL_PRIMARY.items()
     ):
@@ -8043,13 +8146,15 @@ def test_guardian_media_time_top_nyt_obituaries_primaries_registered():
     # smh_national / guardian_education are batch47.
     # guardian_football / dw_europe are the batch45
     # hard-swap replacements. dw_business leftover
-    # board backup stays unregistered (primaries won).
+    # board backup is now the batch48 primary.
     assert "atlantic" in by_id
     assert "smh_national" in by_id
     assert "guardian_education" in by_id
     assert "guardian_football" in by_id
     assert "dw_europe" in by_id
-    assert "dw_business" not in by_id
+    assert "dw_business" in by_id
+    assert "politico_politics" in by_id
+    assert "france24_culture" in by_id
     assert "guardian_games" not in by_id
     assert "thehill" not in by_id
     assert "politico" not in by_id
@@ -8189,10 +8294,13 @@ def test_atlantic_smh_national_guardian_education_primaries_registered():
     assert by_id["smh_national"].feed_url != by_id["guardian_education"].feed_url
     # Unused leftovers stay unregistered. dw_europe is the
     # theater hard-swap winner — not a batch47 backup.
-    # dw_business leftover board backup unused because all
-    # three primaries won. guardian_games stays unregistered
+    # dw_business leftover board backup is now the batch48
+    # primary (unused in batch47 because all three
+    # primaries won). guardian_games stays unregistered
     # (product: games thin / 不进主源).
-    assert "dw_business" not in by_id
+    assert "dw_business" in by_id
+    assert "politico_politics" in by_id
+    assert "france24_culture" in by_id
     assert "guardian_games" not in by_id
     assert "thehill" not in by_id
     assert "politico" not in by_id
@@ -8256,6 +8364,153 @@ def test_atlantic_smh_national_guardian_education_feeds_live_http_200():
         )
 
 
+def test_politico_politics_dw_business_france24_culture_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "politico_politics" in by_id
+    assert by_id["politico_politics"].feed_url == (
+        "https://rss.politico.com/politics-news.xml"
+    )
+    assert "dw_business" in by_id
+    assert by_id["dw_business"].feed_url == "https://rss.dw.com/rdf/rss-en-bus"
+    assert "france24_culture" in by_id
+    assert by_id["france24_culture"].feed_url == (
+        "https://www.france24.com/en/culture/rss"
+    )
+    # #102 winners stay registered and unchanged.
+    assert "atlantic" in by_id
+    assert "smh_national" in by_id
+    assert "guardian_education" in by_id
+    assert "dw_europe" in by_id
+    assert "guardian_football" in by_id
+    assert "guardian_artanddesign" in by_id
+    assert "guardian_media" in by_id
+    assert "time_top" in by_id
+    assert "nyt_obituaries" in by_id
+    assert "nyt_theater" not in by_id
+    assert "independent_world" not in by_id
+    # Bare id politico stays unregistered (X-handle only).
+    assert "politico" not in by_id
+    assert by_id["politico_politics"].feed_url != "https://rss.politico.com/politics.xml"
+    assert by_id["politico_politics"].feed_url != "https://rss.politico.com/congress.xml"
+    assert by_id["politico_politics"].feed_url != (
+        "https://rss.politico.com/healthcare.xml"
+    )
+    assert by_id["politico_politics"].feed_url != "https://rss.politico.com/politico.xml"
+    assert by_id["politico_politics"].feed_url != "https://rss.politico.com/news.xml"
+    assert by_id["politico_politics"].feed_url != "https://www.politico.com/rss/politics.xml"
+    assert by_id["politico_politics"].feed_url != "https://www.politico.eu/feed/"
+    assert by_id["politico_politics"].feed_url != by_id["nyt_politics"].feed_url
+    assert by_id["politico_politics"].feed_url != by_id["bbc_politics"].feed_url
+    assert by_id["politico_politics"].feed_url != by_id["guardian_politics"].feed_url
+    assert by_id["politico_politics"].feed_url != by_id["the_hill"].feed_url
+    assert by_id["dw_business"].feed_url != by_id["dw_en"].feed_url
+    assert by_id["dw_business"].feed_url != by_id["dw_world"].feed_url
+    assert by_id["dw_business"].feed_url != by_id["dw_asia"].feed_url
+    assert by_id["dw_business"].feed_url != by_id["dw_europe"].feed_url
+    assert by_id["dw_business"].feed_url != by_id["bbc_business"].feed_url
+    assert by_id["dw_business"].feed_url != by_id["bloomberg_markets"].feed_url
+    assert by_id["dw_business"].feed_url != by_id["npr_business"].feed_url
+    assert by_id["dw_business"].feed_url != "https://rss.dw.com/rdf/rss-en-business"
+    assert by_id["dw_business"].feed_url != "https://rss.dw.com/rdf/rss-en-eco"
+    assert by_id["dw_business"].feed_url != "https://rss.dw.com/rdf/rss-en-economy"
+    assert by_id["dw_business"].feed_url != "https://rss.dw.com/rdf/rss-en-biz"
+    assert by_id["dw_business"].feed_url != "https://rss.dw.com/atom/rss-en-bus"
+    assert by_id["dw_business"].feed_url != "https://rss.dw.com/xml/rss-en-bus"
+    assert by_id["france24_culture"].feed_url != by_id["france24_en"].feed_url
+    assert by_id["france24_culture"].feed_url != by_id["france24_americas"].feed_url
+    assert by_id["france24_culture"].feed_url != by_id["france24_asia"].feed_url
+    assert by_id["france24_culture"].feed_url != by_id["france24_middle_east"].feed_url
+    assert by_id["france24_culture"].feed_url != by_id["france24_africa"].feed_url
+    assert by_id["france24_culture"].feed_url != "https://www.france24.com/en/rss"
+    assert by_id["france24_culture"].feed_url != "https://www.france24.com/en/europe/rss"
+    assert by_id["france24_culture"].feed_url != "https://www.france24.com/en/arts/rss"
+    assert by_id["france24_culture"].feed_url != (
+        "https://www.france24.com/en/culture-and-arts/rss"
+    )
+    assert by_id["france24_culture"].feed_url != (
+        "https://www.france24.com/en/entertainment/rss"
+    )
+    assert by_id["politico_politics"].feed_url != by_id["dw_business"].feed_url
+    assert by_id["politico_politics"].feed_url != by_id["france24_culture"].feed_url
+    assert by_id["dw_business"].feed_url != by_id["france24_culture"].feed_url
+    # Unused backups / replaced / title+link-only / empty-desc /
+    # colliding / not-this-batch feeds stay unregistered.
+    # bbc_australia / bloomberg_technology / ars_science
+    # were live-diff backups (HTTP 200 / ≥10 nonempty) —
+    # unused because all three primaries won.
+    assert "bbc_australia" not in by_id
+    assert "bloomberg_technology" not in by_id
+    assert "ars_science" not in by_id
+    assert "guardian_games" not in by_id
+    assert "thehill" not in by_id
+    assert "bbc_culture" not in by_id
+    assert "france24_europe" not in by_id
+    assert "guardian_economics" not in by_id
+    assert "nyt_theater" not in by_id
+    assert "independent_world" not in by_id
+    assert "sundayreview" not in by_id
+    assert "ap" not in by_id
+    for source_id, expected in (
+        _POLITICO_POLITICS_DW_BUSINESS_FRANCE24_CULTURE_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_politico_politics_dw_business_france24_culture_feeds_live_http_200():
+    """Hit the three batch48 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _POLITICO_POLITICS_DW_BUSINESS_FRANCE24_CULTURE_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (politico_politics / france24_culture) and
+        # RSS 1.0 / RDF (dw_business) use the helpers.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0 unless
+        # content:encoded is present. dw_business /
+        # france24_culture live-diff winners were 100% nonempty.
+        # politico_politics is 21 nonempty / 9 empty-desc that
+        # still carry content:encoded — product lock is ≥16
+        # nonempty, not 100% (same pattern as time_top).
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        if source_id == "politico_politics":
+            assert nonempty >= 16, (
+                f"{source_id} nonempty descriptions {nonempty}/{len(items)} < 16"
+            )
+        else:
+            assert nonempty == len(items), (
+                f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+            )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -8306,6 +8561,7 @@ if __name__ == "__main__":
     test_guardian_artanddesign_dw_europe_guardian_football_primaries_registered()
     test_guardian_media_time_top_nyt_obituaries_primaries_registered()
     test_atlantic_smh_national_guardian_education_primaries_registered()
+    test_politico_politics_dw_business_france24_culture_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -8352,4 +8608,5 @@ if __name__ == "__main__":
     test_guardian_artanddesign_dw_europe_guardian_football_feeds_live_http_200()
     test_guardian_media_time_top_nyt_obituaries_feeds_live_http_200()
     test_atlantic_smh_national_guardian_education_feeds_live_http_200()
+    test_politico_politics_dw_business_france24_culture_feeds_live_http_200()
     print("✓ source registry tests PASSED")
