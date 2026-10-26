@@ -182,6 +182,19 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "japan_forward" not in TECH_AI_SOURCE_WHITELIST
     assert "artforum" not in TECH_AI_SOURCE_WHITELIST
     assert "knowable" not in TECH_AI_SOURCE_WHITELIST
+    # batch64 RSS primaries stay off the tech/AI whitelist.
+    # the_wire_china lands on the existing 国际·中国
+    # category path (China business magazine; same
+    # as economist_china / scmp_china). literary_hub
+    # lands on 综合 (literature, same as
+    # guardian_books / nyt_books / hyperallergic).
+    # himal lands on 国际 (Southasia magazine, same
+    # as african_arguments / the_diplomat). None of
+    # these match the wired / verge / techcrunch
+    # ALWAYS pattern.
+    assert "himal" not in TECH_AI_SOURCE_WHITELIST
+    assert "artnet" not in TECH_AI_SOURCE_WHITELIST
+    assert "military_times" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

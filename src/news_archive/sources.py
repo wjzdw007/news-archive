@@ -1395,6 +1395,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="the_wire_china",
+        name="The Wire China",
+        feed_url="https://www.thewirechina.com/feed/",
+        category="国际·中国",
+        role="primary",
+    ),
+    Source(
+        id="literary_hub",
+        name="Literary Hub",
+        feed_url="https://lithub.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="himal",
+        name="Himal Southasian",
+        feed_url="https://www.himalmag.com/rss/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
