@@ -1143,6 +1143,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="bbc_australia",
+        name="BBC Australia",
+        feed_url="https://feeds.bbci.co.uk/news/world/australia/rss.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="bloomberg_technology",
+        name="Bloomberg Technology",
+        feed_url="https://feeds.bloomberg.com/technology/news.rss",
+        category="硬科技",
+        role="primary",
+    ),
+    Source(
+        id="ars_science",
+        name="Ars Technica Science",
+        feed_url="https://feeds.arstechnica.com/arstechnica/science",
+        category="科学",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

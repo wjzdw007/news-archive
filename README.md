@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（161 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（164 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -167,6 +167,9 @@
 | `the_diplomat` | The Diplomat | https://thediplomat.com/feed/ | primary |
 | `stat_news` | STAT News | https://www.statnews.com/feed/ | primary |
 | `ieee_spectrum` | IEEE Spectrum | https://spectrum.ieee.org/feeds/feed.rss | primary |
+| `bbc_australia` | BBC Australia | https://feeds.bbci.co.uk/news/world/australia/rss.xml | primary |
+| `bloomberg_technology` | Bloomberg Technology | https://feeds.bloomberg.com/technology/news.rss | primary |
+| `ars_science` | Ars Technica Science | https://feeds.arstechnica.com/arstechnica/science | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
