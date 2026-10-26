@@ -1269,6 +1269,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="mercopress",
+        name="MercoPress",
+        feed_url="https://en.mercopress.com/rss/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="nature_news",
+        name="Nature News",
+        feed_url="https://www.nature.com/latest-news.rss",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="crisis_group",
+        name="International Crisis Group",
+        feed_url="https://www.crisisgroup.org/rss.xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

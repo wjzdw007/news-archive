@@ -3266,6 +3266,8 @@ _MONGABAY_DAILY_MAVERICK_OILPRICE_PRIMARY = {
 # unregistered (product lock). NEWS_SOURCE_CAP display
 # stays 6 — no CAP code change. No X this batch. No
 # LLM this batch. Not tech/AI whitelist.
+# mercopress / nature_news / crisis_group are
+# batch58 (all three primaries won).
 _AFRICA_REPORT_MEXICO_NEWS_DAILY_SCIENCEDAILY_PRIMARY = {
     "africa_report": {
         "name": "The Africa Report",
@@ -3284,7 +3286,141 @@ _AFRICA_REPORT_MEXICO_NEWS_DAILY_SCIENCEDAILY_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 179
+# CEO-approved MercoPress / Nature News / International
+# Crisis Group RSS primaries (batch58). These three are
+# the new adds after #115 (africa_report /
+# mexico_news_daily / sciencedaily) on tip d71fde7. Do
+# not re-touch that #115 winner. Do not touch mongabay /
+# daily_maverick / oilprice (#114) / politico_europe /
+# breaking_defense / carbon_brief (#113) / phys_org /
+# globe_mail / newatlas (#112) / the_register /
+# foreign_affairs / allafrica (#111) / zdnet (#110) /
+# digiday_media (#107). ars_science stays hung.
+# nyt_media / guardian_media stay hung.
+# mercopress is the official MercoPress English
+# South Atlantic News Agency feed (no prior
+# mercopress / merco_press / en_mercopress id). Locked
+# official https://en.mercopress.com/rss/ (channel
+# "MercoPress"; subtitle "South Atlantic News Agency").
+# /rss (no slash) is the same 10-item body. Apex
+# mercopress.com/rss/ and www.mercopress.com/rss/ remap
+# to en.mercopress.com/rss/. /feed / /feed/ / /rss.xml
+# are HTTP 404 HTML. /feeds is HTTP 200 HTML (0 items).
+# Live-diff winner: HTTP 200 / 10 nonempty / 10
+# insertable (httpx fetch_source + urllib). Product lock
+# ≥10 nonempty — keep (10 is not the 5–9 observe band).
+# Distinct from live bbc_latin_america /
+# guardian_americas / elpais_en / rfi_americas /
+# france24_americas / nyt_world / mexico_news_daily.
+# 0 article URL overlap with those.
+# nature_news is the official Nature news RSS (no prior
+# nature_news / nature / nature_com id). Legacy
+# https://www.nature.com/news.rss is HTTP 404 HTML.
+# Locked official live news feed
+# https://www.nature.com/latest-news.rss (channel
+# "News from Nature"; subtitle "The latest science and
+# technology news"; news-only d41586-* items).
+# nature.com/latest-news.rss remaps to www.
+# /latest-news/rss and /latest-news.rss/ remap to
+# /latest-news.rss. nature.rss / nature/rss /
+# nature/articles.rss / nature/news.rss / feeds.nature.com
+# /nature/rss/current are the journal TOC mix (channel
+# "Nature"; 75 items including research s41586-*) —
+# lock the news feed, not the journal TOC. Live-diff
+# winner: HTTP 200 / 25 nonempty / 25 insertable
+# (httpx fetch_source + urllib). Product lock ≥10
+# nonempty — keep. Distinct from live nyt_science /
+# bbc_science / guardian_science / npr_science /
+# phys_org / space_com / stat_news / mongabay /
+# carbon_brief / canary_media / sciencedaily /
+# theconversation. 0 article URL overlap with those.
+# Lands on the existing 科学 category path. Not added
+# to the tech/AI whitelist (same as phys_org /
+# mongabay / carbon_brief / sciencedaily).
+# crisis_group is the official International Crisis
+# Group global RSS (no prior crisis_group /
+# international_crisis_group / icg id). Locked official
+# https://www.crisisgroup.org/rss.xml (channel
+# "International Crisis Group"). /rss is a different
+# slimmer feed (channel "RSS"; summaries only) — lock
+# rss.xml. Apex crisisgroup.org/rss.xml is HTTP 403.
+# /feed / /feed/ are HTTP 404 HTML. /latest/rss.xml and
+# /rss-0 are HTTP 200 HTML (0 items). Live-diff winner:
+# HTTP 200 / 10 nonempty / 10 insertable (httpx
+# fetch_source + urllib). Product lock ≥10 nonempty —
+# keep (10 is not the 5–9 observe band). Distinct from
+# live war_on_rocks / breaking_defense /
+# foreign_affairs / foreign_policy /
+# guardian_global_dev / intercept / aljazeera /
+# middleeasteye. 0 article URL overlap with those.
+# Product-locked backups (use only if a primary fails
+# live-diff / fetch / URL-dedup): artnet official
+# https://news.artnet.com/feed is HTTP 200 / 10
+# nonempty / 10 insertable (channel "Artnet News";
+# /feed/ remaps to /feed; /rss and /rss.xml are 403)
+# — probed only; unused because all three primaries
+# won. the_new_humanitarian official documented
+# English-all https://www.thenewhumanitarian.org/rss/all.xml
+# is HTTP 200 / 10 nonempty / 10 insertable (channel
+# "The New Humanitarian"; /rss.xml is a different
+# older 10-item body; /rss / /feed / apex are 403 JS
+# challenge) — probed only; unused.
+# military_times official
+# https://www.militarytimes.com/arc/outboundfeeds/rss/?outputType=xml
+# remaps to https://www.militarytimes.com/feed/ and is
+# HTTP 200 / 10 nonempty / 10 insertable (channel
+# "Military Times"; /rss / /feed also remap to /feed/)
+# — probed only; unused.
+# Do NOT use as backups (product skip): bangkok_post
+# (HTTP 403 / prior skip), indian_express
+# (insertable=0 empty-desc), rest_of_world (httpx 403
+# JS challenge), al_monitor (flaky 403), hkfp (HTTP
+# 403). Do not invent other backups.
+# africa_report / mexico_news_daily / sciencedaily
+# stay registered (batch57 closed). mongabay /
+# daily_maverick / oilprice stay registered
+# (batch56 closed). politico_europe /
+# breaking_defense / carbon_brief stay registered
+# (batch55 closed). phys_org / globe_mail / newatlas
+# stay registered (batch54 closed). the_register /
+# foreign_affairs / allafrica stay registered
+# (batch53 closed). bbc_australia /
+# bloomberg_technology / zdnet stay registered
+# (batch52 after #110). ars_science stays hung.
+# the_diplomat / stat_news / ieee_spectrum stay
+# registered (batch51 closed). war_on_rocks /
+# canary_media / space_com stay registered (batch50
+# closed). foreign_policy / ft_world / abc_australia
+# stay registered (batch49 closed). politico_politics /
+# dw_business / france24_culture stay registered
+# (batch48 closed). atlantic / smh_national /
+# guardian_education stay registered (batch47 closed).
+# digiday_media stays registered (#107). nyt_media /
+# guardian_media stay hung. guardian_games stays
+# unregistered (product: games thin / 不进主源).
+# sunday_review / cnbc (403 known) / ap stay
+# unregistered (product lock). NEWS_SOURCE_CAP display
+# stays 6 — no CAP code change. No X this batch. No
+# LLM this batch. Not tech/AI whitelist.
+_MERCOPRESS_NATURE_NEWS_CRISIS_GROUP_PRIMARY = {
+    "mercopress": {
+        "name": "MercoPress",
+        "feed_url": "https://en.mercopress.com/rss/",
+        "category": "国际",
+    },
+    "nature_news": {
+        "name": "Nature News",
+        "feed_url": "https://www.nature.com/latest-news.rss",
+        "category": "科学",
+    },
+    "crisis_group": {
+        "name": "International Crisis Group",
+        "feed_url": "https://www.crisisgroup.org/rss.xml",
+        "category": "国际",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 182
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -11382,6 +11518,318 @@ def test_africa_report_mexico_news_daily_sciencedaily_feeds_live_http_200():
         )
 
 
+def test_mercopress_nature_news_crisis_group_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "mercopress" in by_id
+    assert by_id["mercopress"].feed_url == (
+        "https://en.mercopress.com/rss/"
+    )
+    assert "nature_news" in by_id
+    assert by_id["nature_news"].feed_url == (
+        "https://www.nature.com/latest-news.rss"
+    )
+    assert "crisis_group" in by_id
+    assert by_id["crisis_group"].feed_url == (
+        "https://www.crisisgroup.org/rss.xml"
+    )
+    # #115 winners stay registered and unchanged.
+    # #114 winners stay registered and unchanged.
+    # #113 winners stay registered and unchanged.
+    # #112 winners stay registered and unchanged.
+    # #111 winners stay registered and unchanged.
+    # #110 hard-swap: zdnet live, ars_science hung.
+    # #107 hard-swap: digiday_media live, nyt_media hung.
+    # Do not touch africa_report / mexico_news_daily /
+    # sciencedaily / mongabay / daily_maverick /
+    # oilprice / politico_europe / breaking_defense /
+    # carbon_brief / phys_org / globe_mail / newatlas /
+    # the_register / foreign_affairs / allafrica /
+    # zdnet / digiday_media.
+    assert "africa_report" in by_id
+    assert "mexico_news_daily" in by_id
+    assert "sciencedaily" in by_id
+    assert "mongabay" in by_id
+    assert "daily_maverick" in by_id
+    assert "oilprice" in by_id
+    assert "politico_europe" in by_id
+    assert "breaking_defense" in by_id
+    assert "carbon_brief" in by_id
+    assert "phys_org" in by_id
+    assert "globe_mail" in by_id
+    assert "newatlas" in by_id
+    assert "the_register" in by_id
+    assert "foreign_affairs" in by_id
+    assert "allafrica" in by_id
+    assert "bbc_australia" in by_id
+    assert "bloomberg_technology" in by_id
+    assert "zdnet" in by_id
+    assert "ars_science" not in by_id
+    assert "the_diplomat" in by_id
+    assert "stat_news" in by_id
+    assert "ieee_spectrum" in by_id
+    assert "war_on_rocks" in by_id
+    assert "canary_media" in by_id
+    assert "space_com" in by_id
+    assert "foreign_policy" in by_id
+    assert "ft_world" in by_id
+    assert "abc_australia" in by_id
+    assert "politico_politics" in by_id
+    assert "dw_business" in by_id
+    assert "france24_culture" in by_id
+    assert "atlantic" in by_id
+    assert "smh_national" in by_id
+    assert "guardian_education" in by_id
+    assert "digiday_media" in by_id
+    assert "time_top" in by_id
+    assert "nyt_obituaries" in by_id
+    assert "bbc_latin_america" in by_id
+    assert "guardian_americas" in by_id
+    assert "elpais_en" in by_id
+    assert "rfi_americas" in by_id
+    assert "france24_americas" in by_id
+    assert "nyt_world" in by_id
+    assert "mexico_news_daily" in by_id
+    assert "nyt_science" in by_id
+    assert "bbc_science" in by_id
+    assert "guardian_science" in by_id
+    assert "npr_science" in by_id
+    assert "phys_org" in by_id
+    assert "space_com" in by_id
+    assert "stat_news" in by_id
+    assert "mongabay" in by_id
+    assert "carbon_brief" in by_id
+    assert "canary_media" in by_id
+    assert "sciencedaily" in by_id
+    assert "theconversation" in by_id
+    assert "war_on_rocks" in by_id
+    assert "breaking_defense" in by_id
+    assert "foreign_affairs" in by_id
+    assert "foreign_policy" in by_id
+    assert "guardian_global_dev" in by_id
+    assert "intercept" in by_id
+    assert "aljazeera" in by_id
+    assert "middleeasteye" in by_id
+    assert by_id["mercopress"].feed_url != (
+        "https://en.mercopress.com/rss"
+    )
+    assert by_id["mercopress"].feed_url != (
+        "https://en.mercopress.com/feed/"
+    )
+    assert by_id["mercopress"].feed_url != (
+        "https://en.mercopress.com/rss.xml"
+    )
+    assert by_id["mercopress"].feed_url != (
+        "https://www.mercopress.com/rss/"
+    )
+    assert by_id["mercopress"].feed_url != (
+        "https://mercopress.com/rss/"
+    )
+    assert by_id["mercopress"].feed_url != (
+        by_id["bbc_latin_america"].feed_url
+    )
+    assert by_id["mercopress"].feed_url != (
+        by_id["guardian_americas"].feed_url
+    )
+    assert by_id["mercopress"].feed_url != by_id["elpais_en"].feed_url
+    assert by_id["mercopress"].feed_url != (
+        by_id["rfi_americas"].feed_url
+    )
+    assert by_id["mercopress"].feed_url != (
+        by_id["france24_americas"].feed_url
+    )
+    assert by_id["mercopress"].feed_url != by_id["nyt_world"].feed_url
+    assert by_id["mercopress"].feed_url != (
+        by_id["mexico_news_daily"].feed_url
+    )
+    assert by_id["nature_news"].feed_url != (
+        "https://www.nature.com/news.rss"
+    )
+    assert by_id["nature_news"].feed_url != (
+        "https://www.nature.com/nature.rss"
+    )
+    assert by_id["nature_news"].feed_url != (
+        "https://nature.com/latest-news.rss"
+    )
+    assert by_id["nature_news"].feed_url != (
+        "https://www.nature.com/latest-news/rss"
+    )
+    assert by_id["nature_news"].feed_url != (
+        "https://www.nature.com/nature/articles.rss"
+    )
+    assert by_id["nature_news"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["nature_news"].feed_url != by_id["bbc_science"].feed_url
+    assert by_id["nature_news"].feed_url != (
+        by_id["guardian_science"].feed_url
+    )
+    assert by_id["nature_news"].feed_url != by_id["npr_science"].feed_url
+    assert by_id["nature_news"].feed_url != by_id["phys_org"].feed_url
+    assert by_id["nature_news"].feed_url != by_id["space_com"].feed_url
+    assert by_id["nature_news"].feed_url != by_id["stat_news"].feed_url
+    assert by_id["nature_news"].feed_url != by_id["mongabay"].feed_url
+    assert by_id["nature_news"].feed_url != by_id["carbon_brief"].feed_url
+    assert by_id["nature_news"].feed_url != by_id["canary_media"].feed_url
+    assert by_id["nature_news"].feed_url != by_id["sciencedaily"].feed_url
+    assert by_id["nature_news"].feed_url != (
+        by_id["theconversation"].feed_url
+    )
+    assert by_id["crisis_group"].feed_url != (
+        "https://www.crisisgroup.org/rss"
+    )
+    assert by_id["crisis_group"].feed_url != (
+        "https://www.crisisgroup.org/feed/"
+    )
+    assert by_id["crisis_group"].feed_url != (
+        "https://crisisgroup.org/rss.xml"
+    )
+    assert by_id["crisis_group"].feed_url != (
+        "https://www.crisisgroup.org/rss-0"
+    )
+    assert by_id["crisis_group"].feed_url != (
+        by_id["war_on_rocks"].feed_url
+    )
+    assert by_id["crisis_group"].feed_url != (
+        by_id["breaking_defense"].feed_url
+    )
+    assert by_id["crisis_group"].feed_url != (
+        by_id["foreign_affairs"].feed_url
+    )
+    assert by_id["crisis_group"].feed_url != (
+        by_id["foreign_policy"].feed_url
+    )
+    assert by_id["crisis_group"].feed_url != (
+        by_id["guardian_global_dev"].feed_url
+    )
+    assert by_id["crisis_group"].feed_url != by_id["intercept"].feed_url
+    assert by_id["crisis_group"].feed_url != by_id["aljazeera"].feed_url
+    assert by_id["crisis_group"].feed_url != (
+        by_id["middleeasteye"].feed_url
+    )
+    assert by_id["mercopress"].feed_url != by_id["nature_news"].feed_url
+    assert by_id["mercopress"].feed_url != by_id["crisis_group"].feed_url
+    assert by_id["nature_news"].feed_url != by_id["crisis_group"].feed_url
+    # nyt_media hung after #107 — digiday_media live.
+    # zdnet is the batch52 hard-swap lock after #110.
+    # the_register / foreign_affairs / allafrica are
+    # the batch53 locks after #111.
+    # phys_org / globe_mail / newatlas are the
+    # batch54 locks after #112.
+    # politico_europe / breaking_defense / carbon_brief
+    # are the batch55 locks after #113.
+    # mongabay / daily_maverick / oilprice are the
+    # batch56 locks after #114.
+    # africa_report / mexico_news_daily / sciencedaily
+    # are the batch57 locks after #115.
+    assert by_id["digiday_media"].feed_url == "https://digiday.com/media/feed/"
+    assert by_id["zdnet"].feed_url == "https://www.zdnet.com/feed/"
+    assert by_id["the_register"].feed_url == (
+        "https://www.theregister.com/headlines.atom"
+    )
+    assert by_id["phys_org"].feed_url == "https://phys.org/rss-feed/"
+    assert by_id["newatlas"].feed_url == "https://newatlas.com/index.rss"
+    assert by_id["politico_europe"].feed_url == "https://www.politico.eu/feed/"
+    assert by_id["breaking_defense"].feed_url == (
+        "https://breakingdefense.com/feed/"
+    )
+    assert by_id["carbon_brief"].feed_url == (
+        "https://www.carbonbrief.org/feed/"
+    )
+    assert by_id["mongabay"].feed_url == "https://news.mongabay.com/feed/"
+    assert by_id["daily_maverick"].feed_url == (
+        "https://www.dailymaverick.co.za/dmrss/"
+    )
+    assert by_id["oilprice"].feed_url == "https://oilprice.com/rss/main"
+    assert by_id["africa_report"].feed_url == (
+        "https://www.theafricareport.com/feed/"
+    )
+    assert by_id["mexico_news_daily"].feed_url == (
+        "https://mexiconewsdaily.com/feed/"
+    )
+    assert by_id["sciencedaily"].feed_url == (
+        "https://www.sciencedaily.com/rss/all.xml"
+    )
+    assert "guardian_games" not in by_id
+    assert "thehill" not in by_id
+    assert "bbc_culture" not in by_id
+    assert "france24_europe" not in by_id
+    assert "guardian_economics" not in by_id
+    assert "nyt_theater" not in by_id
+    assert "independent_world" not in by_id
+    assert "sundayreview" not in by_id
+    assert "ap" not in by_id
+    # Unused backups stay unregistered because all three
+    # primaries won. Product-skip sources stay out.
+    assert "artnet" not in by_id
+    assert "the_new_humanitarian" not in by_id
+    assert "military_times" not in by_id
+    assert "defense_one" not in by_id
+    assert "hkfp" not in by_id
+    assert "undark" not in by_id
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "fastcompany" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "euractiv" not in by_id
+    assert "dawn" not in by_id
+    assert "asia_times" not in by_id
+    assert "pbs_newshour" not in by_id
+    assert "economist_intl" not in by_id
+    for source_id, expected in (
+        _MERCOPRESS_NATURE_NEWS_CRISIS_GROUP_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_mercopress_nature_news_crisis_group_feeds_live_http_200():
+    """Hit the three batch58 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _MERCOPRESS_NATURE_NEWS_CRISIS_GROUP_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (mercopress / nature_news / crisis_group)
+        # uses the un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # All three winners were 100% nonempty this probe.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -11442,6 +11890,7 @@ if __name__ == "__main__":
     test_politico_europe_breaking_defense_carbon_brief_primaries_registered()
     test_mongabay_daily_maverick_oilprice_primaries_registered()
     test_africa_report_mexico_news_daily_sciencedaily_primaries_registered()
+    test_mercopress_nature_news_crisis_group_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -11498,4 +11947,5 @@ if __name__ == "__main__":
     test_politico_europe_breaking_defense_carbon_brief_feeds_live_http_200()
     test_mongabay_daily_maverick_oilprice_feeds_live_http_200()
     test_africa_report_mexico_news_daily_sciencedaily_feeds_live_http_200()
+    test_mercopress_nature_news_crisis_group_feeds_live_http_200()
     print("✓ source registry tests PASSED")
