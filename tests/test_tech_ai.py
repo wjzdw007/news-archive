@@ -472,8 +472,8 @@ def test_whitelist_registered_and_cap_unchanged():
     # None of these match the wired /
     # verge / techcrunch ALWAYS pattern.
     # Unused backups android_authority /
-    # unherd stay off (first-winner unused
-    # stay out). grist stays off the
+    # unherd are now batch79 KEEP (stay
+    # off the whitelist). grist stays off the
     # frozen KEYWORD set (already used
     # for the atlantic_council hard-swap;
     # do not reuse as a backup).
@@ -526,6 +526,45 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "times_of_israel" not in TECH_AI_SOURCE_WHITELIST
     assert "howtogeek" not in TECH_AI_SOURCE_WHITELIST
     assert "new_republic" not in TECH_AI_SOURCE_WHITELIST
+    assert "atlantic_council" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_nation" not in TECH_AI_SOURCE_WHITELIST
+    assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
+    # batch79 RSS primaries stay off the tech/AI whitelist.
+    # android_authority lands on 科技 (Android
+    # / mobile newsroom, same as
+    # tomshardware / zdnet / thenewstack)
+    # but later-batch tech sources stay
+    # off the frozen ALWAYS set.
+    # unherd lands on 综合 (opinion /
+    # magazine newsroom, same as atlantic
+    # / slate / salon / reason).
+    # psyche lands on 综合 (ideas /
+    # psychology magazine, same family as
+    # aeon but different domain; same as
+    # aeon / nautilus / noema). None of
+    # these match the wired / verge /
+    # techcrunch ALWAYS pattern.
+    # Unused backups artnet /
+    # smithsonian_mag / new_yorker stay
+    # off (first-winner unused stay out;
+    # do not probe unused backups after
+    # three KEEP). medicalxpress stays
+    # off the frozen KEYWORD set
+    # (already used for the
+    # times_of_israel hard-swap; do not
+    # re-register). atlantic_council
+    # stays off (hard-swapped to grist
+    # in #139). the_nation stays off
+    # (empty site-wide FAIL). euractiv
+    # stays off (official 301 to
+    # rapporteur.com; Feedburner stale).
+    assert "android_authority" not in TECH_AI_SOURCE_WHITELIST
+    assert "unherd" not in TECH_AI_SOURCE_WHITELIST
+    assert "psyche" not in TECH_AI_SOURCE_WHITELIST
+    assert "artnet" not in TECH_AI_SOURCE_WHITELIST
+    assert "smithsonian_mag" not in TECH_AI_SOURCE_WHITELIST
+    assert "new_yorker" not in TECH_AI_SOURCE_WHITELIST
+    assert "medicalxpress" not in TECH_AI_SOURCE_WHITELIST
     assert "atlantic_council" not in TECH_AI_SOURCE_WHITELIST
     assert "the_nation" not in TECH_AI_SOURCE_WHITELIST
     assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
