@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（218 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（221 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -224,6 +224,9 @@
 | `media404` | 404 Media | https://www.404media.co/rss/ | primary |
 | `hrw` | Human Rights Watch | https://www.hrw.org/rss/news | primary |
 | `un_news` | UN News | https://news.un.org/feed/subscribe/en/news/all/rss.xml | primary |
+| `texas_tribune` | The Texas Tribune | https://feeds.texastribune.org/feeds/main/ | primary |
+| `pew_research` | Pew Research Center | https://www.pewresearch.org/feed/ | primary |
+| `defector` | Defector | https://defector.com/feed | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
