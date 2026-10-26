@@ -1578,7 +1578,7 @@ _CBS_WORLD_FRANCE24_ASIA_CNBC_TOP_PRIMARY = {
 # france24_africa are batch41 (CEO knife; live-diff
 # winners). Unused batch41 backups reuters_world /
 # nyt_sports stay unregistered. guardian_food /
-# nyt_fashion / france24_europe are batch42.
+# nyt_fashion / guardian_money are batch42.
 # NEWS_SOURCE_CAP display stays 6 — no CAP code change.
 # No X this batch. No LLM this batch.
 _BLOOMBERG_MARKETS_GUARDIAN_OPINION_NYT_MAGAZINE_PRIMARY = {
@@ -1640,7 +1640,7 @@ _BLOOMBERG_MARKETS_GUARDIAN_OPINION_NYT_MAGAZINE_PRIMARY = {
 # /world/rss and /rssFeed/worldNews HTTP 401) — do not
 # invent a Google News proxy. nyt_sports Sports.xml is
 # HTTP 200 but 0 items. guardian_food / nyt_fashion /
-# france24_europe are batch42 (guardian_food was an
+# guardian_money are batch42 (guardian_food was an
 # unused batch41 backup and is now registered there).
 # bloomberg_markets /
 # guardian_opinion / nyt_magazine stay registered
@@ -1681,17 +1681,21 @@ _FRANCE24_MIDDLE_EAST_NYT_PERSONALTECH_FRANCE24_AFRICA_PRIMARY = {
     },
 }
 
-# CEO-approved Guardian Food / NYT Fashion / France 24
-# Europe RSS primaries (batch42). These three are the new
+# CEO-approved Guardian Food / NYT Fashion / Guardian
+# Money RSS primaries (batch42). These three are the new
 # adds. bbc_culture is dropped entirely this batch —
 # entertainment_and_arts/rss.xml is already live as
 # bbc_entertainment (batch38 thin-observe kept). Do not
 # duplicate that feed. culture/rss.xml, entertainment/rss.xml,
 # bbc.com/culture/feed.xml, feeds.bbci.co.uk/culture/rss.xml,
 # and bbc.com/culture/rss.xml are 404. bbc.com/culture/feed.rss
-# is title-only / 0 nonempty — do not use that. guardian_food
-# is a same-outlet Guardian section distinct from existing
-# guardian_world / guardian_technology / guardian_us /
+# is title-only / 0 nonempty — do not use that.
+# france24_europe is dropped entirely this batch —
+# /en/europe/rss is already live as france24_en (batch23).
+# URL-dedup would collapse a second id. Do not duplicate
+# that feed. guardian_food is a same-outlet Guardian
+# section distinct from existing guardian_world /
+# guardian_technology / guardian_us /
 # guardian_environment / guardian_business /
 # guardian_science / guardian_australia /
 # guardian_americas / guardian_uk / guardian_europe /
@@ -1701,43 +1705,46 @@ _FRANCE24_MIDDLE_EAST_NYT_PERSONALTECH_FRANCE24_AFRICA_PRIMARY = {
 # guardian_sport / guardian_film / guardian_music /
 # guardian_stage / guardian_books / guardian_tv /
 # guardian_fashion / guardian_lifeandstyle /
-# guardian_opinion, and from same-outlet nyt_food. Locked
-# official guardian_* pattern
-# https://www.theguardian.com/food/rss (channel title
-# "Food | The Guardian"). /uk/food/rss is 404 — do not
-# use that. nyt_fashion is a same-outlet NYT section
-# distinct from existing nyt_world / nyt_technology /
-# nyt_business / nyt_science / nyt_climate / nyt_health /
-# nyt_education / nyt_politics / nyt_us / nyt_europe /
-# nyt_upshot / nyt_africa / nyt_arts / nyt_opinion /
-# nyt_movies / nyt_books / nyt_food / nyt_travel /
-# nyt_economy / nyt_realestate / nyt_magazine /
-# nyt_personaltech, and from same-outlet guardian_fashion.
-# Locked official nyt_* feed pattern
+# guardian_opinion / guardian_money, and from
+# same-outlet nyt_food. Locked official guardian_*
+# pattern https://www.theguardian.com/food/rss (channel
+# title "Food | The Guardian"). /uk/food/rss is 404 —
+# do not use that. nyt_fashion is a same-outlet NYT
+# section distinct from existing nyt_world /
+# nyt_technology / nyt_business / nyt_science /
+# nyt_climate / nyt_health / nyt_education /
+# nyt_politics / nyt_us / nyt_europe / nyt_upshot /
+# nyt_africa / nyt_arts / nyt_opinion / nyt_movies /
+# nyt_books / nyt_food / nyt_travel / nyt_economy /
+# nyt_realestate / nyt_magazine / nyt_personaltech, and
+# from same-outlet guardian_fashion. Locked official
+# nyt_* feed pattern
 # https://rss.nytimes.com/services/xml/rss/nyt/FashionandStyle.xml
 # (channel title "NYT > Style"). Fashion.xml is 404 —
-# do not use that. france24_europe is a named France 24
-# English Europe section. Official URL
-# https://www.france24.com/en/europe/rss (channel title
-# "News from Europe - Latest world headlines and daily
-# news - France 24") is the same feed already live as
-# france24_en (batch23 locked the English slot onto
-# /en/europe/rss because /en/rss was locked away).
-# Product knife promoted this backup to a named id;
-# keep france24_en. Distinct from france24_americas /
-# france24_asia / france24_middle_east / france24_africa.
-# Live-diff winner on all three primaries: HTTP 200 /
-# ≥10 nonempty items — do not fall through to unused
-# backups guardian_money / nyt_well (probed only; not
-# registered). france24_middle_east / nyt_personaltech /
-# france24_africa stay registered (batch41 closed).
-# bloomberg_markets / guardian_opinion / nyt_magazine
-# stay registered (batch40 closed; guardian_opinion
-# hard-swap kept). cbs_world / france24_asia / cnbc_top
-# stay registered (batch39 closed; cbs_world observe
-# kept). bbc_entertainment stays registered (batch38
-# closed; thin-observe kept). bbc_culture stays
-# unregistered (duplicate of bbc_entertainment; not a
+# do not use that. guardian_money is a same-outlet
+# Guardian section distinct from the guardian_* list
+# above (including guardian_food) and from same-outlet
+# nyt_economy / guardian_business / bbc_business /
+# cnbc_top / bloomberg_markets / scmp_business. Locked
+# official guardian_* pattern
+# https://www.theguardian.com/money/rss (channel title
+# "Money | The Guardian"). /uk/money/rss and
+# /us/money/rss are geo-edition variants — not a swap;
+# lock the section root. Live-diff winner on all three
+# primaries: HTTP 200 / ≥10 nonempty items — do not
+# fall through to unused backup nyt_well (probed only;
+# not registered). france24_middle_east /
+# nyt_personaltech / france24_africa stay registered
+# (batch41 closed). bloomberg_markets /
+# guardian_opinion / nyt_magazine stay registered
+# (batch40 closed; guardian_opinion hard-swap kept).
+# cbs_world / france24_asia / cnbc_top stay registered
+# (batch39 closed; cbs_world observe kept).
+# bbc_entertainment stays registered (batch38 closed;
+# thin-observe kept). bbc_culture stays unregistered
+# (duplicate of bbc_entertainment; not a live CAP
+# slot; not registered as a backup). france24_europe
+# stays unregistered (duplicate of france24_en; not a
 # live CAP slot; not registered as a backup).
 # guardian_economics stays unregistered (hard-swapped
 # in batch40). guardian_media stays unregistered
@@ -1755,7 +1762,7 @@ _FRANCE24_MIDDLE_EAST_NYT_PERSONALTECH_FRANCE24_AFRICA_PRIMARY = {
 # unregistered (not this batch; politico is X-handle
 # only). NEWS_SOURCE_CAP display stays 6 — no CAP
 # code change. No X this batch. No LLM this batch.
-_GUARDIAN_FOOD_NYT_FASHION_FRANCE24_EUROPE_PRIMARY = {
+_GUARDIAN_FOOD_NYT_FASHION_GUARDIAN_MONEY_PRIMARY = {
     "guardian_food": {
         "name": "Guardian Food",
         "feed_url": "https://www.theguardian.com/food/rss",
@@ -1766,10 +1773,10 @@ _GUARDIAN_FOOD_NYT_FASHION_FRANCE24_EUROPE_PRIMARY = {
         "feed_url": "https://rss.nytimes.com/services/xml/rss/nyt/FashionandStyle.xml",
         "category": "综合",
     },
-    "france24_europe": {
-        "name": "France 24 Europe",
-        "feed_url": "https://www.france24.com/en/europe/rss",
-        "category": "国际",
+    "guardian_money": {
+        "name": "Guardian Money",
+        "feed_url": "https://www.theguardian.com/money/rss",
+        "category": "财经",
     },
 }
 
@@ -5646,7 +5653,7 @@ def test_nyt_travel_guardian_fashion_nyt_economy_primaries_registered():
     # france24_middle_east / nyt_personaltech /
     # france24_africa are batch41. Unused batch41 backups
     # reuters_world / nyt_sports stay unregistered.
-    # guardian_food / nyt_fashion / france24_europe are
+    # guardian_food / nyt_fashion / guardian_money are
     # batch42. nyt_realestate /
     # guardian_lifeandstyle / bbc_entertainment are
     # batch38. cbs_world / france24_asia / cnbc_top are
@@ -5917,7 +5924,7 @@ def test_nyt_realestate_guardian_lifeandstyle_bbc_entertainment_primaries_regist
     # nyt_personaltech / france24_africa are batch41.
     # Unused batch41 backups reuters_world / nyt_sports
     # stay unregistered. guardian_food / nyt_fashion /
-    # france24_europe are batch42. npr_business was
+    # guardian_money are batch42. npr_business was
     # hard-swapped out in batch37 — do not keep live and do
     # not register as a backup. al_monitor stays
     # unregistered (replaced in batch29; not a live CAP
@@ -6061,7 +6068,7 @@ def test_cbs_world_france24_asia_cnbc_top_primaries_registered():
     # insert=1 <5). france24_middle_east / nyt_personaltech /
     # france24_africa are batch41. Unused batch41 backups
     # reuters_world / nyt_sports stay unregistered.
-    # guardian_food / nyt_fashion / france24_europe are
+    # guardian_food / nyt_fashion / guardian_money are
     # batch42. npr_business was
     # hard-swapped out in batch37 — do not keep live and
     # do not register as a backup. al_monitor stays
@@ -6299,7 +6306,7 @@ def test_bloomberg_markets_guardian_opinion_nyt_magazine_primaries_registered():
     # backups france24_middle_east / nyt_personaltech were
     # registered there). Unused batch41 backups
     # reuters_world / nyt_sports stay unregistered.
-    # guardian_food / nyt_fashion / france24_europe are
+    # guardian_food / nyt_fashion / guardian_money are
     # batch42 (guardian_food was an unused batch41 backup
     # and is now registered there). guardian_media was
     # hard-swapped out in
@@ -6402,7 +6409,7 @@ def test_france24_middle_east_nyt_personaltech_france24_africa_primaries_registe
     assert "france24_asia" in by_id
     assert "guardian_food" in by_id
     assert "nyt_fashion" in by_id
-    assert "france24_europe" in by_id
+    assert "guardian_money" in by_id
     assert "bloomberg_markets" in by_id
     assert "guardian_opinion" in by_id
     assert "nyt_magazine" in by_id
@@ -6501,7 +6508,7 @@ def test_france24_middle_east_nyt_personaltech_france24_africa_primaries_registe
     # reuters_world official public RSS is dead — do
     # not invent a Google News proxy. nyt_sports Sports.xml
     # is HTTP 200 / 0 items. guardian_food / nyt_fashion /
-    # france24_europe are batch42 (guardian_food was an
+    # guardian_money are batch42 (guardian_food was an
     # unused batch41 backup and is now registered there).
     # guardian_economics was hard-swapped out in
     # batch40. guardian_media was hard-swapped out in
@@ -6584,7 +6591,7 @@ def test_france24_middle_east_nyt_personaltech_france24_africa_feeds_live_http_2
         )
 
 
-def test_guardian_food_nyt_fashion_france24_europe_primaries_registered():
+def test_guardian_food_nyt_fashion_guardian_money_primaries_registered():
     by_id = {s.id: s for s in SOURCES}
     assert "guardian_food" in by_id
     assert by_id["guardian_food"].feed_url == "https://www.theguardian.com/food/rss"
@@ -6592,9 +6599,9 @@ def test_guardian_food_nyt_fashion_france24_europe_primaries_registered():
     assert by_id["nyt_fashion"].feed_url == (
         "https://rss.nytimes.com/services/xml/rss/nyt/FashionandStyle.xml"
     )
-    assert "france24_europe" in by_id
-    assert by_id["france24_europe"].feed_url == (
-        "https://www.france24.com/en/europe/rss"
+    assert "guardian_money" in by_id
+    assert by_id["guardian_money"].feed_url == (
+        "https://www.theguardian.com/money/rss"
     )
     assert "france24_en" in by_id
     assert "france24_americas" in by_id
@@ -6605,7 +6612,9 @@ def test_guardian_food_nyt_fashion_france24_europe_primaries_registered():
     assert "guardian_fashion" in by_id
     assert "guardian_opinion" in by_id
     assert "guardian_lifeandstyle" in by_id
+    assert "guardian_business" in by_id
     assert "nyt_food" in by_id
+    assert "nyt_economy" in by_id
     assert "nyt_personaltech" in by_id
     assert "nyt_magazine" in by_id
     assert by_id["france24_en"].feed_url == "https://www.france24.com/en/europe/rss"
@@ -6638,6 +6647,7 @@ def test_guardian_food_nyt_fashion_france24_europe_primaries_registered():
     assert by_id["guardian_food"].feed_url != by_id["guardian_fashion"].feed_url
     assert by_id["guardian_food"].feed_url != by_id["guardian_lifeandstyle"].feed_url
     assert by_id["guardian_food"].feed_url != by_id["guardian_opinion"].feed_url
+    assert by_id["guardian_food"].feed_url != by_id["guardian_money"].feed_url
     assert by_id["guardian_food"].feed_url != by_id["nyt_food"].feed_url
     assert by_id["guardian_food"].feed_url != (
         "https://www.theguardian.com/uk/food/rss"
@@ -6668,47 +6678,68 @@ def test_guardian_food_nyt_fashion_france24_europe_primaries_registered():
     assert by_id["nyt_fashion"].feed_url != (
         "https://rss.nytimes.com/services/xml/rss/nyt/Fashion.xml"
     )
-    # france24_europe is a named id for the same official
-    # /en/europe/rss already live as france24_en (batch23).
-    # Keep both ids; do not remove france24_en.
-    assert by_id["france24_europe"].feed_url == by_id["france24_en"].feed_url
-    assert by_id["france24_europe"].feed_url != by_id["france24_americas"].feed_url
-    assert by_id["france24_europe"].feed_url != by_id["france24_asia"].feed_url
-    assert by_id["france24_europe"].feed_url != by_id["france24_middle_east"].feed_url
-    assert by_id["france24_europe"].feed_url != by_id["france24_africa"].feed_url
-    assert by_id["france24_europe"].feed_url != "https://www.france24.com/en/rss"
-    assert by_id["france24_europe"].feed_url != (
-        "https://www.france24.com/en/americas/rss"
+    assert by_id["guardian_money"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_technology"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_us"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_environment"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_business"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_australia"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_americas"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_uk"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_europe"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_global_dev"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_law"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_society"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_cities"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_world_africa"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_politics"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_middle_east"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_sport"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_film"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_music"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_stage"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_books"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_tv"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_fashion"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_lifeandstyle"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_opinion"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["guardian_food"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["nyt_economy"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["bbc_business"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["cnbc_top"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["bloomberg_markets"].feed_url
+    assert by_id["guardian_money"].feed_url != by_id["scmp_business"].feed_url
+    assert by_id["guardian_money"].feed_url != (
+        "https://www.theguardian.com/uk/money/rss"
     )
-    assert by_id["france24_europe"].feed_url != (
-        "https://www.france24.com/en/asia-pacific/rss"
+    assert by_id["guardian_money"].feed_url != (
+        "https://www.theguardian.com/us/money/rss"
     )
-    assert by_id["france24_europe"].feed_url != (
-        "https://www.france24.com/en/middle-east/rss"
-    )
-    assert by_id["france24_europe"].feed_url != "https://www.france24.com/en/africa/rss"
     assert by_id["guardian_food"].feed_url != by_id["nyt_fashion"].feed_url
-    assert by_id["guardian_food"].feed_url != by_id["france24_europe"].feed_url
-    assert by_id["nyt_fashion"].feed_url != by_id["france24_europe"].feed_url
+    assert by_id["guardian_food"].feed_url != by_id["guardian_money"].feed_url
+    assert by_id["nyt_fashion"].feed_url != by_id["guardian_money"].feed_url
     # Unused backups / replaced / title+link-only / empty-desc /
     # not-this-batch feeds stay unregistered. bbc_culture is
     # dropped (entertainment_and_arts already live as
-    # bbc_entertainment). guardian_money / nyt_well were
-    # probed only (primaries won). reuters_world official
-    # public RSS is dead — do not invent a Google News
-    # proxy. nyt_sports Sports.xml is HTTP 200 / 0 items.
-    # guardian_economics was hard-swapped out in batch40.
-    # guardian_media was hard-swapped out in batch39.
-    # npr_business was hard-swapped out in batch37.
-    # al_monitor stays unregistered (replaced in batch29;
-    # not a live CAP slot). independent_world is the
-    # daily-fetch RED slot — do not keep live. nikkei /
-    # indian_express are empty-desc — product skipped.
-    # sky_tech / restofworld / ars_science / thehill /
-    # politico / abc_intl / sunday_review are not this
-    # batch (politico is X-handle only).
+    # bbc_entertainment). france24_europe is dropped
+    # (/en/europe/rss already live as france24_en).
+    # nyt_well was probed only (primaries won).
+    # reuters_world official public RSS is dead — do not
+    # invent a Google News proxy. nyt_sports Sports.xml
+    # is HTTP 200 / 0 items. guardian_economics was
+    # hard-swapped out in batch40. guardian_media was
+    # hard-swapped out in batch39. npr_business was
+    # hard-swapped out in batch37. al_monitor stays
+    # unregistered (replaced in batch29; not a live CAP
+    # slot). independent_world is the daily-fetch RED
+    # slot — do not keep live. nikkei / indian_express
+    # are empty-desc — product skipped. sky_tech /
+    # restofworld / ars_science / thehill / politico /
+    # abc_intl / sunday_review are not this batch
+    # (politico is X-handle only).
     assert "bbc_culture" not in by_id
-    assert "guardian_money" not in by_id
+    assert "france24_europe" not in by_id
     assert "nyt_well" not in by_id
     assert "npr_business" not in by_id
     assert "guardian_media" not in by_id
@@ -6729,7 +6760,7 @@ def test_guardian_food_nyt_fashion_france24_europe_primaries_registered():
     assert "sunday_review" not in by_id
     assert "nyt_sports" not in by_id
     for source_id, expected in (
-        _GUARDIAN_FOOD_NYT_FASHION_FRANCE24_EUROPE_PRIMARY.items()
+        _GUARDIAN_FOOD_NYT_FASHION_GUARDIAN_MONEY_PRIMARY.items()
     ):
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
@@ -6739,10 +6770,10 @@ def test_guardian_food_nyt_fashion_france24_europe_primaries_registered():
         assert source.category == expected["category"]
 
 
-def test_guardian_food_nyt_fashion_france24_europe_feeds_live_http_200():
+def test_guardian_food_nyt_fashion_guardian_money_feeds_live_http_200():
     """Hit the three batch42 feeds with the same headers fetch_source sends (not stubs)."""
     by_id = {s.id: s for s in SOURCES}
-    for source_id in _GUARDIAN_FOOD_NYT_FASHION_FRANCE24_EUROPE_PRIMARY:
+    for source_id in _GUARDIAN_FOOD_NYT_FASHION_GUARDIAN_MONEY_PRIMARY:
         source = by_id[source_id]
         request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
         try:
@@ -6761,7 +6792,7 @@ def test_guardian_food_nyt_fashion_france24_europe_feeds_live_http_200():
         assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
         # Required: parseable title / url / published on each item.
         # RSS 2.0 (guardian_food / nyt_fashion /
-        # france24_europe) uses the un-namespaced element text.
+        # guardian_money) uses the un-namespaced element text.
         for i, item in enumerate(items):
             title = _item_title(item)
             url = _item_link(item)
@@ -6825,7 +6856,7 @@ if __name__ == "__main__":
     test_cbs_world_france24_asia_cnbc_top_primaries_registered()
     test_bloomberg_markets_guardian_opinion_nyt_magazine_primaries_registered()
     test_france24_middle_east_nyt_personaltech_france24_africa_primaries_registered()
-    test_guardian_food_nyt_fashion_france24_europe_primaries_registered()
+    test_guardian_food_nyt_fashion_guardian_money_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -6866,5 +6897,5 @@ if __name__ == "__main__":
     test_cbs_world_france24_asia_cnbc_top_feeds_live_http_200()
     test_bloomberg_markets_guardian_opinion_nyt_magazine_feeds_live_http_200()
     test_france24_middle_east_nyt_personaltech_france24_africa_feeds_live_http_200()
-    test_guardian_food_nyt_fashion_france24_europe_feeds_live_http_200()
+    test_guardian_food_nyt_fashion_guardian_money_feeds_live_http_200()
     print("✓ source registry tests PASSED")

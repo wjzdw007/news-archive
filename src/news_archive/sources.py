@@ -947,10 +947,10 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
-        id="france24_europe",
-        name="France 24 Europe",
-        feed_url="https://www.france24.com/en/europe/rss",
-        category="国际",
+        id="guardian_money",
+        name="Guardian Money",
+        feed_url="https://www.theguardian.com/money/rss",
+        category="财经",
         role="primary",
     ),
     Source(

@@ -139,7 +139,7 @@
 | `france24_africa` | France 24 Africa | https://www.france24.com/en/africa/rss | primary |
 | `guardian_food` | Guardian Food | https://www.theguardian.com/food/rss | primary |
 | `nyt_fashion` | NYT Fashion | https://rss.nytimes.com/services/xml/rss/nyt/FashionandStyle.xml | primary |
-| `france24_europe` | France 24 Europe | https://www.france24.com/en/europe/rss | primary |
+| `guardian_money` | Guardian Money | https://www.theguardian.com/money/rss | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
