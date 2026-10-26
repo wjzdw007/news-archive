@@ -1752,6 +1752,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="artnet",
+        name="Artnet News",
+        feed_url="https://news.artnet.com/feed",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="macrumors",
+        name="MacRumors",
+        feed_url="https://feeds.macrumors.com/MacRumors-All",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="quillette",
+        name="Quillette",
+        feed_url="https://quillette.com/articles/rss/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
