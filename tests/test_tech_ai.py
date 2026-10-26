@@ -458,6 +458,40 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "scotusblog" not in TECH_AI_SOURCE_WHITELIST
     assert "times_of_israel" not in TECH_AI_SOURCE_WHITELIST
     assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
+    # batch77 RSS primaries stay off the tech/AI whitelist.
+    # moscow_times lands on 国际 (Russia /
+    # Eurasia newsroom, same as
+    # kyiv_independent / bbc_europe).
+    # dezeen lands on 综合 (design /
+    # architecture / culture newsroom,
+    # same as hyperallergic / artforum /
+    # guardian_artanddesign).
+    # eff lands on 综合 (digital rights /
+    # civil-liberties newsroom, same as
+    # the_markup / intercept / reason).
+    # None of these match the wired /
+    # verge / techcrunch ALWAYS pattern.
+    # Unused backups android_authority /
+    # unherd stay off (first-winner unused
+    # stay out). grist stays off the
+    # frozen KEYWORD set (already used
+    # for the atlantic_council hard-swap;
+    # do not reuse as a backup).
+    # atlantic_council stays off
+    # (hard-swapped to grist in #139).
+    # the_nation stays off (empty
+    # site-wide FAIL). euractiv stays off
+    # (official 301 to rapporteur.com;
+    # Feedburner stale).
+    assert "moscow_times" not in TECH_AI_SOURCE_WHITELIST
+    assert "dezeen" not in TECH_AI_SOURCE_WHITELIST
+    assert "eff" not in TECH_AI_SOURCE_WHITELIST
+    assert "android_authority" not in TECH_AI_SOURCE_WHITELIST
+    assert "unherd" not in TECH_AI_SOURCE_WHITELIST
+    assert "grist" not in TECH_AI_SOURCE_WHITELIST
+    assert "atlantic_council" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_nation" not in TECH_AI_SOURCE_WHITELIST
+    assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
