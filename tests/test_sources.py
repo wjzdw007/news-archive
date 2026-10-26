@@ -2281,7 +2281,8 @@ _ATLANTIC_SMH_NATIONAL_GUARDIAN_EDUCATION_PRIMARY = {
 # all three primaries: HTTP 200 / ≥10 nonempty
 # items — do not fall through to unused backups
 # bbc_australia / bloomberg_technology /
-# ars_science. bbc_australia official
+# ars_science (now batch52 primaries).
+# bbc_australia official
 # feeds.bbci.co.uk/news/world/australia/rss.xml is
 # HTTP 200 / 17 nonempty (probed only).
 # /news/australia/rss.xml and
@@ -2577,24 +2578,9 @@ _WAR_ON_ROCKS_CANARY_MEDIA_SPACE_COM_PRIMARY = {
 # live mit_tr / ars_technica /
 # bbc_technology / nyt_technology. Not added
 # to the tech/AI whitelist.
-# bbc_australia official
-# feeds.bbci.co.uk/news/world/australia/rss.xml
-# is HTTP 200 / 17 nonempty (probed only;
-# unused because all three primaries won).
-# /news/australia/rss.xml and
-# /news/world/asia/australia/rss.xml are 404.
-# bloomberg_technology official
-# feeds.bloomberg.com/technology/news.rss is
-# HTTP 200 / 15 nonempty (probed only; 302s
-# to www.bloomberg.com/feeds/technology/news.rss
-# — lock the feeds.bloomberg.com path to
-# match bloomberg_markets). /tech/news.rss
-# and /technology.rss are 404. Distinct from
-# live bloomberg_markets. ars_science official
-# feeds.arstechnica.com/arstechnica/science
-# is HTTP 200 / 20 nonempty (probed only;
-# same body as arstechnica.com/science/feed/).
-# Distinct from live ars_technica index.
+# bbc_australia / bloomberg_technology /
+# ars_science were unused live-diff backups
+# here and are now batch52 primaries.
 # war_on_rocks / canary_media / space_com
 # stay registered (batch50 closed).
 # foreign_policy / ft_world / abc_australia
@@ -2630,7 +2616,140 @@ _THE_DIPLOMAT_STAT_NEWS_IEEE_SPECTRUM_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 161
+# CEO-approved BBC Australia / Bloomberg
+# Technology / Ars Technica Science RSS
+# primaries (batch52). These three are the
+# new adds after #108 (batch51 CLOSED with
+# the_diplomat / stat_news / ieee_spectrum)
+# on tip b48564d. Do not re-touch those
+# #108 winners. digiday_media stays live
+# (nyt_media hung after #107 URL-collision
+# hard-swap; guardian_media stays hung).
+# bbc_australia is the official BBC News
+# Australia / World Australia RSS (no prior
+# bbc_australia id; bbc_asia is World Asia;
+# abc_australia is ABC News Australia Just
+# In). Locked official
+# https://feeds.bbci.co.uk/news/world/australia/rss.xml
+# (channel title "BBC News", same generic
+# channel as other bbc_* section feeds).
+# /news/australia/rss.xml and
+# /news/world/asia/australia/rss.xml and
+# /news/world/australia/rss are 404.
+# www.bbc.com/news/world/australia/rss.xml
+# 301/alias to the lock — lock the
+# feeds.bbci.co.uk path to match other
+# bbc_*. Live-diff winner: HTTP 200 / 17
+# nonempty / 17 insertable (httpx
+# fetch_source + urllib). Product lock ≥10
+# nonempty — keep. Distinct from live
+# bbc_world / bbc_asia / guardian_australia
+# / abc_australia. Same-outlet article
+# overlap with bbc_world (1) / bbc_asia (2)
+# is the usual BBC section pattern — not
+# the nyt_media 20/20 insert=0 collision.
+# bloomberg_technology is the official
+# Bloomberg Technology RSS (no prior
+# bloomberg_technology / bloomberg_tech id;
+# bloomberg_markets is the Markets feed).
+# Locked official
+# https://feeds.bloomberg.com/technology/news.rss
+# (channel title "Bloomberg Technology";
+# 302s to www.bloomberg.com/feeds/technology/news.rss
+# — lock the feeds.bloomberg.com path to
+# match bloomberg_markets). /tech/news.rss
+# / /technology.rss / /technology/news.xml
+# are 404. Live-diff winner: HTTP 200 / 15
+# nonempty / 15 insertable. Distinct from
+# live bloomberg_markets / nyt_technology /
+# bbc_technology / ieee_spectrum. 0 article
+# URL overlap with those. Not added to the
+# tech/AI whitelist. ars_science is the
+# official Ars Technica Science section RSS
+# (no prior ars_science id; ars_technica is
+# the site-wide index). Locked official
+# https://feeds.arstechnica.com/arstechnica/science
+# (channel title "Science - Ars Technica").
+# arstechnica.com/science/feed/ is the same
+# body — lock the feeds.arstechnica.com
+# path to match ars_technica.
+# /arstechnica/science/ and
+# /arstechnica/science.xml are the same
+# body via extra path — do not lock those.
+# Live-diff winner: HTTP 200 / 20 nonempty
+# / 20 insertable. Distinct from live
+# ars_technica / bbc_science / nyt_science /
+# guardian_science / npr_science.
+# Same-outlet article overlap with
+# ars_technica index is 4/20 (section vs
+# index) — 16 unique, not insert=0.
+# Product-locked backups (use only if a
+# primary fails live-diff / fetch /
+# URL-dedup): the_register official
+# https://www.theregister.com/headlines.atom
+# (and headlines.rss; both remap to the
+# same api.theregister.com RSS 2.0 body;
+# channel "www.theregister.com - Articles")
+# is HTTP 200 / 50 nonempty / 50
+# insertable (probed only; unused because
+# all three primaries won). /feed.rss and
+# /rss are 404 HTML. foreign_affairs
+# official https://www.foreignaffairs.com/rss.xml
+# (channel "FA RSS") is HTTP 200 / 20
+# nonempty / 20 insertable (probed only;
+# unused). /feed / /feed/ / /rss / /rss/
+# /articles/rss.xml are 404. apex
+# foreignaffairs.com/rss.xml aliases to
+# www. — lock www. if ever promoted.
+# Distinct from live foreign_policy.
+# allafrica official
+# https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf
+# (channel "AllAfrica News: Latest") is
+# HTTP 200 / 33 nonempty / 33 insertable
+# (probed only; unused). /rdf/africa is a
+# different Africa section.
+# /rdf/lateststories / /misc/scan/headlines.rss
+# / /feed are 404. asia_times skipped
+# (known httpx 403 JS challenge; not
+# fetch-compatible). Do not invent other
+# backups. the_diplomat / stat_news /
+# ieee_spectrum stay registered (batch51
+# closed). war_on_rocks / canary_media /
+# space_com stay registered (batch50
+# closed). foreign_policy / ft_world /
+# abc_australia stay registered (batch49
+# closed). politico_politics / dw_business /
+# france24_culture stay registered
+# (batch48 closed). atlantic / smh_national /
+# guardian_education stay registered
+# (batch47 closed). digiday_media stays
+# registered (#107). nyt_media /
+# guardian_media stay hung. guardian_games
+# stays unregistered (product: games thin /
+# 不进主源). sunday_review / cnbc (403
+# known) / ap stay unregistered (product
+# lock). NEWS_SOURCE_CAP display stays 6 —
+# no CAP code change. No X this batch. No
+# LLM this batch. Not tech/AI whitelist.
+_BBC_AUSTRALIA_BLOOMBERG_TECHNOLOGY_ARS_SCIENCE_PRIMARY = {
+    "bbc_australia": {
+        "name": "BBC Australia",
+        "feed_url": "https://feeds.bbci.co.uk/news/world/australia/rss.xml",
+        "category": "国际",
+    },
+    "bloomberg_technology": {
+        "name": "Bloomberg Technology",
+        "feed_url": "https://feeds.bloomberg.com/technology/news.rss",
+        "category": "硬科技",
+    },
+    "ars_science": {
+        "name": "Ars Technica Science",
+        "feed_url": "https://feeds.arstechnica.com/arstechnica/science",
+        "category": "科学",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 164
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -5457,7 +5576,7 @@ def test_nyt_arts_guardian_sport_intercept_primaries_registered():
     assert "nikkei_asia" not in by_id
     assert "sky_tech" not in by_id
     assert "restofworld" not in by_id
-    assert "ars_science" not in by_id
+    assert "ars_science" in by_id
     for source_id, expected in _NYT_ARTS_GUARDIAN_SPORT_INTERCEPT_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
@@ -5613,7 +5732,7 @@ def test_nyt_opinion_guardian_film_propublica_primaries_registered():
     assert "nikkei_asia" not in by_id
     assert "sky_tech" not in by_id
     assert "restofworld" not in by_id
-    assert "ars_science" not in by_id
+    assert "ars_science" in by_id
     assert "thehill" not in by_id
     assert "politico" not in by_id
     for source_id, expected in _NYT_OPINION_GUARDIAN_FILM_PROPUBLICA_PRIMARY.items():
@@ -5732,7 +5851,7 @@ def test_forbes_innovation_dw_world_rfi_americas_primaries_registered():
     assert "nikkei_asia" not in by_id
     assert "sky_tech" not in by_id
     assert "restofworld" not in by_id
-    assert "ars_science" not in by_id
+    assert "ars_science" in by_id
     assert "thehill" not in by_id
     assert "politico" not in by_id
     for source_id, expected in _FORBES_INNOVATION_DW_WORLD_RFI_AMERICAS_PRIMARY.items():
@@ -5922,7 +6041,7 @@ def test_nyt_movies_guardian_music_guardian_stage_primaries_registered():
     assert "nikkei_asia" not in by_id
     assert "sky_tech" not in by_id
     assert "restofworld" not in by_id
-    assert "ars_science" not in by_id
+    assert "ars_science" in by_id
     assert "thehill" not in by_id
     assert "politico" not in by_id
     assert "abc_intl" not in by_id
@@ -6106,7 +6225,7 @@ def test_nyt_books_guardian_books_npr_arts_primaries_registered():
     assert "nikkei_asia" not in by_id
     assert "sky_tech" not in by_id
     assert "restofworld" not in by_id
-    assert "ars_science" not in by_id
+    assert "ars_science" in by_id
     assert "thehill" not in by_id
     assert "politico" not in by_id
     assert "abc_intl" not in by_id
@@ -6301,7 +6420,7 @@ def test_nyt_food_guardian_tv_npr_science_primaries_registered():
     assert "nikkei_asia" not in by_id
     assert "sky_tech" not in by_id
     assert "restofworld" not in by_id
-    assert "ars_science" not in by_id
+    assert "ars_science" in by_id
     assert "thehill" not in by_id
     assert "politico" not in by_id
     assert "abc_intl" not in by_id
@@ -6532,7 +6651,7 @@ def test_nyt_travel_guardian_fashion_nyt_economy_primaries_registered():
     assert "nikkei_asia" not in by_id
     assert "sky_tech" not in by_id
     assert "restofworld" not in by_id
-    assert "ars_science" not in by_id
+    assert "ars_science" in by_id
     assert "thehill" not in by_id
     assert "politico" not in by_id
     assert "abc_intl" not in by_id
@@ -6801,7 +6920,7 @@ def test_nyt_realestate_guardian_lifeandstyle_bbc_entertainment_primaries_regist
     assert "nikkei_asia" not in by_id
     assert "sky_tech" not in by_id
     assert "restofworld" not in by_id
-    assert "ars_science" not in by_id
+    assert "ars_science" in by_id
     assert "thehill" not in by_id
     assert "politico" not in by_id
     assert "abc_intl" not in by_id
@@ -6945,7 +7064,7 @@ def test_cbs_world_france24_asia_cnbc_top_primaries_registered():
     assert "nikkei_asia" not in by_id
     assert "sky_tech" not in by_id
     assert "restofworld" not in by_id
-    assert "ars_science" not in by_id
+    assert "ars_science" in by_id
     assert "thehill" not in by_id
     assert "politico" not in by_id
     assert "abc_intl" not in by_id
@@ -7186,7 +7305,7 @@ def test_bloomberg_markets_guardian_opinion_nyt_magazine_primaries_registered():
     assert "nikkei_asia" not in by_id
     assert "sky_tech" not in by_id
     assert "restofworld" not in by_id
-    assert "ars_science" not in by_id
+    assert "ars_science" in by_id
     assert "thehill" not in by_id
     assert "politico" not in by_id
     assert "abc_intl" not in by_id
@@ -7387,7 +7506,7 @@ def test_france24_middle_east_nyt_personaltech_france24_africa_primaries_registe
     assert "nikkei_asia" not in by_id
     assert "sky_tech" not in by_id
     assert "restofworld" not in by_id
-    assert "ars_science" not in by_id
+    assert "ars_science" in by_id
     assert "thehill" not in by_id
     assert "politico" not in by_id
     assert "abc_intl" not in by_id
@@ -7622,7 +7741,7 @@ def test_guardian_food_nyt_fashion_guardian_money_primaries_registered():
     assert "nikkei_asia" not in by_id
     assert "sky_tech" not in by_id
     assert "restofworld" not in by_id
-    assert "ars_science" not in by_id
+    assert "ars_science" in by_id
     assert "thehill" not in by_id
     assert "politico" not in by_id
     assert "abc_intl" not in by_id
@@ -7838,7 +7957,7 @@ def test_nyt_well_guardian_travel_dw_asia_primaries_registered():
     assert "nikkei_asia" not in by_id
     assert "sky_tech" not in by_id
     assert "restofworld" not in by_id
-    assert "ars_science" not in by_id
+    assert "ars_science" in by_id
     assert "thehill" not in by_id
     assert "abc_intl" not in by_id
     assert "sunday_review" not in by_id
@@ -8013,7 +8132,7 @@ def test_nyt_automobiles_the_hill_npr_business_primaries_registered():
     assert "nikkei_asia" not in by_id
     assert "sky_tech" not in by_id
     assert "restofworld" not in by_id
-    assert "ars_science" not in by_id
+    assert "ars_science" in by_id
     assert "abc_intl" not in by_id
     assert "sunday_review" not in by_id
     assert "nyt_sports" not in by_id
@@ -8248,7 +8367,7 @@ def test_guardian_artanddesign_dw_europe_guardian_football_primaries_registered(
     assert "nikkei_asia" not in by_id
     assert "sky_tech" not in by_id
     assert "restofworld" not in by_id
-    assert "ars_science" not in by_id
+    assert "ars_science" in by_id
     assert "abc_intl" not in by_id
     assert "sunday_review" not in by_id
     assert "sundayreview" not in by_id
@@ -8498,7 +8617,7 @@ def test_digiday_media_time_top_nyt_obituaries_primaries_registered():
     assert "nikkei_asia" not in by_id
     assert "sky_tech" not in by_id
     assert "restofworld" not in by_id
-    assert "ars_science" not in by_id
+    assert "ars_science" in by_id
     assert "abc_intl" not in by_id
     assert "sunday_review" not in by_id
     assert "sundayreview" not in by_id
@@ -8772,8 +8891,8 @@ def test_politico_politics_dw_business_france24_culture_primaries_registered():
     # Unused backups / replaced / title+link-only / empty-desc /
     # colliding / not-this-batch feeds stay unregistered.
     # bbc_australia / bloomberg_technology / ars_science
-    # were live-diff backups (HTTP 200 / ≥10 nonempty) —
-    # unused because all three primaries won.
+    # were unused live-diff backups here and are now
+    # batch52 primaries (all three won).
     # foreign_policy / ft_world / abc_australia are
     # batch49 (ft_world promoted after pbs_newshour
     # CloudFront 202). war_on_rocks / canary_media /
@@ -8793,9 +8912,9 @@ def test_politico_politics_dw_business_france24_culture_primaries_registered():
     assert "ieee_spectrum" in by_id
     assert "pbs_newshour" not in by_id
     assert "economist_intl" not in by_id
-    assert "bbc_australia" not in by_id
-    assert "bloomberg_technology" not in by_id
-    assert "ars_science" not in by_id
+    assert "bbc_australia" in by_id
+    assert "bloomberg_technology" in by_id
+    assert "ars_science" in by_id
     assert "guardian_games" not in by_id
     assert "thehill" not in by_id
     assert "bbc_culture" not in by_id
@@ -8900,7 +9019,9 @@ def test_foreign_policy_ft_world_abc_australia_primaries_registered():
     # after URL collision; #107). war_on_rocks /
     # canary_media / space_com are batch50.
     # the_diplomat / stat_news / ieee_spectrum
-    # are batch51.
+    # are batch51. bbc_australia /
+    # bloomberg_technology / ars_science are
+    # batch52.
     assert "pbs_newshour" not in by_id
     assert "restofworld" not in by_id
     assert "economist_intl" not in by_id
@@ -8913,6 +9034,9 @@ def test_foreign_policy_ft_world_abc_australia_primaries_registered():
     assert "the_diplomat" in by_id
     assert "stat_news" in by_id
     assert "ieee_spectrum" in by_id
+    assert "bbc_australia" in by_id
+    assert "bloomberg_technology" in by_id
+    assert "ars_science" in by_id
     assert "abc_intl" not in by_id
     assert by_id["foreign_policy"].feed_url != "https://foreignpolicy.com/feed"
     assert by_id["foreign_policy"].feed_url != "https://foreignpolicy.com/rss"
@@ -9028,6 +9152,8 @@ def test_war_on_rocks_canary_media_space_com_primaries_registered():
     # #107 hard-swap: digiday_media live, nyt_media hung.
     # batch51: the_diplomat / stat_news /
     # ieee_spectrum stay registered.
+    # batch52: bbc_australia / bloomberg_technology /
+    # ars_science stay registered.
     assert "foreign_policy" in by_id
     assert "ft_world" in by_id
     assert "abc_australia" in by_id
@@ -9047,6 +9173,9 @@ def test_war_on_rocks_canary_media_space_com_primaries_registered():
     assert "the_diplomat" in by_id
     assert "stat_news" in by_id
     assert "ieee_spectrum" in by_id
+    assert "bbc_australia" in by_id
+    assert "bloomberg_technology" in by_id
+    assert "ars_science" in by_id
     # nyt_media / guardian_media hung after #107.
     # Unused backups / not-fetch-compatible /
     # not-this-batch feeds stay unregistered.
@@ -9192,17 +9321,16 @@ def test_the_diplomat_stat_news_ieee_spectrum_primaries_registered():
     assert "nyt_technology" in by_id
     assert "bloomberg_markets" in by_id
     # nyt_media / guardian_media hung after #107.
-    # Unused backups / not-this-batch feeds stay
-    # unregistered. bbc_australia /
-    # bloomberg_technology / ars_science were
-    # live-diff backups (HTTP 200 / ≥10 nonempty)
-    # — unused because all three primaries won.
+    # bbc_australia / bloomberg_technology /
+    # ars_science were unused live-diff backups
+    # here and are now batch52 primaries.
     assert "nyt_media" not in by_id
     assert "guardian_media" not in by_id
-    assert "bbc_australia" not in by_id
-    assert "bloomberg_technology" not in by_id
-    assert "ars_science" not in by_id
+    assert "bbc_australia" in by_id
+    assert "bloomberg_technology" in by_id
+    assert "ars_science" in by_id
     assert "the_register" not in by_id
+    assert "foreign_affairs" not in by_id
     assert "asia_times" not in by_id
     assert "allafrica" not in by_id
     assert "pbs_newshour" not in by_id
@@ -9333,6 +9461,193 @@ def test_the_diplomat_stat_news_ieee_spectrum_feeds_live_http_200():
         )
 
 
+def test_bbc_australia_bloomberg_technology_ars_science_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "bbc_australia" in by_id
+    assert by_id["bbc_australia"].feed_url == (
+        "https://feeds.bbci.co.uk/news/world/australia/rss.xml"
+    )
+    assert "bloomberg_technology" in by_id
+    assert by_id["bloomberg_technology"].feed_url == (
+        "https://feeds.bloomberg.com/technology/news.rss"
+    )
+    assert "ars_science" in by_id
+    assert by_id["ars_science"].feed_url == (
+        "https://feeds.arstechnica.com/arstechnica/science"
+    )
+    # #108 winners stay registered and unchanged.
+    # #107 hard-swap: digiday_media live, nyt_media hung.
+    assert "the_diplomat" in by_id
+    assert "stat_news" in by_id
+    assert "ieee_spectrum" in by_id
+    assert "war_on_rocks" in by_id
+    assert "canary_media" in by_id
+    assert "space_com" in by_id
+    assert "foreign_policy" in by_id
+    assert "ft_world" in by_id
+    assert "abc_australia" in by_id
+    assert "politico_politics" in by_id
+    assert "dw_business" in by_id
+    assert "france24_culture" in by_id
+    assert "atlantic" in by_id
+    assert "smh_national" in by_id
+    assert "guardian_education" in by_id
+    assert "digiday_media" in by_id
+    assert "time_top" in by_id
+    assert "nyt_obituaries" in by_id
+    assert "bbc_world" in by_id
+    assert "bbc_asia" in by_id
+    assert "guardian_australia" in by_id
+    assert "bloomberg_markets" in by_id
+    assert "ars_technica" in by_id
+    assert "bbc_science" in by_id
+    assert "nyt_science" in by_id
+    assert "guardian_science" in by_id
+    assert "npr_science" in by_id
+    assert "nyt_technology" in by_id
+    assert "bbc_technology" in by_id
+    assert "ieee_spectrum" in by_id
+    # nyt_media / guardian_media hung after #107.
+    # Product-locked backups stay unregistered
+    # because all three primaries won.
+    # the_register / foreign_affairs / allafrica
+    # were live-diff OK (HTTP 200 / ≥10
+    # nonempty) — unused. asia_times skipped
+    # (known httpx 403). Do not invent other
+    # backups. pbs_newshour is CloudFront 202.
+    # restofworld is httpx 403.
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "the_register" not in by_id
+    assert "foreign_affairs" not in by_id
+    assert "asia_times" not in by_id
+    assert "allafrica" not in by_id
+    assert "pbs_newshour" not in by_id
+    assert "restofworld" not in by_id
+    assert "economist_intl" not in by_id
+    assert by_id["bbc_australia"].feed_url != (
+        "https://feeds.bbci.co.uk/news/australia/rss.xml"
+    )
+    assert by_id["bbc_australia"].feed_url != (
+        "https://feeds.bbci.co.uk/news/world/asia/australia/rss.xml"
+    )
+    assert by_id["bbc_australia"].feed_url != (
+        "https://feeds.bbci.co.uk/news/world/australia/rss"
+    )
+    assert by_id["bbc_australia"].feed_url != (
+        "https://www.bbc.com/news/world/australia/rss.xml"
+    )
+    assert by_id["bbc_australia"].feed_url != by_id["bbc_world"].feed_url
+    assert by_id["bbc_australia"].feed_url != by_id["bbc_asia"].feed_url
+    assert by_id["bbc_australia"].feed_url != by_id["bbc_zh_simp"].feed_url
+    assert by_id["bbc_australia"].feed_url != by_id["guardian_australia"].feed_url
+    assert by_id["bbc_australia"].feed_url != by_id["abc_australia"].feed_url
+    assert by_id["bloomberg_technology"].feed_url != (
+        "https://www.bloomberg.com/feeds/technology/news.rss"
+    )
+    assert by_id["bloomberg_technology"].feed_url != (
+        "https://feeds.bloomberg.com/tech/news.rss"
+    )
+    assert by_id["bloomberg_technology"].feed_url != (
+        "https://feeds.bloomberg.com/technology.rss"
+    )
+    assert by_id["bloomberg_technology"].feed_url != (
+        "https://feeds.bloomberg.com/technology/news.xml"
+    )
+    assert by_id["bloomberg_technology"].feed_url != (
+        by_id["bloomberg_markets"].feed_url
+    )
+    assert by_id["bloomberg_technology"].feed_url != (
+        by_id["nyt_technology"].feed_url
+    )
+    assert by_id["bloomberg_technology"].feed_url != (
+        by_id["bbc_technology"].feed_url
+    )
+    assert by_id["bloomberg_technology"].feed_url != (
+        by_id["ieee_spectrum"].feed_url
+    )
+    assert by_id["ars_science"].feed_url != "https://arstechnica.com/science/feed/"
+    assert by_id["ars_science"].feed_url != "https://arstechnica.com/science/feed"
+    assert by_id["ars_science"].feed_url != (
+        "https://feeds.arstechnica.com/arstechnica/science/"
+    )
+    assert by_id["ars_science"].feed_url != (
+        "https://feeds.arstechnica.com/arstechnica/science.xml"
+    )
+    assert by_id["ars_science"].feed_url != by_id["ars_technica"].feed_url
+    assert by_id["ars_science"].feed_url != by_id["bbc_science"].feed_url
+    assert by_id["ars_science"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["ars_science"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["ars_science"].feed_url != by_id["npr_science"].feed_url
+    assert by_id["bbc_australia"].feed_url != (
+        by_id["bloomberg_technology"].feed_url
+    )
+    assert by_id["bbc_australia"].feed_url != by_id["ars_science"].feed_url
+    assert by_id["bloomberg_technology"].feed_url != by_id["ars_science"].feed_url
+    # nyt_media hung after #107 — digiday_media live.
+    assert by_id["digiday_media"].feed_url == "https://digiday.com/media/feed/"
+    assert "guardian_games" not in by_id
+    assert "thehill" not in by_id
+    assert "politico" not in by_id
+    assert "bbc_culture" not in by_id
+    assert "france24_europe" not in by_id
+    assert "guardian_economics" not in by_id
+    assert "nyt_theater" not in by_id
+    assert "independent_world" not in by_id
+    assert "sundayreview" not in by_id
+    assert "ap" not in by_id
+    for source_id, expected in (
+        _BBC_AUSTRALIA_BLOOMBERG_TECHNOLOGY_ARS_SCIENCE_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_bbc_australia_bloomberg_technology_ars_science_feeds_live_http_200():
+    """Hit the three batch52 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _BBC_AUSTRALIA_BLOOMBERG_TECHNOLOGY_ARS_SCIENCE_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (bbc_australia / bloomberg_technology /
+        # ars_science) uses the un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # All three live-diff winners were 100% nonempty.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: {len(items) - nonempty}/{len(items)}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -9387,6 +9702,7 @@ if __name__ == "__main__":
     test_foreign_policy_ft_world_abc_australia_primaries_registered()
     test_war_on_rocks_canary_media_space_com_primaries_registered()
     test_the_diplomat_stat_news_ieee_spectrum_primaries_registered()
+    test_bbc_australia_bloomberg_technology_ars_science_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -9437,4 +9753,5 @@ if __name__ == "__main__":
     test_foreign_policy_ft_world_abc_australia_feeds_live_http_200()
     test_war_on_rocks_canary_media_space_com_feeds_live_http_200()
     test_the_diplomat_stat_news_ieee_spectrum_feeds_live_http_200()
+    test_bbc_australia_bloomberg_technology_ars_science_feeds_live_http_200()
     print("✓ source registry tests PASSED")
