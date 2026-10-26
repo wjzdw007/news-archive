@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（149 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（152 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -155,6 +155,9 @@
 | `atlantic` | The Atlantic | https://www.theatlantic.com/feed/all/ | primary |
 | `smh_national` | Sydney Morning Herald National | https://www.smh.com.au/rss/national.xml | primary |
 | `guardian_education` | Guardian Education | https://www.theguardian.com/education/rss | primary |
+| `politico_politics` | Politico Politics | https://rss.politico.com/politics-news.xml | primary |
+| `dw_business` | Deutsche Welle Business | https://rss.dw.com/rdf/rss-en-bus | primary |
+| `france24_culture` | France 24 Culture | https://www.france24.com/en/culture/rss | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema
