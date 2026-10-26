@@ -1492,10 +1492,11 @@ _NYT_REALESTATE_GUARDIAN_LIFEANDSTYLE_BBC_ENTERTAINMENT_PRIMARY = {
 # unregistered (not this batch; politico is X-handle
 # only). NEWS_SOURCE_CAP display stays 6 — no CAP
 # code change. No X this batch. No LLM this batch.
-# bloomberg_markets / guardian_economics / nyt_magazine
-# are batch40 (CEO knife; live-diff winners, unused
-# backups guardian_opinion / france24_middle_east /
-# nyt_personaltech not registered).
+# bloomberg_markets / guardian_opinion / nyt_magazine
+# are batch40 (guardian_opinion hard-swapped in for
+# guardian_economics after public insert=1 <5; unused
+# backups france24_middle_east / nyt_personaltech not
+# registered).
 _CBS_WORLD_FRANCE24_ASIA_CNBC_TOP_PRIMARY = {
     "cbs_world": {
         "name": "CBS News World",
@@ -1514,14 +1515,20 @@ _CBS_WORLD_FRANCE24_ASIA_CNBC_TOP_PRIMARY = {
     },
 }
 
-# CEO-approved Bloomberg Markets / Guardian Economics / NYT
-# Magazine RSS primaries (batch40). These three are the new
-# adds. bloomberg_markets is Bloomberg Markets news RSS,
+# CEO-approved Bloomberg Markets / Guardian Opinion / NYT
+# Magazine RSS primaries (batch40 after thin-source hard
+# swap). bloomberg_markets and nyt_magazine stay
+# registered (batch40 closed adds). guardian_economics
+# is removed (public insert=1 <5 hard-swap threshold)
+# and is not a live CAP slot / not registered as a
+# backup. guardian_opinion won the backup ladder
+# live-diff and is now registered as a primary.
+# bloomberg_markets is Bloomberg Markets news RSS,
 # distinct from existing cnbc_top / nyt_economy /
 # nyt_business / bbc_business / guardian_business /
 # scmp_business. Locked official Bloomberg Markets feed
 # https://feeds.bloomberg.com/markets/news.rss (channel
-# title "Bloomberg Markets"). guardian_economics is a
+# title "Bloomberg Markets"). guardian_opinion is a
 # same-outlet Guardian section distinct from existing
 # guardian_world / guardian_technology / guardian_us /
 # guardian_environment / guardian_business /
@@ -1532,13 +1539,13 @@ _CBS_WORLD_FRANCE24_ASIA_CNBC_TOP_PRIMARY = {
 # guardian_politics / guardian_middle_east /
 # guardian_sport / guardian_film / guardian_music /
 # guardian_stage / guardian_books / guardian_tv /
-# guardian_fashion / guardian_lifeandstyle. Locked
-# official guardian_* pattern
-# https://www.theguardian.com/business/economics/rss
-# (channel title "Economics | The Guardian").
-# /uk/business/economics/rss and /economics/rss are 404
-# — do not use those. nyt_magazine is a same-outlet NYT
-# section distinct from existing nyt_world /
+# guardian_fashion / guardian_lifeandstyle, and from
+# same-outlet nyt_opinion. Locked official guardian_*
+# pattern https://www.theguardian.com/commentisfree/rss
+# (channel title "Opinion | The Guardian").
+# /opinion/rss and /uk/commentisfree/rss are not this
+# feed — do not use those. nyt_magazine is a same-outlet
+# NYT section distinct from existing nyt_world /
 # nyt_technology / nyt_business / nyt_science /
 # nyt_climate / nyt_health / nyt_education /
 # nyt_politics / nyt_us / nyt_europe / nyt_upshot /
@@ -1547,39 +1554,39 @@ _CBS_WORLD_FRANCE24_ASIA_CNBC_TOP_PRIMARY = {
 # nyt_realestate. Locked official nyt_* feed pattern
 # https://rss.nytimes.com/services/xml/rss/nyt/Magazine.xml
 # (channel title "NYT > The New York Times Magazine").
-# Live-diff winner on all three primaries: HTTP 200 /
-# ≥10 nonempty items — do not fall through to unused
-# backups guardian_opinion / france24_middle_east /
-# nyt_personaltech (probed only; not registered).
-# cbs_world / france24_asia / cnbc_top stay registered
-# (batch39 closed; cbs_world observe kept).
-# nyt_realestate / guardian_lifeandstyle /
-# bbc_entertainment stay registered (batch38 closed).
-# guardian_media stays unregistered (hard-swapped in
-# batch39). npr_business stays unregistered
-# (hard-swapped in batch37). al_monitor stays
-# unregistered (replaced in batch29; not a live CAP
-# slot; not registered as a backup). independent_world
-# stays unregistered (replaced in batch28; 429).
-# nikkei / indian_express stay unregistered (empty desc
-# — product skipped). nikkei_asia stays unregistered
-# (title+link only). nyt_world_asia stays unregistered
-# (replaced in batch20). sky_tech / restofworld /
-# ars_science / thehill / politico / abc_intl /
-# sunday_review / nyt_sports stay unregistered (not
-# this batch; politico is X-handle only).
+# Live-diff winner: guardian_opinion HTTP 200 / ≥10
+# nonempty items — do not fall through to unused
+# backups france24_middle_east / nyt_personaltech
+# (probed only; not registered). cbs_world /
+# france24_asia / cnbc_top stay registered (batch39
+# closed; cbs_world observe kept). nyt_realestate /
+# guardian_lifeandstyle / bbc_entertainment stay
+# registered (batch38 closed). guardian_media stays
+# unregistered (hard-swapped in batch39). npr_business
+# stays unregistered (hard-swapped in batch37).
+# al_monitor stays unregistered (replaced in batch29;
+# not a live CAP slot; not registered as a backup).
+# independent_world stays unregistered (replaced in
+# batch28; 429). nikkei / indian_express stay
+# unregistered (empty desc — product skipped).
+# nikkei_asia stays unregistered (title+link only).
+# nyt_world_asia stays unregistered (replaced in
+# batch20). sky_tech / restofworld / ars_science /
+# thehill / politico / abc_intl / sunday_review /
+# nyt_sports stay unregistered (not this batch;
+# politico is X-handle only).
 # NEWS_SOURCE_CAP display stays 6 — no CAP code change.
 # No X this batch. No LLM this batch.
-_BLOOMBERG_MARKETS_GUARDIAN_ECONOMICS_NYT_MAGAZINE_PRIMARY = {
+_BLOOMBERG_MARKETS_GUARDIAN_OPINION_NYT_MAGAZINE_PRIMARY = {
     "bloomberg_markets": {
         "name": "Bloomberg Markets",
         "feed_url": "https://feeds.bloomberg.com/markets/news.rss",
         "category": "财经",
     },
-    "guardian_economics": {
-        "name": "Guardian Economics",
-        "feed_url": "https://www.theguardian.com/business/economics/rss",
-        "category": "财经",
+    "guardian_opinion": {
+        "name": "Guardian Opinion",
+        "feed_url": "https://www.theguardian.com/commentisfree/rss",
+        "category": "综合",
     },
     "nyt_magazine": {
         "name": "NYT Magazine",
@@ -5455,12 +5462,14 @@ def test_nyt_travel_guardian_fashion_nyt_economy_primaries_registered():
     # unregistered. npr_business was hard-swapped out — do not
     # keep live and do not register as a backup. cnbc_top is
     # now registered (batch39 hard-swap of guardian_media).
-    # bloomberg_markets / guardian_economics / nyt_magazine
-    # are batch40. Unused batch40 backups guardian_opinion /
-    # france24_middle_east / nyt_personaltech stay
-    # unregistered. nyt_realestate / guardian_lifeandstyle /
-    # bbc_entertainment are batch38. cbs_world /
-    # france24_asia / cnbc_top are batch39.
+    # bloomberg_markets / guardian_opinion / nyt_magazine
+    # are batch40 (guardian_opinion hard-swapped in for
+    # guardian_economics after public insert=1 <5). Unused
+    # batch40 backups france24_middle_east /
+    # nyt_personaltech stay unregistered. nyt_realestate /
+    # guardian_lifeandstyle / bbc_entertainment are
+    # batch38. cbs_world / france24_asia / cnbc_top are
+    # batch39.
     # al_monitor stays unregistered (replaced in batch29;
     # not a live CAP slot). independent_world is the
     # daily-fetch RED slot — do not keep live. nikkei /
@@ -5470,7 +5479,7 @@ def test_nyt_travel_guardian_fashion_nyt_economy_primaries_registered():
     # are not this batch (politico is X-handle only).
     assert "npr_business" not in by_id
     assert "guardian_media" not in by_id
-    assert "guardian_opinion" not in by_id
+    assert "guardian_economics" not in by_id
     assert "france24_middle_east" not in by_id
     assert "nyt_personaltech" not in by_id
     assert "independent_world" not in by_id
@@ -5721,10 +5730,12 @@ def test_nyt_realestate_guardian_lifeandstyle_bbc_entertainment_primaries_regist
     # not-this-batch feeds stay unregistered. cbs_world /
     # france24_asia / cnbc_top are batch39 (cnbc_top
     # hard-swapped in for guardian_media after public
-    # insert=4 <5). bloomberg_markets / guardian_economics /
-    # nyt_magazine are batch40. Unused batch40 backups
-    # guardian_opinion / france24_middle_east /
-    # nyt_personaltech stay unregistered. npr_business was
+    # insert=4 <5). bloomberg_markets / guardian_opinion /
+    # nyt_magazine are batch40 (guardian_opinion
+    # hard-swapped in for guardian_economics after public
+    # insert=1 <5). Unused batch40 backups
+    # france24_middle_east / nyt_personaltech stay
+    # unregistered. npr_business was
     # hard-swapped out in batch37 — do not keep live and do
     # not register as a backup. al_monitor stays
     # unregistered (replaced in batch29; not a live CAP
@@ -5736,7 +5747,7 @@ def test_nyt_realestate_guardian_lifeandstyle_bbc_entertainment_primaries_regist
     # (politico is X-handle only).
     assert "npr_business" not in by_id
     assert "guardian_media" not in by_id
-    assert "guardian_opinion" not in by_id
+    assert "guardian_economics" not in by_id
     assert "france24_middle_east" not in by_id
     assert "nyt_personaltech" not in by_id
     assert "independent_world" not in by_id
@@ -5862,10 +5873,13 @@ def test_cbs_world_france24_asia_cnbc_top_primaries_registered():
     # not-this-batch feeds stay unregistered. guardian_media was
     # hard-swapped out this batch (public insert=4 <5) — do not
     # keep live and do not register as a backup. bloomberg_markets
-    # / guardian_economics / nyt_magazine are batch40 (those
-    # unused batch39 backups are now registered there). Unused
-    # batch40 backups guardian_opinion / france24_middle_east /
-    # nyt_personaltech stay unregistered. npr_business was
+    # / guardian_opinion / nyt_magazine are batch40 (those
+    # unused batch39 backups bloomberg_markets /
+    # guardian_economics were registered there; guardian_economics
+    # was then hard-swapped for guardian_opinion after public
+    # insert=1 <5). Unused batch40 backups
+    # france24_middle_east / nyt_personaltech stay
+    # unregistered. npr_business was
     # hard-swapped out in batch37 — do not keep live and
     # do not register as a backup. al_monitor stays
     # unregistered (replaced in batch29; not a live CAP slot).
@@ -5876,7 +5890,7 @@ def test_cbs_world_france24_asia_cnbc_top_primaries_registered():
     # nyt_sports are not this batch (politico is X-handle only).
     assert "npr_business" not in by_id
     assert "guardian_media" not in by_id
-    assert "guardian_opinion" not in by_id
+    assert "guardian_economics" not in by_id
     assert "france24_middle_east" not in by_id
     assert "nyt_personaltech" not in by_id
     assert "independent_world" not in by_id
@@ -5944,15 +5958,15 @@ def test_cbs_world_france24_asia_cnbc_top_feeds_live_http_200():
         )
 
 
-def test_bloomberg_markets_guardian_economics_nyt_magazine_primaries_registered():
+def test_bloomberg_markets_guardian_opinion_nyt_magazine_primaries_registered():
     by_id = {s.id: s for s in SOURCES}
     assert "bloomberg_markets" in by_id
     assert by_id["bloomberg_markets"].feed_url == (
         "https://feeds.bloomberg.com/markets/news.rss"
     )
-    assert "guardian_economics" in by_id
-    assert by_id["guardian_economics"].feed_url == (
-        "https://www.theguardian.com/business/economics/rss"
+    assert "guardian_opinion" in by_id
+    assert by_id["guardian_opinion"].feed_url == (
+        "https://www.theguardian.com/commentisfree/rss"
     )
     assert "nyt_magazine" in by_id
     assert by_id["nyt_magazine"].feed_url == (
@@ -6025,39 +6039,40 @@ def test_bloomberg_markets_guardian_economics_nyt_magazine_primaries_registered(
     assert by_id["bloomberg_markets"].feed_url != (
         "https://www.bloomberg.com/feeds/markets/news.rss"
     )
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_world"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_technology"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_us"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_environment"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_business"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_science"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_australia"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_americas"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_uk"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_europe"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_global_dev"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_law"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_society"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_cities"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_world_africa"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_politics"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_middle_east"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_sport"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_film"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_music"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_stage"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_books"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_tv"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_fashion"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["guardian_lifeandstyle"].feed_url
-    assert by_id["guardian_economics"].feed_url != (
-        "https://www.theguardian.com/uk/business/economics/rss"
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_technology"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_us"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_environment"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_business"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_australia"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_americas"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_uk"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_europe"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_global_dev"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_law"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_society"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_cities"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_world_africa"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_politics"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_middle_east"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_sport"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_film"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_music"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_stage"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_books"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_tv"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_fashion"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["guardian_lifeandstyle"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["nyt_opinion"].feed_url
+    assert by_id["guardian_opinion"].feed_url != (
+        "https://www.theguardian.com/business/economics/rss"
     )
-    assert by_id["guardian_economics"].feed_url != (
-        "https://www.theguardian.com/economics/rss"
+    assert by_id["guardian_opinion"].feed_url != (
+        "https://www.theguardian.com/uk/commentisfree/rss"
     )
-    assert by_id["guardian_economics"].feed_url != (
-        "https://www.theguardian.com/commentisfree/rss"
+    assert by_id["guardian_opinion"].feed_url != (
+        "https://www.theguardian.com/opinion/rss"
     )
     assert by_id["nyt_magazine"].feed_url != by_id["nyt_world"].feed_url
     assert by_id["nyt_magazine"].feed_url != by_id["nyt_technology"].feed_url
@@ -6086,25 +6101,28 @@ def test_bloomberg_markets_guardian_economics_nyt_magazine_primaries_registered(
         "https://www.nytimes.com/svc/collections/v1/publish/"
         "www.nytimes.com/section/magazine/rss.xml"
     )
-    assert by_id["bloomberg_markets"].feed_url != by_id["guardian_economics"].feed_url
+    assert by_id["bloomberg_markets"].feed_url != by_id["guardian_opinion"].feed_url
     assert by_id["bloomberg_markets"].feed_url != by_id["nyt_magazine"].feed_url
-    assert by_id["guardian_economics"].feed_url != by_id["nyt_magazine"].feed_url
+    assert by_id["guardian_opinion"].feed_url != by_id["nyt_magazine"].feed_url
     # Unused backups / replaced / title+link-only / empty-desc /
-    # not-this-batch feeds stay unregistered. Live-diff backups
-    # guardian_opinion / france24_middle_east / nyt_personaltech
-    # stay unregistered (all three primaries won). guardian_media
-    # was hard-swapped out in batch39 — do not keep live and do
-    # not register as a backup. npr_business was hard-swapped
-    # out in batch37. al_monitor stays unregistered (replaced
-    # in batch29; not a live CAP slot). independent_world is
-    # the daily-fetch RED slot — do not keep live. nikkei /
+    # not-this-batch feeds stay unregistered. guardian_economics
+    # was hard-swapped out this batch (public insert=1 <5) —
+    # do not keep live and do not register as a backup.
+    # Live-diff backups france24_middle_east /
+    # nyt_personaltech stay unregistered (guardian_opinion
+    # already won). guardian_media was hard-swapped out in
+    # batch39 — do not keep live and do not register as a
+    # backup. npr_business was hard-swapped out in batch37.
+    # al_monitor stays unregistered (replaced in batch29;
+    # not a live CAP slot). independent_world is the
+    # daily-fetch RED slot — do not keep live. nikkei /
     # indian_express are empty-desc — product skipped.
     # sky_tech / restofworld / ars_science / thehill /
     # politico / abc_intl / sunday_review / nyt_sports are
     # not this batch (politico is X-handle only).
     assert "npr_business" not in by_id
     assert "guardian_media" not in by_id
-    assert "guardian_opinion" not in by_id
+    assert "guardian_economics" not in by_id
     assert "france24_middle_east" not in by_id
     assert "nyt_personaltech" not in by_id
     assert "independent_world" not in by_id
@@ -6122,7 +6140,7 @@ def test_bloomberg_markets_guardian_economics_nyt_magazine_primaries_registered(
     assert "sunday_review" not in by_id
     assert "nyt_sports" not in by_id
     for source_id, expected in (
-        _BLOOMBERG_MARKETS_GUARDIAN_ECONOMICS_NYT_MAGAZINE_PRIMARY.items()
+        _BLOOMBERG_MARKETS_GUARDIAN_OPINION_NYT_MAGAZINE_PRIMARY.items()
     ):
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
@@ -6132,10 +6150,10 @@ def test_bloomberg_markets_guardian_economics_nyt_magazine_primaries_registered(
         assert source.category == expected["category"]
 
 
-def test_bloomberg_markets_guardian_economics_nyt_magazine_feeds_live_http_200():
+def test_bloomberg_markets_guardian_opinion_nyt_magazine_feeds_live_http_200():
     """Hit the three batch40 feeds with the same headers fetch_source sends (not stubs)."""
     by_id = {s.id: s for s in SOURCES}
-    for source_id in _BLOOMBERG_MARKETS_GUARDIAN_ECONOMICS_NYT_MAGAZINE_PRIMARY:
+    for source_id in _BLOOMBERG_MARKETS_GUARDIAN_OPINION_NYT_MAGAZINE_PRIMARY:
         source = by_id[source_id]
         request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
         try:
@@ -6153,7 +6171,7 @@ def test_bloomberg_markets_guardian_economics_nyt_magazine_feeds_live_http_200()
         count = len(items)
         assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
         # Required: parseable title / url / published on each item.
-        # RSS 2.0 (bloomberg_markets / guardian_economics /
+        # RSS 2.0 (bloomberg_markets / guardian_opinion /
         # nyt_magazine) uses the un-namespaced element text.
         for i, item in enumerate(items):
             title = _item_title(item)
@@ -6216,7 +6234,7 @@ if __name__ == "__main__":
     test_nyt_travel_guardian_fashion_nyt_economy_primaries_registered()
     test_nyt_realestate_guardian_lifeandstyle_bbc_entertainment_primaries_registered()
     test_cbs_world_france24_asia_cnbc_top_primaries_registered()
-    test_bloomberg_markets_guardian_economics_nyt_magazine_primaries_registered()
+    test_bloomberg_markets_guardian_opinion_nyt_magazine_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -6255,5 +6273,5 @@ if __name__ == "__main__":
     test_nyt_travel_guardian_fashion_nyt_economy_feeds_live_http_200()
     test_nyt_realestate_guardian_lifeandstyle_bbc_entertainment_feeds_live_http_200()
     test_cbs_world_france24_asia_cnbc_top_feeds_live_http_200()
-    test_bloomberg_markets_guardian_economics_nyt_magazine_feeds_live_http_200()
+    test_bloomberg_markets_guardian_opinion_nyt_magazine_feeds_live_http_200()
     print("✓ source registry tests PASSED")

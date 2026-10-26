@@ -132,7 +132,7 @@
 | `france24_asia` | France 24 Asia-Pacific | https://www.france24.com/en/asia-pacific/rss | primary |
 | `cnbc_top` | CNBC Top News | https://www.cnbc.com/id/100003114/device/rss/rss.html | primary |
 | `bloomberg_markets` | Bloomberg Markets | https://feeds.bloomberg.com/markets/news.rss | primary |
-| `guardian_economics` | Guardian Economics | https://www.theguardian.com/business/economics/rss | primary |
+| `guardian_opinion` | Guardian Opinion | https://www.theguardian.com/commentisfree/rss | primary |
 | `nyt_magazine` | NYT Magazine | https://rss.nytimes.com/services/xml/rss/nyt/Magazine.xml | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
