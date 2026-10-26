@@ -2,7 +2,7 @@
 
 每天从稳定 RSS 抓取中文新闻，按 URL 去重后永久存档，schema 对 AI 友好。
 
-## P0 源（185 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
+## P0 源（188 主力含国际 / 亚太 / 中国 / EV / 硬科技 / 财经 / 科学 + 1 官方对照）
 
 | id | 源 | Feed | 角色 |
 |---|---|---|---|
@@ -191,6 +191,9 @@
 | `aeon` | Aeon | https://aeon.co/feed.rss | primary |
 | `noema` | Noema Magazine | https://www.noemamag.com/feed/ | primary |
 | `marketwatch` | MarketWatch | https://feeds.marketwatch.com/marketwatch/topstories | primary |
+| `aspi_strategist` | ASPI The Strategist | https://www.aspistrategist.org.au/feed/ | primary |
+| `nautilus` | Nautilus Magazine | https://nautil.us/feed/ | primary |
+| `hyperallergic` | Hyperallergic | https://hyperallergic.com/feed/ | primary |
 | `people_finance` | 人民网·财经 | https://www.people.com.cn/rss/finance.xml | control |
 
 ## Schema

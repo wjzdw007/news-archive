@@ -1311,6 +1311,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="aspi_strategist",
+        name="ASPI The Strategist",
+        feed_url="https://www.aspistrategist.org.au/feed/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="nautilus",
+        name="Nautilus Magazine",
+        feed_url="https://nautil.us/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="hyperallergic",
+        name="Hyperallergic",
+        feed_url="https://hyperallergic.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

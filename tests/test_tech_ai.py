@@ -131,6 +131,14 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "aeon" not in TECH_AI_SOURCE_WHITELIST
     assert "noema" not in TECH_AI_SOURCE_WHITELIST
     assert "marketwatch" not in TECH_AI_SOURCE_WHITELIST
+    # batch60 RSS primaries stay off the tech/AI whitelist.
+    # aspi_strategist lands on the existing 国际 category path.
+    # nautilus / hyperallergic land on the existing 综合
+    # category path and are not added to
+    # TECH_AI_KEYWORD_SOURCES.
+    assert "aspi_strategist" not in TECH_AI_SOURCE_WHITELIST
+    assert "nautilus" not in TECH_AI_SOURCE_WHITELIST
+    assert "hyperallergic" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
