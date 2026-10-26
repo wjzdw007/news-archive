@@ -3034,6 +3034,8 @@ _PHYS_ORG_GLOBE_MAIL_NEWATLAS_PRIMARY = {
 # unregistered (product lock). NEWS_SOURCE_CAP display
 # stays 6 — no CAP code change. No X this batch. No
 # LLM this batch. Not tech/AI whitelist.
+# mongabay / daily_maverick / oilprice are
+# batch56 (all three primaries won).
 _POLITICO_EUROPE_BREAKING_DEFENSE_CARBON_BRIEF_PRIMARY = {
     "politico_europe": {
         "name": "Politico Europe",
@@ -3052,7 +3054,123 @@ _POLITICO_EUROPE_BREAKING_DEFENSE_CARBON_BRIEF_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 173
+# CEO-approved Mongabay / Daily Maverick / Oilprice.com RSS
+# primaries (batch56). These three are the new adds after
+# #113 (politico_europe / breaking_defense / carbon_brief)
+# on tip 1425400. Do not re-touch that #113 winner. Do
+# not touch phys_org / globe_mail / newatlas (#112) /
+# the_register / foreign_affairs / allafrica (#111) /
+# zdnet (#110) / digiday_media (#107). ars_science stays
+# hung. nyt_media / guardian_media stay hung.
+# mongabay is the official Mongabay conservation-news
+# WordPress site-wide feed (no prior mongabay /
+# news_mongabay id). Locked official
+# https://news.mongabay.com/feed/ (channel "Conservation
+# news"). /feed (no slash) remaps to /feed/. Apex
+# mongabay.com/feed/ and www.mongabay.com/feed/ are HTTP
+# 200 / 0 items (channel "Environmental News" — empty
+# legacy apex, not the news lock). /rss is httpx 403
+# (urllib remaps to /feed/). /rss.xml is httpx 403 /
+# urllib 404. Topic list /list/indonesia/feed/ is HTML
+# 200 / 0 items. Live-diff winner: HTTP 200 / 32 nonempty
+# / 32 insertable (ingest cap 30; httpx fetch_source +
+# urllib). Product lock ≥10 nonempty — keep. Distinct
+# from live guardian_environment / nyt_climate /
+# carbon_brief / bbc_science / nyt_science /
+# canary_media / phys_org. 0 article URL overlap with
+# those. Not added to the tech/AI whitelist.
+# daily_maverick is the official Daily Maverick latest-
+# news RSS (no prior daily_maverick / dailymaverick id).
+# Locked official https://www.dailymaverick.co.za/dmrss/
+# (channel "Daily Maverick - Latest News"). Apex
+# dailymaverick.co.za/dmrss/ remaps to www. /dmrss (no
+# slash) and /rss remap to /dmrss/. WordPress /feed/ is
+# HTTP 403. /rss.xml is 404 HTML. Live-diff winner: HTTP
+# 200 / 53 items / 48 nonempty / 48 insertable (5 Watch-
+# video items are empty-desc #43 skip; ingest cap 30;
+# httpx fetch_source + urllib). Product lock ≥10
+# nonempty — keep (48 is not the 5–9 observe band).
+# Distinct from live bbc_africa /
+# guardian_world_africa / allafrica / france24_africa /
+# nyt_africa / guardian_world. 0 article URL overlap
+# with those.
+# oilprice is the official Oilprice.com main RSS (no
+# prior oilprice / oil_price id). Locked official
+# https://oilprice.com/rss/main (channel "Oilprice.com";
+# documented Main RSS). www.oilprice.com/rss/main remaps
+# to apex. /rss/main/ (trailing slash) is the same 15-
+# item body. /rss.xml is HTTP 200 / 15 (same channel —
+# lock documented /rss/main). /feed/ is 404 HTML.
+# /rss/energy is a denser "Latest News Feed" section
+# (20 items) — not the official main lock. Live-diff
+# winner: HTTP 200 / 15 nonempty / 15 insertable (httpx
+# fetch_source + urllib). Product lock ≥10 nonempty —
+# keep. Distinct from live bloomberg_markets / cnbc_top
+# / nyt_economy / guardian_money / dw_business /
+# bbc_business / npr_business / canary_media. 0 article
+# URL overlap with those. Not added to the tech/AI
+# whitelist.
+# Product-locked backups (use only if a primary fails
+# live-diff / fetch / URL-dedup): aspi_strategist
+# official https://www.aspistrategist.org.au/feed/ is
+# HTTP 200 / 100 nonempty / 100 insertable (channel
+# "The Strategist"; /rssfeed/ is a 10-item subset —
+# probed only; unused because all three primaries won).
+# lowy_interpreter official
+# https://www.lowyinstitute.org/the-interpreter/rss.xml
+# is HTTP 200 / 50 nonempty / 50 insertable (channel
+# "The Interpreter"; /the-interpreter/feed remaps to
+# rss.xml; apex /rss.xml is HTML 200 / 0 items;
+# lowyinterpreter.org/feed/ handshake timeout) — probed
+# only; unused. hyperallergic official
+# https://hyperallergic.com/feed/ remaps to /rss/ and
+# is HTTP 200 / 15 nonempty / 15 insertable (channel
+# "Hyperallergic"; www and /feed no-slash alias the
+# same body) — probed only; unused.
+# Do NOT use as backups (product skip): indian_express
+# (insertable=0 empty-desc), rest_of_world (httpx 403
+# JS challenge), al_monitor (flaky 403). Do not invent
+# other backups. politico_europe / breaking_defense /
+# carbon_brief stay registered (batch55 closed).
+# phys_org / globe_mail / newatlas stay registered
+# (batch54 closed). the_register / foreign_affairs /
+# allafrica stay registered (batch53 closed).
+# bbc_australia / bloomberg_technology / zdnet stay
+# registered (batch52 after #110). ars_science stays
+# hung. the_diplomat / stat_news / ieee_spectrum stay
+# registered (batch51 closed). war_on_rocks /
+# canary_media / space_com stay registered (batch50
+# closed). foreign_policy / ft_world / abc_australia
+# stay registered (batch49 closed). politico_politics /
+# dw_business / france24_culture stay registered
+# (batch48 closed). atlantic / smh_national /
+# guardian_education stay registered (batch47 closed).
+# digiday_media stays registered (#107). nyt_media /
+# guardian_media stay hung. guardian_games stays
+# unregistered (product: games thin / 不进主源).
+# sunday_review / cnbc (403 known) / ap stay
+# unregistered (product lock). NEWS_SOURCE_CAP display
+# stays 6 — no CAP code change. No X this batch. No
+# LLM this batch. Not tech/AI whitelist.
+_MONGABAY_DAILY_MAVERICK_OILPRICE_PRIMARY = {
+    "mongabay": {
+        "name": "Mongabay",
+        "feed_url": "https://news.mongabay.com/feed/",
+        "category": "科学",
+    },
+    "daily_maverick": {
+        "name": "Daily Maverick",
+        "feed_url": "https://www.dailymaverick.co.za/dmrss/",
+        "category": "国际",
+    },
+    "oilprice": {
+        "name": "Oilprice.com",
+        "feed_url": "https://oilprice.com/rss/main",
+        "category": "财经",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 176
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -10633,6 +10751,239 @@ def test_politico_europe_breaking_defense_carbon_brief_feeds_live_http_200():
         )
 
 
+def test_mongabay_daily_maverick_oilprice_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "mongabay" in by_id
+    assert by_id["mongabay"].feed_url == "https://news.mongabay.com/feed/"
+    assert "daily_maverick" in by_id
+    assert by_id["daily_maverick"].feed_url == (
+        "https://www.dailymaverick.co.za/dmrss/"
+    )
+    assert "oilprice" in by_id
+    assert by_id["oilprice"].feed_url == "https://oilprice.com/rss/main"
+    # #113 winners stay registered and unchanged.
+    # #112 winners stay registered and unchanged.
+    # #111 winners stay registered and unchanged.
+    # #110 hard-swap: zdnet live, ars_science hung.
+    # #107 hard-swap: digiday_media live, nyt_media hung.
+    # Do not touch digiday_media / zdnet / the_register /
+    # foreign_affairs / allafrica / phys_org / globe_mail /
+    # newatlas / politico_europe / breaking_defense /
+    # carbon_brief.
+    assert "politico_europe" in by_id
+    assert "breaking_defense" in by_id
+    assert "carbon_brief" in by_id
+    assert "phys_org" in by_id
+    assert "globe_mail" in by_id
+    assert "newatlas" in by_id
+    assert "the_register" in by_id
+    assert "foreign_affairs" in by_id
+    assert "allafrica" in by_id
+    assert "bbc_australia" in by_id
+    assert "bloomberg_technology" in by_id
+    assert "zdnet" in by_id
+    assert "ars_science" not in by_id
+    assert "the_diplomat" in by_id
+    assert "stat_news" in by_id
+    assert "ieee_spectrum" in by_id
+    assert "war_on_rocks" in by_id
+    assert "canary_media" in by_id
+    assert "space_com" in by_id
+    assert "foreign_policy" in by_id
+    assert "ft_world" in by_id
+    assert "abc_australia" in by_id
+    assert "politico_politics" in by_id
+    assert "dw_business" in by_id
+    assert "france24_culture" in by_id
+    assert "atlantic" in by_id
+    assert "smh_national" in by_id
+    assert "guardian_education" in by_id
+    assert "digiday_media" in by_id
+    assert "time_top" in by_id
+    assert "nyt_obituaries" in by_id
+    assert "guardian_environment" in by_id
+    assert "nyt_climate" in by_id
+    assert "bbc_science" in by_id
+    assert "nyt_science" in by_id
+    assert "bbc_africa" in by_id
+    assert "guardian_world_africa" in by_id
+    assert "france24_africa" in by_id
+    assert "nyt_africa" in by_id
+    assert "bloomberg_markets" in by_id
+    assert "cnbc_top" in by_id
+    assert "nyt_economy" in by_id
+    assert "guardian_money" in by_id
+    assert "dw_business" in by_id
+    assert "bbc_business" in by_id
+    assert "npr_business" in by_id
+    assert by_id["mongabay"].feed_url != "https://news.mongabay.com/feed"
+    assert by_id["mongabay"].feed_url != "https://mongabay.com/feed/"
+    assert by_id["mongabay"].feed_url != "https://www.mongabay.com/feed/"
+    assert by_id["mongabay"].feed_url != "https://news.mongabay.com/rss"
+    assert by_id["mongabay"].feed_url != "https://news.mongabay.com/rss.xml"
+    assert by_id["mongabay"].feed_url != (
+        "https://news.mongabay.com/list/indonesia/feed/"
+    )
+    assert by_id["mongabay"].feed_url != (
+        by_id["guardian_environment"].feed_url
+    )
+    assert by_id["mongabay"].feed_url != by_id["nyt_climate"].feed_url
+    assert by_id["mongabay"].feed_url != by_id["carbon_brief"].feed_url
+    assert by_id["mongabay"].feed_url != by_id["bbc_science"].feed_url
+    assert by_id["mongabay"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["mongabay"].feed_url != by_id["canary_media"].feed_url
+    assert by_id["mongabay"].feed_url != by_id["phys_org"].feed_url
+    assert by_id["daily_maverick"].feed_url != (
+        "https://www.dailymaverick.co.za/feed/"
+    )
+    assert by_id["daily_maverick"].feed_url != (
+        "https://dailymaverick.co.za/dmrss/"
+    )
+    assert by_id["daily_maverick"].feed_url != (
+        "https://www.dailymaverick.co.za/dmrss"
+    )
+    assert by_id["daily_maverick"].feed_url != (
+        "https://www.dailymaverick.co.za/rss"
+    )
+    assert by_id["daily_maverick"].feed_url != (
+        "https://www.dailymaverick.co.za/rss.xml"
+    )
+    assert by_id["daily_maverick"].feed_url != by_id["bbc_africa"].feed_url
+    assert by_id["daily_maverick"].feed_url != (
+        by_id["guardian_world_africa"].feed_url
+    )
+    assert by_id["daily_maverick"].feed_url != by_id["allafrica"].feed_url
+    assert by_id["daily_maverick"].feed_url != (
+        by_id["france24_africa"].feed_url
+    )
+    assert by_id["daily_maverick"].feed_url != by_id["nyt_africa"].feed_url
+    assert by_id["daily_maverick"].feed_url != by_id["guardian_world"].feed_url
+    assert by_id["oilprice"].feed_url != "https://oilprice.com/feed/"
+    assert by_id["oilprice"].feed_url != "https://oilprice.com/rss.xml"
+    assert by_id["oilprice"].feed_url != "https://www.oilprice.com/rss/main"
+    assert by_id["oilprice"].feed_url != "https://oilprice.com/rss/main/"
+    assert by_id["oilprice"].feed_url != "https://oilprice.com/rss/energy"
+    assert by_id["oilprice"].feed_url != by_id["bloomberg_markets"].feed_url
+    assert by_id["oilprice"].feed_url != by_id["cnbc_top"].feed_url
+    assert by_id["oilprice"].feed_url != by_id["nyt_economy"].feed_url
+    assert by_id["oilprice"].feed_url != by_id["guardian_money"].feed_url
+    assert by_id["oilprice"].feed_url != by_id["dw_business"].feed_url
+    assert by_id["oilprice"].feed_url != by_id["bbc_business"].feed_url
+    assert by_id["oilprice"].feed_url != by_id["npr_business"].feed_url
+    assert by_id["oilprice"].feed_url != by_id["canary_media"].feed_url
+    assert by_id["mongabay"].feed_url != by_id["daily_maverick"].feed_url
+    assert by_id["mongabay"].feed_url != by_id["oilprice"].feed_url
+    assert by_id["daily_maverick"].feed_url != by_id["oilprice"].feed_url
+    # nyt_media hung after #107 — digiday_media live.
+    # zdnet is the batch52 hard-swap lock after #110.
+    # the_register / foreign_affairs / allafrica are
+    # the batch53 locks after #111.
+    # phys_org / globe_mail / newatlas are the
+    # batch54 locks after #112.
+    # politico_europe / breaking_defense / carbon_brief
+    # are the batch55 locks after #113.
+    assert by_id["digiday_media"].feed_url == "https://digiday.com/media/feed/"
+    assert by_id["zdnet"].feed_url == "https://www.zdnet.com/feed/"
+    assert by_id["the_register"].feed_url == (
+        "https://www.theregister.com/headlines.atom"
+    )
+    assert by_id["phys_org"].feed_url == "https://phys.org/rss-feed/"
+    assert by_id["newatlas"].feed_url == "https://newatlas.com/index.rss"
+    assert by_id["politico_europe"].feed_url == "https://www.politico.eu/feed/"
+    assert by_id["breaking_defense"].feed_url == (
+        "https://breakingdefense.com/feed/"
+    )
+    assert by_id["carbon_brief"].feed_url == (
+        "https://www.carbonbrief.org/feed/"
+    )
+    assert "guardian_games" not in by_id
+    assert "thehill" not in by_id
+    assert "bbc_culture" not in by_id
+    assert "france24_europe" not in by_id
+    assert "guardian_economics" not in by_id
+    assert "nyt_theater" not in by_id
+    assert "independent_world" not in by_id
+    assert "sundayreview" not in by_id
+    assert "ap" not in by_id
+    # Unused backups stay unregistered because all three
+    # primaries won. Product-skip sources stay out.
+    assert "aspi_strategist" not in by_id
+    assert "lowy_interpreter" not in by_id
+    assert "hyperallergic" not in by_id
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "fastcompany" not in by_id
+    assert "sciencedaily" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "euractiv" not in by_id
+    assert "dawn" not in by_id
+    assert "asia_times" not in by_id
+    assert "pbs_newshour" not in by_id
+    assert "economist_intl" not in by_id
+    for source_id, expected in (
+        _MONGABAY_DAILY_MAVERICK_OILPRICE_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_mongabay_daily_maverick_oilprice_feeds_live_http_200():
+    """Hit the three batch56 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _MONGABAY_DAILY_MAVERICK_OILPRICE_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (mongabay / daily_maverick / oilprice)
+        # uses the un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # mongabay / oilprice were 100% nonempty.
+        # daily_maverick has 5 empty-desc Watch-video
+        # items; 48 nonempty still ≥10 KEEP.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        if source_id == "daily_maverick":
+            assert nonempty >= 10, (
+                f"{source_id} thin nonempty={nonempty}/{len(items)}"
+            )
+        else:
+            assert nonempty == len(items), (
+                f"{source_id} empty description: "
+                f"{len(items) - nonempty}/{len(items)}"
+            )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -10691,6 +11042,7 @@ if __name__ == "__main__":
     test_the_register_foreign_affairs_allafrica_primaries_registered()
     test_phys_org_globe_mail_newatlas_primaries_registered()
     test_politico_europe_breaking_defense_carbon_brief_primaries_registered()
+    test_mongabay_daily_maverick_oilprice_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -10745,4 +11097,5 @@ if __name__ == "__main__":
     test_the_register_foreign_affairs_allafrica_feeds_live_http_200()
     test_phys_org_globe_mail_newatlas_feeds_live_http_200()
     test_politico_europe_breaking_defense_carbon_brief_feeds_live_http_200()
+    test_mongabay_daily_maverick_oilprice_feeds_live_http_200()
     print("✓ source registry tests PASSED")

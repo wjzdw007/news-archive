@@ -1227,6 +1227,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="mongabay",
+        name="Mongabay",
+        feed_url="https://news.mongabay.com/feed/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="daily_maverick",
+        name="Daily Maverick",
+        feed_url="https://www.dailymaverick.co.za/dmrss/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="oilprice",
+        name="Oilprice.com",
+        feed_url="https://oilprice.com/rss/main",
+        category="财经",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
