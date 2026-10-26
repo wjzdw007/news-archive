@@ -1416,6 +1416,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="japan_forward",
+        name="Japan Forward",
+        feed_url="https://japan-forward.com/feed/",
+        category="国际·亚太",
+        role="primary",
+    ),
+    Source(
+        id="artforum",
+        name="Artforum",
+        feed_url="https://www.artforum.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="knowable",
+        name="Knowable Magazine",
+        feed_url="https://knowablemagazine.org/rss",
+        category="科学",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
