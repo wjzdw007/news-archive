@@ -1159,6 +1159,34 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "theregister" not in TECH_AI_SOURCE_WHITELIST
     assert "carbonbrief" not in TECH_AI_SOURCE_WHITELIST
     assert "politico" not in TECH_AI_SOURCE_WHITELIST
+    # batch95 RSS primaries stay off the tech/AI whitelist.
+    # yale360 lands on 科学 (climate /
+    # environment magazine, same as
+    # carbon_brief / mongabay / grist /
+    # climate_home) — leftover unused
+    # yale_e360 from batch59, now
+    # product-named KEEP as yale360 —
+    # and is not added to KEYWORD
+    # sources. Official /feed.xml
+    # ( /feed /rss 404).
+    # cleantechnica lands on 科技
+    # (cleantech newsroom, same as
+    # electrek-adjacent newatlas /
+    # canary_media cluster) — new id —
+    # Official /feed/ (MUST trailing
+    # slash). national_geographic has
+    # no official English RSS under
+    # httpx+RSS_HEADERS (all common
+    # paths 404 / HTML homepage / SSL
+    # fail) — slot left empty; no 备
+    # named. None of these match the
+    # wired / verge / techcrunch
+    # ALWAYS pattern.
+    assert "yale360" not in TECH_AI_SOURCE_WHITELIST
+    assert "cleantechnica" not in TECH_AI_SOURCE_WHITELIST
+    assert "national_geographic" not in TECH_AI_SOURCE_WHITELIST
+    assert "yale_e360" not in TECH_AI_SOURCE_WHITELIST
+    assert "yale_360" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
