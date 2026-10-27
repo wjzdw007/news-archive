@@ -2032,6 +2032,20 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="yale360",
+        name="Yale E360",
+        feed_url="https://e360.yale.edu/feed.xml",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="cleantechnica",
+        name="CleanTechnica",
+        feed_url="https://cleantechnica.com/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

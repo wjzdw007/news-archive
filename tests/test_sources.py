@@ -13103,7 +13103,260 @@ _HACKADAY_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 288
+# CEO-approved Yale E360 /
+# CleanTechnica RSS primaries
+# (batch95). On tip 29bc93d after
+# #160 (hackaday only; newscientist
+# CI406 skip). Product KEEP set is
+# yale360 / cleantechnica /
+# national_geographic. No 备 named
+# this batch — a live-gate fail or
+# key/feed collision leaves that
+# slot empty (do not invent a
+# replacement).
+# yale360 official
+# https://e360.yale.edu/feed.xml
+# is new under this id (earlier
+# batches probed it as unused
+# leftover yale_e360 — do not
+# register yale_e360 / yale_360
+# aliases). httpx+RSS_HEADERS
+# HTTP 200 / 100 nonempty / 30
+# insertable (ingest cap 30;
+# channel "Yale E360"). /feed
+# /feed/ /rss /rss.xml /rss/ /
+# feeds/features.rss are 404;
+# www.e360.yale.edu SSL handshake
+# fail. Do not invent Feedburner
+# (YaleEnvironment360 is the same
+# 100-item body). MUST lock
+# /feed.xml.
+# cleantechnica official
+# https://cleantechnica.com/feed/
+# is new. httpx+RSS_HEADERS HTTP
+# 200 / 45 nonempty / 30
+# insertable (ingest cap 30;
+# channel "CleanTechnica"). MUST
+# trailing slash on official
+# site-wide /feed/; live host
+# cleantechnica.com — /feed remaps
+# to /feed/; www remaps to apex
+# /feed/; /rss and /rss.xml are
+# Cloudflare 403. Do not invent
+# /feed /rss /rss.xml / category
+# feeds / Feedburner.
+# national_geographic official
+# English RSS is gone. httpx+
+# RSS_HEADERS: /rss /feed /feed/
+# /rss.xml /index.rss /section
+# rss paths are 404 HTML;
+# news.nationalgeographic.com/
+# index.rss is HTTP 200 but
+# homepage HTML (0 feed items);
+# feeds.nationalgeographic.com
+# SSL fail; homepage has no
+# application/rss or atom
+# alternate. Spanish
+# nationalgeographic.com.es is a
+# different publication — do not
+# invent as a replacement. No 备
+# named → leave slot empty.
+# Do NOT register
+# national_geographic /
+# nationalgeographic / natgeo.
+# Do NOT register yale_e360 /
+# yale_360 (id is yale360).
+# hackaday just landed via #160
+# — do not undo.
+# astronomy / skyandtelescope /
+# latimes_technology (#159) /
+# defensenews / motherboard /
+# macworld (#158) stay.
+# Product feed lock (official
+# only; no Feedburner):
+# yale360 =
+# https://e360.yale.edu/feed.xml
+# (MUST /feed.xml; do NOT invent
+# /feed /rss.xml)
+# cleantechnica =
+# https://cleantechnica.com/feed/
+# (MUST trailing slash on
+# official site-wide /feed/;
+# live host cleantechnica.com —
+# /feed remaps to /feed/. do NOT
+# invent /feed /rss /rss.xml /
+# category /feed/ / Feedburner)
+# Active candidate set is these
+# 3 KEEP ids (product named no
+# backups). CAP=6 sources max in
+# the active set.
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change.
+# Do not restore atlantic_council.
+# Do not restore the_nation. Do not
+# restore independent. Do not restore
+# hrw. Do not restore euractiv. Do
+# not restore dawn / longreads. Do
+# not restore times_of_israel. Do not
+# restore techdirt. Do not restore
+# engadget. Do not restore
+# digital_trends. Do not restore
+# the_cut. Do not restore
+# bleepingcomputer. Do not restore
+# gizmodo (CI 403 after #147). Do not
+# restore the_baffler (Cloudflare 403
+# after #149). Do not restore
+# new_statesman (Varnish 403 leftover).
+# Do not restore guernica (product
+# skip). Do not restore
+# nationalinterest (CF 403 leftover).
+# Do not restore flightglobal
+# (CI/httpx RSS 403 after #156).
+# Do not restore newscientist
+# (CI httpx+RSS_HEADERS 406/empty).
+# Do not probe / register
+# product-skip: bangkok_post /
+# indian_express / rest_of_world /
+# al_monitor / hkfp / biographic /
+# asiatimes / dawn / longreads /
+# hrw / independent / euractiv /
+# atlantic_council / the_nation /
+# times_of_israel / the_cut /
+# techdirt / engadget /
+# digital_trends / bleepingcomputer /
+# gizmodo / the_baffler /
+# new_statesman / guernica /
+# nationalinterest / flightglobal /
+# newscientist / qz3.
+# qz3 勿挂. digiday0观察 — do not
+# add a second digiday. Do not
+# add a second fastcompany
+# (already registered as
+# fast_company).
+# Skip already-registered
+# collisions: carbonbrief
+# (carbon_brief already live) /
+# politico (politico_politics /
+# politico_europe already live) /
+# the_atlantic (atlantic) /
+# motherjones (mother_jones) /
+# the_intercept (intercept) /
+# theregister (the_register) /
+# hackaday / astronomy /
+# skyandtelescope /
+# latimes_technology /
+# electrek / insideevs /
+# canary_media / mongabay /
+# grist / climate_home.
+# yale360 is the official
+# magazine RSS (no prior
+# yale360 id; yale_e360 /
+# yale_360 stay unregistered).
+# Product lock: MUST lock
+# https://e360.yale.edu/feed.xml
+# (channel "Yale E360") —
+# /feed.xml required. Live-diff
+# winner: HTTP 200 / 100
+# nonempty / 30 insertable
+# (httpx fetch_source +
+# RSS_HEADERS; ingest cap 30).
+# ≥10 KEEP. Distinct from live
+# carbon_brief / mongabay /
+# grist / climate_home /
+# canary_media /
+# guardian_environment /
+# nyt_climate / popular_science /
+# scientific_american. 0 article
+# URL overlap (e360.yale.edu
+# host). Lands on the existing
+# 科学 category path (climate /
+# environment magazine, same as
+# carbon_brief / mongabay /
+# grist). Not added to the
+# tech/AI whitelist (later-batch
+# sources stay off the frozen
+# ALWAYS set).
+# cleantechnica is the official
+# site-wide RSS (no prior
+# cleantechnica /
+# clean_technica /
+# cleantechnica_com id).
+# Product lock: MUST lock
+# https://cleantechnica.com/feed/
+# (channel "CleanTechnica") —
+# trailing slash required; live
+# host cleantechnica.com (/feed
+# remaps here). Never invent
+# Feedburner or category feeds.
+# Live-diff winner: HTTP 200 /
+# 45 nonempty / 30 insertable
+# (httpx fetch_source +
+# RSS_HEADERS; ingest cap 30).
+# ≥10 KEEP. Distinct from live
+# electrek / insideevs /
+# canary_media / newatlas /
+# verge_transport /
+# nyt_automobiles / hackaday /
+# carbon_brief. 0 article URL
+# overlap (cleantechnica.com
+# host). Lands on the existing
+# 科技 category path (cleantech
+# newsroom, same as newatlas).
+# Not added to the tech/AI
+# whitelist.
+# national_geographic stays
+# unregistered (no official
+# English RSS under
+# httpx+RSS_HEADERS; no 备).
+# hackaday / astronomy /
+# skyandtelescope /
+# latimes_technology stay
+# registered (batch94 / batch93
+# KEEP).
+# Do NOT use as backups
+# (product skip): bangkok_post
+# / indian_express /
+# rest_of_world / al_monitor /
+# hkfp / biographic /
+# asiatimes / dawn /
+# longreads / hrw /
+# independent (429) /
+# euractiv (301→rapporteur
+# FAIL) / atlantic_council
+# (403) / the_nation (empty
+# feed) / times_of_israel
+# (Cloudflare 403) / the_cut
+# / techdirt / engadget /
+# digital_trends /
+# bleepingcomputer / gizmodo /
+# the_baffler / new_statesman
+# / guernica / nationalinterest
+# / flightglobal /
+# newscientist (CI
+# httpx+RSS_HEADERS 406/empty).
+# qz3 勿挂. digiday0观察 — do not
+# add a second digiday.
+# sunday_review / cnbc (403
+# known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_YALE360_CLEANTECHNICA_PRIMARY = {
+    "yale360": {
+        "name": "Yale E360",
+        "feed_url": "https://e360.yale.edu/feed.xml",
+        "category": "科学",
+    },
+    "cleantechnica": {
+        "name": "CleanTechnica",
+        "feed_url": "https://cleantechnica.com/feed/",
+        "category": "科技",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 290
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -36492,6 +36745,209 @@ def test_hackaday_feed_live_httpx_rss_headers():
         )
 
 
+def test_yale360_cleantechnica_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "yale360" in by_id
+    assert by_id["yale360"].feed_url == "https://e360.yale.edu/feed.xml"
+    assert by_id["yale360"].feed_url != "https://e360.yale.edu/feed"
+    assert by_id["yale360"].feed_url != "https://e360.yale.edu/feed/"
+    assert by_id["yale360"].feed_url != "https://e360.yale.edu/rss"
+    assert by_id["yale360"].feed_url != "https://e360.yale.edu/rss.xml"
+    assert by_id["yale360"].feed_url != "https://e360.yale.edu/rss/"
+    assert by_id["yale360"].feed_url != (
+        "https://e360.yale.edu/feeds/features.rss"
+    )
+    assert by_id["yale360"].feed_url != (
+        "https://feeds.feedburner.com/YaleEnvironment360"
+    )
+    assert "cleantechnica" in by_id
+    assert by_id["cleantechnica"].feed_url == (
+        "https://cleantechnica.com/feed/"
+    )
+    assert by_id["cleantechnica"].feed_url != (
+        "https://cleantechnica.com/feed"
+    )
+    assert by_id["cleantechnica"].feed_url != (
+        "https://www.cleantechnica.com/feed/"
+    )
+    assert by_id["cleantechnica"].feed_url != "https://cleantechnica.com/rss"
+    assert by_id["cleantechnica"].feed_url != (
+        "https://cleantechnica.com/rss.xml"
+    )
+    # #160 / batch94 winner stays registered and unchanged.
+    # #159 / batch93 winners stay registered and unchanged.
+    # #158 / batch92 winners stay registered and unchanged.
+    # Do not touch hackaday / astronomy /
+    # skyandtelescope /
+    # latimes_technology /
+    # defensenews / motherboard /
+    # macworld.
+    assert "hackaday" in by_id
+    assert "astronomy" in by_id
+    assert "skyandtelescope" in by_id
+    assert "latimes_technology" in by_id
+    assert "defensenews" in by_id
+    assert "motherboard" in by_id
+    assert "macworld" in by_id
+    # Feed locks + uniqueness vs live
+    # climate / cleantech stack.
+    assert by_id["yale360"].feed_url != by_id["carbon_brief"].feed_url
+    assert by_id["yale360"].feed_url != by_id["mongabay"].feed_url
+    assert by_id["yale360"].feed_url != by_id["grist"].feed_url
+    assert by_id["yale360"].feed_url != by_id["climate_home"].feed_url
+    assert by_id["yale360"].feed_url != by_id["canary_media"].feed_url
+    assert by_id["yale360"].feed_url != by_id["guardian_environment"].feed_url
+    assert by_id["yale360"].feed_url != by_id["nyt_climate"].feed_url
+    assert by_id["yale360"].feed_url != by_id["popular_science"].feed_url
+    assert by_id["yale360"].feed_url != by_id["scientific_american"].feed_url
+    assert by_id["cleantechnica"].feed_url != by_id["electrek"].feed_url
+    assert by_id["cleantechnica"].feed_url != by_id["insideevs"].feed_url
+    assert by_id["cleantechnica"].feed_url != by_id["canary_media"].feed_url
+    assert by_id["cleantechnica"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["cleantechnica"].feed_url != by_id["verge_transport"].feed_url
+    assert by_id["cleantechnica"].feed_url != by_id["nyt_automobiles"].feed_url
+    assert by_id["cleantechnica"].feed_url != by_id["hackaday"].feed_url
+    assert by_id["cleantechnica"].feed_url != by_id["carbon_brief"].feed_url
+    assert by_id["cleantechnica"].feed_url != by_id["yale360"].feed_url
+    # national_geographic live-gate
+    # FAIL (no official English RSS
+    # under httpx+RSS_HEADERS). No 备
+    # named — leave slot empty. Do
+    # not invent .es / kids / org /
+    # Feedburner replacement.
+    assert "national_geographic" not in by_id
+    assert "nationalgeographic" not in by_id
+    assert "natgeo" not in by_id
+    assert "national_geographic_com" not in by_id
+    # Product-named id is yale360;
+    # earlier leftover aliases stay
+    # unregistered.
+    assert "yale_e360" not in by_id
+    assert "yale_360" not in by_id
+    assert "yale_environment_360" not in by_id
+    assert "e360" not in by_id
+    assert "clean_technica" not in by_id
+    assert "cleantechnica_com" not in by_id
+    assert "clean_tech" not in by_id
+    assert "carbonbrief" not in by_id
+    assert "carbon_brief" in by_id
+    assert "politico" not in by_id
+    assert "politico_politics" in by_id
+    assert "politico_europe" in by_id
+    assert "the_atlantic" not in by_id
+    assert "motherjones" not in by_id
+    assert "the_intercept" not in by_id
+    assert "theregister" not in by_id
+    assert "atlantic" in by_id
+    assert "mother_jones" in by_id
+    assert "intercept" in by_id
+    assert "the_register" in by_id
+    assert "newscientist" not in by_id
+    assert "qz3" not in by_id
+    assert "qz" not in by_id
+    assert "fastcompany" not in by_id
+    assert "fast_company" in by_id
+    assert "the_verge" not in by_id
+    assert "flightglobal" not in by_id
+    assert "gizmodo" not in by_id
+    assert "the_baffler" not in by_id
+    assert "new_statesman" not in by_id
+    assert "guernica" not in by_id
+    assert "nationalinterest" not in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "the_nation" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "techdirt" not in by_id
+    assert "engadget" not in by_id
+    assert "digital_trends" not in by_id
+    assert "the_cut" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "indian_express" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "al_monitor" not in by_id
+    assert "hkfp" not in by_id
+    assert "biographic" not in by_id
+    assert "asiatimes" not in by_id
+    assert "dawn" not in by_id
+    assert "longreads" not in by_id
+    assert "hrw" not in by_id
+    assert "independent" not in by_id
+    for source_id, expected in _YALE360_CLEANTECHNICA_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_yale360_cleantechnica_feeds_live_httpx_rss_headers():
+    """KEEP must pass the same httpx + RSS_HEADERS client CI uses."""
+    from news_archive.fetch import fetch_source
+
+    by_id = {s.id: s for s in SOURCES}
+    keep_floor = {"yale360": 10, "cleantechnica": 10}
+    for source_id in _YALE360_CLEANTECHNICA_PRIMARY:
+        source = by_id[source_id]
+        articles = fetch_source(source, timeout=30)
+        assert articles, f"{source_id} httpx+RSS_HEADERS insertable=0"
+        assert len(articles) >= keep_floor[source_id], (
+            f"{source_id} insertable {len(articles)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (yale360 /
+        # cleantechnica) uses the
+        # un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # yale360 100/100 and
+        # cleantechnica 45/45 were
+        # 100% nonempty this probe.
+        # ingest cap 30 still KEEP
+        # (≥10).
+        # yale360 MUST stay on
+        # official /feed.xml.
+        # cleantechnica MUST keep
+        # the trailing slash on
+        # /feed/.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= keep_floor[source_id], (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -36596,6 +37052,7 @@ if __name__ == "__main__":
     test_defensenews_motherboard_macworld_primaries_registered()
     test_astronomy_skyandtelescope_latimes_technology_primaries_registered()
     test_hackaday_primary_registered()
+    test_yale360_cleantechnica_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -36689,4 +37146,5 @@ if __name__ == "__main__":
     test_defensenews_motherboard_macworld_feeds_live_http_200()
     test_astronomy_skyandtelescope_latimes_technology_feeds_live_http_200()
     test_hackaday_feed_live_httpx_rss_headers()
+    test_yale360_cleantechnica_feeds_live_httpx_rss_headers()
     print("✓ source registry tests PASSED")
