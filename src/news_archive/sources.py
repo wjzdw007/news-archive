@@ -2214,6 +2214,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="energy_storage_news",
+        name="Energy Storage News",
+        feed_url="https://www.energy-storage.news/feed/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="geekwire",
+        name="GeekWire",
+        feed_url="https://www.geekwire.com/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="hollywoodreporter",
+        name="The Hollywood Reporter",
+        feed_url="https://www.hollywoodreporter.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

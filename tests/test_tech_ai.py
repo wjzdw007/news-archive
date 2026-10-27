@@ -1520,13 +1520,13 @@ def test_whitelist_registered_and_cap_unchanged():
     # double-slash /feed/all
     # quirk — do not lock it.
     # Named 备 unused (all KEEP
-    # passed). Do not pull
-    # batch104 hung ids
-    # (energy_storage_news /
+    # passed). batch104 KEEP
+    # energy_storage_news /
     # geekwire /
-    # hollywoodreporter) or
-    # their 备 (siliconangle /
-    # thenextweb / futurism).
+    # hollywoodreporter
+    # are registered separately
+    # and still stay off the
+    # whitelist. Named 备 unused.
     # None of these match the
     # wired / verge / techcrunch
     # ALWAYS pattern.
@@ -1542,6 +1542,62 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "rollingstone" not in TECH_AI_SOURCE_WHITELIST
     assert "extremetech" not in TECH_AI_SOURCE_WHITELIST
     assert "avclub" not in TECH_AI_SOURCE_WHITELIST
+    # batch104 RSS primaries stay off the tech/AI whitelist.
+    # energy_storage_news lands on
+    # 科学 (energy storage
+    # newsroom, same as
+    # pv_magazine / utility_dive
+    # / canary_media) — new id —
+    # official www /feed/ (MUST
+    # www + trailing slash;
+    # homepage 403; no <link>;
+    # atom:self). /feed (no
+    # slash) is 403 — do not
+    # lock it.
+    # geekwire lands on 科技
+    # (tech newsroom, same as
+    # zdnet / cnet /
+    # computerworld) — new id —
+    # official www /feed/ (MUST
+    # www + trailing slash;
+    # homepage 403; no <link>;
+    # atom:self). /feed remaps
+    # here.
+    # hollywoodreporter lands on
+    # 综合 (entertainment
+    # newsroom, same as deadline
+    # / variety / slashfilm) —
+    # new id — official www
+    # /feed/ (MUST www +
+    # trailing slash; homepage
+    # <link> announces
+    # /feed/rss/ which remaps
+    # here; atom:self). id is
+    # hollywoodreporter, NOT
+    # nintendoreporter.
+    # Named 备 unused (all KEEP
+    # passed). Do not pull
+    # batch105 hung ids
+    # (kotaku / makeuseof /
+    # spaceflightnow) or their
+    # 备 (rockpapershotgun /
+    # spin / carscoops).
+    # None of these match the
+    # wired / verge / techcrunch
+    # ALWAYS pattern.
+    assert "energy_storage_news" not in TECH_AI_SOURCE_WHITELIST
+    assert "geekwire" not in TECH_AI_SOURCE_WHITELIST
+    assert "hollywoodreporter" not in TECH_AI_SOURCE_WHITELIST
+    assert "energy_storage" not in TECH_AI_SOURCE_WHITELIST
+    assert "energystorage" not in TECH_AI_SOURCE_WHITELIST
+    assert "geek_wire" not in TECH_AI_SOURCE_WHITELIST
+    assert "geekwire_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "hollywood_reporter" not in TECH_AI_SOURCE_WHITELIST
+    assert "hollywoodreporter_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "nintendoreporter" not in TECH_AI_SOURCE_WHITELIST
+    assert "siliconangle" not in TECH_AI_SOURCE_WHITELIST
+    assert "thenextweb" not in TECH_AI_SOURCE_WHITELIST
+    assert "futurism" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
