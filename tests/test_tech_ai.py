@@ -1576,12 +1576,12 @@ def test_whitelist_registered_and_cap_unchanged():
     # hollywoodreporter, NOT
     # nintendoreporter.
     # Named 备 unused (all KEEP
-    # passed). Do not pull
-    # batch105 hung ids
-    # (kotaku / makeuseof /
-    # spaceflightnow) or their
-    # 备 (rockpapershotgun /
-    # spin / carscoops).
+    # passed). batch105 KEEP
+    # kotaku / makeuseof /
+    # spaceflightnow are
+    # registered separately
+    # and also stay off the
+    # whitelist.
     # None of these match the
     # wired / verge / techcrunch
     # ALWAYS pattern.
@@ -1598,6 +1598,58 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "siliconangle" not in TECH_AI_SOURCE_WHITELIST
     assert "thenextweb" not in TECH_AI_SOURCE_WHITELIST
     assert "futurism" not in TECH_AI_SOURCE_WHITELIST
+    # batch105 RSS primaries stay off the tech/AI whitelist.
+    # kotaku lands on 综合
+    # (gaming newsroom, same as
+    # polygon) — new id —
+    # official apex /feed
+    # (MUST apex + NO trailing
+    # slash; homepage
+    # announced; atom:self).
+    # /feed/ remaps here.
+    # makeuseof lands on 科技
+    # (how-to / tech lifestyle
+    # newsroom, same as
+    # howtogeek) — new id —
+    # official www /feed/
+    # (MUST www + trailing
+    # slash; homepage does not
+    # announce RSS; atom:self).
+    # /feed remaps here.
+    # spaceflightnow lands on
+    # 科学 (space / aerospace
+    # newsroom, same as
+    # space_com /
+    # universe_today /
+    # astronomy) — new id —
+    # official apex /feed/
+    # (MUST apex + trailing
+    # slash; homepage
+    # announced; atom:self).
+    # /feed remaps here.
+    # Named 备 unused (all KEEP
+    # passed). Do not pull
+    # batch106 hung ids
+    # (techspot / roadandtrack /
+    # soundguys) or their 备
+    # (ign / eurogamer /
+    # gamespot).
+    # None of these match the
+    # wired / verge / techcrunch
+    # ALWAYS pattern.
+    assert "kotaku" not in TECH_AI_SOURCE_WHITELIST
+    assert "makeuseof" not in TECH_AI_SOURCE_WHITELIST
+    assert "spaceflightnow" not in TECH_AI_SOURCE_WHITELIST
+    assert "kotaku_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "kotaku_gaming" not in TECH_AI_SOURCE_WHITELIST
+    assert "make_use_of" not in TECH_AI_SOURCE_WHITELIST
+    assert "makeuseof_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "space_flight_now" not in TECH_AI_SOURCE_WHITELIST
+    assert "spaceflight_now" not in TECH_AI_SOURCE_WHITELIST
+    assert "spaceflightnow_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "rockpapershotgun" not in TECH_AI_SOURCE_WHITELIST
+    assert "spin" not in TECH_AI_SOURCE_WHITELIST
+    assert "carscoops" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

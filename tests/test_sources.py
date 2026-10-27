@@ -15406,11 +15406,14 @@ _BANDCAMP_DAILY_COMPUTERWORLD_BIGTHINK_PRIMARY = {
 # Do NOT register
 # siliconangle / thenextweb
 # / futurism (unused 备).
-# Do NOT register kotaku /
-# makeuseof /
-# spaceflightnow /
+# batch105 KEEP kotaku /
+# makeuseof / spaceflightnow
+# are registered separately.
+# Named 备 unused (all KEEP
+# passed). Do NOT register
 # rockpapershotgun / spin /
-# carscoops / techspot /
+# carscoops (unused 备).
+# Do NOT register techspot /
 # roadandtrack / soundguys /
 # ign / eurogamer /
 # gamespot / mining /
@@ -15494,7 +15497,286 @@ _ENERGY_STORAGE_NEWS_GEEKWIRE_HOLLYWOODREPORTER_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 317
+# CEO-approved Kotaku / MakeUseOf /
+# Spaceflight Now RSS primaries
+# (batch105). On tip 2de5209 after
+# #170 (energy_storage_news /
+# geekwire / hollywoodreporter).
+# Product KEEP set is kotaku /
+# makeuseof / spaceflightnow.
+# Named 备 (hard-swap ONLY if
+# a KEEP fails):
+# rockpapershotgun / spin /
+# carscoops. Unused — all KEEP
+# passed. Do not invent. Do
+# not pull batch106 hung ids
+# (techspot / roadandtrack /
+# soundguys) or their 备
+# (ign / eurogamer /
+# gamespot).
+# Do not pull batch107 hung
+# ids (mining / adweek /
+# govexec) or their 备
+# (omgubuntu / thurrott /
+# lobsters).
+# Do not pull batch108 hung
+# ids (platformer / inc /
+# bulwark) or their 备
+# (rollcall / colossal /
+# creativebloq).
+# Do not pull batch109 hung
+# ids (architecturaldigest /
+# allure / entrepreneur) or
+# their 备 (puck / artnews /
+# stratechery).
+# Do not pull batch110 hung
+# ids (nikkei_asia /
+# morningbrew / techmeme) or
+# their 备 (vogue /
+# filmmaker / newcriterion).
+# kotaku official
+# https://kotaku.com/feed
+# is new (no prior kotaku /
+# kotaku_com / kotaku_gaming
+# id). httpx+RSS_HEADERS
+# HTTP 200 / 20 nonempty /
+# 20 insertable (channel
+# "Kotaku"). MUST lock apex
+# + /feed (NO trailing
+# slash). Homepage <link>
+# announces this exact path;
+# atom:self matches. /feed/
+# (trailing slash) remaps
+# here — do not lock it.
+# www remaps to apex; /rss
+# /rss/ /index.xml /
+# feed/rss/ /?feed=rss2
+# remap here. /rss.xml /
+# atom.xml /feed.xml /
+# news/feed/ are 404 HTML.
+# comments/feed is comments
+# (empty) — not the
+# site-wide primary.
+# Feedburner
+# feeds.feedburner.com/kotaku/full
+# 404s to feedburster — do
+# not invent Feedburner /
+# section feeds. Distinct
+# from live polygon /
+# deadline / variety /
+# slashfilm / indiewire /
+# consequence. Lands on
+# 综合 (gaming newsroom,
+# same as polygon).
+# makeuseof official
+# https://www.makeuseof.com/feed/
+# is new (no prior makeuseof
+# / make_use_of /
+# makeuseof_com id).
+# httpx+RSS_HEADERS HTTP 200
+# / 10 nonempty / 10
+# insertable (channel
+# "MakeUseOf"). MUST lock
+# www + /feed/ (trailing
+# slash). Homepage is 200
+# and does not announce RSS.
+# atom:self is this exact
+# path. /feed (no slash)
+# remaps here; apex remaps
+# to www; /rss /rss/ remap
+# here. /rss.xml /atom.xml /
+# index.xml /feed/rss/ /
+# feed.xml /feeds/feed.rss
+# are 404 HTML. /?feed=rss2
+# is HTML homepage — not
+# the announced site-wide
+# primary. comments/feed
+# remaps to /comments/ 404.
+# /news/feed/ remaps to
+# /feed/category/news/
+# (section "MakeUseOf -
+# Technology News") — not
+# the site-wide primary.
+# Distinct from live
+# howtogeek / pcmag /
+# tomshardware / cnet /
+# zdnet / computerworld /
+# geekwire. Do not invent
+# Feedburner / section
+# feeds. Lands on 科技
+# (how-to / tech lifestyle
+# newsroom, same as
+# howtogeek).
+# spaceflightnow official
+# https://spaceflightnow.com/feed/
+# is new (no prior
+# spaceflightnow /
+# space_flight_now /
+# spaceflight_now /
+# spaceflightnow_com id).
+# httpx+RSS_HEADERS HTTP 200
+# / 10 nonempty / 10
+# insertable (channel
+# "Spaceflight Now"). MUST
+# lock apex + /feed/
+# (trailing slash).
+# Homepage <link> announces
+# this exact path;
+# atom:self matches. /feed
+# (no slash) remaps here;
+# www remaps to apex; /rss
+# /rss/ /feed/rss/ /
+# ?feed=rss2 remap here.
+# /rss.xml /atom.xml /
+# index.xml /feed.xml are
+# 404 HTML. comments/feed
+# is comments — not the
+# site-wide primary.
+# /news/feed/ is empty
+# comments — not the
+# announced site-wide
+# primary. Distinct from
+# live space_com /
+# universe_today /
+# astronomy /
+# skyandtelescope /
+# aviationweek. Do not
+# invent Feedburner /
+# section feeds. Lands on
+# 科学 (space / aerospace
+# newsroom, same as
+# space_com /
+# universe_today /
+# astronomy).
+# All three ≥10 KEEP. Named
+# 备 unused (all KEEP
+# passed). Distinct from
+# live polygon / deadline /
+# variety / slashfilm /
+# indiewire / consequence /
+# howtogeek / pcmag /
+# tomshardware / cnet /
+# zdnet / computerworld /
+# geekwire / space_com /
+# universe_today /
+# astronomy /
+# skyandtelescope /
+# aviationweek.
+# 0 article URL overlap
+# (kotaku.com /
+# www.makeuseof.com /
+# spaceflightnow.com
+# hosts). Not added to the
+# tech/AI whitelist
+# (later-batch sources stay
+# off the frozen ALWAYS
+# set).
+# Do NOT register kotaku_com
+# / kotaku_gaming /
+# make_use_of /
+# makeuseof_com /
+# space_flight_now /
+# spaceflight_now /
+# spaceflightnow_com.
+# Do NOT register
+# rockpapershotgun / spin /
+# carscoops (unused 备).
+# Do NOT register techspot /
+# roadandtrack / soundguys /
+# ign / eurogamer /
+# gamespot / mining /
+# adweek / govexec /
+# omgubuntu / thurrott /
+# lobsters / platformer /
+# inc / bulwark / rollcall /
+# colossal / creativebloq /
+# architecturaldigest /
+# allure / entrepreneur /
+# puck / artnews /
+# stratechery / nikkei_asia
+# / morningbrew / techmeme /
+# vogue / filmmaker /
+# newcriterion (later hung).
+# Do NOT re-register
+# energy_storage_news /
+# geekwire /
+# hollywoodreporter /
+# bandcamp_daily /
+# computerworld / bigthink /
+# usni_news / slashfilm /
+# singularityhub /
+# insideclimatenews /
+# consequence / c4isrnet /
+# indiewire / kottke /
+# pv_magazine /
+# military_times /
+# earthsky / outside /
+# deadline / makezine /
+# utility_dive / phoronix /
+# adafruit / boingboing /
+# jalopnik / lwn /
+# quanta_magazine /
+# pitchfork / stereogum /
+# zdnet / cnet / pcmag /
+# howtogeek / polygon /
+# space_com /
+# universe_today /
+# astronomy /
+# skyandtelescope /
+# aviationweek.
+# national_geographic stays
+# unregistered (no official
+# English RSS).
+# Do NOT use as backups
+# (product skip): bangkok_post
+# / indian_express /
+# rest_of_world / al_monitor /
+# hkfp / biographic /
+# asiatimes / dawn /
+# longreads / hrw /
+# independent (429) /
+# euractiv (301→rapporteur
+# FAIL) / atlantic_council
+# (403) / the_nation (empty
+# feed) / times_of_israel
+# (Cloudflare 403) / the_cut
+# / techdirt / engadget /
+# digital_trends /
+# bleepingcomputer / gizmodo /
+# the_baffler / new_statesman
+# / guernica / nationalinterest
+# / flightglobal /
+# newscientist (CI
+# httpx+RSS_HEADERS 406/empty).
+# qz3 勿挂. digiday0观察 — do not
+# add a second digiday.
+# fastcompany 勿二重.
+# sunday_review / cnbc (403
+# known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_KOTAKU_MAKEUSEOF_SPACEFLIGHTNOW_PRIMARY = {
+    "kotaku": {
+        "name": "Kotaku",
+        "feed_url": "https://kotaku.com/feed",
+        "category": "综合",
+    },
+    "makeuseof": {
+        "name": "MakeUseOf",
+        "feed_url": "https://www.makeuseof.com/feed/",
+        "category": "科技",
+    },
+    "spaceflightnow": {
+        "name": "Spaceflight Now",
+        "feed_url": "https://spaceflightnow.com/feed/",
+        "category": "科学",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 320
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -41262,8 +41544,13 @@ def test_bandcamp_daily_computerworld_bigthink_primaries_registered():
     # hollywoodreporter
     # are registered separately.
     # Named 备 unused (all KEEP
+    # passed). batch105 KEEP
+    # kotaku / makeuseof /
+    # spaceflightnow are
+    # registered separately.
+    # Named 备 unused (all KEEP
     # passed). Do not pull
-    # batch105 hung ids.
+    # batch106 hung ids.
     assert "bandcamp" not in by_id
     assert "bandcamp_com" not in by_id
     assert "computer_world" not in by_id
@@ -41279,9 +41566,9 @@ def test_bandcamp_daily_computerworld_bigthink_primaries_registered():
     assert "siliconangle" not in by_id
     assert "thenextweb" not in by_id
     assert "futurism" not in by_id
-    assert "kotaku" not in by_id
-    assert "makeuseof" not in by_id
-    assert "spaceflightnow" not in by_id
+    assert "kotaku" in by_id
+    assert "makeuseof" in by_id
+    assert "spaceflightnow" in by_id
     assert "rockpapershotgun" not in by_id
     assert "spin" not in by_id
     assert "carscoops" not in by_id
@@ -41618,8 +41905,13 @@ def test_energy_storage_news_geekwire_hollywoodreporter_primaries_registered():
     assert by_id["geekwire"].feed_url != by_id["hollywoodreporter"].feed_url
     # Named 备 unused (all KEEP
     # passed). Do not invent
-    # replacements. Do not pull
-    # batch105 hung ids.
+    # replacements. batch105 KEEP
+    # kotaku / makeuseof /
+    # spaceflightnow are
+    # registered separately.
+    # Named 备 unused (all KEEP
+    # passed). Do not pull
+    # batch106 hung ids.
     assert "energy_storage" not in by_id
     assert "energystorage" not in by_id
     assert "energy_storage_news_com" not in by_id
@@ -41631,9 +41923,9 @@ def test_energy_storage_news_geekwire_hollywoodreporter_primaries_registered():
     assert "siliconangle" not in by_id
     assert "thenextweb" not in by_id
     assert "futurism" not in by_id
-    assert "kotaku" not in by_id
-    assert "makeuseof" not in by_id
-    assert "spaceflightnow" not in by_id
+    assert "kotaku" in by_id
+    assert "makeuseof" in by_id
+    assert "spaceflightnow" in by_id
     assert "rockpapershotgun" not in by_id
     assert "spin" not in by_id
     assert "carscoops" not in by_id
@@ -41799,6 +42091,383 @@ def test_energy_storage_news_geekwire_hollywoodreporter_feeds_live_httpx_rss_hea
         )
 
 
+def test_kotaku_makeuseof_spaceflightnow_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "kotaku" in by_id
+    assert by_id["kotaku"].feed_url == "https://kotaku.com/feed"
+    assert by_id["kotaku"].feed_url != "https://kotaku.com/feed/"
+    assert by_id["kotaku"].feed_url != "https://www.kotaku.com/feed"
+    assert by_id["kotaku"].feed_url != "https://www.kotaku.com/feed/"
+    assert by_id["kotaku"].feed_url != "https://kotaku.com/rss"
+    assert by_id["kotaku"].feed_url != "https://kotaku.com/rss/"
+    assert by_id["kotaku"].feed_url != "https://kotaku.com/rss.xml"
+    assert by_id["kotaku"].feed_url != "https://kotaku.com/atom.xml"
+    assert by_id["kotaku"].feed_url != "https://kotaku.com/index.xml"
+    assert by_id["kotaku"].feed_url != "https://kotaku.com/feed/rss/"
+    assert by_id["kotaku"].feed_url != "https://kotaku.com/comments/feed/"
+    assert by_id["kotaku"].feed_url != "https://kotaku.com/news/feed/"
+    assert by_id["kotaku"].feed_url != "https://kotaku.com/?feed=rss2"
+    assert by_id["kotaku"].feed_url != (
+        "https://feeds.feedburner.com/kotaku/full"
+    )
+    assert "makeuseof" in by_id
+    assert by_id["makeuseof"].feed_url == (
+        "https://www.makeuseof.com/feed/"
+    )
+    assert by_id["makeuseof"].feed_url != "https://www.makeuseof.com/feed"
+    assert by_id["makeuseof"].feed_url != "https://makeuseof.com/feed/"
+    assert by_id["makeuseof"].feed_url != "https://www.makeuseof.com/rss"
+    assert by_id["makeuseof"].feed_url != "https://www.makeuseof.com/rss/"
+    assert by_id["makeuseof"].feed_url != "https://www.makeuseof.com/rss.xml"
+    assert by_id["makeuseof"].feed_url != (
+        "https://www.makeuseof.com/atom.xml"
+    )
+    assert by_id["makeuseof"].feed_url != (
+        "https://www.makeuseof.com/index.xml"
+    )
+    assert by_id["makeuseof"].feed_url != (
+        "https://www.makeuseof.com/feed/rss/"
+    )
+    assert by_id["makeuseof"].feed_url != (
+        "https://www.makeuseof.com/comments/feed/"
+    )
+    assert by_id["makeuseof"].feed_url != (
+        "https://www.makeuseof.com/news/feed/"
+    )
+    assert by_id["makeuseof"].feed_url != (
+        "https://www.makeuseof.com/feed/category/news/"
+    )
+    assert by_id["makeuseof"].feed_url != (
+        "https://www.makeuseof.com/?feed=rss2"
+    )
+    assert "spaceflightnow" in by_id
+    assert by_id["spaceflightnow"].feed_url == (
+        "https://spaceflightnow.com/feed/"
+    )
+    assert by_id["spaceflightnow"].feed_url != (
+        "https://spaceflightnow.com/feed"
+    )
+    assert by_id["spaceflightnow"].feed_url != (
+        "https://www.spaceflightnow.com/feed/"
+    )
+    assert by_id["spaceflightnow"].feed_url != (
+        "https://spaceflightnow.com/rss"
+    )
+    assert by_id["spaceflightnow"].feed_url != (
+        "https://spaceflightnow.com/rss/"
+    )
+    assert by_id["spaceflightnow"].feed_url != (
+        "https://spaceflightnow.com/rss.xml"
+    )
+    assert by_id["spaceflightnow"].feed_url != (
+        "https://spaceflightnow.com/atom.xml"
+    )
+    assert by_id["spaceflightnow"].feed_url != (
+        "https://spaceflightnow.com/index.xml"
+    )
+    assert by_id["spaceflightnow"].feed_url != (
+        "https://spaceflightnow.com/feed/rss/"
+    )
+    assert by_id["spaceflightnow"].feed_url != (
+        "https://spaceflightnow.com/comments/feed/"
+    )
+    assert by_id["spaceflightnow"].feed_url != (
+        "https://spaceflightnow.com/news/feed/"
+    )
+    assert by_id["spaceflightnow"].feed_url != (
+        "https://spaceflightnow.com/?feed=rss2"
+    )
+    # #170 / batch104 winners stay registered and unchanged.
+    # #169 / batch103 winners stay registered and unchanged.
+    # #168 / batch102 winners stay registered and unchanged.
+    # #167 / batch101 winners stay registered and unchanged.
+    # #166 / batch100 winners stay registered and unchanged.
+    # Do not touch energy_storage_news /
+    # geekwire / hollywoodreporter /
+    # bandcamp_daily / computerworld /
+    # bigthink / usni_news / slashfilm /
+    # singularityhub /
+    # insideclimatenews /
+    # consequence / c4isrnet /
+    # indiewire / kottke /
+    # pv_magazine / military_times /
+    # earthsky / outside / deadline /
+    # makezine / utility_dive /
+    # phoronix / adafruit /
+    # boingboing / jalopnik / lwn /
+    # quanta_magazine / yale360 /
+    # cleantechnica / hackaday /
+    # astronomy / skyandtelescope /
+    # latimes_technology / variety /
+    # canary_media / defensenews /
+    # taskandpurpose / twz /
+    # navalnews / climate_home /
+    # grist / carbon_brief /
+    # pitchfork / stereogum / zdnet /
+    # cnet / pcmag / howtogeek /
+    # polygon / space_com /
+    # universe_today / aviationweek.
+    assert "energy_storage_news" in by_id
+    assert "geekwire" in by_id
+    assert "hollywoodreporter" in by_id
+    assert "bandcamp_daily" in by_id
+    assert "computerworld" in by_id
+    assert "bigthink" in by_id
+    assert "usni_news" in by_id
+    assert "slashfilm" in by_id
+    assert "singularityhub" in by_id
+    assert "insideclimatenews" in by_id
+    assert "consequence" in by_id
+    assert "c4isrnet" in by_id
+    assert "indiewire" in by_id
+    assert "kottke" in by_id
+    assert "pv_magazine" in by_id
+    assert "military_times" in by_id
+    assert "earthsky" in by_id
+    assert "outside" in by_id
+    assert "deadline" in by_id
+    assert "makezine" in by_id
+    assert "utility_dive" in by_id
+    assert "phoronix" in by_id
+    assert "adafruit" in by_id
+    assert "boingboing" in by_id
+    assert "jalopnik" in by_id
+    assert "lwn" in by_id
+    assert "quanta_magazine" in by_id
+    assert "yale360" in by_id
+    assert "cleantechnica" in by_id
+    assert "hackaday" in by_id
+    assert "astronomy" in by_id
+    assert "skyandtelescope" in by_id
+    assert "latimes_technology" in by_id
+    assert "variety" in by_id
+    assert "canary_media" in by_id
+    assert "defensenews" in by_id
+    assert "taskandpurpose" in by_id
+    assert "twz" in by_id
+    assert "navalnews" in by_id
+    assert "climate_home" in by_id
+    assert "grist" in by_id
+    assert "carbon_brief" in by_id
+    assert "pitchfork" in by_id
+    assert "stereogum" in by_id
+    assert "zdnet" in by_id
+    assert "cnet" in by_id
+    assert "pcmag" in by_id
+    assert "howtogeek" in by_id
+    assert "polygon" in by_id
+    assert "space_com" in by_id
+    assert "universe_today" in by_id
+    assert "aviationweek" in by_id
+    # Feed locks + uniqueness vs live
+    # gaming / how-to / space stack.
+    assert by_id["kotaku"].feed_url != by_id["polygon"].feed_url
+    assert by_id["kotaku"].feed_url != by_id["deadline"].feed_url
+    assert by_id["kotaku"].feed_url != by_id["variety"].feed_url
+    assert by_id["kotaku"].feed_url != by_id["slashfilm"].feed_url
+    assert by_id["kotaku"].feed_url != by_id["indiewire"].feed_url
+    assert by_id["kotaku"].feed_url != by_id["consequence"].feed_url
+    assert by_id["makeuseof"].feed_url != by_id["howtogeek"].feed_url
+    assert by_id["makeuseof"].feed_url != by_id["pcmag"].feed_url
+    assert by_id["makeuseof"].feed_url != by_id["tomshardware"].feed_url
+    assert by_id["makeuseof"].feed_url != by_id["cnet"].feed_url
+    assert by_id["makeuseof"].feed_url != by_id["zdnet"].feed_url
+    assert by_id["makeuseof"].feed_url != by_id["computerworld"].feed_url
+    assert by_id["makeuseof"].feed_url != by_id["geekwire"].feed_url
+    assert by_id["spaceflightnow"].feed_url != by_id["space_com"].feed_url
+    assert by_id["spaceflightnow"].feed_url != by_id["universe_today"].feed_url
+    assert by_id["spaceflightnow"].feed_url != by_id["astronomy"].feed_url
+    assert (
+        by_id["spaceflightnow"].feed_url != by_id["skyandtelescope"].feed_url
+    )
+    assert by_id["spaceflightnow"].feed_url != by_id["aviationweek"].feed_url
+    assert by_id["kotaku"].feed_url != by_id["makeuseof"].feed_url
+    assert by_id["kotaku"].feed_url != by_id["spaceflightnow"].feed_url
+    assert by_id["makeuseof"].feed_url != by_id["spaceflightnow"].feed_url
+    # Named 备 unused (all KEEP
+    # passed). Do not invent
+    # replacements. Do not pull
+    # later hung batches.
+    assert "kotaku_com" not in by_id
+    assert "kotaku_gaming" not in by_id
+    assert "make_use_of" not in by_id
+    assert "makeuseof_com" not in by_id
+    assert "space_flight_now" not in by_id
+    assert "spaceflight_now" not in by_id
+    assert "spaceflightnow_com" not in by_id
+    assert "rockpapershotgun" not in by_id
+    assert "spin" not in by_id
+    assert "carscoops" not in by_id
+    assert "techspot" not in by_id
+    assert "roadandtrack" not in by_id
+    assert "soundguys" not in by_id
+    assert "ign" not in by_id
+    assert "eurogamer" not in by_id
+    assert "gamespot" not in by_id
+    assert "mining" not in by_id
+    assert "adweek" not in by_id
+    assert "govexec" not in by_id
+    assert "omgubuntu" not in by_id
+    assert "thurrott" not in by_id
+    assert "lobsters" not in by_id
+    assert "platformer" not in by_id
+    assert "inc" not in by_id
+    assert "bulwark" not in by_id
+    assert "rollcall" not in by_id
+    assert "colossal" not in by_id
+    assert "creativebloq" not in by_id
+    assert "architecturaldigest" not in by_id
+    assert "allure" not in by_id
+    assert "entrepreneur" not in by_id
+    assert "puck" not in by_id
+    assert "artnews" not in by_id
+    assert "stratechery" not in by_id
+    assert "nikkei_asia" not in by_id
+    assert "morningbrew" not in by_id
+    assert "techmeme" not in by_id
+    assert "vogue" not in by_id
+    assert "filmmaker" not in by_id
+    assert "newcriterion" not in by_id
+    # national_geographic stays
+    # unregistered (no official
+    # English RSS).
+    assert "national_geographic" not in by_id
+    assert "nationalgeographic" not in by_id
+    assert "natgeo" not in by_id
+    assert "carbonbrief" not in by_id
+    assert "carbon_brief" in by_id
+    assert "politico" not in by_id
+    assert "politico_politics" in by_id
+    assert "politico_europe" in by_id
+    assert "the_atlantic" not in by_id
+    assert "motherjones" not in by_id
+    assert "the_intercept" not in by_id
+    assert "theregister" not in by_id
+    assert "atlantic" in by_id
+    assert "mother_jones" in by_id
+    assert "intercept" in by_id
+    assert "the_register" in by_id
+    assert "newscientist" not in by_id
+    assert "qz3" not in by_id
+    assert "qz" not in by_id
+    assert "fastcompany" not in by_id
+    assert "fast_company" in by_id
+    assert "the_verge" not in by_id
+    assert "flightglobal" not in by_id
+    assert "gizmodo" not in by_id
+    assert "the_baffler" not in by_id
+    assert "new_statesman" not in by_id
+    assert "guernica" not in by_id
+    assert "nationalinterest" not in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "the_nation" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "techdirt" not in by_id
+    assert "engadget" not in by_id
+    assert "digital_trends" not in by_id
+    assert "the_cut" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "indian_express" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "al_monitor" not in by_id
+    assert "hkfp" not in by_id
+    assert "biographic" not in by_id
+    assert "asiatimes" not in by_id
+    assert "dawn" not in by_id
+    assert "longreads" not in by_id
+    assert "hrw" not in by_id
+    assert "independent" not in by_id
+    for source_id, expected in (
+        _KOTAKU_MAKEUSEOF_SPACEFLIGHTNOW_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_kotaku_makeuseof_spaceflightnow_feeds_live_httpx_rss_headers():
+    """KEEP must pass the same httpx + RSS_HEADERS client CI uses."""
+    from news_archive.fetch import fetch_source
+
+    by_id = {s.id: s for s in SOURCES}
+    keep_floor = {
+        "kotaku": 10,
+        "makeuseof": 10,
+        "spaceflightnow": 10,
+    }
+    for source_id in _KOTAKU_MAKEUSEOF_SPACEFLIGHTNOW_PRIMARY:
+        source = by_id[source_id]
+        articles = fetch_source(source, timeout=30)
+        assert articles, f"{source_id} httpx+RSS_HEADERS insertable=0"
+        assert len(articles) >= keep_floor[source_id], (
+            f"{source_id} insertable {len(articles)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (kotaku / makeuseof /
+        # spaceflightnow) uses the
+        # un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # kotaku 20/20, makeuseof
+        # 10/10, and spaceflightnow
+        # 10/10 were 100% nonempty
+        # this probe. ≥10 KEEP.
+        # kotaku MUST stay on apex
+        # /feed (NO trailing slash;
+        # homepage announced;
+        # atom:self). /feed/ remaps
+        # here.
+        # makeuseof MUST stay on www
+        # /feed/ (trailing slash;
+        # homepage does not announce
+        # RSS; atom:self). /feed
+        # remaps here.
+        # spaceflightnow MUST stay
+        # on apex /feed/ (trailing
+        # slash; homepage announced;
+        # atom:self). /feed remaps
+        # here.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= keep_floor[source_id], (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -41914,6 +42583,7 @@ if __name__ == "__main__":
     test_usni_news_slashfilm_singularityhub_primaries_registered()
     test_bandcamp_daily_computerworld_bigthink_primaries_registered()
     test_energy_storage_news_geekwire_hollywoodreporter_primaries_registered()
+    test_kotaku_makeuseof_spaceflightnow_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -42018,4 +42688,5 @@ if __name__ == "__main__":
     test_usni_news_slashfilm_singularityhub_feeds_live_httpx_rss_headers()
     test_bandcamp_daily_computerworld_bigthink_feeds_live_httpx_rss_headers()
     test_energy_storage_news_geekwire_hollywoodreporter_feeds_live_httpx_rss_headers()
+    test_kotaku_makeuseof_spaceflightnow_feeds_live_httpx_rss_headers()
     print("✓ source registry tests PASSED")
