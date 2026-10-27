@@ -1836,6 +1836,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="universe_today",
+        name="Universe Today",
+        feed_url="https://www.universetoday.com/feed/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="new_yorker",
+        name="The New Yorker",
+        feed_url="https://www.newyorker.com/feed/everything",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="darkreading",
+        name="Dark Reading",
+        feed_url="https://www.darkreading.com/rss.xml",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

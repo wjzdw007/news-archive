@@ -9720,7 +9720,322 @@ _INVERSE_APPLEINSIDER_POPULAR_MECHANICS_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 260
+# CEO-approved Universe Today / The New
+# Yorker / Dark Reading RSS primaries
+# (batch85). These three are the new
+# adds after #148 (inverse +
+# appleinsider + popular_mechanics)
+# on tip
+# 34e689d5846ab78f6df42e658224cd38a8cadaee.
+# Primaries were universe_today /
+# the_baffler / darkreading.
+# Backups were new_yorker /
+# new_statesman / macworld (probe
+# only if a primary fails thin/403).
+# the_baffler official
+# https://thebaffler.com/feed is
+# Cloudflare 403 JS-less HTML
+# "Error 403 Forbidden" (cf-ray
+# present) — hard-swap, never
+# Feedburner (feeds.feedburner.com
+# /thebaffler and /TheBaffler are
+# HTTP 404). First leftover backup
+# new_yorker KEEP-fills the slot.
+# inverse / appleinsider /
+# popular_mechanics just landed via
+# #148 — do not undo. polygon /
+# pcmag / mashable (#146) /
+# smithsonian_mag (#147) stay.
+# Product feed locks
+# (official only; no Feedburner):
+# universe_today =
+# https://www.universetoday.com/feed/
+# (MUST trailing slash on /feed/;
+# /feed /feed/ /rss.xml / apex
+# /feed/ all remap to /rss.xml —
+# lock the product /feed/ path, not
+# the remap destination)
+# the_baffler official =
+# https://thebaffler.com/feed
+# (Cloudflare 403 — not registered)
+# new_yorker leftover→hard-swap =
+# https://www.newyorker.com/feed/everything
+# (MUST /feed/everything; do NOT
+# use /rss/index.xml — HTTP 404
+# HTML. /feed/rss is a different
+# 200 channel, not the product
+# lock)
+# darkreading =
+# https://www.darkreading.com/rss.xml
+# (MUST /rss.xml; /feed /feed/ /rss
+# /rss/index.xml are Cloudflare
+# 403)
+# new_statesman leftover backup =
+# https://www.newstatesman.com/feed
+# (official Varnish 403 this
+# probe; unused because new_yorker
+# filled the baffler slot)
+# macworld leftover backup =
+# https://www.macworld.com/feed
+# (path /feed; do NOT use
+# /rss/index.xml — HTTP 404 HTML;
+# unused because new_yorker filled
+# the baffler slot)
+# Active candidate set is these 6
+# (3 primary + 3 leftover backup).
+# CAP=6 sources max in the active
+# set. NEWS_SOURCE_CAP display stays 6 —
+# no CAP code change.
+# Do not restore atlantic_council.
+# Do not restore the_nation. Do not
+# restore independent. Do not restore
+# hrw. Do not restore euractiv. Do
+# not restore dawn / longreads. Do
+# not restore times_of_israel. Do not
+# restore techdirt. Do not restore
+# engadget. Do not restore
+# digital_trends. Do not restore
+# the_cut. Do not restore
+# bleepingcomputer. Do not restore
+# gizmodo (CI 403 after #147). Do not
+# probe / register product-skip:
+# bangkok_post / indian_express /
+# rest_of_world / al_monitor / hkfp /
+# biographic / asiatimes / dawn /
+# longreads / hrw / independent /
+# euractiv / atlantic_council /
+# the_nation / times_of_israel /
+# the_cut / techdirt / engadget /
+# digital_trends / bleepingcomputer /
+# gizmodo. Do not re-hang SCMP /
+# MIT TR / BBC World (already live).
+# Do not re-touch inverse /
+# appleinsider / popular_mechanics
+# (#148) / polygon / pcmag /
+# mashable (#146) / smithsonian_mag
+# (#147) / cnet / 9to5mac (#145) /
+# artnet / macrumors / quillette
+# (#144) / howtogeek / new_republic /
+# vox (#143).
+# Skip already-registered collisions:
+# the_verge (verge already
+# registered) / wired (already
+# registered). Do not hang a second
+# verge or wired.
+# universe_today is the official
+# site-wide RSS (no prior
+# universe_today / universetoday /
+# universe_today_com id). Product
+# lock: MUST lock
+# https://www.universetoday.com/feed/
+# (channel "Universe Today") —
+# trailing slash required. /feed
+# (no slash) /rss.xml / apex /feed/
+# remap to /rss.xml. Official
+# Cloudflare serves the feed at
+# HTTP 200 (cf-ray present; not a
+# JS challenge). Feedburner
+# /universetoday is a live mirror
+# of the same body — lock official,
+# not Feedburner. Live-diff winner:
+# HTTP 200 / 20 nonempty / 20
+# insertable (httpx fetch_source +
+# urllib). 20 is not the 5–9
+# observe band. Distinct from live
+# space_com / livescience /
+# scientific_american /
+# physics_world / science_org /
+# popular_science /
+# popular_mechanics / phys_org /
+# sciencedaily / science_news /
+# knowable / smithsonian_mag /
+# newatlas / ieee_spectrum /
+# canary_media / nature_news /
+# carbon_brief / mongabay /
+# bbc_science / nyt_science /
+# guardian_science / npr_science.
+# 0 article URL overlap with those.
+# Lands on the existing 科学
+# category path (space / astronomy
+# newsroom, same as space_com /
+# livescience). Not added to the
+# tech/AI whitelist (later-batch
+# sources stay off the frozen
+# ALWAYS set).
+# the_baffler official
+# https://thebaffler.com/feed is
+# Cloudflare 403 (apex + www +
+# /rss all 403; Feedburner
+# /thebaffler and /TheBaffler are
+# HTTP 404). Hard-swap, never
+# Feedburner. First leftover
+# backup new_yorker KEEP-fills.
+# new_yorker is the official
+# Everything RSS (no prior
+# new_yorker / newyorker /
+# the_new_yorker id; was unused
+# leftover from #147 / #148).
+# Product lock: MUST lock
+# https://www.newyorker.com/feed/everything
+# (channel "Everything") — do NOT
+# lock /rss/index.xml (HTTP 404
+# HTML) or /feed/rss (different
+# 200 channel). Live-diff winner:
+# HTTP 200 / 50 nonempty / 30
+# insertable (httpx fetch_source +
+# urllib; ingest cap 30/50). 50 is
+# not the 5–9 observe band.
+# Distinct from live atlantic /
+# jacobin / new_republic /
+# quillette / reason / unherd /
+# slate / salon / mother_jones /
+# inverse / smithsonian_mag /
+# literary_hub / aeon / noema /
+# nautilus / undark /
+# project_syndicate / the_19th /
+# defector / media404 / the_markup
+# / propublica / intercept /
+# variety / pitchfork /
+# nyt_magazine / nyt_arts /
+# guardian_books / nyt_books /
+# npr_arts. 0 article URL overlap
+# with those. Lands on the existing
+# 综合 category path (literary /
+# culture magazine, same as
+# atlantic / inverse /
+# smithsonian_mag). Not added to
+# the tech/AI whitelist
+# (later-batch sources stay off
+# the frozen ALWAYS set).
+# darkreading is the official
+# site-wide RSS (no prior
+# darkreading / dark_reading /
+# darkreading_com id). Product
+# lock: MUST lock
+# https://www.darkreading.com/rss.xml
+# (channel "darkreading") — do NOT
+# lock /feed /feed/ /rss /
+# /rss/index.xml (Cloudflare 403).
+# Official Cloudflare serves the
+# feed at HTTP 200 (cf-ray
+# present; not a JS challenge).
+# Soft enrich 403 = cooldown keep
+# applies to article-body enrich
+# after ingest, not to this
+# working RSS 200. Feedburner
+# /darkreading is a 5-byte empty
+# stub — lock official, not
+# Feedburner. Live-diff winner:
+# HTTP 200 / 50 nonempty / 30
+# insertable (httpx fetch_source +
+# urllib; ingest cap 30/50). 50 is
+# not the 5–9 observe band.
+# Distinct from live
+# thehackernews / wired /
+# ars_technica / thenewstack /
+# zdnet / the_register /
+# techcrunch / infoq / the_markup
+# / media404 / eff / mit_tr /
+# bbc_technology /
+# guardian_technology /
+# nyt_technology /
+# nyt_personaltech /
+# forbes_innovation / fast_company
+# / bloomberg_technology /
+# techinasia / android_authority /
+# tomshardware / howtogeek / cnet
+# / pcmag / mashable. 0 article
+# URL overlap with those. Lands on
+# the existing 科技 category path
+# (cybersecurity newsroom, same as
+# thehackernews / eff). Not added
+# to the tech/AI whitelist
+# (later-batch tech sources stay
+# off the frozen ALWAYS set).
+# Unused leftover new_statesman
+# stays out (official Varnish 403
+# this probe; new_yorker already
+# filled the baffler slot).
+# Unused leftover macworld stays
+# out (new_yorker filled the
+# baffler slot; path /feed — do
+# NOT use /rss/index.xml).
+# the_baffler stays unregistered
+# (official Cloudflare 403; do
+# not hang Feedburner).
+# inverse / appleinsider /
+# popular_mechanics stay
+# registered (batch84 KEEP).
+# polygon / pcmag / mashable stay
+# registered (batch83 KEEP).
+# smithsonian_mag is already the
+# gizmodo hard-swap primary on tip
+# (MUST lock
+# https://www.smithsonianmag.com/rss/latest_articles/
+# never stale /rss/articles/) —
+# do not register it twice.
+# engadget stays unregistered
+# (official CloudFront 403; do
+# not register Feedburner).
+# digital_trends stays
+# unregistered (official
+# Cloudflare 403 JS challenge;
+# do not register Feedburner).
+# techdirt stays unregistered
+# (official Cloudflare 403; do
+# not register Feedburner).
+# bleepingcomputer stays
+# unregistered (official
+# Cloudflare 403 JS challenge;
+# do not register Feedburner).
+# the_cut stays out (product
+# dropped — all 404; do not
+# probe / register). the_verge
+# stays out (verge already
+# registered). wired stays
+# registered as the existing
+# wired primary — do not hang a
+# second wired.
+# Do NOT use as backups (product
+# skip): bangkok_post /
+# indian_express / rest_of_world /
+# al_monitor / hkfp / biographic /
+# asiatimes / dawn / longreads /
+# hrw / independent (429) /
+# euractiv (301→rapporteur FAIL) /
+# atlantic_council (403) /
+# the_nation (empty feed) /
+# times_of_israel (Cloudflare 403)
+# / the_cut / techdirt / engadget /
+# digital_trends / bleepingcomputer
+# / gizmodo.
+# digiday0观察 — do not add a
+# second digiday. sunday_review /
+# cnbc (403 known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_UNIVERSE_TODAY_NEW_YORKER_DARKREADING_PRIMARY = {
+    "universe_today": {
+        "name": "Universe Today",
+        "feed_url": "https://www.universetoday.com/feed/",
+        "category": "科学",
+    },
+    "new_yorker": {
+        "name": "The New Yorker",
+        "feed_url": "https://www.newyorker.com/feed/everything",
+        "category": "综合",
+    },
+    "darkreading": {
+        "name": "Dark Reading",
+        "feed_url": "https://www.darkreading.com/rss.xml",
+        "category": "科技",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 263
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -23155,7 +23470,7 @@ def test_texas_tribune_pew_research_defector_primaries_registered():
     assert "infoq" in by_id
     assert "medicalxpress" in by_id
     assert "howtogeek" in by_id
-    assert "new_yorker" not in by_id
+    assert "new_yorker" in by_id
     assert "smithsonian_mag" in by_id
     assert "vox" in by_id
     assert "vox_com" not in by_id
@@ -23627,7 +23942,7 @@ def test_who_news_scientific_american_thenewstack_primaries_registered():
     assert "who_int" not in by_id
     assert "world_health_organization" not in by_id
     assert "independent" not in by_id
-    assert "new_yorker" not in by_id
+    assert "new_yorker" in by_id
     assert "newyorker" not in by_id
     assert "the_new_yorker" not in by_id
     assert "smithsonian_mag" in by_id
@@ -24112,7 +24427,7 @@ def test_irish_times_science_org_variety_primaries_registered():
     assert "how_to_geek" not in by_id
     assert "howtogeek_com" not in by_id
     assert "who_news" in by_id
-    assert "new_yorker" not in by_id
+    assert "new_yorker" in by_id
     assert "smithsonian_mag" in by_id
     assert "irish_times_com" not in by_id
     assert "irishtimes" not in by_id
@@ -24529,7 +24844,7 @@ def test_physics_world_kyiv_independent_pitchfork_primaries_registered():
     assert "new_republic" in by_id
     assert "howtogeek" in by_id
     assert "who_news" in by_id
-    assert "new_yorker" not in by_id
+    assert "new_yorker" in by_id
     assert "smithsonian_mag" in by_id
     assert "independent" not in by_id
     assert "independent_world" not in by_id
@@ -24992,7 +25307,7 @@ def test_grist_balkan_insight_tomshardware_primaries_registered():
     assert "new_republic" in by_id
     assert "howtogeek" in by_id
     assert "who_news" in by_id
-    assert "new_yorker" not in by_id
+    assert "new_yorker" in by_id
     assert "smithsonian_mag" in by_id
     assert "independent" not in by_id
     assert "independent_world" not in by_id
@@ -25449,7 +25764,7 @@ def test_livescience_thehackernews_stereogum_primaries_registered():
     assert "new_republic" in by_id
     assert "howtogeek" in by_id
     assert "who_news" in by_id
-    assert "new_yorker" not in by_id
+    assert "new_yorker" in by_id
     assert "smithsonian_mag" in by_id
     assert "independent" not in by_id
     assert "independent_world" not in by_id
@@ -25947,7 +26262,7 @@ def test_moscow_times_dezeen_eff_primaries_registered():
     assert "new_republic" in by_id
     assert "howtogeek" in by_id
     assert "who_news" in by_id
-    assert "new_yorker" not in by_id
+    assert "new_yorker" in by_id
     assert "smithsonian_mag" in by_id
     assert "independent" not in by_id
     assert "independent_world" not in by_id
@@ -26421,7 +26736,7 @@ def test_scotusblog_medicalxpress_infoq_primaries_registered():
     assert "the_hacker_news" not in by_id
     assert "stereogum_com" not in by_id
     assert "who_news" in by_id
-    assert "new_yorker" not in by_id
+    assert "new_yorker" in by_id
     assert "smithsonian_mag" in by_id
     assert "independent" not in by_id
     assert "independent_world" not in by_id
@@ -26946,7 +27261,7 @@ def test_android_authority_unherd_psyche_primaries_registered():
     assert "smithsonian" not in by_id
     assert "smithsonianmag" not in by_id
     assert "smithsonian_magazine" not in by_id
-    assert "new_yorker" not in by_id
+    assert "new_yorker" in by_id
     assert "newyorker" not in by_id
     assert "the_new_yorker" not in by_id
     assert "androidauthority" not in by_id
@@ -27498,7 +27813,7 @@ def test_howtogeek_new_republic_vox_primaries_registered():
     assert "artnet" in by_id
     assert "artnet_news" not in by_id
     assert "smithsonian_mag" in by_id
-    assert "new_yorker" not in by_id
+    assert "new_yorker" in by_id
     assert "androidauthority" not in by_id
     assert "android_authority_com" not in by_id
     assert "unherd_com" not in by_id
@@ -28020,7 +28335,7 @@ def test_artnet_macrumors_quillette_primaries_registered():
     assert "smithsonian" not in by_id
     assert "smithsonianmag" not in by_id
     assert "smithsonian_magazine" not in by_id
-    assert "new_yorker" not in by_id
+    assert "new_yorker" in by_id
     assert "newyorker" not in by_id
     assert "the_new_yorker" not in by_id
     assert "the_cut" not in by_id
@@ -28183,7 +28498,10 @@ def test_gizmodo_hard_swapped_to_smithsonian_mag():
     }
     assert "cnet" in by_id
     assert "9to5mac" in by_id
-    assert "new_yorker" not in by_id
+    assert "new_yorker" in by_id
+    assert by_id["new_yorker"].feed_url == (
+        "https://www.newyorker.com/feed/everything"
+    )
 
 
 def test_cnet_9to5mac_smithsonian_mag_primaries_registered():
@@ -28686,7 +29004,7 @@ def test_cnet_9to5mac_smithsonian_mag_primaries_registered():
     assert "smithsonian" not in by_id
     assert "smithsonianmag" not in by_id
     assert "smithsonian_magazine" not in by_id
-    assert "new_yorker" not in by_id
+    assert "new_yorker" in by_id
     assert "newyorker" not in by_id
     assert "the_new_yorker" not in by_id
     assert "the_cut" not in by_id
@@ -29211,7 +29529,7 @@ def test_polygon_pcmag_mashable_primaries_registered():
     assert "smithsonian" not in by_id
     assert "smithsonianmag" not in by_id
     assert "smithsonian_magazine" not in by_id
-    assert "new_yorker" not in by_id
+    assert "new_yorker" in by_id
     assert "newyorker" not in by_id
     assert "the_new_yorker" not in by_id
     assert "polygon_com" not in by_id
@@ -29508,7 +29826,7 @@ def test_inverse_appleinsider_popular_mechanics_primaries_registered():
     # times_of_israel stays unused
     # (official Cloudflare 403 FAIL;
     # Feedburner stale 2012).
-    assert "new_yorker" not in by_id
+    assert "new_yorker" in by_id
     assert "newyorker" not in by_id
     assert "the_new_yorker" not in by_id
     assert "macworld" not in by_id
@@ -29662,6 +29980,295 @@ def test_inverse_appleinsider_popular_mechanics_feeds_live_http_200():
         )
 
 
+def test_baffler_hard_swapped_to_new_yorker():
+    """Product lock: the_baffler official Cloudflare 403; new_yorker is the KEEP fill."""
+    by_id = {s.id: s for s in SOURCES}
+    assert "the_baffler" not in by_id
+    assert "baffler" not in by_id
+    assert "thebaffler" not in by_id
+    assert "the_baffler_com" not in by_id
+    assert "new_yorker" in by_id
+    source = by_id["new_yorker"]
+    assert source.role == "primary"
+    assert source.name == "The New Yorker"
+    assert source.feed_url == "https://www.newyorker.com/feed/everything"
+    assert source.category == "综合"
+    assert "https://thebaffler.com/feed" not in {s.feed_url for s in SOURCES}
+    assert "https://thebaffler.com/feed/" not in {s.feed_url for s in SOURCES}
+    assert "https://www.thebaffler.com/feed" not in {s.feed_url for s in SOURCES}
+    assert "https://feeds.feedburner.com/thebaffler" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://feeds.feedburner.com/TheBaffler" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://www.newyorker.com/rss/index.xml" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://www.newyorker.com/feed/rss" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "universe_today" in by_id
+    assert "darkreading" in by_id
+
+
+def test_universe_today_new_yorker_darkreading_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "universe_today" in by_id
+    assert by_id["universe_today"].feed_url == (
+        "https://www.universetoday.com/feed/"
+    )
+    assert by_id["universe_today"].feed_url != (
+        "https://www.universetoday.com/feed"
+    )
+    assert by_id["universe_today"].feed_url != (
+        "https://www.universetoday.com/rss.xml"
+    )
+    assert "new_yorker" in by_id
+    assert by_id["new_yorker"].feed_url == (
+        "https://www.newyorker.com/feed/everything"
+    )
+    assert by_id["new_yorker"].feed_url != (
+        "https://www.newyorker.com/rss/index.xml"
+    )
+    assert by_id["new_yorker"].feed_url != (
+        "https://www.newyorker.com/feed/rss"
+    )
+    assert "darkreading" in by_id
+    assert by_id["darkreading"].feed_url == (
+        "https://www.darkreading.com/rss.xml"
+    )
+    # #148 / batch84 winners stay registered and unchanged.
+    # #146 / batch83 winners stay registered and unchanged.
+    # #147 / #145 / batch82 winners stay registered and unchanged.
+    # #144 / batch81 winners stay registered and unchanged.
+    # #143 / batch80 winners stay registered and unchanged.
+    # Do not touch inverse / appleinsider /
+    # popular_mechanics / polygon / pcmag /
+    # mashable / smithsonian_mag / cnet /
+    # 9to5mac / artnet / macrumors /
+    # quillette / howtogeek / new_republic /
+    # vox.
+    assert "inverse" in by_id
+    assert "appleinsider" in by_id
+    assert "popular_mechanics" in by_id
+    assert "polygon" in by_id
+    assert "pcmag" in by_id
+    assert "mashable" in by_id
+    assert "cnet" in by_id
+    assert "9to5mac" in by_id
+    assert "smithsonian_mag" in by_id
+    assert "gizmodo" not in by_id
+    assert "artnet" in by_id
+    assert "macrumors" in by_id
+    assert "quillette" in by_id
+    assert "howtogeek" in by_id
+    assert "new_republic" in by_id
+    assert "vox" in by_id
+    # Feed locks + uniqueness vs live
+    # space / culture / security stack.
+    assert by_id["universe_today"].feed_url != by_id["space_com"].feed_url
+    assert by_id["universe_today"].feed_url != by_id["livescience"].feed_url
+    assert by_id["universe_today"].feed_url != by_id["scientific_american"].feed_url
+    assert by_id["universe_today"].feed_url != by_id["physics_world"].feed_url
+    assert by_id["universe_today"].feed_url != by_id["science_org"].feed_url
+    assert by_id["universe_today"].feed_url != by_id["popular_science"].feed_url
+    assert by_id["universe_today"].feed_url != by_id["popular_mechanics"].feed_url
+    assert by_id["universe_today"].feed_url != by_id["phys_org"].feed_url
+    assert by_id["universe_today"].feed_url != by_id["sciencedaily"].feed_url
+    assert by_id["universe_today"].feed_url != by_id["science_news"].feed_url
+    assert by_id["universe_today"].feed_url != by_id["knowable"].feed_url
+    assert by_id["universe_today"].feed_url != by_id["smithsonian_mag"].feed_url
+    assert by_id["universe_today"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["universe_today"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["new_yorker"].feed_url != by_id["atlantic"].feed_url
+    assert by_id["new_yorker"].feed_url != by_id["jacobin"].feed_url
+    assert by_id["new_yorker"].feed_url != by_id["new_republic"].feed_url
+    assert by_id["new_yorker"].feed_url != by_id["quillette"].feed_url
+    assert by_id["new_yorker"].feed_url != by_id["reason"].feed_url
+    assert by_id["new_yorker"].feed_url != by_id["unherd"].feed_url
+    assert by_id["new_yorker"].feed_url != by_id["slate"].feed_url
+    assert by_id["new_yorker"].feed_url != by_id["salon"].feed_url
+    assert by_id["new_yorker"].feed_url != by_id["mother_jones"].feed_url
+    assert by_id["new_yorker"].feed_url != by_id["inverse"].feed_url
+    assert by_id["new_yorker"].feed_url != by_id["smithsonian_mag"].feed_url
+    assert by_id["new_yorker"].feed_url != by_id["literary_hub"].feed_url
+    assert by_id["darkreading"].feed_url != by_id["thehackernews"].feed_url
+    assert by_id["darkreading"].feed_url != by_id["wired"].feed_url
+    assert by_id["darkreading"].feed_url != by_id["ars_technica"].feed_url
+    assert by_id["darkreading"].feed_url != by_id["thenewstack"].feed_url
+    assert by_id["darkreading"].feed_url != by_id["zdnet"].feed_url
+    assert by_id["darkreading"].feed_url != by_id["the_register"].feed_url
+    assert by_id["darkreading"].feed_url != by_id["techcrunch"].feed_url
+    assert by_id["darkreading"].feed_url != by_id["infoq"].feed_url
+    assert by_id["darkreading"].feed_url != by_id["eff"].feed_url
+    assert by_id["darkreading"].feed_url != by_id["media404"].feed_url
+    assert by_id["darkreading"].feed_url != by_id["the_markup"].feed_url
+    assert by_id["universe_today"].feed_url != by_id["new_yorker"].feed_url
+    assert by_id["universe_today"].feed_url != by_id["darkreading"].feed_url
+    assert by_id["new_yorker"].feed_url != by_id["darkreading"].feed_url
+    # the_baffler official Cloudflare 403
+    # — not registered (do not hang
+    # Feedburner). new_yorker is the
+    # hard-swap KEEP fill (MUST lock
+    # /feed/everything; never
+    # /rss/index.xml).
+    # new_statesman official Varnish 403
+    # — unused leftover.
+    # macworld stays unused leftover
+    # (new_yorker filled the baffler
+    # slot; path /feed — do NOT use
+    # /rss/index.xml).
+    # inverse / appleinsider /
+    # popular_mechanics stay registered
+    # (batch84 KEEP).
+    # polygon / pcmag / mashable stay
+    # registered (batch83 KEEP).
+    # smithsonian_mag is already the
+    # gizmodo hard-swap primary on tip
+    # (MUST lock /rss/latest_articles/
+    # never stale /rss/articles/) — do
+    # not register it twice.
+    # bleepingcomputer official Cloudflare
+    # 403 JS challenge — not registered
+    # (do not hang Feedburner).
+    # engadget / digital_trends stay
+    # unregistered (official RSS 403;
+    # do not hang Feedburner).
+    # the_verge stays out (verge already
+    # registered). Do not hang a second
+    # wired. the_cut stays out (product
+    # dropped — all 404). techdirt stays
+    # unregistered (official Cloudflare
+    # 403; do not hang Feedburner).
+    # gizmodo stays hung (official CI
+    # 403; do not re-hang).
+    assert "the_baffler" not in by_id
+    assert "baffler" not in by_id
+    assert "thebaffler" not in by_id
+    assert "the_baffler_com" not in by_id
+    assert "newyorker" not in by_id
+    assert "the_new_yorker" not in by_id
+    assert "new_statesman" not in by_id
+    assert "newstatesman" not in by_id
+    assert "new_statesman_com" not in by_id
+    assert "macworld" not in by_id
+    assert "mac_world" not in by_id
+    assert "macworld_com" not in by_id
+    assert "universetoday" not in by_id
+    assert "universe_today_com" not in by_id
+    assert "dark_reading" not in by_id
+    assert "darkreading_com" not in by_id
+    assert "inverse_com" not in by_id
+    assert "apple_insider" not in by_id
+    assert "appleinsider_com" not in by_id
+    assert "popularmechanics" not in by_id
+    assert "popmech" not in by_id
+    assert "popular_mechanics_com" not in by_id
+    assert "smithsonian" not in by_id
+    assert "smithsonianmag" not in by_id
+    assert "smithsonian_magazine" not in by_id
+    assert "polygon_com" not in by_id
+    assert "pcmag_com" not in by_id
+    assert "pc_mag" not in by_id
+    assert "mashable_com" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bleeping_computer" not in by_id
+    assert "bleepingcomputer_com" not in by_id
+    assert "engadget" not in by_id
+    assert "engadget_com" not in by_id
+    assert "digital_trends" not in by_id
+    assert "digitaltrends" not in by_id
+    assert "digital_trends_com" not in by_id
+    assert "the_verge" not in by_id
+    assert "techdirt" not in by_id
+    assert "techdirt_com" not in by_id
+    assert "the_cut" not in by_id
+    assert "thecut" not in by_id
+    assert "the_cut_com" not in by_id
+    assert "gizmodo" not in by_id
+    assert "gizmodo_com" not in by_id
+    assert "grist" in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "who_news" in by_id
+    assert "independent" not in by_id
+    assert "independent_world" not in by_id
+    assert "hrw" not in by_id
+    assert "longreads" not in by_id
+    assert "dawn" not in by_id
+    assert "asiatimes" not in by_id
+    assert "asia_times" not in by_id
+    assert "biographic" not in by_id
+    assert "hkfp" not in by_id
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "the_nation" not in by_id
+    for source_id, expected in _UNIVERSE_TODAY_NEW_YORKER_DARKREADING_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_universe_today_new_yorker_darkreading_feeds_live_http_200():
+    """Hit the three batch85 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _UNIVERSE_TODAY_NEW_YORKER_DARKREADING_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (universe_today /
+        # new_yorker / darkreading) uses
+        # the un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # universe_today 20/20, new_yorker
+        # 50/50, and darkreading 50/50
+        # were 100% nonempty this probe.
+        # ingest cap 30/50 still KEEP.
+        # the_baffler official Cloudflare
+        # 403 was hard-swapped — do not
+        # re-probe it here.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= 10, (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -29753,6 +30360,8 @@ if __name__ == "__main__":
     test_cnet_9to5mac_smithsonian_mag_primaries_registered()
     test_polygon_pcmag_mashable_primaries_registered()
     test_inverse_appleinsider_popular_mechanics_primaries_registered()
+    test_baffler_hard_swapped_to_new_yorker()
+    test_universe_today_new_yorker_darkreading_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -29836,4 +30445,5 @@ if __name__ == "__main__":
     test_cnet_9to5mac_smithsonian_mag_feeds_live_http_200()
     test_polygon_pcmag_mashable_feeds_live_http_200()
     test_inverse_appleinsider_popular_mechanics_feeds_live_http_200()
+    test_universe_today_new_yorker_darkreading_feeds_live_http_200()
     print("✓ source registry tests PASSED")
