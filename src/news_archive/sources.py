@@ -2235,6 +2235,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="kotaku",
+        name="Kotaku",
+        feed_url="https://kotaku.com/feed",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="makeuseof",
+        name="MakeUseOf",
+        feed_url="https://www.makeuseof.com/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="spaceflightnow",
+        name="Spaceflight Now",
+        feed_url="https://spaceflightnow.com/feed/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
