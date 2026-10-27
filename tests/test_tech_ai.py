@@ -911,6 +911,31 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "krebsonsecurity" not in TECH_AI_SOURCE_WHITELIST
     assert "guernica" not in TECH_AI_SOURCE_WHITELIST
     assert "nationalinterest" not in TECH_AI_SOURCE_WHITELIST
+    # batch87 RSS primaries stay off the tech/AI whitelist.
+    # theweek lands on 综合 (news
+    # magazine, same as time_top /
+    # atlantic / slate) and is not
+    # added to KEYWORD sources.
+    # harpers lands on 综合 (literary
+    # magazine, same as lrb /
+    # new_yorker / literary_hub).
+    # justsecurity lands on 国际
+    # (national-security / law
+    # newsroom, same as
+    # responsiblestatecraft /
+    # war_on_rocks). Unused leftovers
+    # infosecurity_magazine /
+    # csoonline / taskandpurpose stay
+    # off (all three primaries live
+    # KEEP). None of these match the
+    # wired / verge / techcrunch
+    # ALWAYS pattern.
+    assert "theweek" not in TECH_AI_SOURCE_WHITELIST
+    assert "harpers" not in TECH_AI_SOURCE_WHITELIST
+    assert "justsecurity" not in TECH_AI_SOURCE_WHITELIST
+    assert "infosecurity_magazine" not in TECH_AI_SOURCE_WHITELIST
+    assert "csoonline" not in TECH_AI_SOURCE_WHITELIST
+    assert "taskandpurpose" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

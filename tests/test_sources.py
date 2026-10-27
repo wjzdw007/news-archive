@@ -10318,7 +10318,311 @@ _SCIENCEALERT_RESPONSIBLESTATECRAFT_LRB_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 266
+# CEO-approved The Week / Harper's Magazine
+# / Just Security RSS primaries
+# (batch87). These three are the new
+# adds after #150 (batch86
+# sciencealert +
+# responsiblestatecraft + lrb) on
+# tip
+# 581cdab633e863f2ac0ebf8bcc94e22ad8dc94e2.
+# Primaries were theweek / harpers
+# / justsecurity. Backups were
+# infosecurity_magazine /
+# csoonline / taskandpurpose
+# (probe only if a primary fails
+# thin/403). All three primaries
+# live KEEP this probe — no
+# hard-swap. sciencealert /
+# responsiblestatecraft / lrb
+# just landed via #150 — do not
+# undo. universe_today /
+# new_yorker / darkreading (#149)
+# / inverse / appleinsider /
+# popular_mechanics (#148) /
+# polygon / pcmag / mashable
+# (#146) / smithsonian_mag (#147)
+# stay.
+# Product feed locks
+# (official only; no Feedburner):
+# theweek =
+# https://theweek.com/feeds.xml
+# (MUST /feeds.xml; no trailing
+# slash; do NOT invent /feed
+# /feed/ /rss/index.xml)
+# harpers =
+# https://harpers.org/feed/
+# (MUST trailing slash on /feed/;
+# do NOT invent /feed
+# /rss/index.xml /feeds.xml)
+# justsecurity =
+# https://www.justsecurity.org/feed/
+# (MUST trailing slash on /feed/;
+# do NOT invent /feed
+# /rss/index.xml)
+# infosecurity_magazine leftover
+# backup =
+# https://www.infosecurity-magazine.com/rss/news/
+# (unused because theweek KEEP)
+# csoonline leftover backup =
+# https://www.csoonline.com/feed/
+# (unused because harpers KEEP)
+# taskandpurpose leftover backup =
+# https://taskandpurpose.com/feed/
+# (unused because justsecurity
+# KEEP)
+# Active candidate set is these 6
+# (3 primary + 3 leftover backup).
+# CAP=6 sources max in the active
+# set. NEWS_SOURCE_CAP display stays 6 —
+# no CAP code change.
+# Do not restore atlantic_council.
+# Do not restore the_nation. Do not
+# restore independent. Do not restore
+# hrw. Do not restore euractiv. Do
+# not restore dawn / longreads. Do
+# not restore times_of_israel. Do not
+# restore techdirt. Do not restore
+# engadget. Do not restore
+# digital_trends. Do not restore
+# the_cut. Do not restore
+# bleepingcomputer. Do not restore
+# gizmodo (CI 403 after #147). Do not
+# restore the_baffler (Cloudflare 403
+# after #149). Do not restore
+# new_statesman (Varnish 403 leftover).
+# Do not probe / register product-skip:
+# bangkok_post / indian_express /
+# rest_of_world / al_monitor / hkfp /
+# biographic / asiatimes / dawn /
+# longreads / hrw / independent /
+# euractiv / atlantic_council /
+# the_nation / times_of_israel /
+# the_cut / techdirt / engadget /
+# digital_trends / bleepingcomputer /
+# gizmodo / the_baffler /
+# new_statesman.
+# Do not re-hang SCMP / MIT TR /
+# BBC World (already live).
+# Do not re-touch sciencealert /
+# responsiblestatecraft / lrb
+# (#150) / universe_today /
+# new_yorker / darkreading (#149)
+# / inverse / appleinsider /
+# popular_mechanics (#148) /
+# polygon / pcmag / mashable
+# (#146) / smithsonian_mag (#147)
+# / cnet / 9to5mac (#145) /
+# artnet / macrumors / quillette
+# (#144) / howtogeek /
+# new_republic / vox (#143).
+# Skip already-registered
+# collisions: the_verge (verge
+# already registered) / wired
+# (already registered). Do not
+# hang a second verge or wired.
+# theweek is the official
+# site-wide RSS (no prior theweek
+# / the_week / theweek_com /
+# week id). Product lock: MUST
+# lock https://theweek.com/feeds.xml
+# (channel "The Week") — no
+# trailing slash. Official
+# Fastly/CDN serves the feed at
+# HTTP 200 (application/xml).
+# Live-diff winner: HTTP 200 /
+# 50 nonempty / 30 insertable
+# (httpx fetch_source ingest cap
+# 30/50 + urllib). 50/30 is not
+# the 5–9 observe band. Distinct
+# from live time_top / atlantic /
+# slate / new_yorker / lrb /
+# inverse / smithsonian_mag /
+# quillette / nyt_magazine.
+# 0 article URL overlap with
+# those. Lands on the existing
+# 综合 category path (news
+# magazine, same as time_top /
+# atlantic / slate). Not added
+# to the tech/AI whitelist
+# (later-batch sources stay off
+# the frozen ALWAYS set).
+# harpers is the official
+# site-wide RSS (no prior
+# harpers / harper /
+# harpers_magazine /
+# harpers_org id). Product lock:
+# MUST lock
+# https://harpers.org/feed/
+# (channel "Harper's Magazine")
+# — trailing slash required; do
+# NOT invent /feed
+# /rss/index.xml /feeds.xml.
+# Live-diff winner: HTTP 200 /
+# 10 nonempty / 10 insertable
+# (httpx fetch_source + urllib).
+# 10 is the KEEP floor, not the
+# 5–9 observe band. Distinct
+# from live lrb / new_yorker /
+# literary_hub / atlantic /
+# inverse / smithsonian_mag /
+# aeon / noema / nautilus /
+# undark / nyt_magazine /
+# nyt_arts / nyt_books /
+# guardian_books / npr_arts /
+# quillette / artnet. 0 article
+# URL overlap with those. Lands
+# on the existing 综合 category
+# path (literary magazine, same
+# as lrb / new_yorker /
+# literary_hub). Not added to
+# the tech/AI whitelist
+# (later-batch sources stay off
+# the frozen ALWAYS set).
+# justsecurity is the official
+# site-wide RSS (no prior
+# justsecurity / just_security
+# / justsecurity_org id).
+# Product lock: MUST lock
+# https://www.justsecurity.org/feed/
+# (channel "Just Security") —
+# trailing slash required; do
+# NOT invent /feed
+# /rss/index.xml. Live-diff
+# winner: HTTP 200 / 10
+# nonempty / 10 insertable
+# (httpx fetch_source +
+# urllib). 10 is the KEEP
+# floor, not the 5–9 observe
+# band. Distinct from live
+# responsiblestatecraft /
+# foreign_policy /
+# war_on_rocks /
+# foreign_affairs /
+# crisis_group / defense_one /
+# breaking_defense /
+# aspi_strategist /
+# lowy_interpreter /
+# world_politics_review /
+# the_diplomat /
+# project_syndicate /
+# intercept / atlantic /
+# new_republic / unherd /
+# scotusblog. 0 article URL
+# overlap with those. Lands on
+# the existing 国际 category
+# path (national-security /
+# law newsroom, same as
+# responsiblestatecraft /
+# war_on_rocks). Not added to
+# the tech/AI whitelist
+# (later-batch sources stay
+# off the frozen ALWAYS set).
+# Unused leftover
+# infosecurity_magazine stays
+# out (theweek KEEP; path
+# /rss/news/ — do NOT invent
+# /feed /rss/index.xml).
+# Unused leftover csoonline
+# stays out (harpers KEEP;
+# path /feed/ — do NOT invent
+# /rss/index.xml).
+# Unused leftover
+# taskandpurpose stays out
+# (justsecurity KEEP; path
+# /feed/ — do NOT invent
+# /rss/index.xml).
+# sciencealert /
+# responsiblestatecraft / lrb
+# stay registered (batch86
+# KEEP). universe_today /
+# new_yorker / darkreading
+# stay registered (batch85
+# KEEP). inverse /
+# appleinsider /
+# popular_mechanics stay
+# registered (batch84 KEEP).
+# polygon / pcmag / mashable
+# stay registered (batch83
+# KEEP). smithsonian_mag is
+# already the gizmodo
+# hard-swap primary on tip
+# (MUST lock
+# https://www.smithsonianmag.com/rss/latest_articles/
+# never stale /rss/articles/)
+# — do not register it twice.
+# the_baffler stays
+# unregistered (official
+# Cloudflare 403; do not hang
+# Feedburner). new_statesman
+# stays unused leftover
+# (official Varnish 403).
+# engadget stays unregistered
+# (official CloudFront 403; do
+# not register Feedburner).
+# digital_trends stays
+# unregistered (official
+# Cloudflare 403 JS challenge;
+# do not register Feedburner).
+# techdirt stays unregistered
+# (official Cloudflare 403; do
+# not register Feedburner).
+# bleepingcomputer stays
+# unregistered (official
+# Cloudflare 403 JS challenge;
+# do not register Feedburner).
+# the_cut stays out (product
+# dropped — all 404; do not
+# probe / register). the_verge
+# stays out (verge already
+# registered). wired stays
+# registered as the existing
+# wired primary — do not hang
+# a second wired.
+# Do NOT use as backups
+# (product skip): bangkok_post
+# / indian_express /
+# rest_of_world / al_monitor /
+# hkfp / biographic /
+# asiatimes / dawn /
+# longreads / hrw /
+# independent (429) /
+# euractiv (301→rapporteur
+# FAIL) / atlantic_council
+# (403) / the_nation (empty
+# feed) / times_of_israel
+# (Cloudflare 403) / the_cut
+# / techdirt / engadget /
+# digital_trends /
+# bleepingcomputer / gizmodo /
+# the_baffler / new_statesman.
+# digiday0观察 — do not add a
+# second digiday. sunday_review /
+# cnbc (403 known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_THEWEEK_HARPERS_JUSTSECURITY_PRIMARY = {
+    "theweek": {
+        "name": "The Week",
+        "feed_url": "https://theweek.com/feeds.xml",
+        "category": "综合",
+    },
+    "harpers": {
+        "name": "Harper's Magazine",
+        "feed_url": "https://harpers.org/feed/",
+        "category": "综合",
+    },
+    "justsecurity": {
+        "name": "Just Security",
+        "feed_url": "https://www.justsecurity.org/feed/",
+        "category": "国际",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 269
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -30873,6 +31177,327 @@ def test_sciencealert_responsiblestatecraft_lrb_feeds_live_http_200():
         )
 
 
+def test_theweek_harpers_justsecurity_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "theweek" in by_id
+    assert by_id["theweek"].feed_url == (
+        "https://theweek.com/feeds.xml"
+    )
+    assert by_id["theweek"].feed_url != (
+        "https://theweek.com/feeds.xml/"
+    )
+    assert by_id["theweek"].feed_url != (
+        "https://theweek.com/feed"
+    )
+    assert by_id["theweek"].feed_url != (
+        "https://theweek.com/feed/"
+    )
+    assert by_id["theweek"].feed_url != (
+        "https://theweek.com/rss/index.xml"
+    )
+    assert "harpers" in by_id
+    assert by_id["harpers"].feed_url == (
+        "https://harpers.org/feed/"
+    )
+    assert by_id["harpers"].feed_url != (
+        "https://harpers.org/feed"
+    )
+    assert by_id["harpers"].feed_url != (
+        "https://harpers.org/rss/index.xml"
+    )
+    assert by_id["harpers"].feed_url != (
+        "https://harpers.org/feeds.xml"
+    )
+    assert "justsecurity" in by_id
+    assert by_id["justsecurity"].feed_url == (
+        "https://www.justsecurity.org/feed/"
+    )
+    assert by_id["justsecurity"].feed_url != (
+        "https://www.justsecurity.org/feed"
+    )
+    assert by_id["justsecurity"].feed_url != (
+        "https://www.justsecurity.org/rss/index.xml"
+    )
+    # #150 / batch86 winners stay registered and unchanged.
+    # #149 / batch85 winners stay registered and unchanged.
+    # #148 / batch84 winners stay registered and unchanged.
+    # #146 / batch83 winners stay registered and unchanged.
+    # #147 / #145 / batch82 winners stay registered and unchanged.
+    # #144 / batch81 winners stay registered and unchanged.
+    # #143 / batch80 winners stay registered and unchanged.
+    # Do not touch sciencealert /
+    # responsiblestatecraft / lrb /
+    # universe_today / new_yorker /
+    # darkreading / inverse /
+    # appleinsider / popular_mechanics
+    # / polygon / pcmag / mashable /
+    # smithsonian_mag / cnet /
+    # 9to5mac / artnet / macrumors /
+    # quillette / howtogeek /
+    # new_republic / vox.
+    assert "sciencealert" in by_id
+    assert "responsiblestatecraft" in by_id
+    assert "lrb" in by_id
+    assert "universe_today" in by_id
+    assert "new_yorker" in by_id
+    assert "darkreading" in by_id
+    assert "inverse" in by_id
+    assert "appleinsider" in by_id
+    assert "popular_mechanics" in by_id
+    assert "polygon" in by_id
+    assert "pcmag" in by_id
+    assert "mashable" in by_id
+    assert "cnet" in by_id
+    assert "9to5mac" in by_id
+    assert "smithsonian_mag" in by_id
+    assert "gizmodo" not in by_id
+    assert "artnet" in by_id
+    assert "macrumors" in by_id
+    assert "quillette" in by_id
+    assert "howtogeek" in by_id
+    assert "new_republic" in by_id
+    assert "vox" in by_id
+    # Feed locks + uniqueness vs live
+    # news-magazine / literary /
+    # national-security stack.
+    assert by_id["theweek"].feed_url != by_id["time_top"].feed_url
+    assert by_id["theweek"].feed_url != by_id["atlantic"].feed_url
+    assert by_id["theweek"].feed_url != by_id["slate"].feed_url
+    assert by_id["theweek"].feed_url != by_id["new_yorker"].feed_url
+    assert by_id["theweek"].feed_url != by_id["lrb"].feed_url
+    assert by_id["theweek"].feed_url != by_id["inverse"].feed_url
+    assert by_id["theweek"].feed_url != by_id["smithsonian_mag"].feed_url
+    assert by_id["theweek"].feed_url != by_id["quillette"].feed_url
+    assert by_id["theweek"].feed_url != by_id["nyt_magazine"].feed_url
+    assert by_id["harpers"].feed_url != by_id["lrb"].feed_url
+    assert by_id["harpers"].feed_url != by_id["new_yorker"].feed_url
+    assert by_id["harpers"].feed_url != by_id["literary_hub"].feed_url
+    assert by_id["harpers"].feed_url != by_id["atlantic"].feed_url
+    assert by_id["harpers"].feed_url != by_id["inverse"].feed_url
+    assert by_id["harpers"].feed_url != by_id["smithsonian_mag"].feed_url
+    assert by_id["harpers"].feed_url != by_id["aeon"].feed_url
+    assert by_id["harpers"].feed_url != by_id["noema"].feed_url
+    assert by_id["harpers"].feed_url != by_id["nautilus"].feed_url
+    assert by_id["harpers"].feed_url != by_id["undark"].feed_url
+    assert by_id["harpers"].feed_url != by_id["nyt_magazine"].feed_url
+    assert by_id["harpers"].feed_url != by_id["nyt_arts"].feed_url
+    assert by_id["harpers"].feed_url != by_id["nyt_books"].feed_url
+    assert by_id["harpers"].feed_url != by_id["guardian_books"].feed_url
+    assert by_id["harpers"].feed_url != by_id["npr_arts"].feed_url
+    assert by_id["harpers"].feed_url != by_id["quillette"].feed_url
+    assert by_id["harpers"].feed_url != by_id["artnet"].feed_url
+    assert by_id["justsecurity"].feed_url != by_id["responsiblestatecraft"].feed_url
+    assert by_id["justsecurity"].feed_url != by_id["foreign_policy"].feed_url
+    assert by_id["justsecurity"].feed_url != by_id["war_on_rocks"].feed_url
+    assert by_id["justsecurity"].feed_url != by_id["foreign_affairs"].feed_url
+    assert by_id["justsecurity"].feed_url != by_id["crisis_group"].feed_url
+    assert by_id["justsecurity"].feed_url != by_id["defense_one"].feed_url
+    assert by_id["justsecurity"].feed_url != by_id["breaking_defense"].feed_url
+    assert by_id["justsecurity"].feed_url != by_id["aspi_strategist"].feed_url
+    assert by_id["justsecurity"].feed_url != by_id["lowy_interpreter"].feed_url
+    assert by_id["justsecurity"].feed_url != by_id["world_politics_review"].feed_url
+    assert by_id["justsecurity"].feed_url != by_id["the_diplomat"].feed_url
+    assert by_id["justsecurity"].feed_url != by_id["project_syndicate"].feed_url
+    assert by_id["justsecurity"].feed_url != by_id["intercept"].feed_url
+    assert by_id["justsecurity"].feed_url != by_id["atlantic"].feed_url
+    assert by_id["justsecurity"].feed_url != by_id["new_republic"].feed_url
+    assert by_id["justsecurity"].feed_url != by_id["unherd"].feed_url
+    assert by_id["justsecurity"].feed_url != by_id["scotusblog"].feed_url
+    assert by_id["theweek"].feed_url != by_id["harpers"].feed_url
+    assert by_id["theweek"].feed_url != by_id["justsecurity"].feed_url
+    assert by_id["harpers"].feed_url != by_id["justsecurity"].feed_url
+    # Unused leftover backups stay out
+    # (all three primaries live KEEP).
+    # infosecurity_magazine /
+    # csoonline / taskandpurpose were
+    # not probed for KEEP-fill.
+    # sciencealert /
+    # responsiblestatecraft / lrb stay
+    # registered (batch86 KEEP).
+    # universe_today / new_yorker /
+    # darkreading stay registered
+    # (batch85 KEEP).
+    # inverse / appleinsider /
+    # popular_mechanics stay registered
+    # (batch84 KEEP).
+    # polygon / pcmag / mashable stay
+    # registered (batch83 KEEP).
+    # smithsonian_mag is already the
+    # gizmodo hard-swap primary on tip
+    # (MUST lock /rss/latest_articles/
+    # never stale /rss/articles/) — do
+    # not register it twice.
+    # the_baffler official Cloudflare
+    # 403 — not registered (do not hang
+    # Feedburner).
+    # new_statesman official Varnish 403
+    # — unused leftover.
+    # bleepingcomputer official Cloudflare
+    # 403 JS challenge — not registered
+    # (do not hang Feedburner).
+    # engadget / digital_trends stay
+    # unregistered (official RSS 403;
+    # do not hang Feedburner).
+    # the_verge stays out (verge already
+    # registered). Do not hang a second
+    # wired. the_cut stays out (product
+    # dropped — all 404). techdirt stays
+    # unregistered (official Cloudflare
+    # 403; do not hang Feedburner).
+    # gizmodo stays hung (official CI
+    # 403; do not re-hang).
+    assert "the_week" not in by_id
+    assert "theweek_com" not in by_id
+    assert "the_week_com" not in by_id
+    assert "week" not in by_id
+    assert "harper" not in by_id
+    assert "harpers_magazine" not in by_id
+    assert "harpers_org" not in by_id
+    assert "harpersmagazine" not in by_id
+    assert "just_security" not in by_id
+    assert "justsecurity_org" not in by_id
+    assert "just_security_org" not in by_id
+    assert "infosecurity_magazine" not in by_id
+    assert "infosecurity" not in by_id
+    assert "infosec_magazine" not in by_id
+    assert "infosecuritymagazine" not in by_id
+    assert "csoonline" not in by_id
+    assert "cso_online" not in by_id
+    assert "cso" not in by_id
+    assert "csoonline_com" not in by_id
+    assert "taskandpurpose" not in by_id
+    assert "task_and_purpose" not in by_id
+    assert "task_purpose" not in by_id
+    assert "taskandpurpose_com" not in by_id
+    assert "the_baffler" not in by_id
+    assert "baffler" not in by_id
+    assert "thebaffler" not in by_id
+    assert "the_baffler_com" not in by_id
+    assert "newyorker" not in by_id
+    assert "the_new_yorker" not in by_id
+    assert "new_statesman" not in by_id
+    assert "newstatesman" not in by_id
+    assert "new_statesman_com" not in by_id
+    assert "macworld" not in by_id
+    assert "mac_world" not in by_id
+    assert "macworld_com" not in by_id
+    assert "universetoday" not in by_id
+    assert "universe_today_com" not in by_id
+    assert "dark_reading" not in by_id
+    assert "darkreading_com" not in by_id
+    assert "inverse_com" not in by_id
+    assert "apple_insider" not in by_id
+    assert "appleinsider_com" not in by_id
+    assert "popularmechanics" not in by_id
+    assert "popmech" not in by_id
+    assert "popular_mechanics_com" not in by_id
+    assert "smithsonian" not in by_id
+    assert "smithsonianmag" not in by_id
+    assert "smithsonian_magazine" not in by_id
+    assert "polygon_com" not in by_id
+    assert "pcmag_com" not in by_id
+    assert "pc_mag" not in by_id
+    assert "mashable_com" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bleeping_computer" not in by_id
+    assert "bleepingcomputer_com" not in by_id
+    assert "engadget" not in by_id
+    assert "engadget_com" not in by_id
+    assert "digital_trends" not in by_id
+    assert "digitaltrends" not in by_id
+    assert "digital_trends_com" not in by_id
+    assert "the_verge" not in by_id
+    assert "techdirt" not in by_id
+    assert "techdirt_com" not in by_id
+    assert "the_cut" not in by_id
+    assert "thecut" not in by_id
+    assert "the_cut_com" not in by_id
+    assert "gizmodo" not in by_id
+    assert "gizmodo_com" not in by_id
+    assert "grist" in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "who_news" in by_id
+    assert "independent" not in by_id
+    assert "independent_world" not in by_id
+    assert "hrw" not in by_id
+    assert "longreads" not in by_id
+    assert "dawn" not in by_id
+    assert "asiatimes" not in by_id
+    assert "asia_times" not in by_id
+    assert "biographic" not in by_id
+    assert "hkfp" not in by_id
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "the_nation" not in by_id
+    for source_id, expected in _THEWEEK_HARPERS_JUSTSECURITY_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_theweek_harpers_justsecurity_feeds_live_http_200():
+    """Hit the three batch87 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _THEWEEK_HARPERS_JUSTSECURITY_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (theweek / harpers /
+        # justsecurity) uses the
+        # un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # theweek 50/50,
+        # harpers 10/10, and
+        # justsecurity 10/10 were 100%
+        # nonempty this probe. ingest
+        # cap 30/50 still KEEP.
+        # theweek MUST stay on
+        # /feeds.xml (no trailing
+        # slash). harpers / justsecurity
+        # MUST keep the trailing slash
+        # on /feed/.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= 10, (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -30967,6 +31592,7 @@ if __name__ == "__main__":
     test_baffler_hard_swapped_to_new_yorker()
     test_universe_today_new_yorker_darkreading_primaries_registered()
     test_sciencealert_responsiblestatecraft_lrb_primaries_registered()
+    test_theweek_harpers_justsecurity_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -31052,4 +31678,5 @@ if __name__ == "__main__":
     test_inverse_appleinsider_popular_mechanics_feeds_live_http_200()
     test_universe_today_new_yorker_darkreading_feeds_live_http_200()
     test_sciencealert_responsiblestatecraft_lrb_feeds_live_http_200()
+    test_theweek_harpers_justsecurity_feeds_live_http_200()
     print("✓ source registry tests PASSED")
