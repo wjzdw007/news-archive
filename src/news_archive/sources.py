@@ -1941,6 +1941,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="xda_developers",
+        name="XDA Developers",
+        feed_url="https://www.xda-developers.com/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="infosecurity_magazine",
+        name="Infosecurity Magazine",
+        feed_url="https://www.infosecurity-magazine.com/rss/news/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="csoonline",
+        name="CSO Online",
+        feed_url="https://www.csoonline.com/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
