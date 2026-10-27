@@ -2067,6 +2067,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="phoronix",
+        name="Phoronix",
+        feed_url="https://www.phoronix.com/rss.php",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="adafruit",
+        name="Adafruit",
+        feed_url="https://blog.adafruit.com/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="boingboing",
+        name="Boing Boing",
+        feed_url="https://boingboing.net/feed",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

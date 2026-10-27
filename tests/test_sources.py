@@ -13680,7 +13680,156 @@ _LWN_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 293
+# CEO-approved Phoronix / Adafruit /
+# Boing Boing RSS primaries
+# (batch97). On tip c14925c after
+# #162 (jalopnik / lwn /
+# quanta_magazine; hard-swap
+# mit_technology_review). Product
+# KEEP set is phoronix / adafruit /
+# boingboing. Named 备 (hard-swap
+# ONLY if a KEEP fails): deadline /
+# makezine / utility_dive. lwn was
+# previously in this batch's 备 but
+# is NOW LIVE via #162 — do NOT
+# register lwn again. Do not invent
+# a fourth replacement.
+# phoronix official
+# https://www.phoronix.com/rss.php
+# is new (no prior phoronix /
+# phoronix_com id). httpx+
+# RSS_HEADERS HTTP 200 / 32
+# nonempty / 30 insertable
+# (ingest cap 30; channel
+# "Phoronix"). MUST lock www +
+# /rss.php: apex phoronix.com/rss.php
+# is Cloudflare 403 HTML; /rss
+# /rss.xml /feed /feed/
+# /phoronix-rss.php /index.rss
+# are CF 403. Homepage itself is
+# CF 403 under the same client —
+# official /rss.php is the working
+# site-wide path. Do not invent
+# Feedburner / section feeds.
+# adafruit official
+# https://blog.adafruit.com/feed/
+# is new (no prior adafruit /
+# adafruit_com / adafruit_blog id).
+# httpx+RSS_HEADERS HTTP 200 / 50
+# nonempty / 30 insertable
+# (ingest cap 30; channel
+# "Adafruit Industries – Makers,
+# hackers, artists, designers and
+# engineers!"). MUST trailing slash
+# on official blog /feed/; homepage
+# <link> announces this exact path.
+# /feed (no slash) is the same
+# 50-item body; www.adafruit.com
+# /blog/feed remaps here. Store
+# www.adafruit.com/feed is nginx
+# 403. /rss is RSS 0.92 (same
+# titles, thinner body) — do not
+# hang. /rss.xml is 404 HTML.
+# comments/feed is comments — not
+# the site-wide primary. Do not
+# invent Feedburner / store feeds.
+# boingboing official
+# https://boingboing.net/feed
+# is new (no prior boingboing /
+# boing_boing / boingboing_net id).
+# httpx+RSS_HEADERS HTTP 200 / 30
+# nonempty / 30 insertable
+# (channel "Boing Boing"). MUST lock
+# apex /feed (no trailing slash):
+# homepage <link> announces this
+# exact path. /feed/ remaps here;
+# /rss.xml remaps here. www
+# /feed remaps to the HTML
+# homepage — not the feed.
+# /rss /index.xml are CF 403.
+# Do not invent Feedburner /
+# www /feed/ / section feeds.
+# All three ≥10 KEEP. Distinct
+# from live hackaday / thenewstack
+# / lwn / tomshardware / howtogeek
+# / mashable / wired / motherboard
+# / newatlas. 0 article URL
+# overlap (www.phoronix.com /
+# blog.adafruit.com /
+# boingboing.net hosts). Lands
+# on the existing 科技 category
+# path (Linux / maker / tech-
+# culture newsrooms). Not added
+# to the tech/AI whitelist
+# (later-batch sources stay off
+# the frozen ALWAYS set).
+# Do NOT register phoronix_com /
+# adafruit_blog / adafruit_com /
+# boing_boing / boingboing_net.
+# Do NOT register deadline /
+# makezine / utility_dive (备
+# unused — all KEEP passed).
+# Do NOT re-register lwn /
+# jalopnik / quanta_magazine /
+# mit_tr / hackaday / astronomy /
+# skyandtelescope /
+# latimes_technology / yale360 /
+# cleantechnica.
+# national_geographic stays
+# unregistered (no official
+# English RSS).
+# jalopnik / lwn /
+# quanta_magazine stay
+# registered (batch96 KEEP).
+# Do NOT use as backups
+# (product skip): bangkok_post
+# / indian_express /
+# rest_of_world / al_monitor /
+# hkfp / biographic /
+# asiatimes / dawn /
+# longreads / hrw /
+# independent (429) /
+# euractiv (301→rapporteur
+# FAIL) / atlantic_council
+# (403) / the_nation (empty
+# feed) / times_of_israel
+# (Cloudflare 403) / the_cut
+# / techdirt / engadget /
+# digital_trends /
+# bleepingcomputer / gizmodo /
+# the_baffler / new_statesman
+# / guernica / nationalinterest
+# / flightglobal /
+# newscientist (CI
+# httpx+RSS_HEADERS 406/empty).
+# qz3 勿挂. digiday0观察 — do not
+# add a second digiday.
+# sunday_review / cnbc (403
+# known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_PHORONIX_ADAFRUIT_BOINGBOING_PRIMARY = {
+    "phoronix": {
+        "name": "Phoronix",
+        "feed_url": "https://www.phoronix.com/rss.php",
+        "category": "科技",
+    },
+    "adafruit": {
+        "name": "Adafruit",
+        "feed_url": "https://blog.adafruit.com/feed/",
+        "category": "科技",
+    },
+    "boingboing": {
+        "name": "Boing Boing",
+        "feed_url": "https://boingboing.net/feed",
+        "category": "科技",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 296
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -37617,6 +37766,230 @@ def test_lwn_feed_live_httpx_rss_headers():
         )
 
 
+def test_phoronix_adafruit_boingboing_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "phoronix" in by_id
+    assert by_id["phoronix"].feed_url == "https://www.phoronix.com/rss.php"
+    assert by_id["phoronix"].feed_url != "https://phoronix.com/rss.php"
+    assert by_id["phoronix"].feed_url != "https://www.phoronix.com/rss"
+    assert by_id["phoronix"].feed_url != "https://www.phoronix.com/rss.xml"
+    assert by_id["phoronix"].feed_url != "https://www.phoronix.com/feed"
+    assert by_id["phoronix"].feed_url != "https://www.phoronix.com/feed/"
+    assert by_id["phoronix"].feed_url != (
+        "https://www.phoronix.com/phoronix-rss.php"
+    )
+    assert by_id["phoronix"].feed_url != "https://www.phoronix.com/index.rss"
+    assert "adafruit" in by_id
+    assert by_id["adafruit"].feed_url == "https://blog.adafruit.com/feed/"
+    assert by_id["adafruit"].feed_url != "https://blog.adafruit.com/feed"
+    assert by_id["adafruit"].feed_url != "https://blog.adafruit.com/rss"
+    assert by_id["adafruit"].feed_url != "https://blog.adafruit.com/rss.xml"
+    assert by_id["adafruit"].feed_url != "https://www.adafruit.com/feed"
+    assert by_id["adafruit"].feed_url != "https://www.adafruit.com/feed/"
+    assert by_id["adafruit"].feed_url != "https://www.adafruit.com/blog/feed"
+    assert by_id["adafruit"].feed_url != (
+        "https://blog.adafruit.com/comments/feed/"
+    )
+    assert "boingboing" in by_id
+    assert by_id["boingboing"].feed_url == "https://boingboing.net/feed"
+    assert by_id["boingboing"].feed_url != "https://boingboing.net/feed/"
+    assert by_id["boingboing"].feed_url != "https://www.boingboing.net/feed"
+    assert by_id["boingboing"].feed_url != "https://www.boingboing.net/feed/"
+    assert by_id["boingboing"].feed_url != "https://boingboing.net/rss"
+    assert by_id["boingboing"].feed_url != "https://boingboing.net/rss.xml"
+    assert by_id["boingboing"].feed_url != "https://boingboing.net/index.xml"
+    # #162 / batch96 winners stay registered and unchanged.
+    # #161 / batch95 winners stay registered and unchanged.
+    # #160 / batch94 winner stays registered and unchanged.
+    # #159 / batch93 winners stay registered and unchanged.
+    # Do not touch jalopnik / lwn /
+    # quanta_magazine / yale360 /
+    # cleantechnica / hackaday /
+    # astronomy / skyandtelescope /
+    # latimes_technology /
+    # defensenews / motherboard /
+    # macworld.
+    assert "jalopnik" in by_id
+    assert "lwn" in by_id
+    assert "quanta_magazine" in by_id
+    assert "yale360" in by_id
+    assert "cleantechnica" in by_id
+    assert "hackaday" in by_id
+    assert "astronomy" in by_id
+    assert "skyandtelescope" in by_id
+    assert "latimes_technology" in by_id
+    assert "defensenews" in by_id
+    assert "motherboard" in by_id
+    assert "macworld" in by_id
+    # Feed locks + uniqueness vs live
+    # Linux / maker / tech-culture
+    # stack.
+    assert by_id["phoronix"].feed_url != by_id["hackaday"].feed_url
+    assert by_id["phoronix"].feed_url != by_id["thenewstack"].feed_url
+    assert by_id["phoronix"].feed_url != by_id["lwn"].feed_url
+    assert by_id["phoronix"].feed_url != by_id["tomshardware"].feed_url
+    assert by_id["phoronix"].feed_url != by_id["howtogeek"].feed_url
+    assert by_id["phoronix"].feed_url != by_id["the_register"].feed_url
+    assert by_id["phoronix"].feed_url != by_id["zdnet"].feed_url
+    assert by_id["adafruit"].feed_url != by_id["hackaday"].feed_url
+    assert by_id["adafruit"].feed_url != by_id["popular_mechanics"].feed_url
+    assert by_id["adafruit"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["adafruit"].feed_url != by_id["motherboard"].feed_url
+    assert by_id["boingboing"].feed_url != by_id["mashable"].feed_url
+    assert by_id["boingboing"].feed_url != by_id["wired"].feed_url
+    assert by_id["boingboing"].feed_url != by_id["inverse"].feed_url
+    assert by_id["boingboing"].feed_url != by_id["slate"].feed_url
+    assert by_id["phoronix"].feed_url != by_id["adafruit"].feed_url
+    assert by_id["phoronix"].feed_url != by_id["boingboing"].feed_url
+    assert by_id["adafruit"].feed_url != by_id["boingboing"].feed_url
+    # Do not re-register lwn (already
+    # live via #162). Do not hang
+    # unused 备. Do not invent a
+    # fourth replacement.
+    assert by_id["lwn"].feed_url == "https://lwn.net/headlines/rss"
+    assert "deadline" not in by_id
+    assert "deadline_com" not in by_id
+    assert "makezine" not in by_id
+    assert "makezine_com" not in by_id
+    assert "utility_dive" not in by_id
+    assert "utilitydive" not in by_id
+    # national_geographic stays
+    # unregistered (no official
+    # English RSS).
+    assert "national_geographic" not in by_id
+    assert "nationalgeographic" not in by_id
+    assert "natgeo" not in by_id
+    # Product-named ids; leftover
+    # aliases stay unregistered.
+    assert "phoronix_com" not in by_id
+    assert "adafruit_com" not in by_id
+    assert "adafruit_blog" not in by_id
+    assert "boing_boing" not in by_id
+    assert "boingboing_net" not in by_id
+    assert "carbonbrief" not in by_id
+    assert "carbon_brief" in by_id
+    assert "politico" not in by_id
+    assert "politico_politics" in by_id
+    assert "politico_europe" in by_id
+    assert "the_atlantic" not in by_id
+    assert "motherjones" not in by_id
+    assert "the_intercept" not in by_id
+    assert "theregister" not in by_id
+    assert "atlantic" in by_id
+    assert "mother_jones" in by_id
+    assert "intercept" in by_id
+    assert "the_register" in by_id
+    assert "newscientist" not in by_id
+    assert "qz3" not in by_id
+    assert "qz" not in by_id
+    assert "fastcompany" not in by_id
+    assert "fast_company" in by_id
+    assert "the_verge" not in by_id
+    assert "flightglobal" not in by_id
+    assert "gizmodo" not in by_id
+    assert "the_baffler" not in by_id
+    assert "new_statesman" not in by_id
+    assert "guernica" not in by_id
+    assert "nationalinterest" not in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "the_nation" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "techdirt" not in by_id
+    assert "engadget" not in by_id
+    assert "digital_trends" not in by_id
+    assert "the_cut" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "indian_express" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "al_monitor" not in by_id
+    assert "hkfp" not in by_id
+    assert "biographic" not in by_id
+    assert "asiatimes" not in by_id
+    assert "dawn" not in by_id
+    assert "longreads" not in by_id
+    assert "hrw" not in by_id
+    assert "independent" not in by_id
+    for source_id, expected in _PHORONIX_ADAFRUIT_BOINGBOING_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_phoronix_adafruit_boingboing_feeds_live_httpx_rss_headers():
+    """KEEP must pass the same httpx + RSS_HEADERS client CI uses."""
+    from news_archive.fetch import fetch_source
+
+    by_id = {s.id: s for s in SOURCES}
+    keep_floor = {"phoronix": 10, "adafruit": 10, "boingboing": 10}
+    for source_id in _PHORONIX_ADAFRUIT_BOINGBOING_PRIMARY:
+        source = by_id[source_id]
+        articles = fetch_source(source, timeout=30)
+        assert articles, f"{source_id} httpx+RSS_HEADERS insertable=0"
+        assert len(articles) >= keep_floor[source_id], (
+            f"{source_id} insertable {len(articles)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (phoronix /
+        # adafruit / boingboing)
+        # uses the un-namespaced
+        # element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # phoronix 32/32, adafruit
+        # 50/50, and boingboing
+        # 30/30 were 100% nonempty
+        # this probe. ≥10 KEEP.
+        # phoronix MUST stay on
+        # www /rss.php (apex
+        # /rss.php is CF 403).
+        # adafruit MUST keep the
+        # trailing slash on blog
+        # /feed/.
+        # boingboing MUST stay on
+        # apex /feed (no trailing
+        # slash; /feed/ remaps
+        # here).
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= keep_floor[source_id], (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -37724,6 +38097,7 @@ if __name__ == "__main__":
     test_yale360_cleantechnica_primaries_registered()
     test_jalopnik_quanta_magazine_primaries_registered()
     test_lwn_primary_registered()
+    test_phoronix_adafruit_boingboing_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -37820,4 +38194,5 @@ if __name__ == "__main__":
     test_yale360_cleantechnica_feeds_live_httpx_rss_headers()
     test_jalopnik_quanta_magazine_feeds_live_httpx_rss_headers()
     test_lwn_feed_live_httpx_rss_headers()
+    test_phoronix_adafruit_boingboing_feeds_live_httpx_rss_headers()
     print("✓ source registry tests PASSED")
