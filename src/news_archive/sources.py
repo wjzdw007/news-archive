@@ -2109,6 +2109,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="military_times",
+        name="Military Times",
+        feed_url="https://www.militarytimes.com/feed/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="earthsky",
+        name="EarthSky",
+        feed_url="https://earthsky.org/feed/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="outside",
+        name="Outside Online",
+        feed_url="https://www.outsideonline.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
