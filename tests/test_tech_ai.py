@@ -859,6 +859,36 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "atlantic_council" not in TECH_AI_SOURCE_WHITELIST
     assert "the_nation" not in TECH_AI_SOURCE_WHITELIST
     assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
+    # batch85 RSS primaries stay off the tech/AI whitelist.
+    # universe_today lands on 科学
+    # (space / astronomy newsroom, same
+    # as space_com / livescience) and
+    # is not added to KEYWORD sources.
+    # new_yorker is the the_baffler
+    # Cloudflare-403 hard-swap KEEP
+    # fill and lands on 综合 (literary
+    # / culture magazine, same as
+    # atlantic / inverse /
+    # smithsonian_mag). darkreading
+    # lands on 科技 (cybersecurity
+    # newsroom, same as thehackernews
+    # / eff) but later-batch tech
+    # sources stay off the frozen
+    # ALWAYS set. the_baffler stays
+    # off (official Cloudflare 403;
+    # do not hang Feedburner).
+    # new_statesman / macworld stay
+    # off (unused leftovers;
+    # new_yorker filled the baffler
+    # slot). None of these match the
+    # wired / verge / techcrunch
+    # ALWAYS pattern.
+    assert "universe_today" not in TECH_AI_SOURCE_WHITELIST
+    assert "new_yorker" not in TECH_AI_SOURCE_WHITELIST
+    assert "darkreading" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_baffler" not in TECH_AI_SOURCE_WHITELIST
+    assert "new_statesman" not in TECH_AI_SOURCE_WHITELIST
+    assert "macworld" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
