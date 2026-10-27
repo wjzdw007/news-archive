@@ -2151,6 +2151,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="insideclimatenews",
+        name="Inside Climate News",
+        feed_url="https://insideclimatenews.org/feed/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="consequence",
+        name="Consequence",
+        feed_url="https://consequence.net/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="c4isrnet",
+        name="C4ISRNet",
+        feed_url="https://www.c4isrnet.com/feed/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

@@ -14234,11 +14234,13 @@ _MILITARY_TIMES_EARTHSKY_OUTSIDE_PRIMARY = {
 # kottke. Do NOT register lithub.
 # Named 备: NONE this batch. Do not
 # invent. Do not pull rollingstone /
-# avclub. Do not pull batch101 hung
-# ids (insideclimatenews /
-# consequence / c4isrnet) or their
-# 备 (energy_storage_news /
-# geekwire / futurism).
+# avclub. batch101 KEEP
+# insideclimatenews /
+# consequence / c4isrnet are
+# registered separately.
+# Named 备 unused (all KEEP
+# passed). Do not pull
+# batch102 hung ids.
 # indiewire official
 # https://www.indiewire.com/feed/
 # is new (no prior indiewire /
@@ -14344,12 +14346,13 @@ _MILITARY_TIMES_EARTHSKY_OUTSIDE_PRIMARY = {
 # register lithub (hard-swap;
 # collides literary_hub). Do
 # NOT register rollingstone /
-# avclub (idle). Do NOT pull
-# batch101 hung ids
-# (insideclimatenews /
-# consequence / c4isrnet) or
-# their 备 (energy_storage_news
-# / geekwire / futurism).
+# avclub (idle). batch101 KEEP
+# insideclimatenews /
+# consequence / c4isrnet are
+# registered separately.
+# Named 备 unused (all KEEP
+# passed). Do not pull
+# batch102 hung ids.
 # Do NOT re-register
 # military_times / earthsky /
 # outside / deadline / makezine
@@ -14414,7 +14417,257 @@ _INDIEWIRE_KOTTKE_PV_MAGAZINE_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 305
+# CEO-approved Inside Climate News /
+# Consequence / C4ISRNet RSS
+# primaries (batch101). On tip
+# 881d559 after #166 (indiewire
+# / kottke / pv_magazine).
+# Product KEEP set is
+# insideclimatenews /
+# consequence / c4isrnet.
+# Named 备 (hard-swap ONLY if
+# a KEEP fails):
+# energy_storage_news /
+# geekwire / futurism. Unused
+# — all KEEP passed. Do not
+# invent. Do not pull batch102
+# hung ids (usni_news /
+# slashfilm / singularityhub)
+# or their 备
+# (hollywoodreporter /
+# siliconangle / thenextweb).
+# Do not pull batch103 hung
+# ids (bandcamp_daily /
+# computerworld / bigthink)
+# or their 备 (rollingstone /
+# extremetech / avclub).
+# insideclimatenews official
+# https://insideclimatenews.org/feed/
+# is new (no prior
+# insideclimatenews /
+# inside_climate_news /
+# insideclimate id).
+# httpx+RSS_HEADERS HTTP 200
+# / 10 nonempty / 10
+# insertable (channel
+# "Inside Climate News").
+# MUST lock apex + /feed/
+# (trailing slash). Homepage
+# is 403 and does not
+# announce RSS. atom:self is
+# this exact path. /feed
+# (no slash) is 403 — do
+# not lock it. www remaps
+# to apex /feed/;
+# /feed/rss/ remaps here.
+# /rss /rss.xml /atom.xml
+# /index.xml /?feed=rss2
+# /comments/feed/
+# /news/feed/ are 403.
+# Distinct from live
+# climate_home / grist /
+# yale360 / carbon_brief /
+# canary_media /
+# utility_dive /
+# pv_magazine /
+# cleantechnica. Do not
+# invent Feedburner /
+# section feeds. Lands on
+# 科学 (climate newsroom,
+# same as yale360 /
+# carbon_brief / grist /
+# climate_home).
+# consequence official
+# https://consequence.net/feed/
+# is new (no prior
+# consequence /
+# consequence_net /
+# consequenceofsound id).
+# httpx+RSS_HEADERS HTTP 200
+# / 15 nonempty / 15
+# insertable (channel
+# "Consequence"). MUST lock
+# apex + /feed/ (trailing
+# slash). Homepage does not
+# announce RSS (RSD only);
+# atom:self is this exact
+# path. /feed (no slash)
+# remaps here; www remaps
+# to apex; /rss /feed/rss/
+# remap here.
+# consequenceofsound.net/feed/
+# remaps here (legacy host
+# — do not lock it).
+# /rss.xml /atom.xml are
+# 404 HTML. comments/feed
+# is comments — not the
+# site-wide primary.
+# /?feed=rss2 is a larger
+# alternate body — not the
+# announced site-wide
+# primary. Distinct from
+# live deadline / variety /
+# pitchfork / stereogum /
+# indiewire. Do not invent
+# Feedburner / section
+# feeds. Lands on 综合
+# (entertainment / music
+# newsroom, same as
+# deadline / variety /
+# pitchfork / stereogum).
+# c4isrnet official
+# https://www.c4isrnet.com/feed/
+# is new (no prior c4isrnet
+# / c4isrnet_com / c4isr
+# id). httpx+RSS_HEADERS
+# HTTP 200 / 10 nonempty /
+# 10 insertable (channel
+# "C4ISRNet"). MUST lock
+# www + /feed/ (trailing
+# slash). Homepage <link>
+# announces this exact
+# path; atom:self matches.
+# /feed (no slash) remaps
+# here; apex remaps to
+# www; /rss /?feed=rss2
+# /arc/outboundfeeds/rss/?outputType=xml
+# remap here. /rss.xml is
+# 404 HTML. /news/feed/ is
+# a section feed — not the
+# site-wide primary.
+# comments/feed is comments
+# (empty). Distinct from
+# live defensenews /
+# military_times /
+# breaking_defense /
+# taskandpurpose / twz /
+# navalnews / defense_one /
+# aviationweek. Do not
+# invent Feedburner /
+# section feeds. Lands on
+# 国际 (defense / C4ISR
+# newsroom, same as
+# defensenews /
+# military_times /
+# breaking_defense).
+# All three ≥10 KEEP. Named
+# 备 unused (all KEEP
+# passed). Distinct from
+# live climate_home / grist
+# / yale360 / carbon_brief
+# / canary_media /
+# utility_dive /
+# pv_magazine / deadline /
+# variety / pitchfork /
+# stereogum / indiewire /
+# defensenews /
+# military_times /
+# breaking_defense /
+# taskandpurpose / twz.
+# 0 article URL overlap
+# (insideclimatenews.org /
+# consequence.net /
+# www.c4isrnet.com hosts).
+# Not added to the tech/AI
+# whitelist (later-batch
+# sources stay off the
+# frozen ALWAYS set).
+# Do NOT register
+# inside_climate_news /
+# insideclimate /
+# inside_climate /
+# consequence_net /
+# consequenceofsound /
+# consequence_of_sound /
+# c4isrnet_com / c4isr.
+# Do NOT register
+# energy_storage_news /
+# geekwire / futurism
+# (unused 备). Do NOT
+# register usni_news /
+# slashfilm /
+# singularityhub /
+# hollywoodreporter /
+# siliconangle /
+# thenextweb /
+# bandcamp_daily /
+# computerworld / bigthink
+# / rollingstone /
+# extremetech / avclub
+# (idle / later hung).
+# Do NOT re-register
+# indiewire / kottke /
+# pv_magazine /
+# military_times /
+# earthsky / outside /
+# deadline / makezine /
+# utility_dive / phoronix /
+# adafruit / boingboing /
+# jalopnik / lwn /
+# quanta_magazine / mit_tr
+# / hackaday / astronomy /
+# skyandtelescope /
+# latimes_technology /
+# yale360 / cleantechnica /
+# variety / literary_hub /
+# climate_home / grist /
+# carbon_brief /
+# canary_media /
+# defensenews /
+# taskandpurpose / twz.
+# national_geographic stays
+# unregistered (no official
+# English RSS).
+# Do NOT use as backups
+# (product skip): bangkok_post
+# / indian_express /
+# rest_of_world / al_monitor /
+# hkfp / biographic /
+# asiatimes / dawn /
+# longreads / hrw /
+# independent (429) /
+# euractiv (301→rapporteur
+# FAIL) / atlantic_council
+# (403) / the_nation (empty
+# feed) / times_of_israel
+# (Cloudflare 403) / the_cut
+# / techdirt / engadget /
+# digital_trends /
+# bleepingcomputer / gizmodo /
+# the_baffler / new_statesman
+# / guernica / nationalinterest
+# / flightglobal /
+# newscientist (CI
+# httpx+RSS_HEADERS 406/empty).
+# qz3 勿挂. digiday0观察 — do not
+# add a second digiday.
+# fastcompany 勿二重.
+# sunday_review / cnbc (403
+# known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_INSIDECLIMATENEWS_CONSEQUENCE_C4ISRNET_PRIMARY = {
+    "insideclimatenews": {
+        "name": "Inside Climate News",
+        "feed_url": "https://insideclimatenews.org/feed/",
+        "category": "科学",
+    },
+    "consequence": {
+        "name": "Consequence",
+        "feed_url": "https://consequence.net/feed/",
+        "category": "综合",
+    },
+    "c4isrnet": {
+        "name": "C4ISRNet",
+        "feed_url": "https://www.c4isrnet.com/feed/",
+        "category": "国际",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 308
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -39188,8 +39441,12 @@ def test_indiewire_kottke_pv_magazine_primaries_registered():
     assert by_id["indiewire"].feed_url != by_id["pv_magazine"].feed_url
     assert by_id["kottke"].feed_url != by_id["pv_magazine"].feed_url
     # No 备 named this batch. Do not
-    # invent replacements. Do not
-    # pull batch101 hung ids.
+    # invent replacements. batch101
+    # KEEP insideclimatenews /
+    # consequence / c4isrnet are
+    # registered separately. Named
+    # 备 unused (all KEEP passed).
+    # Do not pull batch102 hung ids.
     assert "indie_wire" not in by_id
     assert "indiewire_com" not in by_id
     assert "kottke_org" not in by_id
@@ -39198,12 +39455,15 @@ def test_indiewire_kottke_pv_magazine_primaries_registered():
     assert "pv_magazine_com" not in by_id
     assert "rollingstone" not in by_id
     assert "avclub" not in by_id
-    assert "insideclimatenews" not in by_id
-    assert "consequence" not in by_id
-    assert "c4isrnet" not in by_id
+    assert "insideclimatenews" in by_id
+    assert "consequence" in by_id
+    assert "c4isrnet" in by_id
     assert "energy_storage_news" not in by_id
     assert "geekwire" not in by_id
     assert "futurism" not in by_id
+    assert "usni_news" not in by_id
+    assert "slashfilm" not in by_id
+    assert "singularityhub" not in by_id
     # national_geographic stays
     # unregistered (no official
     # English RSS).
@@ -39342,6 +39602,309 @@ def test_indiewire_kottke_pv_magazine_feeds_live_httpx_rss_headers():
         )
 
 
+def test_insideclimatenews_consequence_c4isrnet_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "insideclimatenews" in by_id
+    assert by_id["insideclimatenews"].feed_url == (
+        "https://insideclimatenews.org/feed/"
+    )
+    assert by_id["insideclimatenews"].feed_url != (
+        "https://insideclimatenews.org/feed"
+    )
+    assert by_id["insideclimatenews"].feed_url != (
+        "https://www.insideclimatenews.org/feed/"
+    )
+    assert by_id["insideclimatenews"].feed_url != (
+        "https://insideclimatenews.org/rss"
+    )
+    assert by_id["insideclimatenews"].feed_url != (
+        "https://insideclimatenews.org/rss.xml"
+    )
+    assert by_id["insideclimatenews"].feed_url != (
+        "https://insideclimatenews.org/feed/rss/"
+    )
+    assert by_id["insideclimatenews"].feed_url != (
+        "https://insideclimatenews.org/comments/feed/"
+    )
+    assert by_id["insideclimatenews"].feed_url != (
+        "https://insideclimatenews.org/news/feed/"
+    )
+    assert "consequence" in by_id
+    assert by_id["consequence"].feed_url == "https://consequence.net/feed/"
+    assert by_id["consequence"].feed_url != "https://consequence.net/feed"
+    assert by_id["consequence"].feed_url != "https://www.consequence.net/feed/"
+    assert by_id["consequence"].feed_url != "https://consequence.net/rss"
+    assert by_id["consequence"].feed_url != "https://consequence.net/rss.xml"
+    assert by_id["consequence"].feed_url != (
+        "https://consequence.net/feed/rss/"
+    )
+    assert by_id["consequence"].feed_url != (
+        "https://consequence.net/comments/feed/"
+    )
+    assert by_id["consequence"].feed_url != (
+        "https://consequenceofsound.net/feed/"
+    )
+    assert by_id["consequence"].feed_url != (
+        "https://consequence.net/?feed=rss2"
+    )
+    assert "c4isrnet" in by_id
+    assert by_id["c4isrnet"].feed_url == "https://www.c4isrnet.com/feed/"
+    assert by_id["c4isrnet"].feed_url != "https://www.c4isrnet.com/feed"
+    assert by_id["c4isrnet"].feed_url != "https://c4isrnet.com/feed/"
+    assert by_id["c4isrnet"].feed_url != "https://www.c4isrnet.com/rss"
+    assert by_id["c4isrnet"].feed_url != "https://www.c4isrnet.com/rss.xml"
+    assert by_id["c4isrnet"].feed_url != (
+        "https://www.c4isrnet.com/comments/feed/"
+    )
+    assert by_id["c4isrnet"].feed_url != (
+        "https://www.c4isrnet.com/news/feed/"
+    )
+    assert by_id["c4isrnet"].feed_url != (
+        "https://www.c4isrnet.com/arc/outboundfeeds/rss/?outputType=xml"
+    )
+    # #166 / batch100 winners stay registered and unchanged.
+    # #165 / batch99 winners stay registered and unchanged.
+    # #164 / batch98 winners stay registered and unchanged.
+    # #163 / batch97 winners stay registered and unchanged.
+    # #162 / batch96 winners stay registered and unchanged.
+    # Do not touch indiewire /
+    # kottke / pv_magazine /
+    # military_times / earthsky /
+    # outside / deadline /
+    # makezine / utility_dive /
+    # phoronix / adafruit /
+    # boingboing / jalopnik / lwn /
+    # quanta_magazine / yale360 /
+    # cleantechnica / hackaday /
+    # astronomy / skyandtelescope /
+    # latimes_technology / variety /
+    # canary_media / defensenews /
+    # taskandpurpose / twz /
+    # climate_home / grist /
+    # carbon_brief.
+    assert "indiewire" in by_id
+    assert "kottke" in by_id
+    assert "pv_magazine" in by_id
+    assert "military_times" in by_id
+    assert "earthsky" in by_id
+    assert "outside" in by_id
+    assert "deadline" in by_id
+    assert "makezine" in by_id
+    assert "utility_dive" in by_id
+    assert "phoronix" in by_id
+    assert "adafruit" in by_id
+    assert "boingboing" in by_id
+    assert "jalopnik" in by_id
+    assert "lwn" in by_id
+    assert "quanta_magazine" in by_id
+    assert "yale360" in by_id
+    assert "cleantechnica" in by_id
+    assert "hackaday" in by_id
+    assert "astronomy" in by_id
+    assert "skyandtelescope" in by_id
+    assert "latimes_technology" in by_id
+    assert "variety" in by_id
+    assert "canary_media" in by_id
+    assert "defensenews" in by_id
+    assert "taskandpurpose" in by_id
+    assert "twz" in by_id
+    assert "climate_home" in by_id
+    assert "grist" in by_id
+    assert "carbon_brief" in by_id
+    # Feed locks + uniqueness vs live
+    # climate / entertainment /
+    # defense stack.
+    assert by_id["insideclimatenews"].feed_url != by_id["climate_home"].feed_url
+    assert by_id["insideclimatenews"].feed_url != by_id["grist"].feed_url
+    assert by_id["insideclimatenews"].feed_url != by_id["yale360"].feed_url
+    assert by_id["insideclimatenews"].feed_url != by_id["carbon_brief"].feed_url
+    assert by_id["insideclimatenews"].feed_url != by_id["canary_media"].feed_url
+    assert by_id["insideclimatenews"].feed_url != by_id["utility_dive"].feed_url
+    assert by_id["insideclimatenews"].feed_url != by_id["pv_magazine"].feed_url
+    assert by_id["insideclimatenews"].feed_url != by_id["cleantechnica"].feed_url
+    assert by_id["consequence"].feed_url != by_id["deadline"].feed_url
+    assert by_id["consequence"].feed_url != by_id["variety"].feed_url
+    assert by_id["consequence"].feed_url != by_id["pitchfork"].feed_url
+    assert by_id["consequence"].feed_url != by_id["stereogum"].feed_url
+    assert by_id["consequence"].feed_url != by_id["indiewire"].feed_url
+    assert by_id["c4isrnet"].feed_url != by_id["defensenews"].feed_url
+    assert by_id["c4isrnet"].feed_url != by_id["military_times"].feed_url
+    assert by_id["c4isrnet"].feed_url != by_id["breaking_defense"].feed_url
+    assert by_id["c4isrnet"].feed_url != by_id["taskandpurpose"].feed_url
+    assert by_id["c4isrnet"].feed_url != by_id["twz"].feed_url
+    assert by_id["c4isrnet"].feed_url != by_id["navalnews"].feed_url
+    assert by_id["c4isrnet"].feed_url != by_id["defense_one"].feed_url
+    assert by_id["c4isrnet"].feed_url != by_id["aviationweek"].feed_url
+    assert (
+        by_id["insideclimatenews"].feed_url != by_id["consequence"].feed_url
+    )
+    assert by_id["insideclimatenews"].feed_url != by_id["c4isrnet"].feed_url
+    assert by_id["consequence"].feed_url != by_id["c4isrnet"].feed_url
+    # Named 备 unused (all KEEP
+    # passed). Do not invent
+    # replacements. Do not pull
+    # batch102 / batch103 hung ids.
+    assert "inside_climate_news" not in by_id
+    assert "insideclimate" not in by_id
+    assert "inside_climate" not in by_id
+    assert "consequence_net" not in by_id
+    assert "consequenceofsound" not in by_id
+    assert "consequence_of_sound" not in by_id
+    assert "c4isrnet_com" not in by_id
+    assert "c4isr" not in by_id
+    assert "energy_storage_news" not in by_id
+    assert "geekwire" not in by_id
+    assert "futurism" not in by_id
+    assert "usni_news" not in by_id
+    assert "slashfilm" not in by_id
+    assert "singularityhub" not in by_id
+    assert "hollywoodreporter" not in by_id
+    assert "siliconangle" not in by_id
+    assert "thenextweb" not in by_id
+    assert "bandcamp_daily" not in by_id
+    assert "computerworld" not in by_id
+    assert "bigthink" not in by_id
+    assert "rollingstone" not in by_id
+    assert "extremetech" not in by_id
+    assert "avclub" not in by_id
+    # national_geographic stays
+    # unregistered (no official
+    # English RSS).
+    assert "national_geographic" not in by_id
+    assert "nationalgeographic" not in by_id
+    assert "natgeo" not in by_id
+    assert "carbonbrief" not in by_id
+    assert "carbon_brief" in by_id
+    assert "politico" not in by_id
+    assert "politico_politics" in by_id
+    assert "politico_europe" in by_id
+    assert "the_atlantic" not in by_id
+    assert "motherjones" not in by_id
+    assert "the_intercept" not in by_id
+    assert "theregister" not in by_id
+    assert "atlantic" in by_id
+    assert "mother_jones" in by_id
+    assert "intercept" in by_id
+    assert "the_register" in by_id
+    assert "newscientist" not in by_id
+    assert "qz3" not in by_id
+    assert "qz" not in by_id
+    assert "fastcompany" not in by_id
+    assert "fast_company" in by_id
+    assert "the_verge" not in by_id
+    assert "flightglobal" not in by_id
+    assert "gizmodo" not in by_id
+    assert "the_baffler" not in by_id
+    assert "new_statesman" not in by_id
+    assert "guernica" not in by_id
+    assert "nationalinterest" not in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "the_nation" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "techdirt" not in by_id
+    assert "engadget" not in by_id
+    assert "digital_trends" not in by_id
+    assert "the_cut" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "indian_express" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "al_monitor" not in by_id
+    assert "hkfp" not in by_id
+    assert "biographic" not in by_id
+    assert "asiatimes" not in by_id
+    assert "dawn" not in by_id
+    assert "longreads" not in by_id
+    assert "hrw" not in by_id
+    assert "independent" not in by_id
+    for source_id, expected in _INSIDECLIMATENEWS_CONSEQUENCE_C4ISRNET_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_insideclimatenews_consequence_c4isrnet_feeds_live_httpx_rss_headers():
+    """KEEP must pass the same httpx + RSS_HEADERS client CI uses."""
+    from news_archive.fetch import fetch_source
+
+    by_id = {s.id: s for s in SOURCES}
+    keep_floor = {
+        "insideclimatenews": 10,
+        "consequence": 10,
+        "c4isrnet": 10,
+    }
+    for source_id in _INSIDECLIMATENEWS_CONSEQUENCE_C4ISRNET_PRIMARY:
+        source = by_id[source_id]
+        articles = fetch_source(source, timeout=30)
+        assert articles, f"{source_id} httpx+RSS_HEADERS insertable=0"
+        assert len(articles) >= keep_floor[source_id], (
+            f"{source_id} insertable {len(articles)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (insideclimatenews /
+        # consequence / c4isrnet)
+        # uses the un-namespaced
+        # element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # insideclimatenews 10/10,
+        # consequence 15/15, and
+        # c4isrnet 10/10 were 100%
+        # nonempty this probe. ≥10
+        # KEEP.
+        # insideclimatenews MUST
+        # stay on apex /feed/
+        # (trailing slash;
+        # homepage 403; atom:self).
+        # /feed (no slash) is 403.
+        # consequence MUST stay on
+        # apex /feed/ (trailing
+        # slash; homepage RSD
+        # only; atom:self).
+        # c4isrnet MUST stay on
+        # www /feed/ (trailing
+        # slash; homepage
+        # announced; atom:self).
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= keep_floor[source_id], (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -39453,6 +40016,7 @@ if __name__ == "__main__":
     test_deadline_makezine_utility_dive_primaries_registered()
     test_military_times_earthsky_outside_primaries_registered()
     test_indiewire_kottke_pv_magazine_primaries_registered()
+    test_insideclimatenews_consequence_c4isrnet_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -39553,4 +40117,5 @@ if __name__ == "__main__":
     test_deadline_makezine_utility_dive_feeds_live_httpx_rss_headers()
     test_military_times_earthsky_outside_feeds_live_httpx_rss_headers()
     test_indiewire_kottke_pv_magazine_feeds_live_httpx_rss_headers()
+    test_insideclimatenews_consequence_c4isrnet_feeds_live_httpx_rss_headers()
     print("✓ source registry tests PASSED")
