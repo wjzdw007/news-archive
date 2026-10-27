@@ -1078,13 +1078,49 @@ def test_whitelist_registered_and_cap_unchanged():
     # Unused leftovers astronomy /
     # skyandtelescope /
     # latimes_technology stay off
-    # (all three primaries live
-    # KEEP). None of these match
-    # the wired / verge /
-    # techcrunch ALWAYS pattern.
+    # at batch92 time (all three
+    # primaries live KEEP).
+    # batch93 promotes those
+    # leftovers to KEEP primaries
+    # — still off the whitelist.
+    # None of these match the
+    # wired / verge / techcrunch
+    # ALWAYS pattern.
     assert "defensenews" not in TECH_AI_SOURCE_WHITELIST
     assert "motherboard" not in TECH_AI_SOURCE_WHITELIST
     assert "macworld" not in TECH_AI_SOURCE_WHITELIST
+    assert "astronomy" not in TECH_AI_SOURCE_WHITELIST
+    assert "skyandtelescope" not in TECH_AI_SOURCE_WHITELIST
+    assert "latimes_technology" not in TECH_AI_SOURCE_WHITELIST
+    # batch93 RSS primaries stay off the tech/AI whitelist.
+    # astronomy lands on 科学
+    # (space / astronomy newsroom,
+    # same as universe_today /
+    # space_com / sciencealert /
+    # livescience) — leftover
+    # unused from #158, now
+    # product-hung KEEP — and is
+    # not added to KEYWORD sources.
+    # Official /feed/ (MUST trailing
+    # slash). skyandtelescope lands
+    # on 科学 (space / astronomy
+    # newsroom, same as
+    # universe_today / space_com /
+    # astronomy). Official
+    # /astronomy-news/feed/ (site-wide
+    # /feed is Cloudflare 403
+    # leftover). latimes_technology
+    # lands on 科技 (newspaper
+    # technology newsroom, same as
+    # guardian_technology /
+    # motherboard) — leftover unused
+    # from #158, now product-hung
+    # KEEP. Official
+    # /business/technology/rss2.0.xml.
+    # Product named no leftover
+    # backups this batch. None of
+    # these match the wired / verge /
+    # techcrunch ALWAYS pattern.
     assert "astronomy" not in TECH_AI_SOURCE_WHITELIST
     assert "skyandtelescope" not in TECH_AI_SOURCE_WHITELIST
     assert "latimes_technology" not in TECH_AI_SOURCE_WHITELIST
