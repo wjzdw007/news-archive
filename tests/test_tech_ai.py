@@ -1027,15 +1027,18 @@ def test_whitelist_registered_and_cap_unchanged():
     # navalnews / breaking_defense).
     # Official /feed on www.twz.com
     # (no trailing slash).
-    # flightglobal lands on 国际
-    # (aviation newsroom, same as
-    # navalnews / breaking_defense).
-    # Official /rss on
-    # www.flightglobal.com.
-    # Unused leftovers aviationweek
-    # / defensenews / fastcompany
-    # stay off (all three primaries
-    # live KEEP; fastcompany already
+    # aviationweek lands on 国际
+    # (aviation / defense newsroom,
+    # same as navalnews /
+    # flightglobal was) — hard-swap
+    # fill after flightglobal
+    # CI/httpx RSS 403. Official
+    # /rss.xml on aviationweek.com.
+    # flightglobal stays off
+    # (product-skip 勿再挂). Unused
+    # leftovers defensenews /
+    # fastcompany stay off
+    # (fastcompany already
     # registered as fast_company).
     # None of these match the wired
     # / verge / techcrunch ALWAYS
