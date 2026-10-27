@@ -1187,6 +1187,39 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "national_geographic" not in TECH_AI_SOURCE_WHITELIST
     assert "yale_e360" not in TECH_AI_SOURCE_WHITELIST
     assert "yale_360" not in TECH_AI_SOURCE_WHITELIST
+    # batch96 RSS primaries stay off the tech/AI whitelist.
+    # jalopnik lands on 科技
+    # (automotive newsroom, same as
+    # thedrive) — new id — official
+    # www /feed/ (MUST www +
+    # trailing slash; apex /feed/ is
+    # 502). quanta_magazine lands on
+    # 科学 (science magazine, same as
+    # popular_science /
+    # scientific_american /
+    # knowable) — new id — official
+    # www /feed/ (MUST trailing
+    # slash). mit_technology_review
+    # official /feed/ is already
+    # mit_tr — not re-hung.
+    # Product+CEO hard-swapped that
+    # empty slot to lwn (batch97 备
+    # named specifically) — official
+    # /headlines/rss (MUST no
+    # trailing slash). lwn lands on
+    # 科技 (Linux / kernel newsroom,
+    # same as hackaday /
+    # thenewstack). None of these
+    # match the wired / verge /
+    # techcrunch ALWAYS pattern.
+    assert "jalopnik" not in TECH_AI_SOURCE_WHITELIST
+    assert "quanta_magazine" not in TECH_AI_SOURCE_WHITELIST
+    assert "mit_technology_review" not in TECH_AI_SOURCE_WHITELIST
+    assert "jalopnik_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "quanta" not in TECH_AI_SOURCE_WHITELIST
+    assert "lwn" not in TECH_AI_SOURCE_WHITELIST
+    assert "lwn_net" not in TECH_AI_SOURCE_WHITELIST
+    assert "linux_weekly_news" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

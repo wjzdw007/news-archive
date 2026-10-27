@@ -2046,6 +2046,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="jalopnik",
+        name="Jalopnik",
+        feed_url="https://www.jalopnik.com/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="quanta_magazine",
+        name="Quanta Magazine",
+        feed_url="https://www.quantamagazine.org/feed/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="lwn",
+        name="Linux Weekly News",
+        feed_url="https://lwn.net/headlines/rss",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
