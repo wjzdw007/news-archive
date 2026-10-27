@@ -1220,6 +1220,40 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "lwn" not in TECH_AI_SOURCE_WHITELIST
     assert "lwn_net" not in TECH_AI_SOURCE_WHITELIST
     assert "linux_weekly_news" not in TECH_AI_SOURCE_WHITELIST
+    # batch97 RSS primaries stay off the tech/AI whitelist.
+    # phoronix lands on 科技
+    # (Linux / hardware newsroom,
+    # same as hackaday /
+    # thenewstack / lwn) — new id
+    # — official www /rss.php
+    # (MUST www + /rss.php; apex
+    # /rss.php is CF 403).
+    # adafruit lands on 科技
+    # (maker / electronics
+    # newsroom, same as hackaday)
+    # — new id — official blog
+    # /feed/ (MUST trailing slash).
+    # boingboing lands on 科技
+    # (tech-culture newsroom, same
+    # as mashable / wired) — new
+    # id — official apex /feed
+    # (MUST no trailing slash).
+    # Named 备 deadline / makezine
+    # / utility_dive unused — all
+    # KEEP passed. lwn already
+    # live via #162 — not
+    # re-hung. None of these match
+    # the wired / verge /
+    # techcrunch ALWAYS pattern.
+    assert "phoronix" not in TECH_AI_SOURCE_WHITELIST
+    assert "adafruit" not in TECH_AI_SOURCE_WHITELIST
+    assert "boingboing" not in TECH_AI_SOURCE_WHITELIST
+    assert "phoronix_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "adafruit_blog" not in TECH_AI_SOURCE_WHITELIST
+    assert "boing_boing" not in TECH_AI_SOURCE_WHITELIST
+    assert "deadline" not in TECH_AI_SOURCE_WHITELIST
+    assert "makezine" not in TECH_AI_SOURCE_WHITELIST
+    assert "utility_dive" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
