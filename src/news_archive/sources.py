@@ -2025,6 +2025,13 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="hackaday",
+        name="Hackaday",
+        feed_url="https://hackaday.com/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

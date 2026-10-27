@@ -1124,6 +1124,41 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "astronomy" not in TECH_AI_SOURCE_WHITELIST
     assert "skyandtelescope" not in TECH_AI_SOURCE_WHITELIST
     assert "latimes_technology" not in TECH_AI_SOURCE_WHITELIST
+    # batch94 RSS primary stays off the tech/AI whitelist.
+    # hackaday lands on 科技
+    # (hardware / maker newsroom,
+    # same as tomshardware /
+    # newatlas) — product-hung
+    # KEEP in the 5–9 band — and
+    # is not added to ALWAYS /
+    # KEYWORD sources. Official
+    # /feed/ (MUST trailing slash).
+    # newscientist is CI
+    # httpx+RSS_HEADERS 406 skip
+    # (same class as flightglobal)
+    # — not registered. the_atlantic
+    # / motherjones official feeds
+    # are already atlantic /
+    # mother_jones — not re-hung.
+    # the_intercept / theregister
+    # official feeds are already
+    # intercept / the_register —
+    # not re-hung. carbonbrief /
+    # politico stay off (already
+    # carbon_brief /
+    # politico_politics /
+    # politico_europe). None of
+    # these match the wired /
+    # verge / techcrunch ALWAYS
+    # pattern.
+    assert "hackaday" not in TECH_AI_SOURCE_WHITELIST
+    assert "newscientist" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_atlantic" not in TECH_AI_SOURCE_WHITELIST
+    assert "motherjones" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_intercept" not in TECH_AI_SOURCE_WHITELIST
+    assert "theregister" not in TECH_AI_SOURCE_WHITELIST
+    assert "carbonbrief" not in TECH_AI_SOURCE_WHITELIST
+    assert "politico" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
