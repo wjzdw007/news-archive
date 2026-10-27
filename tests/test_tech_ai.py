@@ -889,6 +889,28 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "the_baffler" not in TECH_AI_SOURCE_WHITELIST
     assert "new_statesman" not in TECH_AI_SOURCE_WHITELIST
     assert "macworld" not in TECH_AI_SOURCE_WHITELIST
+    # batch86 RSS primaries stay off the tech/AI whitelist.
+    # sciencealert lands on 科学 (popular
+    # science newsroom, same as
+    # livescience / universe_today) and
+    # is not added to KEYWORD sources.
+    # responsiblestatecraft lands on 国际
+    # (foreign-policy newsroom, same as
+    # foreign_policy / war_on_rocks).
+    # lrb lands on 综合 (literary
+    # magazine, same as new_yorker /
+    # literary_hub). Unused leftovers
+    # krebsonsecurity / guernica /
+    # nationalinterest stay off (all
+    # three primaries live KEEP). None
+    # of these match the wired / verge /
+    # techcrunch ALWAYS pattern.
+    assert "sciencealert" not in TECH_AI_SOURCE_WHITELIST
+    assert "responsiblestatecraft" not in TECH_AI_SOURCE_WHITELIST
+    assert "lrb" not in TECH_AI_SOURCE_WHITELIST
+    assert "krebsonsecurity" not in TECH_AI_SOURCE_WHITELIST
+    assert "guernica" not in TECH_AI_SOURCE_WHITELIST
+    assert "nationalinterest" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
