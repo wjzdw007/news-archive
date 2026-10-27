@@ -1416,11 +1416,12 @@ def test_whitelist_registered_and_cap_unchanged():
     # are registered separately
     # and still stay off the
     # whitelist. Named 备 unused.
-    # Do not pull batch103 hung
-    # ids (bandcamp_daily /
-    # computerworld / bigthink)
-    # or their 备 (rollingstone /
-    # extremetech / avclub).
+    # batch103 KEEP
+    # bandcamp_daily /
+    # computerworld / bigthink
+    # are registered separately
+    # and still stay off the
+    # whitelist. Named 备 unused.
     # None of these match the
     # wired / verge / techcrunch
     # ALWAYS pattern.
@@ -1469,12 +1470,12 @@ def test_whitelist_registered_and_cap_unchanged():
     # trailing slash; homepage
     # announced; atom:self).
     # Named 备 unused (all KEEP
-    # passed). Do not pull
-    # batch103 hung ids
-    # (bandcamp_daily /
-    # computerworld / bigthink)
-    # or their 备 (rollingstone /
-    # extremetech / avclub).
+    # passed). batch103 KEEP
+    # bandcamp_daily /
+    # computerworld / bigthink
+    # are registered separately
+    # and still stay off the
+    # whitelist. Named 备 unused.
     # None of these match the
     # wired / verge / techcrunch
     # ALWAYS pattern.
@@ -1489,6 +1490,58 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "hollywoodreporter" not in TECH_AI_SOURCE_WHITELIST
     assert "siliconangle" not in TECH_AI_SOURCE_WHITELIST
     assert "thenextweb" not in TECH_AI_SOURCE_WHITELIST
+    # batch103 RSS primaries stay off the tech/AI whitelist.
+    # bandcamp_daily lands on 综合
+    # (music / culture newsroom,
+    # same as pitchfork /
+    # stereogum / consequence)
+    # — new id — official
+    # daily.bandcamp.com /feed/
+    # (MUST trailing slash;
+    # homepage does not announce
+    # RSS; no atom:self). /feed
+    # (no slash) is 200 same
+    # body — do not lock it.
+    # computerworld lands on 科技
+    # (enterprise IT newsroom,
+    # same as zdnet / cnet /
+    # pcmag) — new id —
+    # official www /feed/ (MUST
+    # www + trailing slash;
+    # homepage announced).
+    # bigthink lands on 综合
+    # (ideas magazine, same as
+    # aeon / noema / nautilus)
+    # — new id — official apex
+    # /feed/ (MUST trailing
+    # slash; homepage 403;
+    # /feed no-slash is 403).
+    # atom:self is the
+    # double-slash /feed/all
+    # quirk — do not lock it.
+    # Named 备 unused (all KEEP
+    # passed). Do not pull
+    # batch104 hung ids
+    # (energy_storage_news /
+    # geekwire /
+    # hollywoodreporter) or
+    # their 备 (siliconangle /
+    # thenextweb / futurism).
+    # None of these match the
+    # wired / verge / techcrunch
+    # ALWAYS pattern.
+    assert "bandcamp_daily" not in TECH_AI_SOURCE_WHITELIST
+    assert "computerworld" not in TECH_AI_SOURCE_WHITELIST
+    assert "bigthink" not in TECH_AI_SOURCE_WHITELIST
+    assert "bandcamp" not in TECH_AI_SOURCE_WHITELIST
+    assert "bandcamp_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "computer_world" not in TECH_AI_SOURCE_WHITELIST
+    assert "computerworld_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "big_think" not in TECH_AI_SOURCE_WHITELIST
+    assert "bigthink_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "rollingstone" not in TECH_AI_SOURCE_WHITELIST
+    assert "extremetech" not in TECH_AI_SOURCE_WHITELIST
+    assert "avclub" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

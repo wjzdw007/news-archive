@@ -14436,11 +14436,13 @@ _INDIEWIRE_KOTTKE_PV_MAGAZINE_PRIMARY = {
 # or their 备
 # (hollywoodreporter /
 # siliconangle / thenextweb).
-# Do not pull batch103 hung
-# ids (bandcamp_daily /
-# computerworld / bigthink)
-# or their 备 (rollingstone /
-# extremetech / avclub).
+# batch103 KEEP
+# bandcamp_daily /
+# computerworld / bigthink
+# are registered
+# separately. Named 备
+# unused (all KEEP
+# passed). Do not invent.
 # insideclimatenews official
 # https://insideclimatenews.org/feed/
 # is new (no prior
@@ -14594,12 +14596,16 @@ _INDIEWIRE_KOTTKE_PV_MAGAZINE_PRIMARY = {
 # hollywoodreporter /
 # siliconangle /
 # thenextweb (unused 备).
-# Do NOT register
+# batch103 KEEP
 # bandcamp_daily /
 # computerworld / bigthink
-# / rollingstone /
+# are registered
+# separately. Named 备
+# unused (all KEEP
+# passed). Do NOT
+# register rollingstone /
 # extremetech / avclub
-# (idle / later hung).
+# (unused 备).
 # Do NOT re-register
 # indiewire / kottke /
 # pv_magazine /
@@ -14687,11 +14693,24 @@ _INSIDECLIMATENEWS_CONSEQUENCE_C4ISRNET_PRIMARY = {
 # siliconangle / thenextweb.
 # Unused — all KEEP passed.
 # Do not invent. Do not pull
-# batch103 hung ids
-# (bandcamp_daily /
-# computerworld / bigthink)
-# or their 备 (rollingstone /
-# extremetech / avclub).
+# batch104 hung ids
+# (energy_storage_news /
+# geekwire /
+# hollywoodreporter)
+# or their 备 (siliconangle /
+# thenextweb / futurism).
+# Do not pull batch105
+# hung ids (kotaku /
+# makeuseof /
+# spaceflightnow) or their
+# 备 (rockpapershotgun /
+# spin / carscoops).
+# Do not pull batch106
+# hung ids (techspot /
+# roadandtrack /
+# soundguys) or their 备
+# (ign / eurogamer /
+# gamespot).
 # usni_news official
 # https://news.usni.org/feed
 # is new (no prior usni_news
@@ -14841,12 +14860,16 @@ _INSIDECLIMATENEWS_CONSEQUENCE_C4ISRNET_PRIMARY = {
 # hollywoodreporter /
 # siliconangle /
 # thenextweb (unused 备).
-# Do NOT register
+# batch103 KEEP
 # bandcamp_daily /
 # computerworld / bigthink
-# / rollingstone /
+# are registered
+# separately. Named 备
+# unused (all KEEP
+# passed). Do NOT
+# register rollingstone /
 # extremetech / avclub
-# (idle / later hung).
+# (unused 备).
 # Do NOT re-register
 # insideclimatenews /
 # consequence / c4isrnet /
@@ -14914,7 +14937,268 @@ _USNI_NEWS_SLASHFILM_SINGULARITYHUB_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 311
+# CEO-approved Bandcamp Daily /
+# Computerworld / Big Think
+# RSS primaries (batch103). On
+# tip 8004b94 after #168
+# (usni_news / slashfilm /
+# singularityhub).
+# Product KEEP set is
+# bandcamp_daily /
+# computerworld / bigthink.
+# Named 备 (hard-swap ONLY if
+# a KEEP fails):
+# rollingstone / extremetech /
+# avclub. Unused — all KEEP
+# passed. Do not invent. Do
+# not pull batch104 hung ids
+# (energy_storage_news /
+# geekwire /
+# hollywoodreporter) or their
+# 备 (siliconangle /
+# thenextweb / futurism).
+# Do not pull batch105 hung
+# ids (kotaku / makeuseof /
+# spaceflightnow) or their
+# 备 (rockpapershotgun /
+# spin / carscoops).
+# Do not pull batch106 hung
+# ids (techspot /
+# roadandtrack / soundguys)
+# or their 备 (ign /
+# eurogamer / gamespot).
+# bandcamp_daily official
+# https://daily.bandcamp.com/feed/
+# is new (no prior
+# bandcamp_daily / bandcamp /
+# bandcamp_com id).
+# httpx+RSS_HEADERS HTTP 200
+# / 37 nonempty / 30
+# insertable (ingest cap 30;
+# channel "Bandcamp Updates"
+# — description is Bandcamp
+# Daily editorial). MUST lock
+# daily.bandcamp.com + /feed/
+# (trailing slash). Homepage
+# does not announce RSS (no
+# <link> / no atom:self).
+# /feed (no slash) is 200
+# same body — do not lock it;
+# lock the trailing-slash
+# site-wide primary.
+# /feed/rss/ is the same
+# body. /rss /rss/ /rss.xml
+# /atom.xml /index.xml /
+# comments/feed/ /
+# news/feed/ /
+# album-of-the-day/feed/ are
+# 404. /?feed=rss2 is HTML
+# homepage — not the
+# site-wide primary.
+# www.daily.bandcamp.com SSL
+# hostname mismatch.
+# bandcamp.com /feed is 404.
+# Do not invent Feedburner
+# (feeds.feedburner.com/BandcampDaily
+# same body — unused).
+# Distinct from live
+# pitchfork / stereogum /
+# consequence / deadline /
+# variety / indiewire /
+# slashfilm. Do not invent
+# Feedburner / section
+# feeds. Lands on 综合
+# (music / culture
+# newsroom, same as
+# pitchfork / stereogum /
+# consequence).
+# computerworld official
+# https://www.computerworld.com/feed/
+# is new (no prior
+# computerworld /
+# computer_world /
+# computerworld_com id).
+# httpx+RSS_HEADERS HTTP 200
+# / 20 nonempty / 20
+# insertable (channel
+# "Computerworld"). MUST
+# lock www + /feed/
+# (trailing slash).
+# Homepage <link> announces
+# this exact path. No
+# atom:self. /feed (no
+# slash) remaps here; apex
+# remaps to www; /rss /
+# feed/rss/ /?feed=rss2
+# remap here. /rss.xml /
+# atom.xml /index.xml are
+# 404 HTML. comments/feed
+# returns the same site-wide
+# body — still comments, not
+# the announced primary.
+# /news/feed/ is a
+# near-duplicate section
+# path — not the announced
+# site-wide primary.
+# Distinct from live zdnet /
+# the_register / cnet /
+# pcmag / macworld /
+# tomshardware / howtogeek.
+# Do not invent Feedburner /
+# section feeds. Lands on
+# 科技 (enterprise IT
+# newsroom, same as zdnet /
+# cnet / pcmag).
+# bigthink official
+# https://bigthink.com/feed/
+# is new (no prior bigthink
+# / big_think / bigthink_com
+# id). httpx+RSS_HEADERS
+# HTTP 200 / 10 nonempty /
+# 10 insertable (channel
+# "Big Think"). MUST lock
+# apex + /feed/ (trailing
+# slash). /feed (no slash)
+# is 403 — do not lock it.
+# Homepage is 403 and does
+# not announce RSS.
+# atom:self is the
+# double-slash quirk
+# https://bigthink.com//feed/all
+# (same all-posts body) —
+# do not lock the
+# double-slash or /feed/all.
+# /feed/all and /feed/all/
+# are 200 same body.
+# www /feed/ is 403.
+# /rss /rss/ /rss.xml /
+# atom.xml /index.xml /
+# feed/rss/ /?feed=rss2 /
+# comments/feed/ /
+# news/feed/ /feed.xml /
+# feeds/feed.rss are 403
+# (Cloudflare). Do not
+# invent Feedburner
+# (feeds.feedburner.com/bigthink/main
+# unused). Distinct from
+# live aeon / noema /
+# nautilus / psyche /
+# atlantic / nyt_magazine.
+# Do not invent Feedburner /
+# section feeds. Lands on
+# 综合 (ideas magazine,
+# same as aeon / noema /
+# nautilus).
+# All three ≥10 KEEP. Named
+# 备 unused (all KEEP
+# passed). Distinct from
+# live pitchfork / stereogum
+# / consequence / deadline /
+# variety / indiewire /
+# slashfilm / zdnet /
+# the_register / cnet /
+# pcmag / macworld / aeon /
+# noema / nautilus.
+# 0 article URL overlap
+# (daily.bandcamp.com /
+# www.computerworld.com /
+# bigthink.com hosts). Not
+# added to the tech/AI
+# whitelist (later-batch
+# sources stay off the
+# frozen ALWAYS set).
+# Do NOT register bandcamp /
+# bandcamp_com /
+# computer_world /
+# computerworld_com /
+# big_think / bigthink_com.
+# Do NOT register
+# rollingstone /
+# extremetech / avclub
+# (unused 备).
+# Do NOT register
+# energy_storage_news /
+# geekwire /
+# hollywoodreporter /
+# siliconangle /
+# thenextweb / futurism /
+# kotaku / makeuseof /
+# spaceflightnow /
+# rockpapershotgun / spin /
+# carscoops / techspot /
+# roadandtrack / soundguys /
+# ign / eurogamer /
+# gamespot (later hung).
+# Do NOT re-register
+# usni_news / slashfilm /
+# singularityhub /
+# insideclimatenews /
+# consequence / c4isrnet /
+# indiewire / kottke /
+# pv_magazine /
+# military_times /
+# earthsky / outside /
+# deadline / makezine /
+# utility_dive / phoronix /
+# adafruit / boingboing /
+# jalopnik / lwn /
+# quanta_magazine /
+# pitchfork / stereogum /
+# zdnet / cnet / pcmag /
+# aeon / noema.
+# national_geographic stays
+# unregistered (no official
+# English RSS).
+# Do NOT use as backups
+# (product skip): bangkok_post
+# / indian_express /
+# rest_of_world / al_monitor /
+# hkfp / biographic /
+# asiatimes / dawn /
+# longreads / hrw /
+# independent (429) /
+# euractiv (301→rapporteur
+# FAIL) / atlantic_council
+# (403) / the_nation (empty
+# feed) / times_of_israel
+# (Cloudflare 403) / the_cut
+# / techdirt / engadget /
+# digital_trends /
+# bleepingcomputer / gizmodo /
+# the_baffler / new_statesman
+# / guernica / nationalinterest
+# / flightglobal /
+# newscientist (CI
+# httpx+RSS_HEADERS 406/empty).
+# qz3 勿挂. digiday0观察 — do not
+# add a second digiday.
+# fastcompany 勿二重.
+# sunday_review / cnbc (403
+# known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_BANDCAMP_DAILY_COMPUTERWORLD_BIGTHINK_PRIMARY = {
+    "bandcamp_daily": {
+        "name": "Bandcamp Daily",
+        "feed_url": "https://daily.bandcamp.com/feed/",
+        "category": "综合",
+    },
+    "computerworld": {
+        "name": "Computerworld",
+        "feed_url": "https://www.computerworld.com/feed/",
+        "category": "科技",
+    },
+    "bigthink": {
+        "name": "Big Think",
+        "feed_url": "https://bigthink.com/feed/",
+        "category": "综合",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 314
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -39697,8 +39981,13 @@ def test_indiewire_kottke_pv_magazine_primaries_registered():
     # slashfilm / singularityhub
     # are registered separately.
     # Named 备 unused (all KEEP
+    # passed). batch103 KEEP
+    # bandcamp_daily /
+    # computerworld / bigthink
+    # are registered separately.
+    # Named 备 unused (all KEEP
     # passed). Do not pull
-    # batch103 hung ids.
+    # batch104 hung ids.
     assert "indie_wire" not in by_id
     assert "indiewire_com" not in by_id
     assert "kottke_org" not in by_id
@@ -39719,6 +40008,10 @@ def test_indiewire_kottke_pv_magazine_primaries_registered():
     assert "hollywoodreporter" not in by_id
     assert "siliconangle" not in by_id
     assert "thenextweb" not in by_id
+    assert "bandcamp_daily" in by_id
+    assert "computerworld" in by_id
+    assert "bigthink" in by_id
+    assert "extremetech" not in by_id
     # national_geographic stays
     # unregistered (no official
     # English RSS).
@@ -40002,8 +40295,13 @@ def test_insideclimatenews_consequence_c4isrnet_primaries_registered():
     # singularityhub are
     # registered separately.
     # Named 备 unused (all KEEP
+    # passed). batch103 KEEP
+    # bandcamp_daily /
+    # computerworld / bigthink
+    # are registered separately.
+    # Named 备 unused (all KEEP
     # passed). Do not pull
-    # batch103 hung ids.
+    # batch104 hung ids.
     assert "inside_climate_news" not in by_id
     assert "insideclimate" not in by_id
     assert "inside_climate" not in by_id
@@ -40021,9 +40319,9 @@ def test_insideclimatenews_consequence_c4isrnet_primaries_registered():
     assert "hollywoodreporter" not in by_id
     assert "siliconangle" not in by_id
     assert "thenextweb" not in by_id
-    assert "bandcamp_daily" not in by_id
-    assert "computerworld" not in by_id
-    assert "bigthink" not in by_id
+    assert "bandcamp_daily" in by_id
+    assert "computerworld" in by_id
+    assert "bigthink" in by_id
     assert "rollingstone" not in by_id
     assert "extremetech" not in by_id
     assert "avclub" not in by_id
@@ -40311,8 +40609,13 @@ def test_usni_news_slashfilm_singularityhub_primaries_registered():
     assert by_id["slashfilm"].feed_url != by_id["singularityhub"].feed_url
     # Named 备 unused (all KEEP
     # passed). Do not invent
-    # replacements. Do not pull
-    # batch103 hung ids.
+    # replacements. batch103 KEEP
+    # bandcamp_daily /
+    # computerworld / bigthink
+    # are registered separately.
+    # Named 备 unused (all KEEP
+    # passed). Do not pull
+    # batch104 hung ids.
     assert "usni" not in by_id
     assert "usni_org" not in by_id
     assert "news_usni" not in by_id
@@ -40322,9 +40625,9 @@ def test_usni_news_slashfilm_singularityhub_primaries_registered():
     assert "hollywoodreporter" not in by_id
     assert "siliconangle" not in by_id
     assert "thenextweb" not in by_id
-    assert "bandcamp_daily" not in by_id
-    assert "computerworld" not in by_id
-    assert "bigthink" not in by_id
+    assert "bandcamp_daily" in by_id
+    assert "computerworld" in by_id
+    assert "bigthink" in by_id
     assert "rollingstone" not in by_id
     assert "extremetech" not in by_id
     assert "avclub" not in by_id
@@ -40467,6 +40770,351 @@ def test_usni_news_slashfilm_singularityhub_feeds_live_httpx_rss_headers():
         )
 
 
+def test_bandcamp_daily_computerworld_bigthink_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "bandcamp_daily" in by_id
+    assert by_id["bandcamp_daily"].feed_url == (
+        "https://daily.bandcamp.com/feed/"
+    )
+    assert by_id["bandcamp_daily"].feed_url != (
+        "https://daily.bandcamp.com/feed"
+    )
+    assert by_id["bandcamp_daily"].feed_url != (
+        "https://www.daily.bandcamp.com/feed/"
+    )
+    assert by_id["bandcamp_daily"].feed_url != (
+        "https://daily.bandcamp.com/rss"
+    )
+    assert by_id["bandcamp_daily"].feed_url != (
+        "https://daily.bandcamp.com/rss.xml"
+    )
+    assert by_id["bandcamp_daily"].feed_url != (
+        "https://daily.bandcamp.com/feed/rss/"
+    )
+    assert by_id["bandcamp_daily"].feed_url != (
+        "https://daily.bandcamp.com/comments/feed/"
+    )
+    assert by_id["bandcamp_daily"].feed_url != (
+        "https://daily.bandcamp.com/?feed=rss2"
+    )
+    assert by_id["bandcamp_daily"].feed_url != (
+        "https://feeds.feedburner.com/BandcampDaily"
+    )
+    assert by_id["bandcamp_daily"].feed_url != "https://bandcamp.com/feed"
+    assert "computerworld" in by_id
+    assert by_id["computerworld"].feed_url == (
+        "https://www.computerworld.com/feed/"
+    )
+    assert by_id["computerworld"].feed_url != (
+        "https://www.computerworld.com/feed"
+    )
+    assert by_id["computerworld"].feed_url != (
+        "https://computerworld.com/feed/"
+    )
+    assert by_id["computerworld"].feed_url != (
+        "https://www.computerworld.com/rss"
+    )
+    assert by_id["computerworld"].feed_url != (
+        "https://www.computerworld.com/rss.xml"
+    )
+    assert by_id["computerworld"].feed_url != (
+        "https://www.computerworld.com/feed/rss/"
+    )
+    assert by_id["computerworld"].feed_url != (
+        "https://www.computerworld.com/comments/feed/"
+    )
+    assert by_id["computerworld"].feed_url != (
+        "https://www.computerworld.com/news/feed/"
+    )
+    assert by_id["computerworld"].feed_url != (
+        "https://www.computerworld.com/?feed=rss2"
+    )
+    assert "bigthink" in by_id
+    assert by_id["bigthink"].feed_url == "https://bigthink.com/feed/"
+    assert by_id["bigthink"].feed_url != "https://bigthink.com/feed"
+    assert by_id["bigthink"].feed_url != "https://www.bigthink.com/feed/"
+    assert by_id["bigthink"].feed_url != "https://bigthink.com/rss"
+    assert by_id["bigthink"].feed_url != "https://bigthink.com/rss.xml"
+    assert by_id["bigthink"].feed_url != "https://bigthink.com/feed/rss/"
+    assert by_id["bigthink"].feed_url != "https://bigthink.com/feed/all"
+    assert by_id["bigthink"].feed_url != "https://bigthink.com/feed/all/"
+    assert by_id["bigthink"].feed_url != "https://bigthink.com//feed/all"
+    assert by_id["bigthink"].feed_url != (
+        "https://feeds.feedburner.com/bigthink/main"
+    )
+    assert by_id["bigthink"].feed_url != "https://bigthink.com/?feed=rss2"
+    # #168 / batch102 winners stay registered and unchanged.
+    # #167 / batch101 winners stay registered and unchanged.
+    # #166 / batch100 winners stay registered and unchanged.
+    # #165 / batch99 winners stay registered and unchanged.
+    # #164 / batch98 winners stay registered and unchanged.
+    # Do not touch usni_news /
+    # slashfilm / singularityhub /
+    # insideclimatenews /
+    # consequence / c4isrnet /
+    # indiewire / kottke /
+    # pv_magazine / military_times /
+    # earthsky / outside / deadline /
+    # makezine / utility_dive /
+    # phoronix / adafruit /
+    # boingboing / jalopnik / lwn /
+    # quanta_magazine / yale360 /
+    # cleantechnica / hackaday /
+    # astronomy / skyandtelescope /
+    # latimes_technology / variety /
+    # canary_media / defensenews /
+    # taskandpurpose / twz /
+    # navalnews / climate_home /
+    # grist / carbon_brief /
+    # pitchfork / stereogum / zdnet /
+    # cnet / pcmag / aeon / noema.
+    assert "usni_news" in by_id
+    assert "slashfilm" in by_id
+    assert "singularityhub" in by_id
+    assert "insideclimatenews" in by_id
+    assert "consequence" in by_id
+    assert "c4isrnet" in by_id
+    assert "indiewire" in by_id
+    assert "kottke" in by_id
+    assert "pv_magazine" in by_id
+    assert "military_times" in by_id
+    assert "earthsky" in by_id
+    assert "outside" in by_id
+    assert "deadline" in by_id
+    assert "makezine" in by_id
+    assert "utility_dive" in by_id
+    assert "phoronix" in by_id
+    assert "adafruit" in by_id
+    assert "boingboing" in by_id
+    assert "jalopnik" in by_id
+    assert "lwn" in by_id
+    assert "quanta_magazine" in by_id
+    assert "yale360" in by_id
+    assert "cleantechnica" in by_id
+    assert "hackaday" in by_id
+    assert "astronomy" in by_id
+    assert "skyandtelescope" in by_id
+    assert "latimes_technology" in by_id
+    assert "variety" in by_id
+    assert "canary_media" in by_id
+    assert "defensenews" in by_id
+    assert "taskandpurpose" in by_id
+    assert "twz" in by_id
+    assert "navalnews" in by_id
+    assert "climate_home" in by_id
+    assert "grist" in by_id
+    assert "carbon_brief" in by_id
+    assert "pitchfork" in by_id
+    assert "stereogum" in by_id
+    assert "zdnet" in by_id
+    assert "cnet" in by_id
+    assert "pcmag" in by_id
+    assert "aeon" in by_id
+    assert "noema" in by_id
+    # Feed locks + uniqueness vs live
+    # music / IT / ideas stack.
+    assert by_id["bandcamp_daily"].feed_url != by_id["pitchfork"].feed_url
+    assert by_id["bandcamp_daily"].feed_url != by_id["stereogum"].feed_url
+    assert by_id["bandcamp_daily"].feed_url != by_id["consequence"].feed_url
+    assert by_id["bandcamp_daily"].feed_url != by_id["deadline"].feed_url
+    assert by_id["bandcamp_daily"].feed_url != by_id["variety"].feed_url
+    assert by_id["bandcamp_daily"].feed_url != by_id["indiewire"].feed_url
+    assert by_id["bandcamp_daily"].feed_url != by_id["slashfilm"].feed_url
+    assert by_id["computerworld"].feed_url != by_id["zdnet"].feed_url
+    assert by_id["computerworld"].feed_url != by_id["the_register"].feed_url
+    assert by_id["computerworld"].feed_url != by_id["cnet"].feed_url
+    assert by_id["computerworld"].feed_url != by_id["pcmag"].feed_url
+    assert by_id["computerworld"].feed_url != by_id["macworld"].feed_url
+    assert by_id["computerworld"].feed_url != by_id["tomshardware"].feed_url
+    assert by_id["computerworld"].feed_url != by_id["howtogeek"].feed_url
+    assert by_id["bigthink"].feed_url != by_id["aeon"].feed_url
+    assert by_id["bigthink"].feed_url != by_id["noema"].feed_url
+    assert by_id["bigthink"].feed_url != by_id["nautilus"].feed_url
+    assert by_id["bigthink"].feed_url != by_id["psyche"].feed_url
+    assert by_id["bigthink"].feed_url != by_id["atlantic"].feed_url
+    assert by_id["bigthink"].feed_url != by_id["nyt_magazine"].feed_url
+    assert (
+        by_id["bandcamp_daily"].feed_url != by_id["computerworld"].feed_url
+    )
+    assert by_id["bandcamp_daily"].feed_url != by_id["bigthink"].feed_url
+    assert by_id["computerworld"].feed_url != by_id["bigthink"].feed_url
+    # Named 备 unused (all KEEP
+    # passed). Do not invent
+    # replacements. Do not pull
+    # batch104 hung ids.
+    assert "bandcamp" not in by_id
+    assert "bandcamp_com" not in by_id
+    assert "computer_world" not in by_id
+    assert "computerworld_com" not in by_id
+    assert "big_think" not in by_id
+    assert "bigthink_com" not in by_id
+    assert "rollingstone" not in by_id
+    assert "extremetech" not in by_id
+    assert "avclub" not in by_id
+    assert "energy_storage_news" not in by_id
+    assert "geekwire" not in by_id
+    assert "hollywoodreporter" not in by_id
+    assert "siliconangle" not in by_id
+    assert "thenextweb" not in by_id
+    assert "futurism" not in by_id
+    assert "kotaku" not in by_id
+    assert "makeuseof" not in by_id
+    assert "spaceflightnow" not in by_id
+    assert "rockpapershotgun" not in by_id
+    assert "spin" not in by_id
+    assert "carscoops" not in by_id
+    assert "techspot" not in by_id
+    assert "roadandtrack" not in by_id
+    assert "soundguys" not in by_id
+    assert "ign" not in by_id
+    assert "eurogamer" not in by_id
+    assert "gamespot" not in by_id
+    # national_geographic stays
+    # unregistered (no official
+    # English RSS).
+    assert "national_geographic" not in by_id
+    assert "nationalgeographic" not in by_id
+    assert "natgeo" not in by_id
+    assert "carbonbrief" not in by_id
+    assert "carbon_brief" in by_id
+    assert "politico" not in by_id
+    assert "politico_politics" in by_id
+    assert "politico_europe" in by_id
+    assert "the_atlantic" not in by_id
+    assert "motherjones" not in by_id
+    assert "the_intercept" not in by_id
+    assert "theregister" not in by_id
+    assert "atlantic" in by_id
+    assert "mother_jones" in by_id
+    assert "intercept" in by_id
+    assert "the_register" in by_id
+    assert "newscientist" not in by_id
+    assert "qz3" not in by_id
+    assert "qz" not in by_id
+    assert "fastcompany" not in by_id
+    assert "fast_company" in by_id
+    assert "the_verge" not in by_id
+    assert "flightglobal" not in by_id
+    assert "gizmodo" not in by_id
+    assert "the_baffler" not in by_id
+    assert "new_statesman" not in by_id
+    assert "guernica" not in by_id
+    assert "nationalinterest" not in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "the_nation" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "techdirt" not in by_id
+    assert "engadget" not in by_id
+    assert "digital_trends" not in by_id
+    assert "the_cut" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "indian_express" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "al_monitor" not in by_id
+    assert "hkfp" not in by_id
+    assert "biographic" not in by_id
+    assert "asiatimes" not in by_id
+    assert "dawn" not in by_id
+    assert "longreads" not in by_id
+    assert "hrw" not in by_id
+    assert "independent" not in by_id
+    for source_id, expected in _BANDCAMP_DAILY_COMPUTERWORLD_BIGTHINK_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_bandcamp_daily_computerworld_bigthink_feeds_live_httpx_rss_headers():
+    """KEEP must pass the same httpx + RSS_HEADERS client CI uses."""
+    from news_archive.fetch import fetch_source
+
+    by_id = {s.id: s for s in SOURCES}
+    keep_floor = {
+        "bandcamp_daily": 10,
+        "computerworld": 10,
+        "bigthink": 10,
+    }
+    for source_id in _BANDCAMP_DAILY_COMPUTERWORLD_BIGTHINK_PRIMARY:
+        source = by_id[source_id]
+        articles = fetch_source(source, timeout=30)
+        assert articles, f"{source_id} httpx+RSS_HEADERS insertable=0"
+        assert len(articles) >= keep_floor[source_id], (
+            f"{source_id} insertable {len(articles)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (bandcamp_daily /
+        # computerworld / bigthink)
+        # uses the un-namespaced
+        # element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # bandcamp_daily 37/37
+        # (ingest cap 30),
+        # computerworld 20/20, and
+        # bigthink 10/10 were 100%
+        # nonempty this probe.
+        # ≥10 KEEP.
+        # bandcamp_daily MUST stay
+        # on daily.bandcamp.com
+        # /feed/ (trailing slash;
+        # homepage does not
+        # announce RSS; no
+        # atom:self). /feed (no
+        # slash) is 200 same body
+        # — do not lock it.
+        # computerworld MUST stay
+        # on www /feed/ (trailing
+        # slash; homepage
+        # announced). /feed remaps
+        # here.
+        # bigthink MUST stay on
+        # apex /feed/ (trailing
+        # slash; homepage 403;
+        # /feed no-slash is 403).
+        # atom:self is the
+        # double-slash /feed/all
+        # quirk — do not lock it.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= keep_floor[source_id], (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -40580,6 +41228,7 @@ if __name__ == "__main__":
     test_indiewire_kottke_pv_magazine_primaries_registered()
     test_insideclimatenews_consequence_c4isrnet_primaries_registered()
     test_usni_news_slashfilm_singularityhub_primaries_registered()
+    test_bandcamp_daily_computerworld_bigthink_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -40682,4 +41331,5 @@ if __name__ == "__main__":
     test_indiewire_kottke_pv_magazine_feeds_live_httpx_rss_headers()
     test_insideclimatenews_consequence_c4isrnet_feeds_live_httpx_rss_headers()
     test_usni_news_slashfilm_singularityhub_feeds_live_httpx_rss_headers()
+    test_bandcamp_daily_computerworld_bigthink_feeds_live_httpx_rss_headers()
     print("✓ source registry tests PASSED")
