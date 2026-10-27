@@ -1878,6 +1878,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="theweek",
+        name="The Week",
+        feed_url="https://theweek.com/feeds.xml",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="harpers",
+        name="Harper's Magazine",
+        feed_url="https://harpers.org/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="justsecurity",
+        name="Just Security",
+        feed_url="https://www.justsecurity.org/feed/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
