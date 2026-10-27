@@ -1411,11 +1411,11 @@ def test_whitelist_registered_and_cap_unchanged():
     # slash; homepage announced;
     # atom:self). Named 备
     # unused (all KEEP passed).
-    # Do not pull batch102 hung
-    # ids (usni_news / slashfilm
-    # / singularityhub) or their
-    # 备 (hollywoodreporter /
-    # siliconangle / thenextweb).
+    # batch102 KEEP usni_news /
+    # slashfilm / singularityhub
+    # are registered separately
+    # and still stay off the
+    # whitelist. Named 备 unused.
     # Do not pull batch103 hung
     # ids (bandcamp_daily /
     # computerworld / bigthink)
@@ -1438,6 +1438,57 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "usni_news" not in TECH_AI_SOURCE_WHITELIST
     assert "slashfilm" not in TECH_AI_SOURCE_WHITELIST
     assert "singularityhub" not in TECH_AI_SOURCE_WHITELIST
+    # batch102 RSS primaries stay off the tech/AI whitelist.
+    # usni_news lands on 国际
+    # (naval / defense newsroom,
+    # same as navalnews /
+    # defensenews /
+    # military_times /
+    # c4isrnet) — new id —
+    # official news.usni.org
+    # /feed (MUST no trailing
+    # slash; homepage announced;
+    # atom:self). /feed/ is 403.
+    # slashfilm lands on 综合
+    # (entertainment / film
+    # newsroom, same as deadline
+    # / variety / pitchfork /
+    # indiewire / consequence)
+    # — new id — official www
+    # /feed/ (MUST www +
+    # trailing slash; homepage
+    # lists section +
+    # site-wide; atom:self is
+    # /feed/).
+    # singularityhub lands on
+    # 科技 (future-tech
+    # newsroom, same as
+    # newatlas / thenewstack)
+    # — new id — official apex
+    # /feed/ (MUST apex +
+    # trailing slash; homepage
+    # announced; atom:self).
+    # Named 备 unused (all KEEP
+    # passed). Do not pull
+    # batch103 hung ids
+    # (bandcamp_daily /
+    # computerworld / bigthink)
+    # or their 备 (rollingstone /
+    # extremetech / avclub).
+    # None of these match the
+    # wired / verge / techcrunch
+    # ALWAYS pattern.
+    assert "usni_news" not in TECH_AI_SOURCE_WHITELIST
+    assert "slashfilm" not in TECH_AI_SOURCE_WHITELIST
+    assert "singularityhub" not in TECH_AI_SOURCE_WHITELIST
+    assert "usni" not in TECH_AI_SOURCE_WHITELIST
+    assert "usni_org" not in TECH_AI_SOURCE_WHITELIST
+    assert "slash_film" not in TECH_AI_SOURCE_WHITELIST
+    assert "slashfilm_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "singularity_hub" not in TECH_AI_SOURCE_WHITELIST
+    assert "hollywoodreporter" not in TECH_AI_SOURCE_WHITELIST
+    assert "siliconangle" not in TECH_AI_SOURCE_WHITELIST
+    assert "thenextweb" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
