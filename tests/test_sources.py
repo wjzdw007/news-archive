@@ -10622,7 +10622,321 @@ _THEWEEK_HARPERS_JUSTSECURITY_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 269
+# CEO-approved Krebs on Security /
+# Android Police / CyberScoop RSS
+# primaries (batch88). These three
+# are the new adds after #152
+# (batch87 theweek + harpers +
+# justsecurity) on tip
+# 922ac7ec2fe3aa06da8a7911c02bd07c93114b11.
+# Primaries were krebsonsecurity /
+# nationalinterest / cyberscoop.
+# Backups were thedrive /
+# androidpolice / defensenews
+# (probe only if a primary fails
+# thin/403). nationalinterest
+# official RSS Cloudflare 403 —
+# hard-swap to androidpolice (do
+# not hang Feedburner). thedrive
+# live 9/9 is the 5–9 observe
+# band, not KEEP, so the next
+# backup (androidpolice 10/10)
+# fills the slot. cyberscoop and
+# krebsonsecurity live KEEP this
+# probe. theweek / harpers /
+# justsecurity just landed via
+# #152 — do not undo.
+# sciencealert /
+# responsiblestatecraft / lrb
+# (#150) / universe_today /
+# new_yorker / darkreading (#149)
+# / inverse / appleinsider /
+# popular_mechanics (#148) /
+# polygon / pcmag / mashable
+# (#146) / smithsonian_mag (#147)
+# stay.
+# Product feed locks
+# (official only; no Feedburner):
+# krebsonsecurity =
+# https://krebsonsecurity.com/feed/
+# (MUST trailing slash on /feed/;
+# do NOT invent /feed
+# /rss/index.xml)
+# androidpolice =
+# https://www.androidpolice.com/feed/
+# (MUST trailing slash on /feed/;
+# do NOT invent /feed
+# /rss/index.xml)
+# cyberscoop =
+# https://www.cyberscoop.com/feed/
+# (MUST trailing slash on /feed/;
+# do NOT invent /feed
+# /rss/index.xml)
+# nationalinterest leftover
+# primary (CF 403, hard-swapped) =
+# https://nationalinterest.org/feed
+# (MUST no trailing slash; official
+# Cloudflare 403; do not hang
+# Feedburner)
+# thedrive leftover backup =
+# https://www.thedrive.com/feed
+# (unused: 9/9 observe band, not
+# KEEP; MUST no trailing slash)
+# defensenews leftover backup =
+# https://www.defensenews.com/arc/outboundfeeds/rss/?outputType=xml
+# (unused because androidpolice
+# KEEP; official Arc outbound,
+# live 200 → /feed/; do NOT invent
+# Feedburner)
+# Active candidate set is these 6
+# (3 primary + 3 leftover backup).
+# CAP=6 sources max in the active
+# set. NEWS_SOURCE_CAP display stays 6 —
+# no CAP code change.
+# Do not restore atlantic_council.
+# Do not restore the_nation. Do not
+# restore independent. Do not restore
+# hrw. Do not restore euractiv. Do
+# not restore dawn / longreads. Do
+# not restore times_of_israel. Do not
+# restore techdirt. Do not restore
+# engadget. Do not restore
+# digital_trends. Do not restore
+# the_cut. Do not restore
+# bleepingcomputer. Do not restore
+# gizmodo (CI 403 after #147). Do not
+# restore the_baffler (Cloudflare 403
+# after #149). Do not restore
+# new_statesman (Varnish 403 leftover).
+# Do not restore guernica (product
+# skip). Do not probe / register
+# product-skip: bangkok_post /
+# indian_express / rest_of_world /
+# al_monitor / hkfp / biographic /
+# asiatimes / dawn / longreads /
+# hrw / independent / euractiv /
+# atlantic_council / the_nation /
+# times_of_israel / the_cut /
+# techdirt / engadget /
+# digital_trends / bleepingcomputer /
+# gizmodo / the_baffler /
+# new_statesman / guernica.
+# Do not re-hang SCMP / MIT TR /
+# BBC World (already live).
+# Do not re-touch theweek /
+# harpers / justsecurity (#152) /
+# sciencealert /
+# responsiblestatecraft / lrb
+# (#150) / universe_today /
+# new_yorker / darkreading (#149)
+# / inverse / appleinsider /
+# popular_mechanics (#148) /
+# polygon / pcmag / mashable
+# (#146) / smithsonian_mag (#147)
+# / cnet / 9to5mac (#145) /
+# artnet / macrumors / quillette
+# (#144) / howtogeek /
+# new_republic / vox (#143).
+# Skip already-registered
+# collisions: the_verge (verge
+# already registered) / wired
+# (already registered) /
+# android_authority (already
+# registered). Do not hang a
+# second verge, wired, or
+# android_authority.
+# krebsonsecurity is the official
+# site-wide RSS (no prior
+# krebsonsecurity / krebs /
+# krebs_on_security /
+# krebsonsecurity_com id). Product
+# lock: MUST lock
+# https://krebsonsecurity.com/feed/
+# (channel "Krebs on Security") —
+# trailing slash required; do NOT
+# invent /feed /rss/index.xml.
+# Live-diff winner: HTTP 200 / 10
+# nonempty / 10 insertable (httpx
+# fetch_source + urllib). 10 is
+# the KEEP floor, not the 5–9
+# observe band. Distinct from live
+# darkreading / thehackernews /
+# thenewstack / the_markup / eff
+# / infoq / tomshardware /
+# android_authority. 0 article URL
+# overlap with those. Lands on
+# the existing 科技 category path
+# (security newsroom, same as
+# darkreading / thehackernews).
+# Not added to the tech/AI
+# whitelist (later-batch sources
+# stay off the frozen ALWAYS set).
+# androidpolice is the official
+# site-wide RSS (no prior
+# androidpolice / android_police
+# / androidpolice_com id). Product
+# lock: MUST lock
+# https://www.androidpolice.com/feed/
+# (channel "Android Police") —
+# trailing slash required; do NOT
+# invent /feed /rss/index.xml.
+# Hard-swap fill for
+# nationalinterest official
+# Cloudflare 403. Live-diff
+# winner: HTTP 200 / 10 nonempty
+# / 10 insertable (httpx
+# fetch_source + urllib). 10 is
+# the KEEP floor, not the 5–9
+# observe band. Distinct from live
+# android_authority / 9to5mac /
+# howtogeek / tomshardware / cnet
+# / mashable / pcmag /
+# appleinsider / inverse /
+# polygon. 0 article URL overlap
+# with those. Lands on the
+# existing 科技 category path
+# (Android newsroom, same as
+# android_authority). Not added
+# to the tech/AI whitelist
+# (later-batch sources stay off
+# the frozen ALWAYS set).
+# cyberscoop is the official
+# site-wide RSS (no prior
+# cyberscoop / cyber_scoop /
+# cyberscoop_com id). Product
+# lock: MUST lock
+# https://www.cyberscoop.com/feed/
+# (channel "CyberScoop") —
+# trailing slash required; do NOT
+# invent /feed /rss/index.xml.
+# Live-diff winner: HTTP 200 / 10
+# nonempty / 10 insertable (httpx
+# fetch_source + urllib). 10 is
+# the KEEP floor, not the 5–9
+# observe band. Distinct from live
+# darkreading / thehackernews /
+# thenewstack / the_markup / eff
+# / krebsonsecurity /
+# justsecurity. 0 article URL
+# overlap with those. Lands on
+# the existing 科技 category path
+# (cybersecurity newsroom, same
+# as darkreading). Not added to
+# the tech/AI whitelist
+# (later-batch sources stay off
+# the frozen ALWAYS set).
+# Unused leftover
+# nationalinterest stays out
+# (official Cloudflare 403; do
+# not hang Feedburner; path
+# /feed — do NOT invent /feed/
+# /rss/index.xml).
+# Unused leftover thedrive stays
+# out (9/9 observe band, not
+# KEEP; path /feed — do NOT
+# invent /feed/ /rss/index.xml).
+# Unused leftover defensenews
+# stays out (androidpolice KEEP;
+# official Arc
+# /arc/outboundfeeds/rss/?outputType=xml
+# — do NOT invent Feedburner).
+# theweek / harpers /
+# justsecurity stay registered
+# (batch87 KEEP). sciencealert /
+# responsiblestatecraft / lrb
+# stay registered (batch86
+# KEEP). universe_today /
+# new_yorker / darkreading stay
+# registered (batch85 KEEP).
+# inverse / appleinsider /
+# popular_mechanics stay
+# registered (batch84 KEEP).
+# polygon / pcmag / mashable
+# stay registered (batch83
+# KEEP). smithsonian_mag is
+# already the gizmodo hard-swap
+# primary on tip (MUST lock
+# https://www.smithsonianmag.com/rss/latest_articles/
+# never stale /rss/articles/)
+# — do not register it twice.
+# the_baffler stays
+# unregistered (official
+# Cloudflare 403; do not hang
+# Feedburner). new_statesman
+# stays unused leftover
+# (official Varnish 403).
+# engadget stays unregistered
+# (official CloudFront 403; do
+# not register Feedburner).
+# digital_trends stays
+# unregistered (official
+# Cloudflare 403 JS challenge;
+# do not register Feedburner).
+# techdirt stays unregistered
+# (official Cloudflare 403; do
+# not register Feedburner).
+# bleepingcomputer stays
+# unregistered (official
+# Cloudflare 403 JS challenge;
+# do not register Feedburner).
+# the_cut stays out (product
+# dropped — all 404; do not
+# probe / register). the_verge
+# stays out (verge already
+# registered). wired stays
+# registered as the existing
+# wired primary — do not hang
+# a second wired.
+# android_authority stays
+# registered as the existing
+# android_authority primary —
+# do not hang a second
+# android_authority.
+# Do NOT use as backups
+# (product skip): bangkok_post
+# / indian_express /
+# rest_of_world / al_monitor /
+# hkfp / biographic /
+# asiatimes / dawn /
+# longreads / hrw /
+# independent (429) /
+# euractiv (301→rapporteur
+# FAIL) / atlantic_council
+# (403) / the_nation (empty
+# feed) / times_of_israel
+# (Cloudflare 403) / the_cut
+# / techdirt / engadget /
+# digital_trends /
+# bleepingcomputer / gizmodo /
+# the_baffler / new_statesman
+# / guernica.
+# digiday0观察 — do not add a
+# second digiday. sunday_review /
+# cnbc (403 known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_KREBSONSECURITY_ANDROIDPOLICE_CYBERSCOOP_PRIMARY = {
+    "krebsonsecurity": {
+        "name": "Krebs on Security",
+        "feed_url": "https://krebsonsecurity.com/feed/",
+        "category": "科技",
+    },
+    "androidpolice": {
+        "name": "Android Police",
+        "feed_url": "https://www.androidpolice.com/feed/",
+        "category": "科技",
+    },
+    "cyberscoop": {
+        "name": "CyberScoop",
+        "feed_url": "https://www.cyberscoop.com/feed/",
+        "category": "科技",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 272
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -30989,10 +31303,15 @@ def test_sciencealert_responsiblestatecraft_lrb_primaries_registered():
     assert by_id["sciencealert"].feed_url != by_id["lrb"].feed_url
     assert by_id["responsiblestatecraft"].feed_url != by_id["lrb"].feed_url
     # Unused leftover backups stay out
-    # (all three primaries live KEEP).
-    # krebsonsecurity / guernica /
-    # nationalinterest were not probed
-    # for KEEP-fill.
+    # at batch86 time (all three
+    # primaries live KEEP).
+    # krebsonsecurity is now a
+    # batch88 KEEP primary — alias
+    # ids stay out. guernica /
+    # nationalinterest were not
+    # probed for KEEP-fill
+    # (nationalinterest later CF 403
+    # in batch88; still unregistered).
     # universe_today / new_yorker /
     # darkreading stay registered
     # (batch85 KEEP).
@@ -31037,7 +31356,7 @@ def test_sciencealert_responsiblestatecraft_lrb_primaries_registered():
     assert "lrb_co_uk" not in by_id
     assert "lrb_com" not in by_id
     assert "the_lrb" not in by_id
-    assert "krebsonsecurity" not in by_id
+    assert "krebsonsecurity" in by_id
     assert "krebs" not in by_id
     assert "krebs_on_security" not in by_id
     assert "krebsonsecurity_com" not in by_id
@@ -31498,6 +31817,341 @@ def test_theweek_harpers_justsecurity_feeds_live_http_200():
         )
 
 
+def test_nationalinterest_hard_swapped_to_androidpolice():
+    """Product lock: nationalinterest official Cloudflare 403; androidpolice is the KEEP fill."""
+    by_id = {s.id: s for s in SOURCES}
+    assert "nationalinterest" not in by_id
+    assert "national_interest" not in by_id
+    assert "nationalinterest_org" not in by_id
+    assert "the_national_interest" not in by_id
+    assert "androidpolice" in by_id
+    source = by_id["androidpolice"]
+    assert source.role == "primary"
+    assert source.name == "Android Police"
+    assert source.feed_url == "https://www.androidpolice.com/feed/"
+    assert source.category == "科技"
+    assert "https://nationalinterest.org/feed" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://nationalinterest.org/feed/" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://feeds.feedburner.com/nationalinterest" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://feeds.feedburner.com/TheNationalInterest" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://www.androidpolice.com/feed" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://www.androidpolice.com/rss/index.xml" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "krebsonsecurity" in by_id
+    assert "cyberscoop" in by_id
+
+
+def test_krebsonsecurity_androidpolice_cyberscoop_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "krebsonsecurity" in by_id
+    assert by_id["krebsonsecurity"].feed_url == (
+        "https://krebsonsecurity.com/feed/"
+    )
+    assert by_id["krebsonsecurity"].feed_url != (
+        "https://krebsonsecurity.com/feed"
+    )
+    assert by_id["krebsonsecurity"].feed_url != (
+        "https://krebsonsecurity.com/rss/index.xml"
+    )
+    assert "androidpolice" in by_id
+    assert by_id["androidpolice"].feed_url == (
+        "https://www.androidpolice.com/feed/"
+    )
+    assert by_id["androidpolice"].feed_url != (
+        "https://www.androidpolice.com/feed"
+    )
+    assert by_id["androidpolice"].feed_url != (
+        "https://www.androidpolice.com/rss/index.xml"
+    )
+    assert "cyberscoop" in by_id
+    assert by_id["cyberscoop"].feed_url == (
+        "https://www.cyberscoop.com/feed/"
+    )
+    assert by_id["cyberscoop"].feed_url != (
+        "https://www.cyberscoop.com/feed"
+    )
+    assert by_id["cyberscoop"].feed_url != (
+        "https://www.cyberscoop.com/rss/index.xml"
+    )
+    # #152 / batch87 winners stay registered and unchanged.
+    # #150 / batch86 winners stay registered and unchanged.
+    # #149 / batch85 winners stay registered and unchanged.
+    # #148 / batch84 winners stay registered and unchanged.
+    # #146 / batch83 winners stay registered and unchanged.
+    # #147 / #145 / batch82 winners stay registered and unchanged.
+    # #144 / batch81 winners stay registered and unchanged.
+    # #143 / batch80 winners stay registered and unchanged.
+    # Do not touch theweek / harpers /
+    # justsecurity / sciencealert /
+    # responsiblestatecraft / lrb /
+    # universe_today / new_yorker /
+    # darkreading / inverse /
+    # appleinsider / popular_mechanics
+    # / polygon / pcmag / mashable /
+    # smithsonian_mag / cnet /
+    # 9to5mac / artnet / macrumors /
+    # quillette / howtogeek /
+    # new_republic / vox.
+    assert "theweek" in by_id
+    assert "harpers" in by_id
+    assert "justsecurity" in by_id
+    assert "sciencealert" in by_id
+    assert "responsiblestatecraft" in by_id
+    assert "lrb" in by_id
+    assert "universe_today" in by_id
+    assert "new_yorker" in by_id
+    assert "darkreading" in by_id
+    assert "inverse" in by_id
+    assert "appleinsider" in by_id
+    assert "popular_mechanics" in by_id
+    assert "polygon" in by_id
+    assert "pcmag" in by_id
+    assert "mashable" in by_id
+    assert "cnet" in by_id
+    assert "9to5mac" in by_id
+    assert "smithsonian_mag" in by_id
+    assert "gizmodo" not in by_id
+    assert "artnet" in by_id
+    assert "macrumors" in by_id
+    assert "quillette" in by_id
+    assert "howtogeek" in by_id
+    assert "new_republic" in by_id
+    assert "vox" in by_id
+    # Feed locks + uniqueness vs live
+    # security / Android / cybersecurity
+    # stack.
+    assert by_id["krebsonsecurity"].feed_url != by_id["darkreading"].feed_url
+    assert by_id["krebsonsecurity"].feed_url != by_id["thehackernews"].feed_url
+    assert by_id["krebsonsecurity"].feed_url != by_id["thenewstack"].feed_url
+    assert by_id["krebsonsecurity"].feed_url != by_id["the_markup"].feed_url
+    assert by_id["krebsonsecurity"].feed_url != by_id["eff"].feed_url
+    assert by_id["krebsonsecurity"].feed_url != by_id["infoq"].feed_url
+    assert by_id["krebsonsecurity"].feed_url != by_id["tomshardware"].feed_url
+    assert by_id["krebsonsecurity"].feed_url != by_id["android_authority"].feed_url
+    assert by_id["androidpolice"].feed_url != by_id["android_authority"].feed_url
+    assert by_id["androidpolice"].feed_url != by_id["9to5mac"].feed_url
+    assert by_id["androidpolice"].feed_url != by_id["howtogeek"].feed_url
+    assert by_id["androidpolice"].feed_url != by_id["tomshardware"].feed_url
+    assert by_id["androidpolice"].feed_url != by_id["cnet"].feed_url
+    assert by_id["androidpolice"].feed_url != by_id["mashable"].feed_url
+    assert by_id["androidpolice"].feed_url != by_id["pcmag"].feed_url
+    assert by_id["androidpolice"].feed_url != by_id["appleinsider"].feed_url
+    assert by_id["androidpolice"].feed_url != by_id["inverse"].feed_url
+    assert by_id["androidpolice"].feed_url != by_id["polygon"].feed_url
+    assert by_id["cyberscoop"].feed_url != by_id["darkreading"].feed_url
+    assert by_id["cyberscoop"].feed_url != by_id["thehackernews"].feed_url
+    assert by_id["cyberscoop"].feed_url != by_id["thenewstack"].feed_url
+    assert by_id["cyberscoop"].feed_url != by_id["the_markup"].feed_url
+    assert by_id["cyberscoop"].feed_url != by_id["eff"].feed_url
+    assert by_id["cyberscoop"].feed_url != by_id["krebsonsecurity"].feed_url
+    assert by_id["cyberscoop"].feed_url != by_id["justsecurity"].feed_url
+    assert by_id["krebsonsecurity"].feed_url != by_id["androidpolice"].feed_url
+    assert by_id["krebsonsecurity"].feed_url != by_id["cyberscoop"].feed_url
+    assert by_id["androidpolice"].feed_url != by_id["cyberscoop"].feed_url
+    # Unused leftover backups stay out
+    # (nationalinterest CF 403
+    # hard-swap; thedrive 9/9 observe;
+    # defensenews unused because
+    # androidpolice KEEP).
+    # theweek / harpers / justsecurity
+    # stay registered (batch87 KEEP).
+    # sciencealert /
+    # responsiblestatecraft / lrb stay
+    # registered (batch86 KEEP).
+    # universe_today / new_yorker /
+    # darkreading stay registered
+    # (batch85 KEEP).
+    # inverse / appleinsider /
+    # popular_mechanics stay registered
+    # (batch84 KEEP).
+    # polygon / pcmag / mashable stay
+    # registered (batch83 KEEP).
+    # smithsonian_mag is already the
+    # gizmodo hard-swap primary on tip
+    # (MUST lock /rss/latest_articles/
+    # never stale /rss/articles/) — do
+    # not register it twice.
+    # the_baffler official Cloudflare
+    # 403 — not registered (do not hang
+    # Feedburner).
+    # new_statesman official Varnish 403
+    # — unused leftover.
+    # bleepingcomputer official Cloudflare
+    # 403 JS challenge — not registered
+    # (do not hang Feedburner).
+    # engadget / digital_trends stay
+    # unregistered (official RSS 403;
+    # do not hang Feedburner).
+    # the_verge stays out (verge already
+    # registered). Do not hang a second
+    # wired. the_cut stays out (product
+    # dropped — all 404). techdirt stays
+    # unregistered (official Cloudflare
+    # 403; do not hang Feedburner).
+    # gizmodo stays hung (official CI
+    # 403; do not re-hang).
+    # guernica stays out (product skip).
+    assert "krebs" not in by_id
+    assert "krebs_on_security" not in by_id
+    assert "krebsonsecurity_com" not in by_id
+    assert "android_police" not in by_id
+    assert "androidpolice_com" not in by_id
+    assert "cyber_scoop" not in by_id
+    assert "cyberscoop_com" not in by_id
+    assert "nationalinterest" not in by_id
+    assert "national_interest" not in by_id
+    assert "nationalinterest_org" not in by_id
+    assert "the_national_interest" not in by_id
+    assert "thedrive" not in by_id
+    assert "the_drive" not in by_id
+    assert "thedrive_com" not in by_id
+    assert "defensenews" not in by_id
+    assert "defense_news" not in by_id
+    assert "defensenews_com" not in by_id
+    assert "the_baffler" not in by_id
+    assert "baffler" not in by_id
+    assert "thebaffler" not in by_id
+    assert "the_baffler_com" not in by_id
+    assert "newyorker" not in by_id
+    assert "the_new_yorker" not in by_id
+    assert "new_statesman" not in by_id
+    assert "newstatesman" not in by_id
+    assert "new_statesman_com" not in by_id
+    assert "macworld" not in by_id
+    assert "mac_world" not in by_id
+    assert "macworld_com" not in by_id
+    assert "universetoday" not in by_id
+    assert "universe_today_com" not in by_id
+    assert "dark_reading" not in by_id
+    assert "darkreading_com" not in by_id
+    assert "inverse_com" not in by_id
+    assert "apple_insider" not in by_id
+    assert "appleinsider_com" not in by_id
+    assert "popularmechanics" not in by_id
+    assert "popmech" not in by_id
+    assert "popular_mechanics_com" not in by_id
+    assert "smithsonian" not in by_id
+    assert "smithsonianmag" not in by_id
+    assert "smithsonian_magazine" not in by_id
+    assert "polygon_com" not in by_id
+    assert "pcmag_com" not in by_id
+    assert "pc_mag" not in by_id
+    assert "mashable_com" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bleeping_computer" not in by_id
+    assert "bleepingcomputer_com" not in by_id
+    assert "engadget" not in by_id
+    assert "engadget_com" not in by_id
+    assert "digital_trends" not in by_id
+    assert "digitaltrends" not in by_id
+    assert "digital_trends_com" not in by_id
+    assert "the_verge" not in by_id
+    assert "techdirt" not in by_id
+    assert "techdirt_com" not in by_id
+    assert "the_cut" not in by_id
+    assert "thecut" not in by_id
+    assert "the_cut_com" not in by_id
+    assert "gizmodo" not in by_id
+    assert "gizmodo_com" not in by_id
+    assert "guernica" not in by_id
+    assert "guernicamag" not in by_id
+    assert "guernica_mag" not in by_id
+    assert "guernicamag_com" not in by_id
+    assert "grist" in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "who_news" in by_id
+    assert "independent" not in by_id
+    assert "independent_world" not in by_id
+    assert "hrw" not in by_id
+    assert "longreads" not in by_id
+    assert "dawn" not in by_id
+    assert "asiatimes" not in by_id
+    assert "asia_times" not in by_id
+    assert "biographic" not in by_id
+    assert "hkfp" not in by_id
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "the_nation" not in by_id
+    for source_id, expected in _KREBSONSECURITY_ANDROIDPOLICE_CYBERSCOOP_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_krebsonsecurity_androidpolice_cyberscoop_feeds_live_http_200():
+    """Hit the three batch88 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _KREBSONSECURITY_ANDROIDPOLICE_CYBERSCOOP_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (krebsonsecurity /
+        # androidpolice / cyberscoop)
+        # uses the un-namespaced
+        # element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # krebsonsecurity 10/10,
+        # androidpolice 10/10, and
+        # cyberscoop 10/10 were 100%
+        # nonempty this probe. ingest
+        # cap 30 still KEEP.
+        # krebsonsecurity /
+        # androidpolice / cyberscoop
+        # MUST keep the trailing slash
+        # on /feed/.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= 10, (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -31593,6 +32247,8 @@ if __name__ == "__main__":
     test_universe_today_new_yorker_darkreading_primaries_registered()
     test_sciencealert_responsiblestatecraft_lrb_primaries_registered()
     test_theweek_harpers_justsecurity_primaries_registered()
+    test_nationalinterest_hard_swapped_to_androidpolice()
+    test_krebsonsecurity_androidpolice_cyberscoop_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -31679,4 +32335,5 @@ if __name__ == "__main__":
     test_universe_today_new_yorker_darkreading_feeds_live_http_200()
     test_sciencealert_responsiblestatecraft_lrb_feeds_live_http_200()
     test_theweek_harpers_justsecurity_feeds_live_http_200()
+    test_krebsonsecurity_androidpolice_cyberscoop_feeds_live_http_200()
     print("✓ source registry tests PASSED")

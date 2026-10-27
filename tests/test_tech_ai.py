@@ -936,6 +936,30 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "infosecurity_magazine" not in TECH_AI_SOURCE_WHITELIST
     assert "csoonline" not in TECH_AI_SOURCE_WHITELIST
     assert "taskandpurpose" not in TECH_AI_SOURCE_WHITELIST
+    # batch88 RSS primaries stay off the tech/AI whitelist.
+    # krebsonsecurity lands on 科技
+    # (security newsroom, same as
+    # darkreading / thehackernews) and
+    # is not added to KEYWORD sources.
+    # androidpolice lands on 科技
+    # (Android newsroom, same as
+    # android_authority) — hard-swap
+    # for nationalinterest official
+    # Cloudflare 403.
+    # cyberscoop lands on 科技
+    # (cybersecurity newsroom, same as
+    # darkreading). Unused leftovers
+    # nationalinterest (CF 403) /
+    # thedrive (9/9 observe) /
+    # defensenews stay off. None of
+    # these match the wired / verge /
+    # techcrunch ALWAYS pattern.
+    assert "krebsonsecurity" not in TECH_AI_SOURCE_WHITELIST
+    assert "androidpolice" not in TECH_AI_SOURCE_WHITELIST
+    assert "cyberscoop" not in TECH_AI_SOURCE_WHITELIST
+    assert "nationalinterest" not in TECH_AI_SOURCE_WHITELIST
+    assert "thedrive" not in TECH_AI_SOURCE_WHITELIST
+    assert "defensenews" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

@@ -1899,6 +1899,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="krebsonsecurity",
+        name="Krebs on Security",
+        feed_url="https://krebsonsecurity.com/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="androidpolice",
+        name="Android Police",
+        feed_url="https://www.androidpolice.com/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="cyberscoop",
+        name="CyberScoop",
+        feed_url="https://www.cyberscoop.com/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
