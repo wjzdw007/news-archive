@@ -12002,6 +12002,11 @@ _TASKANDPURPOSE_TWZ_AVIATIONWEEK_PRIMARY = {
 # if a primary fails thin/403).
 # All three primaries live KEEP
 # this probe — no hard-swap.
+# batch93 promotes leftover
+# backups astronomy /
+# skyandtelescope /
+# latimes_technology to KEEP
+# primaries — registered below.
 # defensenews was the unused
 # leftover in #157 / #156 / #153;
 # product now hung it as KEEP
@@ -12066,21 +12071,24 @@ _TASKANDPURPOSE_TWZ_AVIATIONWEEK_PRIMARY = {
 # /feed/ /rss.xml /rss/index.xml)
 # astronomy leftover backup =
 # https://www.astronomy.com/feed/
-# (unused because motherboard
-# KEEP; MUST trailing slash)
+# (batch93 promotes this leftover
+# to KEEP primary — registered
+# below; MUST trailing slash)
 # skyandtelescope leftover backup =
 # official /astronomy-news/feed/
 # (typically skyandtelescope.org
-# — unused because macworld KEEP;
-# site-wide /feed is Cloudflare
-# 403 leftover; do not hang
-# Feedburner; not probed)
+# — batch93 promotes this leftover
+# to KEEP primary — registered
+# below; site-wide /feed is
+# Cloudflare 403 leftover; do not
+# hang Feedburner)
 # latimes_technology leftover
 # backup = official LA Times
 # technology RSS (typically
 # /business/technology/rss2.0.xml
-# — unused because defensenews
-# KEEP; not probed)
+# — batch93 promotes this leftover
+# to KEEP primary — registered
+# below)
 # Active candidate set is these 6
 # (3 primary + 3 leftover backup).
 # CAP=6 sources max in the active
@@ -12272,23 +12280,24 @@ _TASKANDPURPOSE_TWZ_AVIATIONWEEK_PRIMARY = {
 # the tech/AI whitelist
 # (later-batch sources stay off
 # the frozen ALWAYS set).
-# Unused leftover astronomy
-# stays out (motherboard KEEP;
-# path /feed/ — MUST trailing
-# slash; do NOT invent /feed
-# /rss/index.xml).
+# Unused leftover astronomy is
+# now batch93 KEEP (product-hung
+# primary; official /feed/ —
+# MUST trailing slash; do NOT
+# invent /feed /rss/index.xml).
 # Unused leftover
-# skyandtelescope stays out
-# (macworld KEEP; official
+# skyandtelescope is now
+# batch93 KEEP (product-hung
+# primary; official
 # /astronomy-news/feed/;
 # site-wide /feed is Cloudflare
-# 403 leftover; not probed; do
-# not hang Feedburner).
+# 403 leftover; do not hang
+# Feedburner).
 # Unused leftover
-# latimes_technology stays out
-# (defensenews KEEP; official
-# /business/technology/rss2.0.xml
-# — not probed).
+# latimes_technology is now
+# batch93 KEEP (product-hung
+# primary; official
+# /business/technology/rss2.0.xml).
 # taskandpurpose / twz /
 # aviationweek stay registered
 # (batch91 KEEP + #157 hotfix).
@@ -12410,7 +12419,423 @@ _DEFENSENEWS_MOTHERBOARD_MACWORLD_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 284
+# CEO-approved Astronomy Magazine /
+# Sky & Telescope / LA Times
+# Technology RSS primaries
+# (batch93). These three are the
+# new adds after #158 (batch92
+# defensenews / motherboard /
+# macworld) on tip
+# fc15745f3c3b6cacd73ae4393d9ff71cf6c95fd2
+# (main after #158). Primaries
+# were astronomy /
+# skyandtelescope /
+# latimes_technology. Product
+# named NO backups / alternates
+# this batch — do not invent
+# Feedburner and do not invent a
+# replacement id if a primary
+# fails. All three primaries
+# live KEEP this probe — no
+# hard-swap. astronomy /
+# skyandtelescope /
+# latimes_technology were the
+# unused leftovers in #158;
+# product now hung them as KEEP
+# primaries. defensenews /
+# motherboard / macworld just
+# landed via #158 — do not undo.
+# taskandpurpose / twz /
+# aviationweek (#156 / #157) /
+# xda_developers /
+# infosecurity_magazine /
+# csoonline (#155) / thedrive /
+# venturebeat / navalnews (#154)
+# / krebsonsecurity /
+# androidpolice / cyberscoop
+# (#153) / theweek / harpers /
+# justsecurity (#152) /
+# sciencealert /
+# responsiblestatecraft / lrb
+# (#150) / universe_today /
+# new_yorker / darkreading (#149)
+# / inverse / appleinsider /
+# popular_mechanics (#148) /
+# polygon / pcmag / mashable
+# (#146) / smithsonian_mag (#147)
+# stay.
+# Product feed locks
+# (official only; no Feedburner):
+# astronomy =
+# https://www.astronomy.com/feed/
+# (MUST trailing slash on /feed/;
+# live host www.astronomy.com —
+# /feed and astronomy.com/feed/
+# 301 here; do NOT invent /feed
+# /rss.xml /index.rss
+# /rss/index.xml / Feedburner)
+# skyandtelescope =
+# https://skyandtelescope.org/astronomy-news/feed/
+# (MUST trailing slash on
+# official /astronomy-news/feed/;
+# live host skyandtelescope.org —
+# www.skyandtelescope.org 301s
+# here. Site-wide /feed and
+# /astronomy-news/rss/ are
+# Cloudflare 403 leftover; do
+# NOT invent /feed /feed/
+# /astronomy-news/rss/
+# /rss/index.xml / Feedburner)
+# latimes_technology =
+# https://www.latimes.com/business/technology/rss2.0.xml
+# (MUST official
+# /business/technology/rss2.0.xml;
+# live host www.latimes.com —
+# /technology/rss2.0.xml and
+# /business/technology/rss.xml
+# 404; do NOT invent /rss.xml
+# /feed /feed/ /rss/index.xml /
+# Feedburner)
+# Active candidate set is these 3
+# primaries (product named no
+# backups). CAP=6 sources max in
+# the active set. NEWS_SOURCE_CAP
+# display stays 6 — no CAP code
+# change.
+# Do not restore atlantic_council.
+# Do not restore the_nation. Do not
+# restore independent. Do not restore
+# hrw. Do not restore euractiv. Do
+# not restore dawn / longreads. Do
+# not restore times_of_israel. Do not
+# restore techdirt. Do not restore
+# engadget. Do not restore
+# digital_trends. Do not restore
+# the_cut. Do not restore
+# bleepingcomputer. Do not restore
+# gizmodo (CI 403 after #147). Do not
+# restore the_baffler (Cloudflare 403
+# after #149). Do not restore
+# new_statesman (Varnish 403 leftover).
+# Do not restore guernica (product
+# skip). Do not restore
+# nationalinterest (CF 403 leftover).
+# Do not restore flightglobal
+# (CI/httpx RSS 403 after #156).
+# Do not probe / register
+# product-skip: bangkok_post /
+# indian_express / rest_of_world /
+# al_monitor / hkfp / biographic /
+# asiatimes / dawn / longreads /
+# hrw / independent / euractiv /
+# atlantic_council / the_nation /
+# times_of_israel / the_cut /
+# techdirt / engadget /
+# digital_trends / bleepingcomputer /
+# gizmodo / the_baffler /
+# new_statesman / guernica /
+# nationalinterest / flightglobal.
+# qz3 勿挂. digiday0观察 — do not
+# add a second digiday. Do not
+# add a second fastcompany
+# (already registered as
+# fast_company).
+# Do not re-hang SCMP / MIT TR /
+# BBC World (already live).
+# Do not re-touch defensenews /
+# motherboard / macworld (#158)
+# / taskandpurpose / twz /
+# aviationweek (#156 / #157)
+# / xda_developers /
+# infosecurity_magazine /
+# csoonline (#155) / thedrive /
+# venturebeat / navalnews (#154)
+# / krebsonsecurity /
+# androidpolice / cyberscoop (#153)
+# / theweek / harpers /
+# justsecurity (#152) /
+# sciencealert /
+# responsiblestatecraft / lrb
+# (#150) / universe_today /
+# new_yorker / darkreading (#149)
+# / inverse / appleinsider /
+# popular_mechanics (#148) /
+# polygon / pcmag / mashable
+# (#146) / smithsonian_mag (#147)
+# / cnet / 9to5mac (#145) /
+# artnet / macrumors / quillette
+# (#144) / howtogeek /
+# new_republic / vox (#143).
+# Skip already-registered
+# collisions: the_verge (verge
+# already registered) / wired
+# (already registered) /
+# android_authority (already
+# registered) / fast_company
+# (already registered) /
+# latimes_world (already
+# registered). Do not hang a
+# second verge, wired,
+# android_authority, fastcompany,
+# or latimes.
+# astronomy is the official
+# site-wide RSS (batch92 leftover
+# unused; product now hung KEEP).
+# Product lock: MUST lock
+# https://www.astronomy.com/feed/
+# (channel "Astronomy Magazine")
+# — trailing slash required; live
+# host www.astronomy.com (/feed
+# and astronomy.com/feed/ 301
+# here); do NOT invent /feed
+# /rss.xml /index.rss
+# /rss/index.xml. Never invent
+# Feedburner.
+# Live-diff winner: HTTP 200 / 10
+# nonempty / 10 insertable (httpx
+# fetch_source + urllib). 10 is
+# the KEEP floor, not the 5–9
+# observe band. Distinct from live
+# universe_today / space_com /
+# sciencealert / livescience /
+# popular_science /
+# popular_mechanics / phys_org /
+# sciencedaily / science_news /
+# science_org /
+# scientific_american /
+# physics_world / nautilus /
+# undark / knowable /
+# smithsonian_mag / newatlas /
+# ieee_spectrum / nyt_science /
+# guardian_science / npr_science.
+# 0 article URL overlap with those.
+# Lands on the existing 科学
+# category path (space / astronomy
+# newsroom, same as universe_today
+# / space_com / sciencealert /
+# livescience). Not added to the
+# tech/AI whitelist (later-batch
+# sources stay off the frozen
+# ALWAYS set).
+# skyandtelescope is the official
+# astronomy-news RSS (batch92
+# leftover unused; product now
+# hung KEEP). Product lock: MUST
+# lock
+# https://skyandtelescope.org/astronomy-news/feed/
+# (channel "Astronomy News &
+# Astronomical Events | Sky &
+# Telescope") — trailing slash
+# required; live host
+# skyandtelescope.org (www.
+# skyandtelescope.org 301s here).
+# Site-wide /feed and
+# /astronomy-news/rss/ are
+# Cloudflare 403 leftover — do
+# not hang those or Feedburner.
+# do NOT invent /feed /feed/
+# /astronomy-news/rss/
+# /rss/index.xml.
+# Live-diff winner: HTTP 200 / 10
+# nonempty / 10 insertable (httpx
+# fetch_source + urllib). 10 is
+# the KEEP floor, not the 5–9
+# observe band. Distinct from live
+# astronomy / universe_today /
+# space_com / sciencealert /
+# livescience / popular_science /
+# popular_mechanics / phys_org /
+# sciencedaily / science_news /
+# science_org /
+# scientific_american /
+# physics_world / smithsonian_mag
+# / newatlas / ieee_spectrum /
+# nyt_science / guardian_science /
+# npr_science. 0 article URL
+# overlap with those. Lands on
+# the existing 科学 category
+# path (space / astronomy
+# newsroom, same as
+# universe_today / space_com /
+# astronomy). Not added to the
+# tech/AI whitelist
+# (later-batch sources stay off
+# the frozen ALWAYS set).
+# latimes_technology is the
+# official LA Times technology
+# RSS (batch92 leftover unused;
+# product now hung KEEP).
+# Product lock: MUST lock
+# https://www.latimes.com/business/technology/rss2.0.xml
+# (channel "Technology & the
+# Internet") — official
+# /business/technology/rss2.0.xml;
+# live host www.latimes.com
+# (/technology/rss2.0.xml and
+# /business/technology/rss.xml
+# 404); do NOT invent /rss.xml
+# /feed /feed/ /rss/index.xml.
+# Never invent Feedburner.
+# Live-diff winner: HTTP 200 / 74
+# nonempty / 30 insertable (httpx
+# fetch_source + urllib; ingest
+# cap 30/74). 74 is not the 5–9
+# observe band. Distinct from live
+# latimes_world /
+# nyt_technology /
+# bbc_technology /
+# guardian_technology /
+# forbes_innovation /
+# bloomberg_technology / zdnet /
+# wired / verge / ars_technica /
+# techcrunch / fast_company /
+# motherboard / media404 /
+# the_markup / cnet / mashable /
+# pcmag. 0 article URL overlap
+# with those tech peers (2
+# same-publisher cross-posts vs
+# latimes_world this probe — not
+# a duplicate feed). Lands on the
+# existing 科技 category path
+# (newspaper technology
+# newsroom, same as
+# guardian_technology /
+# motherboard). Not added to
+# the tech/AI whitelist
+# (later-batch sources stay off
+# the frozen ALWAYS set).
+# Product named no leftover
+# backups this batch — do not
+# invent a replacement id.
+# defensenews / motherboard /
+# macworld stay registered
+# (batch92 KEEP).
+# taskandpurpose / twz /
+# aviationweek stay registered
+# (batch91 KEEP + #157 hotfix).
+# xda_developers /
+# infosecurity_magazine /
+# csoonline stay registered
+# (batch90 KEEP). thedrive /
+# venturebeat / navalnews stay
+# registered (batch89 KEEP).
+# krebsonsecurity /
+# androidpolice / cyberscoop
+# stay registered (batch88
+# KEEP). theweek / harpers /
+# justsecurity stay registered
+# (batch87 KEEP). sciencealert /
+# responsiblestatecraft / lrb
+# stay registered (batch86
+# KEEP). universe_today /
+# new_yorker / darkreading stay
+# registered (batch85 KEEP).
+# inverse / appleinsider /
+# popular_mechanics stay
+# registered (batch84 KEEP).
+# polygon / pcmag / mashable
+# stay registered (batch83
+# KEEP). smithsonian_mag is
+# already the gizmodo hard-swap
+# primary on tip (MUST lock
+# https://www.smithsonianmag.com/rss/latest_articles/
+# never stale /rss/articles/)
+# — do not register it twice.
+# the_baffler stays
+# unregistered (official
+# Cloudflare 403; do not hang
+# Feedburner). new_statesman
+# stays unused leftover
+# (official Varnish 403).
+# engadget stays unregistered
+# (official CloudFront 403; do
+# not register Feedburner).
+# digital_trends stays
+# unregistered (official
+# Cloudflare 403 JS challenge;
+# do not register Feedburner).
+# techdirt stays unregistered
+# (official Cloudflare 403; do
+# not register Feedburner).
+# bleepingcomputer stays
+# unregistered (official
+# Cloudflare 403 JS challenge;
+# do not register Feedburner).
+# the_cut stays out (product
+# dropped — all 404; do not
+# probe / register). the_verge
+# stays out (verge already
+# registered). wired stays
+# registered as the existing
+# wired primary — do not hang
+# a second wired.
+# android_authority stays
+# registered as the existing
+# android_authority primary —
+# do not hang a second
+# android_authority.
+# nationalinterest stays
+# unregistered (official
+# Cloudflare 403 leftover; do
+# not hang Feedburner).
+# flightglobal stays
+# unregistered (official
+# CI/httpx RSS 403 leftover;
+# do not hang Feedburner).
+# fast_company stays registered
+# as the existing fast_company
+# primary — do not hang a
+# second fastcompany.
+# latimes_world stays registered
+# as the existing latimes_world
+# primary — do not hang a
+# second latimes.
+# Do NOT use as backups
+# (product skip): bangkok_post
+# / indian_express /
+# rest_of_world / al_monitor /
+# hkfp / biographic /
+# asiatimes / dawn /
+# longreads / hrw /
+# independent (429) /
+# euractiv (301→rapporteur
+# FAIL) / atlantic_council
+# (403) / the_nation (empty
+# feed) / times_of_israel
+# (Cloudflare 403) / the_cut
+# / techdirt / engadget /
+# digital_trends /
+# bleepingcomputer / gizmodo /
+# the_baffler / new_statesman
+# / guernica / nationalinterest
+# / flightglobal. qz3 勿挂.
+# digiday0观察 — do not add a
+# second digiday. sunday_review /
+# cnbc (403 known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_ASTRONOMY_SKYANDTELESCOPE_LATIMES_TECHNOLOGY_PRIMARY = {
+    "astronomy": {
+        "name": "Astronomy Magazine",
+        "feed_url": "https://www.astronomy.com/feed/",
+        "category": "科学",
+    },
+    "skyandtelescope": {
+        "name": "Sky & Telescope",
+        "feed_url": "https://skyandtelescope.org/astronomy-news/feed/",
+        "category": "科学",
+    },
+    "latimes_technology": {
+        "name": "LA Times Technology",
+        "feed_url": "https://www.latimes.com/business/technology/rss2.0.xml",
+        "category": "科技",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 287
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -34904,10 +35329,13 @@ def test_defensenews_motherboard_macworld_primaries_registered():
     assert by_id["defensenews"].feed_url != by_id["macworld"].feed_url
     assert by_id["motherboard"].feed_url != by_id["macworld"].feed_url
     # Unused leftover backups stay out
-    # (all three primaries live KEEP).
-    # astronomy / skyandtelescope /
-    # latimes_technology were not
-    # probed for KEEP-fill.
+    # at batch92 time (all three
+    # primaries live KEEP).
+    # batch93 promotes astronomy /
+    # skyandtelescope /
+    # latimes_technology leftover
+    # backups to KEEP primaries —
+    # registered below.
     # taskandpurpose / twz /
     # aviationweek stay registered
     # (batch91 KEEP + #157 hotfix).
@@ -34974,13 +35402,13 @@ def test_defensenews_motherboard_macworld_primaries_registered():
     assert "motherboard_com" not in by_id
     assert "mac_world" not in by_id
     assert "macworld_com" not in by_id
-    assert "astronomy" not in by_id
+    assert "astronomy" in by_id
     assert "astronomy_magazine" not in by_id
     assert "astronomy_com" not in by_id
-    assert "skyandtelescope" not in by_id
+    assert "skyandtelescope" in by_id
     assert "sky_and_telescope" not in by_id
     assert "skyandtelescope_org" not in by_id
-    assert "latimes_technology" not in by_id
+    assert "latimes_technology" in by_id
     assert "latimes_tech" not in by_id
     assert "qz3" not in by_id
     assert "qz" not in by_id
@@ -35153,6 +35581,439 @@ def test_defensenews_motherboard_macworld_feeds_live_http_200():
         )
 
 
+def test_astronomy_skyandtelescope_latimes_technology_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "astronomy" in by_id
+    assert by_id["astronomy"].feed_url == "https://www.astronomy.com/feed/"
+    assert by_id["astronomy"].feed_url != "https://www.astronomy.com/feed"
+    assert by_id["astronomy"].feed_url != "https://astronomy.com/feed/"
+    assert by_id["astronomy"].feed_url != "https://www.astronomy.com/rss.xml"
+    assert by_id["astronomy"].feed_url != "https://www.astronomy.com/index.rss"
+    assert by_id["astronomy"].feed_url != (
+        "https://www.astronomy.com/rss/index.xml"
+    )
+    assert "skyandtelescope" in by_id
+    assert by_id["skyandtelescope"].feed_url == (
+        "https://skyandtelescope.org/astronomy-news/feed/"
+    )
+    assert by_id["skyandtelescope"].feed_url != (
+        "https://skyandtelescope.org/feed/"
+    )
+    assert by_id["skyandtelescope"].feed_url != (
+        "https://skyandtelescope.org/feed"
+    )
+    assert by_id["skyandtelescope"].feed_url != (
+        "https://skyandtelescope.org/astronomy-news/rss/"
+    )
+    assert by_id["skyandtelescope"].feed_url != (
+        "https://www.skyandtelescope.org/astronomy-news/feed/"
+    )
+    assert by_id["skyandtelescope"].feed_url != (
+        "https://www.skyandtelescope.com/astronomy-news/feed/"
+    )
+    assert "latimes_technology" in by_id
+    assert by_id["latimes_technology"].feed_url == (
+        "https://www.latimes.com/business/technology/rss2.0.xml"
+    )
+    assert by_id["latimes_technology"].feed_url != (
+        "https://www.latimes.com/technology/rss2.0.xml"
+    )
+    assert by_id["latimes_technology"].feed_url != (
+        "https://www.latimes.com/business/technology/rss.xml"
+    )
+    assert by_id["latimes_technology"].feed_url != (
+        "https://www.latimes.com/business/technology/feed/"
+    )
+    assert by_id["latimes_technology"].feed_url != (
+        "https://www.latimes.com/world-nation/rss2.0.xml"
+    )
+    # #158 / batch92 winners stay registered and unchanged.
+    # #157 / #156 / batch91 winners stay registered and unchanged.
+    # #155 / batch90 winners stay registered and unchanged.
+    # #154 / batch89 winners stay registered and unchanged.
+    # #153 / batch88 winners stay registered and unchanged.
+    # #152 / batch87 winners stay registered and unchanged.
+    # #150 / batch86 winners stay registered and unchanged.
+    # #149 / batch85 winners stay registered and unchanged.
+    # #148 / batch84 winners stay registered and unchanged.
+    # #146 / batch83 winners stay registered and unchanged.
+    # #147 / #145 / batch82 winners stay registered and unchanged.
+    # #144 / batch81 winners stay registered and unchanged.
+    # #143 / batch80 winners stay registered and unchanged.
+    # Do not touch defensenews /
+    # motherboard / macworld /
+    # taskandpurpose / twz /
+    # aviationweek /
+    # xda_developers /
+    # infosecurity_magazine /
+    # csoonline / thedrive /
+    # venturebeat / navalnews /
+    # krebsonsecurity /
+    # androidpolice / cyberscoop /
+    # theweek / harpers /
+    # justsecurity / sciencealert /
+    # responsiblestatecraft / lrb /
+    # universe_today / new_yorker /
+    # darkreading / inverse /
+    # appleinsider / popular_mechanics
+    # / polygon / pcmag / mashable /
+    # smithsonian_mag / cnet /
+    # 9to5mac / artnet / macrumors /
+    # quillette / howtogeek /
+    # new_republic / vox.
+    assert "defensenews" in by_id
+    assert "motherboard" in by_id
+    assert "macworld" in by_id
+    assert "taskandpurpose" in by_id
+    assert "twz" in by_id
+    assert "aviationweek" in by_id
+    assert "xda_developers" in by_id
+    assert "infosecurity_magazine" in by_id
+    assert "csoonline" in by_id
+    assert "thedrive" in by_id
+    assert "venturebeat" in by_id
+    assert "navalnews" in by_id
+    assert "krebsonsecurity" in by_id
+    assert "androidpolice" in by_id
+    assert "cyberscoop" in by_id
+    assert "theweek" in by_id
+    assert "harpers" in by_id
+    assert "justsecurity" in by_id
+    assert "sciencealert" in by_id
+    assert "responsiblestatecraft" in by_id
+    assert "lrb" in by_id
+    assert "universe_today" in by_id
+    assert "new_yorker" in by_id
+    assert "darkreading" in by_id
+    assert "inverse" in by_id
+    assert "appleinsider" in by_id
+    assert "popular_mechanics" in by_id
+    assert "polygon" in by_id
+    assert "pcmag" in by_id
+    assert "mashable" in by_id
+    assert "cnet" in by_id
+    assert "9to5mac" in by_id
+    assert "smithsonian_mag" in by_id
+    assert "gizmodo" not in by_id
+    assert "artnet" in by_id
+    assert "macrumors" in by_id
+    assert "quillette" in by_id
+    assert "howtogeek" in by_id
+    assert "new_republic" in by_id
+    assert "vox" in by_id
+    # Feed locks + uniqueness vs live
+    # space / astronomy and newspaper
+    # technology stack.
+    assert by_id["astronomy"].feed_url != by_id["universe_today"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["space_com"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["sciencealert"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["livescience"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["popular_science"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["popular_mechanics"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["phys_org"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["sciencedaily"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["science_news"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["science_org"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["scientific_american"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["physics_world"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["nautilus"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["undark"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["knowable"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["smithsonian_mag"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["npr_science"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["universe_today"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["space_com"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["sciencealert"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["livescience"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["popular_science"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["popular_mechanics"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["phys_org"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["sciencedaily"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["science_news"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["science_org"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["scientific_american"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["physics_world"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["smithsonian_mag"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["npr_science"].feed_url
+    assert by_id["latimes_technology"].feed_url != by_id["latimes_world"].feed_url
+    assert by_id["latimes_technology"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["latimes_technology"].feed_url != by_id["bbc_technology"].feed_url
+    assert by_id["latimes_technology"].feed_url != by_id["guardian_technology"].feed_url
+    assert by_id["latimes_technology"].feed_url != by_id["forbes_innovation"].feed_url
+    assert by_id["latimes_technology"].feed_url != by_id["bloomberg_technology"].feed_url
+    assert by_id["latimes_technology"].feed_url != by_id["zdnet"].feed_url
+    assert by_id["latimes_technology"].feed_url != by_id["wired"].feed_url
+    assert by_id["latimes_technology"].feed_url != by_id["verge"].feed_url
+    assert by_id["latimes_technology"].feed_url != by_id["ars_technica"].feed_url
+    assert by_id["latimes_technology"].feed_url != by_id["techcrunch"].feed_url
+    assert by_id["latimes_technology"].feed_url != by_id["fast_company"].feed_url
+    assert by_id["latimes_technology"].feed_url != by_id["motherboard"].feed_url
+    assert by_id["latimes_technology"].feed_url != by_id["media404"].feed_url
+    assert by_id["latimes_technology"].feed_url != by_id["the_markup"].feed_url
+    assert by_id["latimes_technology"].feed_url != by_id["cnet"].feed_url
+    assert by_id["latimes_technology"].feed_url != by_id["mashable"].feed_url
+    assert by_id["latimes_technology"].feed_url != by_id["pcmag"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["skyandtelescope"].feed_url
+    assert by_id["astronomy"].feed_url != by_id["latimes_technology"].feed_url
+    assert by_id["skyandtelescope"].feed_url != by_id["latimes_technology"].feed_url
+    # Product named no leftover
+    # backups this batch. All three
+    # primaries live KEEP — no
+    # hard-swap. defensenews /
+    # motherboard / macworld stay
+    # registered (batch92 KEEP).
+    # taskandpurpose / twz /
+    # aviationweek stay registered
+    # (batch91 KEEP + #157 hotfix).
+    # xda_developers /
+    # infosecurity_magazine /
+    # csoonline stay registered
+    # (batch90 KEEP).
+    # thedrive / venturebeat /
+    # navalnews stay registered
+    # (batch89 KEEP).
+    # krebsonsecurity / androidpolice
+    # / cyberscoop stay registered
+    # (batch88 KEEP).
+    # theweek / harpers / justsecurity
+    # stay registered (batch87 KEEP).
+    # sciencealert /
+    # responsiblestatecraft / lrb stay
+    # registered (batch86 KEEP).
+    # universe_today / new_yorker /
+    # darkreading stay registered
+    # (batch85 KEEP).
+    # inverse / appleinsider /
+    # popular_mechanics stay registered
+    # (batch84 KEEP).
+    # polygon / pcmag / mashable stay
+    # registered (batch83 KEEP).
+    # smithsonian_mag is already the
+    # gizmodo hard-swap primary on tip
+    # (MUST lock /rss/latest_articles/
+    # never stale /rss/articles/) — do
+    # not register it twice.
+    # the_baffler official Cloudflare
+    # 403 — not registered (do not hang
+    # Feedburner).
+    # new_statesman official Varnish 403
+    # — unused leftover.
+    # bleepingcomputer official Cloudflare
+    # 403 JS challenge — not registered
+    # (do not hang Feedburner).
+    # engadget / digital_trends stay
+    # unregistered (official RSS 403;
+    # do not hang Feedburner).
+    # the_verge stays out (verge already
+    # registered). Do not hang a second
+    # wired. the_cut stays out (product
+    # dropped — all 404). techdirt stays
+    # unregistered (official Cloudflare
+    # 403; do not hang Feedburner).
+    # gizmodo stays hung (official CI
+    # 403; do not re-hang).
+    # guernica stays out (product skip).
+    # nationalinterest stays out
+    # (official Cloudflare 403 leftover;
+    # do not hang Feedburner).
+    # flightglobal stays out
+    # (official CI/httpx RSS 403 after
+    # #156; do not hang Feedburner).
+    assert "astronomy_magazine" not in by_id
+    assert "astronomy_com" not in by_id
+    assert "sky_and_telescope" not in by_id
+    assert "skyandtelescope_org" not in by_id
+    assert "skyandtelescope_com" not in by_id
+    assert "sky_telescope" not in by_id
+    assert "latimes_tech" not in by_id
+    assert "la_times_technology" not in by_id
+    assert "latimes_technology_com" not in by_id
+    assert "defense_news" not in by_id
+    assert "defensenews_com" not in by_id
+    assert "defense_news_com" not in by_id
+    assert "vice" not in by_id
+    assert "vice_motherboard" not in by_id
+    assert "motherboard_vice" not in by_id
+    assert "motherboard_com" not in by_id
+    assert "mac_world" not in by_id
+    assert "macworld_com" not in by_id
+    assert "qz3" not in by_id
+    assert "qz" not in by_id
+    assert "fastcompany" not in by_id
+    assert "fast_company" in by_id
+    assert "task_and_purpose" not in by_id
+    assert "task_purpose" not in by_id
+    assert "taskandpurpose_com" not in by_id
+    assert "the_war_zone" not in by_id
+    assert "thewarzone" not in by_id
+    assert "thewarzone_com" not in by_id
+    assert "twz_com" not in by_id
+    assert "the_warzone" not in by_id
+    assert "flightglobal" not in by_id
+    assert "flight_global" not in by_id
+    assert "flightglobal_com" not in by_id
+    assert "aviation_week" not in by_id
+    assert "aviationweek_com" not in by_id
+    assert "xda" not in by_id
+    assert "xda_developers_com" not in by_id
+    assert "infosecurity" not in by_id
+    assert "infosec_magazine" not in by_id
+    assert "infosecuritymagazine" not in by_id
+    assert "cso_online" not in by_id
+    assert "cso" not in by_id
+    assert "csoonline_com" not in by_id
+    assert "the_drive" not in by_id
+    assert "thedrive_com" not in by_id
+    assert "venture_beat" not in by_id
+    assert "venturebeat_com" not in by_id
+    assert "naval_news" not in by_id
+    assert "navalnews_com" not in by_id
+    assert "nationalinterest" not in by_id
+    assert "national_interest" not in by_id
+    assert "nationalinterest_org" not in by_id
+    assert "the_national_interest" not in by_id
+    assert "the_baffler" not in by_id
+    assert "baffler" not in by_id
+    assert "thebaffler" not in by_id
+    assert "the_baffler_com" not in by_id
+    assert "newyorker" not in by_id
+    assert "the_new_yorker" not in by_id
+    assert "new_statesman" not in by_id
+    assert "newstatesman" not in by_id
+    assert "new_statesman_com" not in by_id
+    assert "universetoday" not in by_id
+    assert "universe_today_com" not in by_id
+    assert "dark_reading" not in by_id
+    assert "darkreading_com" not in by_id
+    assert "inverse_com" not in by_id
+    assert "apple_insider" not in by_id
+    assert "appleinsider_com" not in by_id
+    assert "popularmechanics" not in by_id
+    assert "popmech" not in by_id
+    assert "popular_mechanics_com" not in by_id
+    assert "smithsonian" not in by_id
+    assert "smithsonianmag" not in by_id
+    assert "smithsonian_magazine" not in by_id
+    assert "polygon_com" not in by_id
+    assert "pcmag_com" not in by_id
+    assert "pc_mag" not in by_id
+    assert "mashable_com" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bleeping_computer" not in by_id
+    assert "bleepingcomputer_com" not in by_id
+    assert "engadget" not in by_id
+    assert "engadget_com" not in by_id
+    assert "digital_trends" not in by_id
+    assert "digitaltrends" not in by_id
+    assert "digital_trends_com" not in by_id
+    assert "the_verge" not in by_id
+    assert "techdirt" not in by_id
+    assert "techdirt_com" not in by_id
+    assert "the_cut" not in by_id
+    assert "thecut" not in by_id
+    assert "the_cut_com" not in by_id
+    assert "gizmodo" not in by_id
+    assert "gizmodo_com" not in by_id
+    assert "guernica" not in by_id
+    assert "guernicamag" not in by_id
+    assert "guernica_mag" not in by_id
+    assert "guernicamag_com" not in by_id
+    assert "grist" in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "who_news" in by_id
+    assert "independent" not in by_id
+    assert "independent_world" not in by_id
+    assert "hrw" not in by_id
+    assert "longreads" not in by_id
+    assert "dawn" not in by_id
+    assert "asiatimes" not in by_id
+    assert "asia_times" not in by_id
+    assert "biographic" not in by_id
+    assert "hkfp" not in by_id
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "the_nation" not in by_id
+    for source_id, expected in _ASTRONOMY_SKYANDTELESCOPE_LATIMES_TECHNOLOGY_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_astronomy_skyandtelescope_latimes_technology_feeds_live_http_200():
+    """Hit the three KEEP feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _ASTRONOMY_SKYANDTELESCOPE_LATIMES_TECHNOLOGY_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (astronomy /
+        # skyandtelescope /
+        # latimes_technology) uses the
+        # un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # astronomy 10/10,
+        # skyandtelescope 10/10, and
+        # latimes_technology 74/74 were
+        # 100% nonempty this probe.
+        # ingest cap 30 still KEEP.
+        # astronomy MUST keep the
+        # trailing slash on /feed/.
+        # skyandtelescope MUST stay on
+        # official /astronomy-news/feed/
+        # (not site-wide /feed CF 403).
+        # latimes_technology MUST stay
+        # on /business/technology/rss2.0.xml
+        # (host www.latimes.com).
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= 10, (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -35255,6 +36116,7 @@ if __name__ == "__main__":
     test_flightglobal_hard_swapped_to_aviationweek()
     test_taskandpurpose_twz_aviationweek_primaries_registered()
     test_defensenews_motherboard_macworld_primaries_registered()
+    test_astronomy_skyandtelescope_latimes_technology_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -35346,4 +36208,5 @@ if __name__ == "__main__":
     test_xda_developers_infosecurity_magazine_csoonline_feeds_live_http_200()
     test_taskandpurpose_twz_aviationweek_feeds_live_http_200()
     test_defensenews_motherboard_macworld_feeds_live_http_200()
+    test_astronomy_skyandtelescope_latimes_technology_feeds_live_http_200()
     print("✓ source registry tests PASSED")

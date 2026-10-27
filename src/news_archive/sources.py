@@ -2004,6 +2004,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="astronomy",
+        name="Astronomy Magazine",
+        feed_url="https://www.astronomy.com/feed/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="skyandtelescope",
+        name="Sky & Telescope",
+        feed_url="https://skyandtelescope.org/astronomy-news/feed/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="latimes_technology",
+        name="LA Times Technology",
+        feed_url="https://www.latimes.com/business/technology/rss2.0.xml",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
