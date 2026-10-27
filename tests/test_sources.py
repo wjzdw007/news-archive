@@ -14583,13 +14583,18 @@ _INDIEWIRE_KOTTKE_PV_MAGAZINE_PRIMARY = {
 # Do NOT register
 # energy_storage_news /
 # geekwire / futurism
-# (unused 备). Do NOT
-# register usni_news /
+# (unused 备). batch102
+# KEEP usni_news /
 # slashfilm /
-# singularityhub /
+# singularityhub are
+# registered separately.
+# Named 备 unused (all
+# KEEP passed). Do NOT
+# register
 # hollywoodreporter /
 # siliconangle /
-# thenextweb /
+# thenextweb (unused 备).
+# Do NOT register
 # bandcamp_daily /
 # computerworld / bigthink
 # / rollingstone /
@@ -14667,7 +14672,249 @@ _INSIDECLIMATENEWS_CONSEQUENCE_C4ISRNET_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 308
+# CEO-approved USNI News /
+# SlashFilm / SingularityHub
+# RSS primaries (batch102). On
+# tip e0b3f20 after #167
+# (insideclimatenews /
+# consequence / c4isrnet).
+# Product KEEP set is
+# usni_news / slashfilm /
+# singularityhub.
+# Named 备 (hard-swap ONLY if
+# a KEEP fails):
+# hollywoodreporter /
+# siliconangle / thenextweb.
+# Unused — all KEEP passed.
+# Do not invent. Do not pull
+# batch103 hung ids
+# (bandcamp_daily /
+# computerworld / bigthink)
+# or their 备 (rollingstone /
+# extremetech / avclub).
+# usni_news official
+# https://news.usni.org/feed
+# is new (no prior usni_news
+# / usni / usni_org /
+# news_usni id).
+# httpx+RSS_HEADERS HTTP 200
+# / 30 nonempty / 30
+# insertable (channel
+# "USNI News"). MUST lock
+# news.usni.org + /feed
+# (NO trailing slash).
+# Homepage <link> announces
+# this exact path; atom:self
+# matches. /feed/ (trailing
+# slash) is 403 — do not
+# lock it. /rss /rss/ /
+# rss.xml /atom.xml /
+# index.xml /feed/rss/ /
+# comments/feed/ /
+# news/feed/ are 403.
+# /?feed=rss2 remaps here.
+# comments/feed (no slash)
+# is comments — not the
+# site-wide primary.
+# www.news.usni.org SSL
+# handshake failure.
+# usni.org / www.usni.org
+# /feed are 403 (different
+# host). Distinct from live
+# navalnews / defensenews /
+# military_times /
+# c4isrnet / taskandpurpose
+# / twz / breaking_defense
+# / defense_one /
+# aviationweek. Do not
+# invent Feedburner /
+# section feeds. Lands on
+# 国际 (naval / defense
+# newsroom, same as
+# navalnews / defensenews /
+# military_times /
+# c4isrnet).
+# slashfilm official
+# https://www.slashfilm.com/feed/
+# is new (no prior slashfilm
+# / slash_film /
+# slashfilm_com id).
+# httpx+RSS_HEADERS HTTP 200
+# / 20 nonempty / 20
+# insertable (channel
+# "/Film - Movie & TV News,
+# Trailers, Interviews, &
+# Reviews"). MUST lock www +
+# /feed/ (trailing slash).
+# Homepage <link> announces
+# both /category/news/feed/
+# (section) and /feed/;
+# atom:self is /feed/.
+# Prefer atom:self +
+# product hint for the
+# site-wide primary.
+# /feed (no slash) remaps
+# here; apex remaps to www;
+# /rss /rss/ /feed/rss/
+# remap here. /rss.xml /
+# atom.xml /index.xml are
+# 404. /?feed=rss2 is HTML
+# homepage — not the
+# announced site-wide
+# primary. comments/feed
+# is comments (empty).
+# /news/feed/ is empty.
+# /category/news/feed/ is
+# a news-section feed —
+# not the site-wide
+# primary. Distinct from
+# live deadline / variety /
+# pitchfork / stereogum /
+# indiewire / consequence.
+# Do not invent Feedburner
+# / section feeds. Lands on
+# 综合 (entertainment /
+# film newsroom, same as
+# deadline / variety /
+# pitchfork / indiewire /
+# consequence).
+# singularityhub official
+# https://singularityhub.com/feed/
+# is new (no prior
+# singularityhub /
+# singularity_hub id).
+# httpx+RSS_HEADERS HTTP 200
+# / 10 nonempty / 10
+# insertable (channel
+# "SingularityHub"). MUST
+# lock apex + /feed/
+# (trailing slash).
+# Homepage <link> announces
+# this exact path;
+# atom:self matches. /feed
+# (no slash) remaps here;
+# www remaps to apex; /rss
+# /rss/ remap here.
+# /rss.xml /atom.xml /
+# index.xml /feed/rss/ are
+# 404 HTML. /?feed=rss2 is
+# HTML — not the announced
+# site-wide primary.
+# comments/feed is comments
+# (empty). /news/feed/ is
+# 404. Distinct from live
+# newatlas / thenewstack /
+# mit_tr / ieee_spectrum /
+# hackaday. Do not invent
+# Feedburner / section
+# feeds. Lands on 科技
+# (future-tech newsroom,
+# same as newatlas /
+# thenewstack).
+# All three ≥10 KEEP. Named
+# 备 unused (all KEEP
+# passed). Distinct from
+# live navalnews /
+# defensenews /
+# military_times /
+# c4isrnet / taskandpurpose
+# / twz / deadline /
+# variety / pitchfork /
+# stereogum / indiewire /
+# consequence / newatlas /
+# thenewstack. 0 article
+# URL overlap
+# (news.usni.org /
+# www.slashfilm.com /
+# singularityhub.com
+# hosts). Not added to the
+# tech/AI whitelist
+# (later-batch sources stay
+# off the frozen ALWAYS
+# set).
+# Do NOT register usni /
+# usni_org / news_usni /
+# slash_film /
+# slashfilm_com /
+# singularity_hub.
+# Do NOT register
+# hollywoodreporter /
+# siliconangle /
+# thenextweb (unused 备).
+# Do NOT register
+# bandcamp_daily /
+# computerworld / bigthink
+# / rollingstone /
+# extremetech / avclub
+# (idle / later hung).
+# Do NOT re-register
+# insideclimatenews /
+# consequence / c4isrnet /
+# indiewire / kottke /
+# pv_magazine /
+# military_times /
+# earthsky / outside /
+# deadline / makezine /
+# utility_dive / phoronix /
+# adafruit / boingboing /
+# jalopnik / lwn /
+# quanta_magazine /
+# literary_hub /
+# defensenews / navalnews /
+# taskandpurpose / twz.
+# national_geographic stays
+# unregistered (no official
+# English RSS).
+# Do NOT use as backups
+# (product skip): bangkok_post
+# / indian_express /
+# rest_of_world / al_monitor /
+# hkfp / biographic /
+# asiatimes / dawn /
+# longreads / hrw /
+# independent (429) /
+# euractiv (301→rapporteur
+# FAIL) / atlantic_council
+# (403) / the_nation (empty
+# feed) / times_of_israel
+# (Cloudflare 403) / the_cut
+# / techdirt / engadget /
+# digital_trends /
+# bleepingcomputer / gizmodo /
+# the_baffler / new_statesman
+# / guernica / nationalinterest
+# / flightglobal /
+# newscientist (CI
+# httpx+RSS_HEADERS 406/empty).
+# qz3 勿挂. digiday0观察 — do not
+# add a second digiday.
+# fastcompany 勿二重.
+# sunday_review / cnbc (403
+# known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_USNI_NEWS_SLASHFILM_SINGULARITYHUB_PRIMARY = {
+    "usni_news": {
+        "name": "USNI News",
+        "feed_url": "https://news.usni.org/feed",
+        "category": "国际",
+    },
+    "slashfilm": {
+        "name": "SlashFilm",
+        "feed_url": "https://www.slashfilm.com/feed/",
+        "category": "综合",
+    },
+    "singularityhub": {
+        "name": "SingularityHub",
+        "feed_url": "https://singularityhub.com/feed/",
+        "category": "科技",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 311
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -39446,7 +39693,12 @@ def test_indiewire_kottke_pv_magazine_primaries_registered():
     # consequence / c4isrnet are
     # registered separately. Named
     # 备 unused (all KEEP passed).
-    # Do not pull batch102 hung ids.
+    # batch102 KEEP usni_news /
+    # slashfilm / singularityhub
+    # are registered separately.
+    # Named 备 unused (all KEEP
+    # passed). Do not pull
+    # batch103 hung ids.
     assert "indie_wire" not in by_id
     assert "indiewire_com" not in by_id
     assert "kottke_org" not in by_id
@@ -39461,9 +39713,12 @@ def test_indiewire_kottke_pv_magazine_primaries_registered():
     assert "energy_storage_news" not in by_id
     assert "geekwire" not in by_id
     assert "futurism" not in by_id
-    assert "usni_news" not in by_id
-    assert "slashfilm" not in by_id
-    assert "singularityhub" not in by_id
+    assert "usni_news" in by_id
+    assert "slashfilm" in by_id
+    assert "singularityhub" in by_id
+    assert "hollywoodreporter" not in by_id
+    assert "siliconangle" not in by_id
+    assert "thenextweb" not in by_id
     # national_geographic stays
     # unregistered (no official
     # English RSS).
@@ -39742,8 +39997,13 @@ def test_insideclimatenews_consequence_c4isrnet_primaries_registered():
     assert by_id["consequence"].feed_url != by_id["c4isrnet"].feed_url
     # Named 备 unused (all KEEP
     # passed). Do not invent
-    # replacements. Do not pull
-    # batch102 / batch103 hung ids.
+    # replacements. batch102 KEEP
+    # usni_news / slashfilm /
+    # singularityhub are
+    # registered separately.
+    # Named 备 unused (all KEEP
+    # passed). Do not pull
+    # batch103 hung ids.
     assert "inside_climate_news" not in by_id
     assert "insideclimate" not in by_id
     assert "inside_climate" not in by_id
@@ -39755,9 +40015,9 @@ def test_insideclimatenews_consequence_c4isrnet_primaries_registered():
     assert "energy_storage_news" not in by_id
     assert "geekwire" not in by_id
     assert "futurism" not in by_id
-    assert "usni_news" not in by_id
-    assert "slashfilm" not in by_id
-    assert "singularityhub" not in by_id
+    assert "usni_news" in by_id
+    assert "slashfilm" in by_id
+    assert "singularityhub" in by_id
     assert "hollywoodreporter" not in by_id
     assert "siliconangle" not in by_id
     assert "thenextweb" not in by_id
@@ -39905,6 +40165,308 @@ def test_insideclimatenews_consequence_c4isrnet_feeds_live_httpx_rss_headers():
         )
 
 
+def test_usni_news_slashfilm_singularityhub_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "usni_news" in by_id
+    assert by_id["usni_news"].feed_url == "https://news.usni.org/feed"
+    assert by_id["usni_news"].feed_url != "https://news.usni.org/feed/"
+    assert by_id["usni_news"].feed_url != "https://www.news.usni.org/feed"
+    assert by_id["usni_news"].feed_url != "https://news.usni.org/rss"
+    assert by_id["usni_news"].feed_url != "https://news.usni.org/rss.xml"
+    assert by_id["usni_news"].feed_url != "https://news.usni.org/feed/rss/"
+    assert by_id["usni_news"].feed_url != (
+        "https://news.usni.org/comments/feed"
+    )
+    assert by_id["usni_news"].feed_url != "https://news.usni.org/news/feed/"
+    assert by_id["usni_news"].feed_url != "https://usni.org/feed"
+    assert by_id["usni_news"].feed_url != "https://www.usni.org/feed"
+    assert "slashfilm" in by_id
+    assert by_id["slashfilm"].feed_url == "https://www.slashfilm.com/feed/"
+    assert by_id["slashfilm"].feed_url != "https://www.slashfilm.com/feed"
+    assert by_id["slashfilm"].feed_url != "https://slashfilm.com/feed/"
+    assert by_id["slashfilm"].feed_url != "https://www.slashfilm.com/rss"
+    assert by_id["slashfilm"].feed_url != "https://www.slashfilm.com/rss.xml"
+    assert by_id["slashfilm"].feed_url != (
+        "https://www.slashfilm.com/feed/rss/"
+    )
+    assert by_id["slashfilm"].feed_url != (
+        "https://www.slashfilm.com/comments/feed/"
+    )
+    assert by_id["slashfilm"].feed_url != (
+        "https://www.slashfilm.com/news/feed/"
+    )
+    assert by_id["slashfilm"].feed_url != (
+        "https://www.slashfilm.com/category/news/feed/"
+    )
+    assert by_id["slashfilm"].feed_url != (
+        "https://www.slashfilm.com/?feed=rss2"
+    )
+    assert "singularityhub" in by_id
+    assert by_id["singularityhub"].feed_url == (
+        "https://singularityhub.com/feed/"
+    )
+    assert by_id["singularityhub"].feed_url != (
+        "https://singularityhub.com/feed"
+    )
+    assert by_id["singularityhub"].feed_url != (
+        "https://www.singularityhub.com/feed/"
+    )
+    assert by_id["singularityhub"].feed_url != (
+        "https://singularityhub.com/rss"
+    )
+    assert by_id["singularityhub"].feed_url != (
+        "https://singularityhub.com/rss.xml"
+    )
+    assert by_id["singularityhub"].feed_url != (
+        "https://singularityhub.com/feed/rss/"
+    )
+    assert by_id["singularityhub"].feed_url != (
+        "https://singularityhub.com/comments/feed/"
+    )
+    assert by_id["singularityhub"].feed_url != (
+        "https://singularityhub.com/news/feed/"
+    )
+    assert by_id["singularityhub"].feed_url != (
+        "https://singularityhub.com/?feed=rss2"
+    )
+    # #167 / batch101 winners stay registered and unchanged.
+    # #166 / batch100 winners stay registered and unchanged.
+    # #165 / batch99 winners stay registered and unchanged.
+    # #164 / batch98 winners stay registered and unchanged.
+    # #163 / batch97 winners stay registered and unchanged.
+    # Do not touch insideclimatenews /
+    # consequence / c4isrnet /
+    # indiewire / kottke /
+    # pv_magazine / military_times /
+    # earthsky / outside / deadline /
+    # makezine / utility_dive /
+    # phoronix / adafruit /
+    # boingboing / jalopnik / lwn /
+    # quanta_magazine / yale360 /
+    # cleantechnica / hackaday /
+    # astronomy / skyandtelescope /
+    # latimes_technology / variety /
+    # canary_media / defensenews /
+    # taskandpurpose / twz /
+    # navalnews / climate_home /
+    # grist / carbon_brief.
+    assert "insideclimatenews" in by_id
+    assert "consequence" in by_id
+    assert "c4isrnet" in by_id
+    assert "indiewire" in by_id
+    assert "kottke" in by_id
+    assert "pv_magazine" in by_id
+    assert "military_times" in by_id
+    assert "earthsky" in by_id
+    assert "outside" in by_id
+    assert "deadline" in by_id
+    assert "makezine" in by_id
+    assert "utility_dive" in by_id
+    assert "phoronix" in by_id
+    assert "adafruit" in by_id
+    assert "boingboing" in by_id
+    assert "jalopnik" in by_id
+    assert "lwn" in by_id
+    assert "quanta_magazine" in by_id
+    assert "yale360" in by_id
+    assert "cleantechnica" in by_id
+    assert "hackaday" in by_id
+    assert "astronomy" in by_id
+    assert "skyandtelescope" in by_id
+    assert "latimes_technology" in by_id
+    assert "variety" in by_id
+    assert "canary_media" in by_id
+    assert "defensenews" in by_id
+    assert "taskandpurpose" in by_id
+    assert "twz" in by_id
+    assert "navalnews" in by_id
+    assert "climate_home" in by_id
+    assert "grist" in by_id
+    assert "carbon_brief" in by_id
+    # Feed locks + uniqueness vs live
+    # naval / entertainment /
+    # future-tech stack.
+    assert by_id["usni_news"].feed_url != by_id["navalnews"].feed_url
+    assert by_id["usni_news"].feed_url != by_id["defensenews"].feed_url
+    assert by_id["usni_news"].feed_url != by_id["military_times"].feed_url
+    assert by_id["usni_news"].feed_url != by_id["c4isrnet"].feed_url
+    assert by_id["usni_news"].feed_url != by_id["taskandpurpose"].feed_url
+    assert by_id["usni_news"].feed_url != by_id["twz"].feed_url
+    assert by_id["usni_news"].feed_url != by_id["breaking_defense"].feed_url
+    assert by_id["usni_news"].feed_url != by_id["defense_one"].feed_url
+    assert by_id["usni_news"].feed_url != by_id["aviationweek"].feed_url
+    assert by_id["slashfilm"].feed_url != by_id["deadline"].feed_url
+    assert by_id["slashfilm"].feed_url != by_id["variety"].feed_url
+    assert by_id["slashfilm"].feed_url != by_id["pitchfork"].feed_url
+    assert by_id["slashfilm"].feed_url != by_id["stereogum"].feed_url
+    assert by_id["slashfilm"].feed_url != by_id["indiewire"].feed_url
+    assert by_id["slashfilm"].feed_url != by_id["consequence"].feed_url
+    assert by_id["singularityhub"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["singularityhub"].feed_url != by_id["thenewstack"].feed_url
+    assert by_id["singularityhub"].feed_url != by_id["mit_tr"].feed_url
+    assert by_id["singularityhub"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["singularityhub"].feed_url != by_id["hackaday"].feed_url
+    assert by_id["usni_news"].feed_url != by_id["slashfilm"].feed_url
+    assert by_id["usni_news"].feed_url != by_id["singularityhub"].feed_url
+    assert by_id["slashfilm"].feed_url != by_id["singularityhub"].feed_url
+    # Named 备 unused (all KEEP
+    # passed). Do not invent
+    # replacements. Do not pull
+    # batch103 hung ids.
+    assert "usni" not in by_id
+    assert "usni_org" not in by_id
+    assert "news_usni" not in by_id
+    assert "slash_film" not in by_id
+    assert "slashfilm_com" not in by_id
+    assert "singularity_hub" not in by_id
+    assert "hollywoodreporter" not in by_id
+    assert "siliconangle" not in by_id
+    assert "thenextweb" not in by_id
+    assert "bandcamp_daily" not in by_id
+    assert "computerworld" not in by_id
+    assert "bigthink" not in by_id
+    assert "rollingstone" not in by_id
+    assert "extremetech" not in by_id
+    assert "avclub" not in by_id
+    # national_geographic stays
+    # unregistered (no official
+    # English RSS).
+    assert "national_geographic" not in by_id
+    assert "nationalgeographic" not in by_id
+    assert "natgeo" not in by_id
+    assert "carbonbrief" not in by_id
+    assert "carbon_brief" in by_id
+    assert "politico" not in by_id
+    assert "politico_politics" in by_id
+    assert "politico_europe" in by_id
+    assert "the_atlantic" not in by_id
+    assert "motherjones" not in by_id
+    assert "the_intercept" not in by_id
+    assert "theregister" not in by_id
+    assert "atlantic" in by_id
+    assert "mother_jones" in by_id
+    assert "intercept" in by_id
+    assert "the_register" in by_id
+    assert "newscientist" not in by_id
+    assert "qz3" not in by_id
+    assert "qz" not in by_id
+    assert "fastcompany" not in by_id
+    assert "fast_company" in by_id
+    assert "the_verge" not in by_id
+    assert "flightglobal" not in by_id
+    assert "gizmodo" not in by_id
+    assert "the_baffler" not in by_id
+    assert "new_statesman" not in by_id
+    assert "guernica" not in by_id
+    assert "nationalinterest" not in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "the_nation" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "techdirt" not in by_id
+    assert "engadget" not in by_id
+    assert "digital_trends" not in by_id
+    assert "the_cut" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "indian_express" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "al_monitor" not in by_id
+    assert "hkfp" not in by_id
+    assert "biographic" not in by_id
+    assert "asiatimes" not in by_id
+    assert "dawn" not in by_id
+    assert "longreads" not in by_id
+    assert "hrw" not in by_id
+    assert "independent" not in by_id
+    for source_id, expected in _USNI_NEWS_SLASHFILM_SINGULARITYHUB_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_usni_news_slashfilm_singularityhub_feeds_live_httpx_rss_headers():
+    """KEEP must pass the same httpx + RSS_HEADERS client CI uses."""
+    from news_archive.fetch import fetch_source
+
+    by_id = {s.id: s for s in SOURCES}
+    keep_floor = {
+        "usni_news": 10,
+        "slashfilm": 10,
+        "singularityhub": 10,
+    }
+    for source_id in _USNI_NEWS_SLASHFILM_SINGULARITYHUB_PRIMARY:
+        source = by_id[source_id]
+        articles = fetch_source(source, timeout=30)
+        assert articles, f"{source_id} httpx+RSS_HEADERS insertable=0"
+        assert len(articles) >= keep_floor[source_id], (
+            f"{source_id} insertable {len(articles)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (usni_news /
+        # slashfilm / singularityhub)
+        # uses the un-namespaced
+        # element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # usni_news 30/30,
+        # slashfilm 20/20, and
+        # singularityhub 10/10 were
+        # 100% nonempty this probe.
+        # ≥10 KEEP.
+        # usni_news MUST stay on
+        # news.usni.org /feed
+        # (NO trailing slash;
+        # homepage announced;
+        # atom:self). /feed/ is 403.
+        # slashfilm MUST stay on
+        # www /feed/ (trailing
+        # slash; homepage lists
+        # section + site-wide;
+        # atom:self is /feed/).
+        # singularityhub MUST stay
+        # on apex /feed/ (trailing
+        # slash; homepage
+        # announced; atom:self).
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= keep_floor[source_id], (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -40017,6 +40579,7 @@ if __name__ == "__main__":
     test_military_times_earthsky_outside_primaries_registered()
     test_indiewire_kottke_pv_magazine_primaries_registered()
     test_insideclimatenews_consequence_c4isrnet_primaries_registered()
+    test_usni_news_slashfilm_singularityhub_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -40118,4 +40681,5 @@ if __name__ == "__main__":
     test_military_times_earthsky_outside_feeds_live_httpx_rss_headers()
     test_indiewire_kottke_pv_magazine_feeds_live_httpx_rss_headers()
     test_insideclimatenews_consequence_c4isrnet_feeds_live_httpx_rss_headers()
+    test_usni_news_slashfilm_singularityhub_feeds_live_httpx_rss_headers()
     print("✓ source registry tests PASSED")

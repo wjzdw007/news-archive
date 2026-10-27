@@ -2172,6 +2172,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="usni_news",
+        name="USNI News",
+        feed_url="https://news.usni.org/feed",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="slashfilm",
+        name="SlashFilm",
+        feed_url="https://www.slashfilm.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="singularityhub",
+        name="SingularityHub",
+        feed_url="https://singularityhub.com/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
