@@ -793,6 +793,72 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "atlantic_council" not in TECH_AI_SOURCE_WHITELIST
     assert "the_nation" not in TECH_AI_SOURCE_WHITELIST
     assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
+    # batch84 RSS primaries stay off the tech/AI whitelist.
+    # inverse lands on 综合 (science /
+    # culture / entertainment magazine,
+    # same as smithsonian_mag / atlantic
+    # / nautilus) and is not an ALWAYS
+    # tech source. appleinsider lands
+    # on 科技 (Apple newsroom, same as
+    # macrumors / 9to5mac) but
+    # later-batch tech sources stay
+    # off the frozen ALWAYS set.
+    # popular_mechanics lands on 科学
+    # (science / engineering magazine,
+    # same as popular_science) and is
+    # not added to KEYWORD sources.
+    # None of these match the wired /
+    # verge / techcrunch ALWAYS
+    # pattern. Unused leftover
+    # new_yorker stays off (all three
+    # primaries live KEEP; if a later
+    # hard-swap falls through MUST
+    # prefer /feed/everything).
+    # Unused leftover macworld stays
+    # off (popular_mechanics won;
+    # product prefers
+    # popular_mechanics to reduce
+    # Apple stack overlap with live
+    # 9to5mac + macrumors).
+    # smithsonian_mag is already the
+    # gizmodo hard-swap primary and
+    # stays off the whitelist (MUST
+    # lock /rss/latest_articles/ never
+    # stale /rss/articles/). polygon /
+    # pcmag / mashable stay off
+    # (batch83 KEEP). engadget /
+    # digital_trends / techdirt /
+    # bleepingcomputer stay off
+    # (official RSS 403; do not
+    # register Feedburner). the_cut
+    # stays off (product dropped —
+    # all 404). the_verge stays off
+    # (verge already registered).
+    # atlantic_council stays off
+    # (hard-swapped to grist in #139).
+    # the_nation stays off (empty
+    # site-wide FAIL). euractiv stays
+    # off (official 301 to
+    # rapporteur.com; Feedburner stale).
+    assert "inverse" not in TECH_AI_SOURCE_WHITELIST
+    assert "appleinsider" not in TECH_AI_SOURCE_WHITELIST
+    assert "popular_mechanics" not in TECH_AI_SOURCE_WHITELIST
+    assert "macworld" not in TECH_AI_SOURCE_WHITELIST
+    assert "new_yorker" not in TECH_AI_SOURCE_WHITELIST
+    assert "smithsonian_mag" not in TECH_AI_SOURCE_WHITELIST
+    assert "polygon" not in TECH_AI_SOURCE_WHITELIST
+    assert "pcmag" not in TECH_AI_SOURCE_WHITELIST
+    assert "mashable" not in TECH_AI_SOURCE_WHITELIST
+    assert "bleepingcomputer" not in TECH_AI_SOURCE_WHITELIST
+    assert "engadget" not in TECH_AI_SOURCE_WHITELIST
+    assert "digital_trends" not in TECH_AI_SOURCE_WHITELIST
+    assert "techdirt" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_cut" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_verge" not in TECH_AI_SOURCE_WHITELIST
+    assert "gizmodo" not in TECH_AI_SOURCE_WHITELIST
+    assert "atlantic_council" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_nation" not in TECH_AI_SOURCE_WHITELIST
+    assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
