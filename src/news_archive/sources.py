@@ -1983,6 +1983,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="defensenews",
+        name="Defense News",
+        feed_url="https://www.defensenews.com/arc/outboundfeeds/rss/?outputType=xml",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="motherboard",
+        name="Motherboard",
+        feed_url="https://www.vice.com/en/tag/motherboard/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="macworld",
+        name="Macworld",
+        feed_url="https://www.macworld.com/feed",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

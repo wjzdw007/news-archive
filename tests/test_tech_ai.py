@@ -1049,6 +1049,45 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "aviationweek" not in TECH_AI_SOURCE_WHITELIST
     assert "defensenews" not in TECH_AI_SOURCE_WHITELIST
     assert "fastcompany" not in TECH_AI_SOURCE_WHITELIST
+    # batch92 RSS primaries stay off the tech/AI whitelist.
+    # defensenews lands on 国际
+    # (defense / military newsroom,
+    # same as navalnews /
+    # breaking_defense / defense_one
+    # / war_on_rocks /
+    # taskandpurpose / twz) —
+    # leftover unused from #157,
+    # now product-hung KEEP — and
+    # is not added to KEYWORD
+    # sources. Official Arc
+    # outbound ?outputType=xml.
+    # motherboard lands on 科技
+    # (VICE Motherboard / tech
+    # newsroom, same as wired /
+    # verge / media404). Official
+    # /en/tag/motherboard/feed/
+    # (hinted /en/rss?q=motherboard
+    # discarded — unfiltered VICE
+    # English). macworld lands on
+    # 科技 (Apple newsroom, same as
+    # macrumors / 9to5mac /
+    # appleinsider) — leftover
+    # unused from #148 / #149, now
+    # product-hung KEEP. Official
+    # /feed (no trailing slash).
+    # Unused leftovers astronomy /
+    # skyandtelescope /
+    # latimes_technology stay off
+    # (all three primaries live
+    # KEEP). None of these match
+    # the wired / verge /
+    # techcrunch ALWAYS pattern.
+    assert "defensenews" not in TECH_AI_SOURCE_WHITELIST
+    assert "motherboard" not in TECH_AI_SOURCE_WHITELIST
+    assert "macworld" not in TECH_AI_SOURCE_WHITELIST
+    assert "astronomy" not in TECH_AI_SOURCE_WHITELIST
+    assert "skyandtelescope" not in TECH_AI_SOURCE_WHITELIST
+    assert "latimes_technology" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
