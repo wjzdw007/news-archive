@@ -1361,12 +1361,12 @@ def test_whitelist_registered_and_cap_unchanged():
     # homepage announced;
     # atom:self). Named 备: NONE
     # this batch. rollingstone /
-    # avclub stay idle. Do not
-    # pull batch101 hung ids
-    # (insideclimatenews /
-    # consequence / c4isrnet) or
-    # their 备 (energy_storage_news
-    # / geekwire / futurism).
+    # avclub stay idle. batch101
+    # KEEP insideclimatenews /
+    # consequence / c4isrnet are
+    # registered separately and
+    # still stay off the
+    # whitelist. Named 备 unused.
     # None of these match the
     # wired / verge / techcrunch
     # ALWAYS pattern.
@@ -1382,6 +1382,62 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "insideclimatenews" not in TECH_AI_SOURCE_WHITELIST
     assert "consequence" not in TECH_AI_SOURCE_WHITELIST
     assert "c4isrnet" not in TECH_AI_SOURCE_WHITELIST
+    # batch101 RSS primaries stay off the tech/AI whitelist.
+    # insideclimatenews lands on
+    # 科学 (climate newsroom,
+    # same as yale360 /
+    # carbon_brief / grist /
+    # climate_home) — new id —
+    # official apex /feed/ (MUST
+    # apex + trailing slash;
+    # homepage 403; atom:self).
+    # /feed (no slash) is 403.
+    # consequence lands on 综合
+    # (entertainment / music
+    # newsroom, same as deadline
+    # / variety / pitchfork /
+    # stereogum) — new id —
+    # official apex /feed/ (MUST
+    # apex + trailing slash;
+    # homepage RSD only;
+    # atom:self).
+    # c4isrnet lands on 国际
+    # (defense / C4ISR newsroom,
+    # same as defensenews /
+    # military_times /
+    # breaking_defense) — new id
+    # — official www /feed/
+    # (MUST www + trailing
+    # slash; homepage announced;
+    # atom:self). Named 备
+    # unused (all KEEP passed).
+    # Do not pull batch102 hung
+    # ids (usni_news / slashfilm
+    # / singularityhub) or their
+    # 备 (hollywoodreporter /
+    # siliconangle / thenextweb).
+    # Do not pull batch103 hung
+    # ids (bandcamp_daily /
+    # computerworld / bigthink)
+    # or their 备 (rollingstone /
+    # extremetech / avclub).
+    # None of these match the
+    # wired / verge / techcrunch
+    # ALWAYS pattern.
+    assert "insideclimatenews" not in TECH_AI_SOURCE_WHITELIST
+    assert "consequence" not in TECH_AI_SOURCE_WHITELIST
+    assert "c4isrnet" not in TECH_AI_SOURCE_WHITELIST
+    assert "inside_climate_news" not in TECH_AI_SOURCE_WHITELIST
+    assert "insideclimate" not in TECH_AI_SOURCE_WHITELIST
+    assert "consequence_net" not in TECH_AI_SOURCE_WHITELIST
+    assert "consequenceofsound" not in TECH_AI_SOURCE_WHITELIST
+    assert "c4isrnet_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "energy_storage_news" not in TECH_AI_SOURCE_WHITELIST
+    assert "geekwire" not in TECH_AI_SOURCE_WHITELIST
+    assert "futurism" not in TECH_AI_SOURCE_WHITELIST
+    assert "usni_news" not in TECH_AI_SOURCE_WHITELIST
+    assert "slashfilm" not in TECH_AI_SOURCE_WHITELIST
+    assert "singularityhub" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
