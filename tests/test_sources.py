@@ -14000,11 +14000,12 @@ _DEADLINE_MAKEZINE_UTILITY_DIVE_PRIMARY = {
 # outside. Named 备 (hard-swap
 # ONLY if a KEEP fails):
 # kottke / rollingstone /
-# avclub. Do not invent a
-# fourth replacement. Do not
-# pull batch100 hung ids
-# (indiewire / lithub /
-# pv_magazine).
+# avclub. Unused — all KEEP
+# passed. batch100 KEEP
+# indiewire / kottke /
+# pv_magazine are registered
+# separately. lithub stays
+# unregistered (hard-swap).
 # military_times official
 # https://www.militarytimes.com/feed/
 # is new as a registered
@@ -14146,12 +14147,17 @@ _DEADLINE_MAKEZINE_UTILITY_DIVE_PRIMARY = {
 # / outsideonline /
 # outside_online /
 # outside_com.
-# Do NOT register kottke /
+# batch100 KEEP indiewire /
+# kottke / pv_magazine are
+# registered separately.
+# lithub stays unregistered
+# (product hard-swap →
+# kottke; collides live
+# literary_hub on
+# lithub.com/feed/).
 # rollingstone / avclub
-# (备 unused). Do NOT
-# register indiewire /
-# lithub / pv_magazine
-# (batch100 only).
+# stay idle (product: no
+# extra 备 this batch).
 # Do NOT re-register
 # deadline / makezine /
 # utility_dive / phoronix /
@@ -14215,7 +14221,200 @@ _MILITARY_TIMES_EARTHSKY_OUTSIDE_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 302
+# CEO-approved IndieWire / Kottke /
+# pv magazine RSS primaries
+# (batch100). On tip 8cc4eda after
+# #165 (military_times / earthsky /
+# outside). Product KEEP set is
+# indiewire / kottke / pv_magazine.
+# Original hang had lithub, but
+# lithub collides live literary_hub
+# on https://lithub.com/feed/.
+# Product hard-swapped lithub →
+# kottke. Do NOT register lithub.
+# Named 备: NONE this batch. Do not
+# invent. Do not pull rollingstone /
+# avclub. Do not pull batch101 hung
+# ids (insideclimatenews /
+# consequence / c4isrnet) or their
+# 备 (energy_storage_news /
+# geekwire / futurism).
+# indiewire official
+# https://www.indiewire.com/feed/
+# is new (no prior indiewire /
+# indie_wire / indiewire_com id).
+# httpx+RSS_HEADERS HTTP 200 / 12
+# nonempty / 12 insertable
+# (channel "IndieWire"). MUST lock
+# www + /feed/ (trailing slash).
+# Homepage <link> announces
+# /feed/rss/ which remaps here;
+# atom:self is /feed/. /feed (no
+# slash) remaps here; apex remaps
+# to www; /rss /rss/ /feed/rss/
+# /?feed=rss2 remap here.
+# /rss.xml /index.xml /atom.xml
+# are 404 HTML. comments/feed is
+# comments — not the site-wide
+# primary. /news/feed/ /film/feed/
+# remap to HTML section pages.
+# Distinct from live deadline /
+# variety / pitchfork. Do not
+# invent Feedburner / section
+# feeds. Lands on 综合
+# (entertainment newsroom, same
+# as deadline / variety /
+# pitchfork).
+# kottke official
+# https://feeds.kottke.org/main
+# is new (no prior kottke /
+# kottke_org / kottkeorg id).
+# Product-named / batch99 备 path
+# re-probed. httpx+RSS_HEADERS
+# HTTP 200 / 60 nonempty / 30
+# insertable (ingest cap 30;
+# channel "kottke.org"). MUST lock
+# https://feeds.kottke.org/main
+# (no trailing slash). Homepage
+# <link> announces this exact
+# path; atom:self matches. /main/
+# is the same 60-item body but
+# stays without slash — do not
+# lock it. /feed /feed/ /rss
+# /rss.xml /atom.xml /main/feed
+# /?feed=rss2 are 404 HTML.
+# /index.xml remaps to
+# http://feeds.kottke.org/main
+# (http, same body).
+# feeds.kottke.org/atom.xml is a
+# 15-item Atom alternate — not
+# the site-wide primary.
+# Feedburner /kottke/main remaps
+# to the same body with self=
+# feeds.kottke.org/main — do not
+# invent Feedburner. Distinct
+# from live boingboing. Lands on
+# 科技 (web/culture blog, same
+# as boingboing).
+# pv_magazine official
+# https://www.pv-magazine.com/feed/
+# is new (no prior pv_magazine /
+# pvmagazine / pv_magazine_com
+# id). httpx+RSS_HEADERS HTTP 200
+# / 10 nonempty / 10 insertable
+# (channel "pv magazine Global").
+# MUST lock www + /feed/
+# (trailing slash). Homepage
+# <link> announces this exact
+# path; atom:self matches. /feed
+# (no slash) remaps here; apex
+# remaps to www; /rss /feed/rss/
+# /?feed=rss2 remap here.
+# /rss.xml /index.xml /atom.xml
+# /news/feed/ are 404 HTML.
+# comments/feed is comments —
+# not the site-wide primary.
+# Distinct from live utility_dive
+# / canary_media / yale360 /
+# carbon_brief / cleantechnica.
+# Do not invent Feedburner /
+# section feeds. Lands on 科学
+# (solar/energy newsroom, same
+# as utility_dive / canary_media
+# / yale360 / carbon_brief).
+# All three ≥10 KEEP. No 备
+# used (none named). Distinct
+# from live deadline / variety /
+# pitchfork / boingboing /
+# utility_dive / canary_media /
+# yale360 / carbon_brief /
+# cleantechnica / literary_hub.
+# 0 article URL overlap
+# (www.indiewire.com /
+# kottke.org /
+# www.pv-magazine.com hosts).
+# Not added to the tech/AI
+# whitelist (later-batch
+# sources stay off the frozen
+# ALWAYS set).
+# Do NOT register indie_wire /
+# indiewire_com / kottke_org /
+# kottkeorg / pvmagazine /
+# pv_magazine_com. Do NOT
+# register lithub (hard-swap;
+# collides literary_hub). Do
+# NOT register rollingstone /
+# avclub (idle). Do NOT pull
+# batch101 hung ids
+# (insideclimatenews /
+# consequence / c4isrnet) or
+# their 备 (energy_storage_news
+# / geekwire / futurism).
+# Do NOT re-register
+# military_times / earthsky /
+# outside / deadline / makezine
+# / utility_dive / phoronix /
+# adafruit / boingboing /
+# jalopnik / lwn /
+# quanta_magazine / mit_tr /
+# hackaday / astronomy /
+# skyandtelescope /
+# latimes_technology / yale360
+# / cleantechnica / variety /
+# literary_hub.
+# national_geographic stays
+# unregistered (no official
+# English RSS).
+# Do NOT use as backups
+# (product skip): bangkok_post
+# / indian_express /
+# rest_of_world / al_monitor /
+# hkfp / biographic /
+# asiatimes / dawn /
+# longreads / hrw /
+# independent (429) /
+# euractiv (301→rapporteur
+# FAIL) / atlantic_council
+# (403) / the_nation (empty
+# feed) / times_of_israel
+# (Cloudflare 403) / the_cut
+# / techdirt / engadget /
+# digital_trends /
+# bleepingcomputer / gizmodo /
+# the_baffler / new_statesman
+# / guernica / nationalinterest
+# / flightglobal /
+# newscientist (CI
+# httpx+RSS_HEADERS 406/empty).
+# qz3 勿挂. digiday0观察 — do not
+# add a second digiday.
+# fastcompany 勿二重.
+# sunday_review / cnbc (403
+# known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_INDIEWIRE_KOTTKE_PV_MAGAZINE_PRIMARY = {
+    "indiewire": {
+        "name": "IndieWire",
+        "feed_url": "https://www.indiewire.com/feed/",
+        "category": "综合",
+    },
+    "kottke": {
+        "name": "Kottke",
+        "feed_url": "https://feeds.kottke.org/main",
+        "category": "科技",
+    },
+    "pv_magazine": {
+        "name": "pv magazine",
+        "feed_url": "https://www.pv-magazine.com/feed/",
+        "category": "科学",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 305
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -38725,9 +38924,14 @@ def test_military_times_earthsky_outside_primaries_registered():
     assert by_id["military_times"].feed_url != by_id["outside"].feed_url
     assert by_id["earthsky"].feed_url != by_id["outside"].feed_url
     # Named 备 unused (all KEEP
-    # passed). Do not invent
-    # replacements. Do not pull
-    # batch100 hung ids.
+    # passed). batch100 KEEP
+    # indiewire / kottke /
+    # pv_magazine are registered
+    # separately. lithub stays
+    # unregistered (hard-swap →
+    # kottke; collides live
+    # literary_hub). rollingstone
+    # / avclub stay idle.
     assert "militarytimes" not in by_id
     assert "military_times_com" not in by_id
     assert "earthsky_org" not in by_id
@@ -38735,12 +38939,12 @@ def test_military_times_earthsky_outside_primaries_registered():
     assert "outsideonline" not in by_id
     assert "outside_online" not in by_id
     assert "outside_com" not in by_id
-    assert "kottke" not in by_id
+    assert "kottke" in by_id
+    assert "indiewire" in by_id
+    assert "pv_magazine" in by_id
+    assert "lithub" not in by_id
     assert "rollingstone" not in by_id
     assert "avclub" not in by_id
-    assert "indiewire" not in by_id
-    assert "lithub" not in by_id
-    assert "pv_magazine" not in by_id
     # national_geographic stays
     # unregistered (no official
     # English RSS).
@@ -38872,6 +39076,272 @@ def test_military_times_earthsky_outside_feeds_live_httpx_rss_headers():
         )
 
 
+def test_indiewire_kottke_pv_magazine_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "indiewire" in by_id
+    assert by_id["indiewire"].feed_url == "https://www.indiewire.com/feed/"
+    assert by_id["indiewire"].feed_url != "https://www.indiewire.com/feed"
+    assert by_id["indiewire"].feed_url != "https://indiewire.com/feed/"
+    assert by_id["indiewire"].feed_url != "https://www.indiewire.com/rss"
+    assert by_id["indiewire"].feed_url != "https://www.indiewire.com/rss.xml"
+    assert by_id["indiewire"].feed_url != (
+        "https://www.indiewire.com/feed/rss/"
+    )
+    assert by_id["indiewire"].feed_url != (
+        "https://www.indiewire.com/comments/feed/"
+    )
+    assert by_id["indiewire"].feed_url != (
+        "https://www.indiewire.com/news/feed/"
+    )
+    assert "kottke" in by_id
+    assert by_id["kottke"].feed_url == "https://feeds.kottke.org/main"
+    assert by_id["kottke"].feed_url != "https://feeds.kottke.org/main/"
+    assert by_id["kottke"].feed_url != "https://kottke.org/feed"
+    assert by_id["kottke"].feed_url != "https://kottke.org/feed/"
+    assert by_id["kottke"].feed_url != "https://kottke.org/index.xml"
+    assert by_id["kottke"].feed_url != "https://feeds.kottke.org/atom.xml"
+    assert by_id["kottke"].feed_url != "http://feeds.kottke.org/main"
+    assert by_id["kottke"].feed_url != (
+        "https://feeds.feedburner.com/kottke/main"
+    )
+    assert "pv_magazine" in by_id
+    assert by_id["pv_magazine"].feed_url == (
+        "https://www.pv-magazine.com/feed/"
+    )
+    assert by_id["pv_magazine"].feed_url != (
+        "https://www.pv-magazine.com/feed"
+    )
+    assert by_id["pv_magazine"].feed_url != "https://pv-magazine.com/feed/"
+    assert by_id["pv_magazine"].feed_url != "https://www.pv-magazine.com/rss"
+    assert by_id["pv_magazine"].feed_url != (
+        "https://www.pv-magazine.com/rss.xml"
+    )
+    assert by_id["pv_magazine"].feed_url != (
+        "https://www.pv-magazine.com/comments/feed/"
+    )
+    assert by_id["pv_magazine"].feed_url != (
+        "https://www.pv-magazine.com/news/feed/"
+    )
+    # Product hard-swap: lithub →
+    # kottke. lithub collides live
+    # literary_hub on
+    # lithub.com/feed/. Do NOT
+    # register lithub.
+    assert "lithub" not in by_id
+    assert "literary_hub" in by_id
+    assert by_id["literary_hub"].feed_url == "https://lithub.com/feed/"
+    assert by_id["kottke"].feed_url != by_id["literary_hub"].feed_url
+    # #165 / batch99 winners stay registered and unchanged.
+    # #164 / batch98 winners stay registered and unchanged.
+    # #163 / batch97 winners stay registered and unchanged.
+    # #162 / batch96 winners stay registered and unchanged.
+    # #161 / batch95 winners stay registered and unchanged.
+    # Do not touch military_times /
+    # earthsky / outside / deadline /
+    # makezine / utility_dive /
+    # phoronix / adafruit /
+    # boingboing / jalopnik / lwn /
+    # quanta_magazine / yale360 /
+    # cleantechnica / hackaday /
+    # astronomy / skyandtelescope /
+    # latimes_technology / variety /
+    # canary_media / defensenews /
+    # taskandpurpose / twz.
+    assert "military_times" in by_id
+    assert "earthsky" in by_id
+    assert "outside" in by_id
+    assert "deadline" in by_id
+    assert "makezine" in by_id
+    assert "utility_dive" in by_id
+    assert "phoronix" in by_id
+    assert "adafruit" in by_id
+    assert "boingboing" in by_id
+    assert "jalopnik" in by_id
+    assert "lwn" in by_id
+    assert "quanta_magazine" in by_id
+    assert "yale360" in by_id
+    assert "cleantechnica" in by_id
+    assert "hackaday" in by_id
+    assert "astronomy" in by_id
+    assert "skyandtelescope" in by_id
+    assert "latimes_technology" in by_id
+    assert "variety" in by_id
+    assert "canary_media" in by_id
+    assert "defensenews" in by_id
+    assert "taskandpurpose" in by_id
+    assert "twz" in by_id
+    # Feed locks + uniqueness vs live
+    # entertainment / web-blog /
+    # solar-energy stack.
+    assert by_id["indiewire"].feed_url != by_id["deadline"].feed_url
+    assert by_id["indiewire"].feed_url != by_id["variety"].feed_url
+    assert by_id["indiewire"].feed_url != by_id["pitchfork"].feed_url
+    assert by_id["indiewire"].feed_url != by_id["stereogum"].feed_url
+    assert by_id["kottke"].feed_url != by_id["boingboing"].feed_url
+    assert by_id["pv_magazine"].feed_url != by_id["utility_dive"].feed_url
+    assert by_id["pv_magazine"].feed_url != by_id["canary_media"].feed_url
+    assert by_id["pv_magazine"].feed_url != by_id["cleantechnica"].feed_url
+    assert by_id["pv_magazine"].feed_url != by_id["oilprice"].feed_url
+    assert by_id["pv_magazine"].feed_url != by_id["yale360"].feed_url
+    assert by_id["pv_magazine"].feed_url != by_id["carbon_brief"].feed_url
+    assert by_id["indiewire"].feed_url != by_id["kottke"].feed_url
+    assert by_id["indiewire"].feed_url != by_id["pv_magazine"].feed_url
+    assert by_id["kottke"].feed_url != by_id["pv_magazine"].feed_url
+    # No 备 named this batch. Do not
+    # invent replacements. Do not
+    # pull batch101 hung ids.
+    assert "indie_wire" not in by_id
+    assert "indiewire_com" not in by_id
+    assert "kottke_org" not in by_id
+    assert "kottkeorg" not in by_id
+    assert "pvmagazine" not in by_id
+    assert "pv_magazine_com" not in by_id
+    assert "rollingstone" not in by_id
+    assert "avclub" not in by_id
+    assert "insideclimatenews" not in by_id
+    assert "consequence" not in by_id
+    assert "c4isrnet" not in by_id
+    assert "energy_storage_news" not in by_id
+    assert "geekwire" not in by_id
+    assert "futurism" not in by_id
+    # national_geographic stays
+    # unregistered (no official
+    # English RSS).
+    assert "national_geographic" not in by_id
+    assert "nationalgeographic" not in by_id
+    assert "natgeo" not in by_id
+    assert "carbonbrief" not in by_id
+    assert "carbon_brief" in by_id
+    assert "politico" not in by_id
+    assert "politico_politics" in by_id
+    assert "politico_europe" in by_id
+    assert "the_atlantic" not in by_id
+    assert "motherjones" not in by_id
+    assert "the_intercept" not in by_id
+    assert "theregister" not in by_id
+    assert "atlantic" in by_id
+    assert "mother_jones" in by_id
+    assert "intercept" in by_id
+    assert "the_register" in by_id
+    assert "newscientist" not in by_id
+    assert "qz3" not in by_id
+    assert "qz" not in by_id
+    assert "fastcompany" not in by_id
+    assert "fast_company" in by_id
+    assert "the_verge" not in by_id
+    assert "flightglobal" not in by_id
+    assert "gizmodo" not in by_id
+    assert "the_baffler" not in by_id
+    assert "new_statesman" not in by_id
+    assert "guernica" not in by_id
+    assert "nationalinterest" not in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "the_nation" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "techdirt" not in by_id
+    assert "engadget" not in by_id
+    assert "digital_trends" not in by_id
+    assert "the_cut" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "indian_express" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "al_monitor" not in by_id
+    assert "hkfp" not in by_id
+    assert "biographic" not in by_id
+    assert "asiatimes" not in by_id
+    assert "dawn" not in by_id
+    assert "longreads" not in by_id
+    assert "hrw" not in by_id
+    assert "independent" not in by_id
+    for source_id, expected in _INDIEWIRE_KOTTKE_PV_MAGAZINE_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_indiewire_kottke_pv_magazine_feeds_live_httpx_rss_headers():
+    """KEEP must pass the same httpx + RSS_HEADERS client CI uses."""
+    from news_archive.fetch import fetch_source
+
+    by_id = {s.id: s for s in SOURCES}
+    keep_floor = {"indiewire": 10, "kottke": 10, "pv_magazine": 10}
+    for source_id in _INDIEWIRE_KOTTKE_PV_MAGAZINE_PRIMARY:
+        source = by_id[source_id]
+        articles = fetch_source(source, timeout=30)
+        assert articles, f"{source_id} httpx+RSS_HEADERS insertable=0"
+        assert len(articles) >= keep_floor[source_id], (
+            f"{source_id} insertable {len(articles)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (indiewire /
+        # pv_magazine) uses the
+        # un-namespaced element
+        # text. kottke is Atom
+        # (feeds.kottke.org/main)
+        # and uses the Atom
+        # helpers.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # indiewire 12/12, kottke
+        # 60/60 (ingest cap 30),
+        # and pv_magazine 10/10
+        # were 100% nonempty this
+        # probe. ≥10 KEEP.
+        # indiewire MUST stay on
+        # www /feed/ (trailing
+        # slash; homepage
+        # /feed/rss/ remaps here;
+        # atom:self).
+        # kottke MUST stay on
+        # https://feeds.kottke.org/main
+        # (no trailing slash;
+        # homepage announced;
+        # atom:self).
+        # pv_magazine MUST stay
+        # on www /feed/ (trailing
+        # slash; homepage
+        # announced; atom:self).
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= keep_floor[source_id], (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -38982,6 +39452,7 @@ if __name__ == "__main__":
     test_phoronix_adafruit_boingboing_primaries_registered()
     test_deadline_makezine_utility_dive_primaries_registered()
     test_military_times_earthsky_outside_primaries_registered()
+    test_indiewire_kottke_pv_magazine_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -39081,4 +39552,5 @@ if __name__ == "__main__":
     test_phoronix_adafruit_boingboing_feeds_live_httpx_rss_headers()
     test_deadline_makezine_utility_dive_feeds_live_httpx_rss_headers()
     test_military_times_earthsky_outside_feeds_live_httpx_rss_headers()
+    test_indiewire_kottke_pv_magazine_feeds_live_httpx_rss_headers()
     print("✓ source registry tests PASSED")

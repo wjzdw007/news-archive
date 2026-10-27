@@ -2130,6 +2130,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="indiewire",
+        name="IndieWire",
+        feed_url="https://www.indiewire.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="kottke",
+        name="Kottke",
+        feed_url="https://feeds.kottke.org/main",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="pv_magazine",
+        name="pv magazine",
+        feed_url="https://www.pv-magazine.com/feed/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

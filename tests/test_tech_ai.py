@@ -1316,26 +1316,72 @@ def test_whitelist_registered_and_cap_unchanged():
     # (MUST www + trailing
     # slash; atom:self). Named
     # 备 kottke / rollingstone /
-    # avclub unused — all KEEP
-    # passed. Do not pull
-    # batch100 hung ids
-    # (indiewire / lithub /
-    # pv_magazine). None of
-    # these match the wired /
-    # verge / techcrunch ALWAYS
-    # pattern.
+    # avclub unused in batch99 —
+    # all KEEP passed. kottke is
+    # now batch100 KEEP (hard-
+    # swap from lithub) and still
+    # stays off the whitelist.
+    # None of these match the
+    # wired / verge / techcrunch
+    # ALWAYS pattern.
     assert "military_times" not in TECH_AI_SOURCE_WHITELIST
     assert "earthsky" not in TECH_AI_SOURCE_WHITELIST
     assert "outside" not in TECH_AI_SOURCE_WHITELIST
     assert "militarytimes" not in TECH_AI_SOURCE_WHITELIST
     assert "earthsky_org" not in TECH_AI_SOURCE_WHITELIST
     assert "outsideonline" not in TECH_AI_SOURCE_WHITELIST
+    # batch100 RSS primaries stay off the tech/AI whitelist.
+    # indiewire lands on 综合
+    # (entertainment newsroom,
+    # same as deadline / variety
+    # / pitchfork) — new id —
+    # official www /feed/ (MUST
+    # www + trailing slash;
+    # homepage /feed/rss/ remaps
+    # here; atom:self). kottke
+    # lands on 科技 (web/culture
+    # blog, same as boingboing)
+    # — new id — official
+    # https://feeds.kottke.org/main
+    # (MUST no trailing slash;
+    # homepage announced;
+    # atom:self). Product hard-
+    # swap: lithub → kottke
+    # (lithub collides live
+    # literary_hub on
+    # lithub.com/feed/). Do NOT
+    # register lithub.
+    # pv_magazine lands on 科学
+    # (solar/energy newsroom,
+    # same as utility_dive /
+    # canary_media / yale360 /
+    # carbon_brief) — new id —
+    # official www /feed/ (MUST
+    # www + trailing slash;
+    # homepage announced;
+    # atom:self). Named 备: NONE
+    # this batch. rollingstone /
+    # avclub stay idle. Do not
+    # pull batch101 hung ids
+    # (insideclimatenews /
+    # consequence / c4isrnet) or
+    # their 备 (energy_storage_news
+    # / geekwire / futurism).
+    # None of these match the
+    # wired / verge / techcrunch
+    # ALWAYS pattern.
+    assert "indiewire" not in TECH_AI_SOURCE_WHITELIST
     assert "kottke" not in TECH_AI_SOURCE_WHITELIST
+    assert "pv_magazine" not in TECH_AI_SOURCE_WHITELIST
+    assert "indie_wire" not in TECH_AI_SOURCE_WHITELIST
+    assert "kottke_org" not in TECH_AI_SOURCE_WHITELIST
+    assert "pvmagazine" not in TECH_AI_SOURCE_WHITELIST
+    assert "lithub" not in TECH_AI_SOURCE_WHITELIST
     assert "rollingstone" not in TECH_AI_SOURCE_WHITELIST
     assert "avclub" not in TECH_AI_SOURCE_WHITELIST
-    assert "indiewire" not in TECH_AI_SOURCE_WHITELIST
-    assert "lithub" not in TECH_AI_SOURCE_WHITELIST
-    assert "pv_magazine" not in TECH_AI_SOURCE_WHITELIST
+    assert "insideclimatenews" not in TECH_AI_SOURCE_WHITELIST
+    assert "consequence" not in TECH_AI_SOURCE_WHITELIST
+    assert "c4isrnet" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
