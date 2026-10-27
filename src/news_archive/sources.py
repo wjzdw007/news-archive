@@ -2088,6 +2088,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="deadline",
+        name="Deadline",
+        feed_url="https://deadline.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="makezine",
+        name="Makezine",
+        feed_url="https://makezine.com/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="utility_dive",
+        name="Utility Dive",
+        feed_url="https://www.utilitydive.com/feeds/news/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

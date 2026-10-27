@@ -13766,15 +13766,16 @@ _LWN_PRIMARY = {
 # Do NOT register phoronix_com /
 # adafruit_blog / adafruit_com /
 # boing_boing / boingboing_net.
-# Do NOT register deadline /
-# makezine / utility_dive (备
-# unused — all KEEP passed).
 # Do NOT re-register lwn /
 # jalopnik / quanta_magazine /
 # mit_tr / hackaday / astronomy /
 # skyandtelescope /
 # latimes_technology / yale360 /
-# cleantechnica.
+# cleantechnica. batch98 KEEP
+# deadline / makezine /
+# utility_dive are registered
+# separately (product-hung
+# KEEP on tip 8047ced).
 # national_geographic stays
 # unregistered (no official
 # English RSS).
@@ -13829,7 +13830,167 @@ _PHORONIX_ADAFRUIT_BOINGBOING_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 296
+# CEO-approved Deadline / Makezine /
+# Utility Dive RSS primaries
+# (batch98). On tip 8047ced after
+# #163 (phoronix / adafruit /
+# boingboing). Product KEEP set
+# is deadline / makezine /
+# utility_dive. Named 备: NONE
+# this batch — do not invent
+# replacements. Do not pull
+# military_times / earthsky /
+# outside (hung for batch99
+# only).
+# deadline official
+# https://deadline.com/feed/
+# is new (no prior deadline /
+# deadline_com id). httpx+
+# RSS_HEADERS HTTP 200 / 12
+# nonempty / 12 insertable
+# (channel "Deadline"). MUST
+# lock apex /feed/ (trailing
+# slash). Homepage <link>
+# announces /feed/rss/ which
+# remaps here. /feed (no slash)
+# remaps here; www remaps to
+# apex; /rss remaps here.
+# /rss.xml /index.xml are 404
+# HTML. comments/feed is
+# comments — not the site-wide
+# primary. Distinct from live
+# variety.com/feed/. Do not
+# invent Feedburner / section
+# feeds. Lands on 综合
+# (entertainment newsroom, same
+# as variety / pitchfork).
+# makezine official
+# https://makezine.com/feed/
+# is new (no prior makezine /
+# makezine_com id). httpx+
+# RSS_HEADERS HTTP 200 / 10
+# nonempty / 10 insertable
+# (channel "Make: DIY Projects
+# and Ideas for Makers"). MUST
+# lock apex /feed/ (trailing
+# slash): feed atom:self
+# announces this exact path.
+# Homepage is Cloudflare 403
+# under the same client —
+# official /feed/ is the
+# working site-wide path.
+# /feed (no slash) is the same
+# 10-item body. www remaps to
+# apex /feed/. /blog/feed/
+# remaps here. /rss /rss.xml
+# /index.xml /?feed=rss2 are
+# CF 403. comments/feed is CF
+# 403. Do not invent
+# Feedburner / section feeds.
+# Lands on 科技 (maker
+# newsroom, same as adafruit /
+# hackaday).
+# utility_dive official
+# https://www.utilitydive.com/feeds/news/
+# is new (no prior utility_dive
+# / utilitydive id). httpx+
+# RSS_HEADERS HTTP 200 / 10
+# nonempty / 10 insertable
+# (channel "Utility Dive -
+# Latest News"). MUST lock www
+# + /feeds/news/ (trailing
+# slash). Homepage <link>
+# announces this exact path.
+# /feeds/news (no slash)
+# remaps here; apex remaps to
+# www. /feed /feed/ /rss
+# /rss.xml /feeds/ /news/feed
+# are 404 HTML. Do not invent
+# Feedburner / section feeds.
+# Lands on 科学 (energy
+# newsroom, same as
+# canary_media / yale360 /
+# carbon_brief).
+# All three ≥10 KEEP. Distinct
+# from live variety / pitchfork
+# / hackaday / adafruit /
+# popular_mechanics / newatlas
+# / canary_media /
+# cleantechnica / oilprice /
+# yale360 / carbon_brief.
+# 0 article URL overlap
+# (deadline.com / makezine.com
+# / www.utilitydive.com hosts).
+# Not added to the tech/AI
+# whitelist (later-batch
+# sources stay off the frozen
+# ALWAYS set).
+# Do NOT register deadline_com
+# / makezine_com / utilitydive.
+# Do NOT register
+# military_times / earthsky /
+# outside (batch99 only).
+# Do NOT re-register phoronix
+# / adafruit / boingboing /
+# jalopnik / lwn /
+# quanta_magazine / mit_tr /
+# hackaday / astronomy /
+# skyandtelescope /
+# latimes_technology / yale360
+# / cleantechnica / variety.
+# national_geographic stays
+# unregistered (no official
+# English RSS).
+# Do NOT use as backups
+# (product skip): bangkok_post
+# / indian_express /
+# rest_of_world / al_monitor /
+# hkfp / biographic /
+# asiatimes / dawn /
+# longreads / hrw /
+# independent (429) /
+# euractiv (301→rapporteur
+# FAIL) / atlantic_council
+# (403) / the_nation (empty
+# feed) / times_of_israel
+# (Cloudflare 403) / the_cut
+# / techdirt / engadget /
+# digital_trends /
+# bleepingcomputer / gizmodo /
+# the_baffler / new_statesman
+# / guernica / nationalinterest
+# / flightglobal /
+# newscientist (CI
+# httpx+RSS_HEADERS 406/empty).
+# qz3 勿挂. digiday0观察 — do not
+# add a second digiday.
+# fastcompany 勿二重.
+# sunday_review / cnbc (403
+# known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_DEADLINE_MAKEZINE_UTILITY_DIVE_PRIMARY = {
+    "deadline": {
+        "name": "Deadline",
+        "feed_url": "https://deadline.com/feed/",
+        "category": "综合",
+    },
+    "makezine": {
+        "name": "Makezine",
+        "feed_url": "https://makezine.com/feed/",
+        "category": "科技",
+    },
+    "utility_dive": {
+        "name": "Utility Dive",
+        "feed_url": "https://www.utilitydive.com/feeds/news/",
+        "category": "科学",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 299
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -37843,15 +38004,18 @@ def test_phoronix_adafruit_boingboing_primaries_registered():
     assert by_id["phoronix"].feed_url != by_id["boingboing"].feed_url
     assert by_id["adafruit"].feed_url != by_id["boingboing"].feed_url
     # Do not re-register lwn (already
-    # live via #162). Do not hang
-    # unused 备. Do not invent a
-    # fourth replacement.
+    # live via #162). batch98 KEEP
+    # deadline / makezine /
+    # utility_dive are registered
+    # separately. Leftover aliases
+    # stay unregistered. Do not
+    # invent a fourth replacement.
     assert by_id["lwn"].feed_url == "https://lwn.net/headlines/rss"
-    assert "deadline" not in by_id
+    assert "deadline" in by_id
     assert "deadline_com" not in by_id
-    assert "makezine" not in by_id
+    assert "makezine" in by_id
     assert "makezine_com" not in by_id
-    assert "utility_dive" not in by_id
+    assert "utility_dive" in by_id
     assert "utilitydive" not in by_id
     # national_geographic stays
     # unregistered (no official
@@ -37990,6 +38154,230 @@ def test_phoronix_adafruit_boingboing_feeds_live_httpx_rss_headers():
         )
 
 
+def test_deadline_makezine_utility_dive_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "deadline" in by_id
+    assert by_id["deadline"].feed_url == "https://deadline.com/feed/"
+    assert by_id["deadline"].feed_url != "https://deadline.com/feed"
+    assert by_id["deadline"].feed_url != "https://deadline.com/feed/rss/"
+    assert by_id["deadline"].feed_url != "https://www.deadline.com/feed/"
+    assert by_id["deadline"].feed_url != "https://www.deadline.com/feed"
+    assert by_id["deadline"].feed_url != "https://deadline.com/rss"
+    assert by_id["deadline"].feed_url != "https://deadline.com/rss.xml"
+    assert by_id["deadline"].feed_url != "https://deadline.com/comments/feed/"
+    assert by_id["deadline"].feed_url != "https://variety.com/feed/"
+    assert "makezine" in by_id
+    assert by_id["makezine"].feed_url == "https://makezine.com/feed/"
+    assert by_id["makezine"].feed_url != "https://makezine.com/feed"
+    assert by_id["makezine"].feed_url != "https://www.makezine.com/feed/"
+    assert by_id["makezine"].feed_url != "https://www.makezine.com/feed"
+    assert by_id["makezine"].feed_url != "https://makezine.com/rss"
+    assert by_id["makezine"].feed_url != "https://makezine.com/rss.xml"
+    assert by_id["makezine"].feed_url != "https://makezine.com/blog/feed/"
+    assert by_id["makezine"].feed_url != "https://makezine.com/comments/feed/"
+    assert "utility_dive" in by_id
+    assert by_id["utility_dive"].feed_url == (
+        "https://www.utilitydive.com/feeds/news/"
+    )
+    assert by_id["utility_dive"].feed_url != (
+        "https://www.utilitydive.com/feeds/news"
+    )
+    assert by_id["utility_dive"].feed_url != (
+        "https://utilitydive.com/feeds/news/"
+    )
+    assert by_id["utility_dive"].feed_url != "https://www.utilitydive.com/feed/"
+    assert by_id["utility_dive"].feed_url != "https://www.utilitydive.com/feed"
+    assert by_id["utility_dive"].feed_url != "https://www.utilitydive.com/rss"
+    assert by_id["utility_dive"].feed_url != (
+        "https://www.utilitydive.com/rss.xml"
+    )
+    # #163 / batch97 winners stay registered and unchanged.
+    # #162 / batch96 winners stay registered and unchanged.
+    # #161 / batch95 winners stay registered and unchanged.
+    # #160 / batch94 winner stays registered and unchanged.
+    # #159 / batch93 winners stay registered and unchanged.
+    # Do not touch phoronix / adafruit /
+    # boingboing / jalopnik / lwn /
+    # quanta_magazine / yale360 /
+    # cleantechnica / hackaday /
+    # astronomy / skyandtelescope /
+    # latimes_technology / variety /
+    # canary_media.
+    assert "phoronix" in by_id
+    assert "adafruit" in by_id
+    assert "boingboing" in by_id
+    assert "jalopnik" in by_id
+    assert "lwn" in by_id
+    assert "quanta_magazine" in by_id
+    assert "yale360" in by_id
+    assert "cleantechnica" in by_id
+    assert "hackaday" in by_id
+    assert "astronomy" in by_id
+    assert "skyandtelescope" in by_id
+    assert "latimes_technology" in by_id
+    assert "variety" in by_id
+    assert "canary_media" in by_id
+    # Feed locks + uniqueness vs live
+    # entertainment / maker / energy
+    # stack.
+    assert by_id["deadline"].feed_url != by_id["variety"].feed_url
+    assert by_id["deadline"].feed_url != by_id["pitchfork"].feed_url
+    assert by_id["deadline"].feed_url != by_id["stereogum"].feed_url
+    assert by_id["makezine"].feed_url != by_id["hackaday"].feed_url
+    assert by_id["makezine"].feed_url != by_id["adafruit"].feed_url
+    assert by_id["makezine"].feed_url != by_id["popular_mechanics"].feed_url
+    assert by_id["makezine"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["makezine"].feed_url != by_id["boingboing"].feed_url
+    assert by_id["utility_dive"].feed_url != by_id["canary_media"].feed_url
+    assert by_id["utility_dive"].feed_url != by_id["cleantechnica"].feed_url
+    assert by_id["utility_dive"].feed_url != by_id["oilprice"].feed_url
+    assert by_id["utility_dive"].feed_url != by_id["yale360"].feed_url
+    assert by_id["utility_dive"].feed_url != by_id["carbon_brief"].feed_url
+    assert by_id["deadline"].feed_url != by_id["makezine"].feed_url
+    assert by_id["deadline"].feed_url != by_id["utility_dive"].feed_url
+    assert by_id["makezine"].feed_url != by_id["utility_dive"].feed_url
+    # No 备 named this batch. Do not
+    # invent replacements. Do not
+    # pull batch99 hung ids.
+    assert "deadline_com" not in by_id
+    assert "the_deadline" not in by_id
+    assert "makezine_com" not in by_id
+    assert "make_magazine" not in by_id
+    assert "utilitydive" not in by_id
+    assert "utilitydive_com" not in by_id
+    assert "military_times" not in by_id
+    assert "earthsky" not in by_id
+    assert "outside" not in by_id
+    # national_geographic stays
+    # unregistered (no official
+    # English RSS).
+    assert "national_geographic" not in by_id
+    assert "nationalgeographic" not in by_id
+    assert "natgeo" not in by_id
+    assert "carbonbrief" not in by_id
+    assert "carbon_brief" in by_id
+    assert "politico" not in by_id
+    assert "politico_politics" in by_id
+    assert "politico_europe" in by_id
+    assert "the_atlantic" not in by_id
+    assert "motherjones" not in by_id
+    assert "the_intercept" not in by_id
+    assert "theregister" not in by_id
+    assert "atlantic" in by_id
+    assert "mother_jones" in by_id
+    assert "intercept" in by_id
+    assert "the_register" in by_id
+    assert "newscientist" not in by_id
+    assert "qz3" not in by_id
+    assert "qz" not in by_id
+    assert "fastcompany" not in by_id
+    assert "fast_company" in by_id
+    assert "the_verge" not in by_id
+    assert "flightglobal" not in by_id
+    assert "gizmodo" not in by_id
+    assert "the_baffler" not in by_id
+    assert "new_statesman" not in by_id
+    assert "guernica" not in by_id
+    assert "nationalinterest" not in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "the_nation" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "techdirt" not in by_id
+    assert "engadget" not in by_id
+    assert "digital_trends" not in by_id
+    assert "the_cut" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "indian_express" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "al_monitor" not in by_id
+    assert "hkfp" not in by_id
+    assert "biographic" not in by_id
+    assert "asiatimes" not in by_id
+    assert "dawn" not in by_id
+    assert "longreads" not in by_id
+    assert "hrw" not in by_id
+    assert "independent" not in by_id
+    for source_id, expected in _DEADLINE_MAKEZINE_UTILITY_DIVE_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_deadline_makezine_utility_dive_feeds_live_httpx_rss_headers():
+    """KEEP must pass the same httpx + RSS_HEADERS client CI uses."""
+    from news_archive.fetch import fetch_source
+
+    by_id = {s.id: s for s in SOURCES}
+    keep_floor = {"deadline": 10, "makezine": 10, "utility_dive": 10}
+    for source_id in _DEADLINE_MAKEZINE_UTILITY_DIVE_PRIMARY:
+        source = by_id[source_id]
+        articles = fetch_source(source, timeout=30)
+        assert articles, f"{source_id} httpx+RSS_HEADERS insertable=0"
+        assert len(articles) >= keep_floor[source_id], (
+            f"{source_id} insertable {len(articles)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (deadline /
+        # makezine / utility_dive)
+        # uses the un-namespaced
+        # element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # deadline 12/12, makezine
+        # 10/10, and utility_dive
+        # 10/10 were 100% nonempty
+        # this probe. ≥10 KEEP.
+        # deadline MUST stay on
+        # apex /feed/ (trailing
+        # slash; homepage
+        # /feed/rss/ remaps here).
+        # makezine MUST keep the
+        # trailing slash on apex
+        # /feed/ (atom:self).
+        # utility_dive MUST stay
+        # on www /feeds/news/
+        # (homepage announced).
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= keep_floor[source_id], (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -38098,6 +38486,7 @@ if __name__ == "__main__":
     test_jalopnik_quanta_magazine_primaries_registered()
     test_lwn_primary_registered()
     test_phoronix_adafruit_boingboing_primaries_registered()
+    test_deadline_makezine_utility_dive_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -38195,4 +38584,5 @@ if __name__ == "__main__":
     test_jalopnik_quanta_magazine_feeds_live_httpx_rss_headers()
     test_lwn_feed_live_httpx_rss_headers()
     test_phoronix_adafruit_boingboing_feeds_live_httpx_rss_headers()
+    test_deadline_makezine_utility_dive_feeds_live_httpx_rss_headers()
     print("✓ source registry tests PASSED")
