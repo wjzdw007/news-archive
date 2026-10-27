@@ -13356,7 +13356,277 @@ _YALE360_CLEANTECHNICA_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 290
+# CEO-approved Jalopnik / Quanta
+# Magazine RSS primaries
+# (batch96). On tip 88f6c05 after
+# #161 (yale360 / cleantechnica;
+# national_geographic no English
+# RSS). Product KEEP set is
+# jalopnik / mit_technology_review
+# / quanta_magazine. No 备 named
+# this batch — a live-gate fail or
+# key/feed collision leaves that
+# slot empty (do not invent a
+# replacement).
+# jalopnik official
+# https://www.jalopnik.com/feed/
+# is new (no prior jalopnik /
+# jalopnik_com id). httpx+
+# RSS_HEADERS HTTP 200 / 20
+# nonempty / 20 insertable
+# (channel "Jalopnik"). MUST lock
+# www + trailing slash: apex
+# jalopnik.com/feed/ is HTTP 502
+# HTML; jalopnik.com/feed and
+# www /feed /rss remap to
+# www.jalopnik.com/feed/. /rss.xml
+# /index.xml /rss/vip.xml are 404.
+# /category/news/feed/ is a News
+# section — not the site-wide
+# primary. Feedburner
+# jalopnik/full is 404; gawker
+# SSL hostname mismatch. Do not
+# invent Feedburner / apex /feed/
+# / category feeds.
+# mit_technology_review official
+# https://www.technologyreview.com/feed/
+# is already locked on mit_tr
+# (early-batch 硬科技 primary;
+# channel "MIT Technology Review").
+# Same host / same feed URL / same
+# 10-item body. Do not register
+# mit_technology_review as a
+# second MIT TR. No 备 named →
+# leave slot empty.
+# quanta_magazine official
+# https://www.quantamagazine.org/feed/
+# is new (no prior quanta /
+# quanta_magazine / quantamagazine
+# id). httpx+RSS_HEADERS HTTP 200
+# / 5 nonempty / 5 insertable
+# (channel "Quanta Magazine").
+# MUST trailing slash on official
+# www /feed/; /feed and /rss
+# remap here. /rss.xml /index.xml
+# are 404 HTML. Feedburner
+# QuantaMagazine is the same
+# 5-item body — never hang.
+# 5 is product-hung KEEP in the
+# 5–9 band (live ≥5), not the
+# ≥10 floor.
+# Do NOT register
+# mit_technology_review /
+# mit_tech_review /
+# technology_review (already
+# mit_tr). Do NOT register
+# jalopnik_com / quanta /
+# quantamagazine.
+# yale360 / cleantechnica just
+# landed via #161 — do not undo.
+# hackaday / astronomy /
+# skyandtelescope /
+# latimes_technology stay.
+# Product feed lock (official
+# only; no Feedburner):
+# jalopnik =
+# https://www.jalopnik.com/feed/
+# (MUST www + trailing slash;
+# live host www.jalopnik.com —
+# apex /feed/ is 502. do NOT
+# invent /feed /rss /rss.xml /
+# category /feed/ / Feedburner)
+# quanta_magazine =
+# https://www.quantamagazine.org/feed/
+# (MUST trailing slash on
+# official www /feed/; /feed
+# remaps to /feed/. do NOT invent
+# /feed /rss /rss.xml /
+# Feedburner)
+# mit_technology_review official
+# https://www.technologyreview.com/feed/
+# is already locked on mit_tr —
+# do not register (feed-URL
+# collision).
+# Active candidate set is these
+# 3 KEEP ids (product named no
+# backups). CAP=6 sources max in
+# the active set.
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change.
+# Do not restore atlantic_council.
+# Do not restore the_nation. Do not
+# restore independent. Do not restore
+# hrw. Do not restore euractiv. Do
+# not restore dawn / longreads. Do
+# not restore times_of_israel. Do not
+# restore techdirt. Do not restore
+# engadget. Do not restore
+# digital_trends. Do not restore
+# the_cut. Do not restore
+# bleepingcomputer. Do not restore
+# gizmodo (CI 403 after #147). Do not
+# restore the_baffler (Cloudflare 403
+# after #149). Do not restore
+# new_statesman (Varnish 403 leftover).
+# Do not restore guernica (product
+# skip). Do not restore
+# nationalinterest (CF 403 leftover).
+# Do not restore flightglobal
+# (CI/httpx RSS 403 after #156).
+# Do not restore newscientist
+# (CI httpx+RSS_HEADERS 406/empty).
+# Do not probe / register
+# product-skip: bangkok_post /
+# indian_express / rest_of_world /
+# al_monitor / hkfp / biographic /
+# asiatimes / dawn / longreads /
+# hrw / independent / euractiv /
+# atlantic_council / the_nation /
+# times_of_israel / the_cut /
+# techdirt / engadget /
+# digital_trends / bleepingcomputer /
+# gizmodo / the_baffler /
+# new_statesman / guernica /
+# nationalinterest / flightglobal /
+# newscientist / qz3.
+# qz3 勿挂. digiday0观察 — do not
+# add a second digiday. Do not
+# add a second fastcompany
+# (already registered as
+# fast_company).
+# Skip already-registered
+# collisions: mit_technology_review
+# (mit_tr already live) /
+# carbonbrief (carbon_brief
+# already live) / politico
+# (politico_politics /
+# politico_europe already live) /
+# the_atlantic (atlantic) /
+# motherjones (mother_jones) /
+# the_intercept (intercept) /
+# theregister (the_register) /
+# hackaday / astronomy /
+# skyandtelescope /
+# latimes_technology /
+# yale360 / cleantechnica /
+# electrek / insideevs /
+# thedrive.
+# jalopnik is the official
+# site-wide RSS (no prior
+# jalopnik / jalopnik_com id).
+# Product lock: MUST lock
+# https://www.jalopnik.com/feed/
+# (channel "Jalopnik") — www +
+# trailing slash required; live
+# host www.jalopnik.com (apex
+# /feed/ is 502; /feed remaps
+# here). Never invent Feedburner
+# or category feeds. Live-diff
+# winner: HTTP 200 / 20 nonempty
+# / 20 insertable (httpx
+# fetch_source + RSS_HEADERS).
+# ≥10 KEEP. Distinct from live
+# thedrive / electrek / insideevs
+# / nyt_automobiles /
+# verge_transport / canary_media
+# / cleantechnica / newatlas.
+# 0 article URL overlap
+# (www.jalopnik.com host). Lands
+# on the existing 科技 category
+# path (automotive newsroom, same
+# as thedrive). Not added to the
+# tech/AI whitelist (later-batch
+# sources stay off the frozen
+# ALWAYS set).
+# quanta_magazine is the official
+# site-wide RSS (no prior quanta
+# / quanta_magazine /
+# quantamagazine id). Product
+# lock: MUST lock
+# https://www.quantamagazine.org/feed/
+# (channel "Quanta Magazine") —
+# trailing slash required; live
+# host www.quantamagazine.org
+# (/feed remaps here). Never
+# invent Feedburner. Live-diff
+# winner: HTTP 200 / 5 nonempty
+# / 5 insertable (httpx
+# fetch_source + RSS_HEADERS).
+# 5 is product-hung KEEP in the
+# 5–9 band (live ≥5). Distinct
+# from live popular_science /
+# scientific_american / nautilus
+# / undark / knowable /
+# science_news / sciencealert /
+# phys_org / nature_news /
+# science_org / livescience /
+# universe_today / yale360.
+# 0 article URL overlap
+# (www.quantamagazine.org host).
+# Lands on the existing 科学
+# category path (science
+# magazine, same as
+# popular_science /
+# scientific_american /
+# knowable). Not added to the
+# tech/AI whitelist.
+# mit_technology_review stays
+# unregistered (feed-URL
+# collision with live mit_tr;
+# no 备).
+# national_geographic stays
+# unregistered (no official
+# English RSS).
+# yale360 / cleantechnica /
+# hackaday / astronomy /
+# skyandtelescope /
+# latimes_technology stay
+# registered (batch95 / batch94
+# / batch93 KEEP).
+# Do NOT use as backups
+# (product skip): bangkok_post
+# / indian_express /
+# rest_of_world / al_monitor /
+# hkfp / biographic /
+# asiatimes / dawn /
+# longreads / hrw /
+# independent (429) /
+# euractiv (301→rapporteur
+# FAIL) / atlantic_council
+# (403) / the_nation (empty
+# feed) / times_of_israel
+# (Cloudflare 403) / the_cut
+# / techdirt / engadget /
+# digital_trends /
+# bleepingcomputer / gizmodo /
+# the_baffler / new_statesman
+# / guernica / nationalinterest
+# / flightglobal /
+# newscientist (CI
+# httpx+RSS_HEADERS 406/empty).
+# qz3 勿挂. digiday0观察 — do not
+# add a second digiday.
+# sunday_review / cnbc (403
+# known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_JALOPNIK_QUANTA_MAGAZINE_PRIMARY = {
+    "jalopnik": {
+        "name": "Jalopnik",
+        "feed_url": "https://www.jalopnik.com/feed/",
+        "category": "科技",
+    },
+    "quanta_magazine": {
+        "name": "Quanta Magazine",
+        "feed_url": "https://www.quantamagazine.org/feed/",
+        "category": "科学",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 292
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -36948,6 +37218,231 @@ def test_yale360_cleantechnica_feeds_live_httpx_rss_headers():
         )
 
 
+def test_jalopnik_quanta_magazine_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "jalopnik" in by_id
+    assert by_id["jalopnik"].feed_url == "https://www.jalopnik.com/feed/"
+    assert by_id["jalopnik"].feed_url != "https://www.jalopnik.com/feed"
+    assert by_id["jalopnik"].feed_url != "https://jalopnik.com/feed/"
+    assert by_id["jalopnik"].feed_url != "https://jalopnik.com/feed"
+    assert by_id["jalopnik"].feed_url != "https://www.jalopnik.com/rss"
+    assert by_id["jalopnik"].feed_url != "https://www.jalopnik.com/rss.xml"
+    assert by_id["jalopnik"].feed_url != (
+        "https://www.jalopnik.com/category/news/feed/"
+    )
+    assert by_id["jalopnik"].feed_url != (
+        "https://feeds.feedburner.com/jalopnik/full"
+    )
+    assert "quanta_magazine" in by_id
+    assert by_id["quanta_magazine"].feed_url == (
+        "https://www.quantamagazine.org/feed/"
+    )
+    assert by_id["quanta_magazine"].feed_url != (
+        "https://www.quantamagazine.org/feed"
+    )
+    assert by_id["quanta_magazine"].feed_url != (
+        "https://quantamagazine.org/feed/"
+    )
+    assert by_id["quanta_magazine"].feed_url != (
+        "https://www.quantamagazine.org/rss"
+    )
+    assert by_id["quanta_magazine"].feed_url != (
+        "https://www.quantamagazine.org/rss.xml"
+    )
+    assert by_id["quanta_magazine"].feed_url != (
+        "https://feeds.feedburner.com/QuantaMagazine"
+    )
+    # #161 / batch95 winners stay registered and unchanged.
+    # #160 / batch94 winner stays registered and unchanged.
+    # #159 / batch93 winners stay registered and unchanged.
+    # Do not touch yale360 / cleantechnica /
+    # hackaday / astronomy /
+    # skyandtelescope /
+    # latimes_technology /
+    # defensenews / motherboard /
+    # macworld.
+    assert "yale360" in by_id
+    assert "cleantechnica" in by_id
+    assert "hackaday" in by_id
+    assert "astronomy" in by_id
+    assert "skyandtelescope" in by_id
+    assert "latimes_technology" in by_id
+    assert "defensenews" in by_id
+    assert "motherboard" in by_id
+    assert "macworld" in by_id
+    # Feed locks + uniqueness vs live
+    # auto / science stack.
+    assert by_id["jalopnik"].feed_url != by_id["thedrive"].feed_url
+    assert by_id["jalopnik"].feed_url != by_id["electrek"].feed_url
+    assert by_id["jalopnik"].feed_url != by_id["insideevs"].feed_url
+    assert by_id["jalopnik"].feed_url != by_id["nyt_automobiles"].feed_url
+    assert by_id["jalopnik"].feed_url != by_id["verge_transport"].feed_url
+    assert by_id["jalopnik"].feed_url != by_id["canary_media"].feed_url
+    assert by_id["jalopnik"].feed_url != by_id["cleantechnica"].feed_url
+    assert by_id["jalopnik"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["quanta_magazine"].feed_url != by_id["popular_science"].feed_url
+    assert by_id["quanta_magazine"].feed_url != (
+        by_id["scientific_american"].feed_url
+    )
+    assert by_id["quanta_magazine"].feed_url != by_id["nautilus"].feed_url
+    assert by_id["quanta_magazine"].feed_url != by_id["undark"].feed_url
+    assert by_id["quanta_magazine"].feed_url != by_id["knowable"].feed_url
+    assert by_id["quanta_magazine"].feed_url != by_id["science_news"].feed_url
+    assert by_id["quanta_magazine"].feed_url != by_id["sciencealert"].feed_url
+    assert by_id["quanta_magazine"].feed_url != by_id["phys_org"].feed_url
+    assert by_id["quanta_magazine"].feed_url != by_id["nature_news"].feed_url
+    assert by_id["quanta_magazine"].feed_url != by_id["science_org"].feed_url
+    assert by_id["quanta_magazine"].feed_url != by_id["livescience"].feed_url
+    assert by_id["quanta_magazine"].feed_url != by_id["universe_today"].feed_url
+    assert by_id["quanta_magazine"].feed_url != by_id["yale360"].feed_url
+    assert by_id["jalopnik"].feed_url != by_id["quanta_magazine"].feed_url
+    # mit_technology_review is a
+    # feed-URL collision with live
+    # mit_tr (same official
+    # /feed/). No 备 named — leave
+    # slot empty. Do not invent a
+    # section / Feedburner alias.
+    assert "mit_technology_review" not in by_id
+    assert "mit_tech_review" not in by_id
+    assert "technology_review" not in by_id
+    assert "mit_tr" in by_id
+    assert by_id["mit_tr"].feed_url == (
+        "https://www.technologyreview.com/feed/"
+    )
+    # national_geographic stays
+    # unregistered (no official
+    # English RSS).
+    assert "national_geographic" not in by_id
+    assert "nationalgeographic" not in by_id
+    assert "natgeo" not in by_id
+    # Product-named ids; leftover
+    # aliases stay unregistered.
+    assert "jalopnik_com" not in by_id
+    assert "quanta" not in by_id
+    assert "quantamagazine" not in by_id
+    assert "quanta_magazine_org" not in by_id
+    assert "carbonbrief" not in by_id
+    assert "carbon_brief" in by_id
+    assert "politico" not in by_id
+    assert "politico_politics" in by_id
+    assert "politico_europe" in by_id
+    assert "the_atlantic" not in by_id
+    assert "motherjones" not in by_id
+    assert "the_intercept" not in by_id
+    assert "theregister" not in by_id
+    assert "atlantic" in by_id
+    assert "mother_jones" in by_id
+    assert "intercept" in by_id
+    assert "the_register" in by_id
+    assert "newscientist" not in by_id
+    assert "qz3" not in by_id
+    assert "qz" not in by_id
+    assert "fastcompany" not in by_id
+    assert "fast_company" in by_id
+    assert "the_verge" not in by_id
+    assert "flightglobal" not in by_id
+    assert "gizmodo" not in by_id
+    assert "the_baffler" not in by_id
+    assert "new_statesman" not in by_id
+    assert "guernica" not in by_id
+    assert "nationalinterest" not in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "the_nation" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "techdirt" not in by_id
+    assert "engadget" not in by_id
+    assert "digital_trends" not in by_id
+    assert "the_cut" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "indian_express" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "al_monitor" not in by_id
+    assert "hkfp" not in by_id
+    assert "biographic" not in by_id
+    assert "asiatimes" not in by_id
+    assert "dawn" not in by_id
+    assert "longreads" not in by_id
+    assert "hrw" not in by_id
+    assert "independent" not in by_id
+    for source_id, expected in _JALOPNIK_QUANTA_MAGAZINE_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_jalopnik_quanta_magazine_feeds_live_httpx_rss_headers():
+    """KEEP must pass the same httpx + RSS_HEADERS client CI uses."""
+    from news_archive.fetch import fetch_source
+
+    by_id = {s.id: s for s in SOURCES}
+    keep_floor = {"jalopnik": 10, "quanta_magazine": 5}
+    for source_id in _JALOPNIK_QUANTA_MAGAZINE_PRIMARY:
+        source = by_id[source_id]
+        articles = fetch_source(source, timeout=30)
+        assert articles, f"{source_id} httpx+RSS_HEADERS insertable=0"
+        assert len(articles) >= keep_floor[source_id], (
+            f"{source_id} insertable {len(articles)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (jalopnik /
+        # quanta_magazine) uses the
+        # un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # jalopnik 20/20 and
+        # quanta_magazine 5/5 were
+        # 100% nonempty this probe.
+        # jalopnik ≥10 KEEP.
+        # quanta_magazine is
+        # product-hung KEEP in the
+        # 5–9 band (live ≥5).
+        # jalopnik MUST stay on
+        # www /feed/ (apex /feed/ is
+        # 502).
+        # quanta_magazine MUST keep
+        # the trailing slash on
+        # /feed/.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= keep_floor[source_id], (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -37053,6 +37548,7 @@ if __name__ == "__main__":
     test_astronomy_skyandtelescope_latimes_technology_primaries_registered()
     test_hackaday_primary_registered()
     test_yale360_cleantechnica_primaries_registered()
+    test_jalopnik_quanta_magazine_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -37147,4 +37643,5 @@ if __name__ == "__main__":
     test_astronomy_skyandtelescope_latimes_technology_feeds_live_http_200()
     test_hackaday_feed_live_httpx_rss_headers()
     test_yale360_cleantechnica_feeds_live_httpx_rss_headers()
+    test_jalopnik_quanta_magazine_feeds_live_httpx_rss_headers()
     print("✓ source registry tests PASSED")
