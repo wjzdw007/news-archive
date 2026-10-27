@@ -10035,7 +10035,290 @@ _UNIVERSE_TODAY_NEW_YORKER_DARKREADING_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 263
+# CEO-approved ScienceAlert / Responsible
+# Statecraft / London Review of Books
+# RSS primaries (batch86). These three
+# are the new adds after #149 (batch85
+# universe_today + new_yorker +
+# darkreading) on tip
+# 1293782298d43b66ad87d8ab6ce8d1ea44a8e834.
+# Primaries were sciencealert /
+# responsiblestatecraft / lrb.
+# Backups were krebsonsecurity /
+# guernica / nationalinterest (probe
+# only if a primary fails thin/403).
+# All three primaries live KEEP this
+# probe — no hard-swap. universe_today
+# / new_yorker / darkreading just
+# landed via #149 — do not undo.
+# inverse / appleinsider /
+# popular_mechanics (#148) / polygon /
+# pcmag / mashable (#146) /
+# smithsonian_mag (#147) stay.
+# Product feed locks
+# (official only; no Feedburner):
+# sciencealert =
+# https://www.sciencealert.com/feed
+# (MUST no trailing slash on /feed;
+# do NOT invent /feed/ or
+# /rss/index.xml)
+# responsiblestatecraft =
+# https://responsiblestatecraft.org/feeds/feed.rss
+# (MUST /feeds/feed.rss; do NOT
+# invent /feed or /rss/index.xml)
+# lrb =
+# https://www.lrb.co.uk/feeds/rss
+# (MUST /feeds/rss; do NOT invent
+# /feed /feed/ /rss/index.xml)
+# krebsonsecurity leftover backup =
+# https://krebsonsecurity.com/feed/
+# (unused because sciencealert KEEP)
+# guernica leftover backup =
+# https://www.guernicamag.com/feed/
+# (unused because
+# responsiblestatecraft KEEP)
+# nationalinterest leftover backup =
+# https://nationalinterest.org/feed
+# (unused because lrb KEEP)
+# Active candidate set is these 6
+# (3 primary + 3 leftover backup).
+# CAP=6 sources max in the active
+# set. NEWS_SOURCE_CAP display stays 6 —
+# no CAP code change.
+# Do not restore atlantic_council.
+# Do not restore the_nation. Do not
+# restore independent. Do not restore
+# hrw. Do not restore euractiv. Do
+# not restore dawn / longreads. Do
+# not restore times_of_israel. Do not
+# restore techdirt. Do not restore
+# engadget. Do not restore
+# digital_trends. Do not restore
+# the_cut. Do not restore
+# bleepingcomputer. Do not restore
+# gizmodo (CI 403 after #147). Do not
+# restore the_baffler (Cloudflare 403
+# after #149). Do not restore
+# new_statesman (Varnish 403 leftover).
+# Do not probe / register product-skip:
+# bangkok_post / indian_express /
+# rest_of_world / al_monitor / hkfp /
+# biographic / asiatimes / dawn /
+# longreads / hrw / independent /
+# euractiv / atlantic_council /
+# the_nation / times_of_israel /
+# the_cut / techdirt / engadget /
+# digital_trends / bleepingcomputer /
+# gizmodo / the_baffler /
+# new_statesman.
+# Do not re-hang SCMP / MIT TR /
+# BBC World (already live).
+# Do not re-touch universe_today /
+# new_yorker / darkreading (#149) /
+# inverse / appleinsider /
+# popular_mechanics (#148) / polygon /
+# pcmag / mashable (#146) /
+# smithsonian_mag (#147) / cnet /
+# 9to5mac (#145) / artnet /
+# macrumors / quillette (#144) /
+# howtogeek / new_republic / vox
+# (#143).
+# Skip already-registered collisions:
+# the_verge (verge already
+# registered) / wired (already
+# registered). Do not hang a second
+# verge or wired.
+# sciencealert is the official
+# site-wide RSS (no prior
+# sciencealert / science_alert /
+# sciencealert_com id). Product
+# lock: MUST lock
+# https://www.sciencealert.com/feed
+# (channel "ScienceAlert") — no
+# trailing slash. Official
+# Cloudflare serves the feed at
+# HTTP 200 (cf-ray present; not a
+# JS challenge). Live-diff winner:
+# HTTP 200 / 10 nonempty / 10
+# insertable (httpx fetch_source +
+# urllib). 10 is the KEEP floor,
+# not the 5–9 observe band.
+# Distinct from live universe_today
+# / livescience /
+# scientific_american /
+# physics_world / science_org /
+# popular_science /
+# popular_mechanics / phys_org /
+# sciencedaily / science_news /
+# knowable / smithsonian_mag /
+# newatlas / ieee_spectrum /
+# canary_media / nature_news /
+# carbon_brief / mongabay /
+# bbc_science / nyt_science /
+# guardian_science / npr_science /
+# space_com / medicalxpress.
+# 0 article URL overlap with those.
+# Lands on the existing 科学
+# category path (popular science
+# newsroom, same as livescience /
+# universe_today). Not added to the
+# tech/AI whitelist (later-batch
+# sources stay off the frozen
+# ALWAYS set).
+# responsiblestatecraft is the
+# official site-wide RSS (no prior
+# responsiblestatecraft /
+# responsible_statecraft /
+# responsiblestatecraft_org id).
+# Product lock: MUST lock
+# https://responsiblestatecraft.org/feeds/feed.rss
+# (channel "Responsible Statecraft")
+# — do NOT invent /feed or
+# /rss/index.xml. Official nginx +
+# Varnish HIT serves the feed at
+# HTTP 200 (not a Varnish 403).
+# Live-diff winner: HTTP 200 / 30
+# nonempty / 30 insertable (httpx
+# fetch_source + urllib). 30 is not
+# the 5–9 observe band. Distinct
+# from live foreign_policy /
+# war_on_rocks / foreign_affairs /
+# crisis_group / defense_one /
+# breaking_defense /
+# aspi_strategist /
+# lowy_interpreter /
+# world_politics_review /
+# the_diplomat / project_syndicate
+# / intercept / atlantic /
+# new_republic / unherd. 0 article
+# URL overlap with those. Lands on
+# the existing 国际 category path
+# (foreign-policy newsroom, same as
+# foreign_policy / war_on_rocks).
+# Not added to the tech/AI
+# whitelist (later-batch sources
+# stay off the frozen ALWAYS set).
+# lrb is the official site-wide RSS
+# (no prior lrb / london_review /
+# london_review_of_books / lrb_co_uk
+# id). Product lock: MUST lock
+# https://www.lrb.co.uk/feeds/rss
+# (channel "London Review of Books")
+# — do NOT invent /feed /feed/ /
+# /rss/index.xml. Body prefixes the
+# XML declaration with blank lines;
+# decode helper lstrips so
+# ET.fromstring can parse. Live-diff
+# winner: HTTP 200 / 21 nonempty /
+# 21 insertable (httpx fetch_source
+# + urllib). 21 is not the 5–9
+# observe band. Distinct from live
+# new_yorker / literary_hub /
+# atlantic / inverse /
+# smithsonian_mag / aeon / noema /
+# nautilus / undark / nyt_magazine
+# / nyt_arts / nyt_books /
+# guardian_books / npr_arts /
+# quillette / artnet. 0 article URL
+# overlap with those. Lands on the
+# existing 综合 category path
+# (literary magazine, same as
+# new_yorker / literary_hub). Not
+# added to the tech/AI whitelist
+# (later-batch sources stay off the
+# frozen ALWAYS set).
+# Unused leftover krebsonsecurity
+# stays out (sciencealert KEEP;
+# path /feed/ — do NOT invent
+# /rss/index.xml).
+# Unused leftover guernica stays
+# out (responsiblestatecraft KEEP;
+# path /feed/ — do NOT invent
+# /rss/index.xml).
+# Unused leftover nationalinterest
+# stays out (lrb KEEP; path /feed
+# — do NOT invent /rss/index.xml).
+# universe_today / new_yorker /
+# darkreading stay registered
+# (batch85 KEEP). inverse /
+# appleinsider / popular_mechanics
+# stay registered (batch84 KEEP).
+# polygon / pcmag / mashable stay
+# registered (batch83 KEEP).
+# smithsonian_mag is already the
+# gizmodo hard-swap primary on tip
+# (MUST lock
+# https://www.smithsonianmag.com/rss/latest_articles/
+# never stale /rss/articles/) —
+# do not register it twice.
+# the_baffler stays unregistered
+# (official Cloudflare 403; do
+# not hang Feedburner).
+# new_statesman stays unused
+# leftover (official Varnish 403).
+# engadget stays unregistered
+# (official CloudFront 403; do
+# not register Feedburner).
+# digital_trends stays
+# unregistered (official
+# Cloudflare 403 JS challenge;
+# do not register Feedburner).
+# techdirt stays unregistered
+# (official Cloudflare 403; do
+# not register Feedburner).
+# bleepingcomputer stays
+# unregistered (official
+# Cloudflare 403 JS challenge;
+# do not register Feedburner).
+# the_cut stays out (product
+# dropped — all 404; do not
+# probe / register). the_verge
+# stays out (verge already
+# registered). wired stays
+# registered as the existing
+# wired primary — do not hang a
+# second wired.
+# Do NOT use as backups (product
+# skip): bangkok_post /
+# indian_express / rest_of_world /
+# al_monitor / hkfp / biographic /
+# asiatimes / dawn / longreads /
+# hrw / independent (429) /
+# euractiv (301→rapporteur FAIL) /
+# atlantic_council (403) /
+# the_nation (empty feed) /
+# times_of_israel (Cloudflare 403)
+# / the_cut / techdirt / engadget /
+# digital_trends / bleepingcomputer
+# / gizmodo / the_baffler /
+# new_statesman.
+# digiday0观察 — do not add a
+# second digiday. sunday_review /
+# cnbc (403 known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_SCIENCEALERT_RESPONSIBLESTATECRAFT_LRB_PRIMARY = {
+    "sciencealert": {
+        "name": "ScienceAlert",
+        "feed_url": "https://www.sciencealert.com/feed",
+        "category": "科学",
+    },
+    "responsiblestatecraft": {
+        "name": "Responsible Statecraft",
+        "feed_url": "https://responsiblestatecraft.org/feeds/feed.rss",
+        "category": "国际",
+    },
+    "lrb": {
+        "name": "London Review of Books",
+        "feed_url": "https://www.lrb.co.uk/feeds/rss",
+        "category": "综合",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 266
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -10059,8 +10342,9 @@ _CONTENT_ENC = "{http://purl.org/rss/1.0/modules/content/}encoded"
 def _decode_feed_body(body: bytes) -> bytes:
     """Independent (and some CDNs) return gzip even to urllib."""
     if body[:2] == b"\x1f\x8b":
-        return gzip.decompress(body)
-    return body
+        body = gzip.decompress(body)
+    # LRB (and similar) prefix the XML declaration with blank lines.
+    return body.lstrip()
 
 
 def _feed_items(root: ET.Element) -> list[ET.Element]:
@@ -30269,6 +30553,326 @@ def test_universe_today_new_yorker_darkreading_feeds_live_http_200():
         )
 
 
+def test_sciencealert_responsiblestatecraft_lrb_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "sciencealert" in by_id
+    assert by_id["sciencealert"].feed_url == (
+        "https://www.sciencealert.com/feed"
+    )
+    assert by_id["sciencealert"].feed_url != (
+        "https://www.sciencealert.com/feed/"
+    )
+    assert by_id["sciencealert"].feed_url != (
+        "https://www.sciencealert.com/rss/index.xml"
+    )
+    assert by_id["sciencealert"].feed_url != (
+        "https://www.sciencealert.com/rss.xml"
+    )
+    assert "responsiblestatecraft" in by_id
+    assert by_id["responsiblestatecraft"].feed_url == (
+        "https://responsiblestatecraft.org/feeds/feed.rss"
+    )
+    assert by_id["responsiblestatecraft"].feed_url != (
+        "https://responsiblestatecraft.org/feed"
+    )
+    assert by_id["responsiblestatecraft"].feed_url != (
+        "https://responsiblestatecraft.org/rss/index.xml"
+    )
+    assert "lrb" in by_id
+    assert by_id["lrb"].feed_url == (
+        "https://www.lrb.co.uk/feeds/rss"
+    )
+    assert by_id["lrb"].feed_url != (
+        "https://www.lrb.co.uk/feed"
+    )
+    assert by_id["lrb"].feed_url != (
+        "https://www.lrb.co.uk/feed/"
+    )
+    assert by_id["lrb"].feed_url != (
+        "https://www.lrb.co.uk/rss/index.xml"
+    )
+    assert by_id["lrb"].feed_url != (
+        "https://www.lrb.co.uk/feeds/rss/"
+    )
+    # #149 / batch85 winners stay registered and unchanged.
+    # #148 / batch84 winners stay registered and unchanged.
+    # #146 / batch83 winners stay registered and unchanged.
+    # #147 / #145 / batch82 winners stay registered and unchanged.
+    # #144 / batch81 winners stay registered and unchanged.
+    # #143 / batch80 winners stay registered and unchanged.
+    # Do not touch universe_today / new_yorker /
+    # darkreading / inverse / appleinsider /
+    # popular_mechanics / polygon / pcmag /
+    # mashable / smithsonian_mag / cnet /
+    # 9to5mac / artnet / macrumors /
+    # quillette / howtogeek / new_republic /
+    # vox.
+    assert "universe_today" in by_id
+    assert "new_yorker" in by_id
+    assert "darkreading" in by_id
+    assert "inverse" in by_id
+    assert "appleinsider" in by_id
+    assert "popular_mechanics" in by_id
+    assert "polygon" in by_id
+    assert "pcmag" in by_id
+    assert "mashable" in by_id
+    assert "cnet" in by_id
+    assert "9to5mac" in by_id
+    assert "smithsonian_mag" in by_id
+    assert "gizmodo" not in by_id
+    assert "artnet" in by_id
+    assert "macrumors" in by_id
+    assert "quillette" in by_id
+    assert "howtogeek" in by_id
+    assert "new_republic" in by_id
+    assert "vox" in by_id
+    # Feed locks + uniqueness vs live
+    # science / foreign-policy / literary
+    # stack.
+    assert by_id["sciencealert"].feed_url != by_id["universe_today"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["livescience"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["scientific_american"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["physics_world"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["science_org"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["popular_science"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["popular_mechanics"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["phys_org"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["sciencedaily"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["science_news"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["knowable"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["smithsonian_mag"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["space_com"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["medicalxpress"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["nature_news"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["bbc_science"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["nyt_science"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["guardian_science"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["npr_science"].feed_url
+    assert by_id["responsiblestatecraft"].feed_url != by_id["foreign_policy"].feed_url
+    assert by_id["responsiblestatecraft"].feed_url != by_id["war_on_rocks"].feed_url
+    assert by_id["responsiblestatecraft"].feed_url != by_id["foreign_affairs"].feed_url
+    assert by_id["responsiblestatecraft"].feed_url != by_id["crisis_group"].feed_url
+    assert by_id["responsiblestatecraft"].feed_url != by_id["defense_one"].feed_url
+    assert by_id["responsiblestatecraft"].feed_url != by_id["breaking_defense"].feed_url
+    assert by_id["responsiblestatecraft"].feed_url != by_id["aspi_strategist"].feed_url
+    assert by_id["responsiblestatecraft"].feed_url != by_id["lowy_interpreter"].feed_url
+    assert by_id["responsiblestatecraft"].feed_url != by_id["world_politics_review"].feed_url
+    assert by_id["responsiblestatecraft"].feed_url != by_id["the_diplomat"].feed_url
+    assert by_id["responsiblestatecraft"].feed_url != by_id["project_syndicate"].feed_url
+    assert by_id["responsiblestatecraft"].feed_url != by_id["intercept"].feed_url
+    assert by_id["responsiblestatecraft"].feed_url != by_id["atlantic"].feed_url
+    assert by_id["responsiblestatecraft"].feed_url != by_id["new_republic"].feed_url
+    assert by_id["responsiblestatecraft"].feed_url != by_id["unherd"].feed_url
+    assert by_id["lrb"].feed_url != by_id["new_yorker"].feed_url
+    assert by_id["lrb"].feed_url != by_id["literary_hub"].feed_url
+    assert by_id["lrb"].feed_url != by_id["atlantic"].feed_url
+    assert by_id["lrb"].feed_url != by_id["inverse"].feed_url
+    assert by_id["lrb"].feed_url != by_id["smithsonian_mag"].feed_url
+    assert by_id["lrb"].feed_url != by_id["aeon"].feed_url
+    assert by_id["lrb"].feed_url != by_id["noema"].feed_url
+    assert by_id["lrb"].feed_url != by_id["nautilus"].feed_url
+    assert by_id["lrb"].feed_url != by_id["undark"].feed_url
+    assert by_id["lrb"].feed_url != by_id["nyt_magazine"].feed_url
+    assert by_id["lrb"].feed_url != by_id["nyt_arts"].feed_url
+    assert by_id["lrb"].feed_url != by_id["nyt_books"].feed_url
+    assert by_id["lrb"].feed_url != by_id["guardian_books"].feed_url
+    assert by_id["lrb"].feed_url != by_id["npr_arts"].feed_url
+    assert by_id["lrb"].feed_url != by_id["quillette"].feed_url
+    assert by_id["lrb"].feed_url != by_id["artnet"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["responsiblestatecraft"].feed_url
+    assert by_id["sciencealert"].feed_url != by_id["lrb"].feed_url
+    assert by_id["responsiblestatecraft"].feed_url != by_id["lrb"].feed_url
+    # Unused leftover backups stay out
+    # (all three primaries live KEEP).
+    # krebsonsecurity / guernica /
+    # nationalinterest were not probed
+    # for KEEP-fill.
+    # universe_today / new_yorker /
+    # darkreading stay registered
+    # (batch85 KEEP).
+    # inverse / appleinsider /
+    # popular_mechanics stay registered
+    # (batch84 KEEP).
+    # polygon / pcmag / mashable stay
+    # registered (batch83 KEEP).
+    # smithsonian_mag is already the
+    # gizmodo hard-swap primary on tip
+    # (MUST lock /rss/latest_articles/
+    # never stale /rss/articles/) — do
+    # not register it twice.
+    # the_baffler official Cloudflare
+    # 403 — not registered (do not hang
+    # Feedburner).
+    # new_statesman official Varnish 403
+    # — unused leftover.
+    # bleepingcomputer official Cloudflare
+    # 403 JS challenge — not registered
+    # (do not hang Feedburner).
+    # engadget / digital_trends stay
+    # unregistered (official RSS 403;
+    # do not hang Feedburner).
+    # the_verge stays out (verge already
+    # registered). Do not hang a second
+    # wired. the_cut stays out (product
+    # dropped — all 404). techdirt stays
+    # unregistered (official Cloudflare
+    # 403; do not hang Feedburner).
+    # gizmodo stays hung (official CI
+    # 403; do not re-hang).
+    assert "science_alert" not in by_id
+    assert "sciencealert_com" not in by_id
+    assert "science_alert_com" not in by_id
+    assert "responsible_statecraft" not in by_id
+    assert "responsiblestatecraft_org" not in by_id
+    assert "responsible_statecraft_org" not in by_id
+    assert "rsc" not in by_id
+    assert "london_review" not in by_id
+    assert "london_review_of_books" not in by_id
+    assert "lrb_co_uk" not in by_id
+    assert "lrb_com" not in by_id
+    assert "the_lrb" not in by_id
+    assert "krebsonsecurity" not in by_id
+    assert "krebs" not in by_id
+    assert "krebs_on_security" not in by_id
+    assert "krebsonsecurity_com" not in by_id
+    assert "guernica" not in by_id
+    assert "guernicamag" not in by_id
+    assert "guernica_mag" not in by_id
+    assert "guernicamag_com" not in by_id
+    assert "nationalinterest" not in by_id
+    assert "national_interest" not in by_id
+    assert "nationalinterest_org" not in by_id
+    assert "the_national_interest" not in by_id
+    assert "the_baffler" not in by_id
+    assert "baffler" not in by_id
+    assert "thebaffler" not in by_id
+    assert "the_baffler_com" not in by_id
+    assert "newyorker" not in by_id
+    assert "the_new_yorker" not in by_id
+    assert "new_statesman" not in by_id
+    assert "newstatesman" not in by_id
+    assert "new_statesman_com" not in by_id
+    assert "macworld" not in by_id
+    assert "mac_world" not in by_id
+    assert "macworld_com" not in by_id
+    assert "universetoday" not in by_id
+    assert "universe_today_com" not in by_id
+    assert "dark_reading" not in by_id
+    assert "darkreading_com" not in by_id
+    assert "inverse_com" not in by_id
+    assert "apple_insider" not in by_id
+    assert "appleinsider_com" not in by_id
+    assert "popularmechanics" not in by_id
+    assert "popmech" not in by_id
+    assert "popular_mechanics_com" not in by_id
+    assert "smithsonian" not in by_id
+    assert "smithsonianmag" not in by_id
+    assert "smithsonian_magazine" not in by_id
+    assert "polygon_com" not in by_id
+    assert "pcmag_com" not in by_id
+    assert "pc_mag" not in by_id
+    assert "mashable_com" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bleeping_computer" not in by_id
+    assert "bleepingcomputer_com" not in by_id
+    assert "engadget" not in by_id
+    assert "engadget_com" not in by_id
+    assert "digital_trends" not in by_id
+    assert "digitaltrends" not in by_id
+    assert "digital_trends_com" not in by_id
+    assert "the_verge" not in by_id
+    assert "techdirt" not in by_id
+    assert "techdirt_com" not in by_id
+    assert "the_cut" not in by_id
+    assert "thecut" not in by_id
+    assert "the_cut_com" not in by_id
+    assert "gizmodo" not in by_id
+    assert "gizmodo_com" not in by_id
+    assert "grist" in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "who_news" in by_id
+    assert "independent" not in by_id
+    assert "independent_world" not in by_id
+    assert "hrw" not in by_id
+    assert "longreads" not in by_id
+    assert "dawn" not in by_id
+    assert "asiatimes" not in by_id
+    assert "asia_times" not in by_id
+    assert "biographic" not in by_id
+    assert "hkfp" not in by_id
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "the_nation" not in by_id
+    for source_id, expected in _SCIENCEALERT_RESPONSIBLESTATECRAFT_LRB_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_sciencealert_responsiblestatecraft_lrb_feeds_live_http_200():
+    """Hit the three batch86 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _SCIENCEALERT_RESPONSIBLESTATECRAFT_LRB_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (sciencealert /
+        # responsiblestatecraft / lrb) uses
+        # the un-namespaced element text.
+        # lrb prefixes the XML declaration
+        # with blank lines — decode helper
+        # lstrips.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # sciencealert 10/10,
+        # responsiblestatecraft 30/30, and
+        # lrb 21/21 were 100% nonempty this
+        # probe. ingest cap 30/30 still
+        # KEEP. sciencealert MUST stay on
+        # /feed (no trailing slash).
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= 10, (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -30362,6 +30966,7 @@ if __name__ == "__main__":
     test_inverse_appleinsider_popular_mechanics_primaries_registered()
     test_baffler_hard_swapped_to_new_yorker()
     test_universe_today_new_yorker_darkreading_primaries_registered()
+    test_sciencealert_responsiblestatecraft_lrb_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -30446,4 +31051,5 @@ if __name__ == "__main__":
     test_polygon_pcmag_mashable_feeds_live_http_200()
     test_inverse_appleinsider_popular_mechanics_feeds_live_http_200()
     test_universe_today_new_yorker_darkreading_feeds_live_http_200()
+    test_sciencealert_responsiblestatecraft_lrb_feeds_live_http_200()
     print("✓ source registry tests PASSED")

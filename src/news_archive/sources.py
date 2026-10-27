@@ -1857,6 +1857,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="sciencealert",
+        name="ScienceAlert",
+        feed_url="https://www.sciencealert.com/feed",
+        category="科学",
+        role="primary",
+    ),
+    Source(
+        id="responsiblestatecraft",
+        name="Responsible Statecraft",
+        feed_url="https://responsiblestatecraft.org/feeds/feed.rss",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="lrb",
+        name="London Review of Books",
+        feed_url="https://www.lrb.co.uk/feeds/rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
