@@ -84,7 +84,7 @@ python -m http.server 8000
 ### 私有仓库注意事项
 
 - **私有仓库 Pages**：需要 GitHub Pro / Team / Enterprise 订阅
-- **数据分支**：`data` 分支是 orphan 分支，仅存放 `archive.sqlite3`，不影响 main 分支
+- **数据分支**：`data` 分支是 orphan 分支，存放 `archive.sqlite3.gz`（或分片）+ `LAST_RUN.json`，不影响 main 分支
 
 ### 一次性设置
 

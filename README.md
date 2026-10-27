@@ -251,16 +251,17 @@
 
 `archive.sqlite3` 通过 **专用 `data` 分支** 实现跨 Actions 运行持久化：
 
-- **`data` 分支**（orphan branch）：仅存放 `data/archive.sqlite3` 和 `data/LAST_RUN.json`（最后一次运行元数据）
-- **`main` 分支**：仅存代码，`.gitignore` 已排除 `*.sqlite3`
-- **Artifacts**：每次运行同时上传 sqlite + jsonl + run-stats 作为 90 天备份（`news-archive-{run_id}`）
+- **`data` 分支**（orphan branch）：`data/archive.sqlite3.gz`（VACUUM + gzip-9；超过 90MiB 再按 90MiB 分片为 `archive.sqlite3.gz.000`…）和 `data/LAST_RUN.json`。不再 push 未压缩的 sqlite（GitHub 单 blob 硬限 100MiB；run 40500314784 的 100.75MiB 原始文件被 pre-receive 拒绝）
+- **`main` 分支**：仅存代码，`.gitignore` 已排除 `data/` 与 `*.sqlite3`
+- **Artifacts**：每次运行同时上传未压缩 sqlite + jsonl + run-stats 作为 90 天备份（`news-archive-{run_id}`；artifact 允许大于 100MiB）
+- **Restore / Persist**：`scripts/data_branch_archive.sh`。Restore 优先 gunzip（含分片拼接），没有 `.gz` 时回退到旧的 `data/archive.sqlite3` 裸文件
 
 ### 工作流程（Workflow）
 
-1. **恢复数据库**：每次运行开始前，从 `data` 分支 checkout `data/archive.sqlite3`（若分支/文件不存在，则从空数据库开始 — 首次运行 OK）
+1. **恢复数据库**：每次运行开始前，从 `data` 分支 restore 并解压到 `data/archive.sqlite3`（若分支/文件不存在，则从空数据库开始 — 首次运行 OK）
 2. **抓取去重**：运行抓取 → URL 去重 → 入库（`store.upsert()` 自动跳过已存在 URL）
 3. **验收检查**：P0 验收 + 高频去重测试通过
-4. **持久化回写**：成功后将更新的 `archive.sqlite3` 和 `LAST_RUN.json` commit 并 push 回 `data` 分支
+4. **持久化回写**：成功后将 gzip 后的 archive 和 `LAST_RUN.json` commit 并 push 回 `data` 分支；`EXIT` trap 切回原 ref 并拷回 live sqlite，供 brief check / artifact 使用
    - 冲突处理：`git pull --rebase` + 最多重试 3 次
    - **禁止 force-push**：保留并发运行的提交历史
    - 持续冲突 → 失败（红），需人工介入
@@ -327,8 +328,8 @@ python -m news_archive --db data/archive.sqlite3 --export-jsonl data/archive.jso
 - **数据持久化与 SLA 解耦**：
   - Persist 步骤只依赖 fetch 成功，**不受 latency 验证失败影响**
   - 即使 latency 连续失败（红灯），增量数据仍会写回 `data` 分支（丢数据不可接受）
-  - **`data` 分支**：存放跨运行持久化的 `archive.sqlite3` 和 `LAST_RUN.json`（含 `latency_sla_passed` + `latency_soft_miss` 用于连续检测）
-  - **Artifacts**：每次运行额外上传 `data/archive.sqlite3` + `archive.jsonl` + `run-stats.json`（保留 90 天备份）
+  - **`data` 分支**：存放跨运行持久化的 `archive.sqlite3.gz`（或分片）和 `LAST_RUN.json`（含 `latency_sla_passed` + `latency_soft_miss` 用于连续检测）
+  - **Artifacts**：每次运行额外上传未压缩 `data/archive.sqlite3` + `archive.jsonl` + `run-stats.json`（保留 90 天备份）
 - 权限：workflow 需要 `contents: write` 以便 push 到 `data` 分支
 - 仓库默认 **private**（`content_snapshot` 有版权风险）；要开源再单独评估可公开字段
 - X 帖子仍为 P1，不在本 workflow

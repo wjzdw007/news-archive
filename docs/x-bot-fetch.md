@@ -8,7 +8,7 @@ GitHub Actions **cannot** call Grok Bot `x` MCP. This path runs on a Bot (程序
 3. Map: `id`→`post_id`, username→`author`, `url`, `text`→`text_snapshot`, `created_at`→`posted_at`
 4. Write JSONL, then:
    `PYTHONPATH=src python -m news_archive.x_cli --import-jsonl path.jsonl [--mark-missing-gone]`
-5. Persist `data/archive.sqlite3` on the `data` branch (same as RSS). Soft-fail: never block `daily-fetch`.
+5. Persist packed `archive.sqlite3.gz` on the `data` branch (same as RSS). Soft-fail: never block `daily-fetch`.
 
 ## Not in scope
 - Actions live X API / Bearer

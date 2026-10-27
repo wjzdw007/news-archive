@@ -37,11 +37,11 @@
 
 Job `timeout-minutes: 45`（87 源串行 + 日报 LLM 曾打满旧的 30m cap：runs 39243037763 / 39340262352；#71 后 RSS 已并行，但 Fetch 仍在 45m 墙钟取消：runs 39535458475 / 39539744777，卡在全库 O(n²) recluster）。
 
-1. **Restore SQLite** → 从 `data` 分支恢复数据库（含上一轮 `LAST_RUN.json`）
+1. **Restore SQLite** → 从 `data` 分支 gunzip（或拼接分片 / 回退旧裸文件）恢复数据库（含上一轮 `LAST_RUN.json`）
 2. **Fetch feeds** → 并行 RSS（8 workers）、单源 15s×3 次重试（#53 soft-fail）、RSS 波次 600s 墙钟；剩余源 soft-fail，已完成源仍入库。密集源（Electrek/36kr 风格）每源最多入 30 条。topic recluster 只打开近 24h 无 ok brief 的孤儿，且 pairwise 最多 1500 条（180s 墙钟）；更早的 topic_id 保持不变。stderr 打印 `INFO fetch_phase *_s=`。
 3. **Run validation** → P0 验收检查（含 latency 连续检测），输出 `validation-meta.json`（`latency_sla_passed` + `latency_soft_miss`）
 4. **Generate daily brief** → `continue-on-error`（只为不挡 Persist），步骤 12 分钟 + CLI `--deadline-seconds 600`；先生成今天（LKEAP 读超时 90s，今天最多 3 次重试），再回填 `failed`/`empty`/missing 历史日（如 live 2026-10-25/24/23/21）。**重跑禁止用 failed 覆盖已有 ok**（超时不得毁掉好天）；历史 ok 不再重生成。当天 ok 仅在指纹变化时尝试刷新，失败则保留 ok。超时跳过剩余未完成日期。**当天** `failed` / `skipped` / missing 时 CLI 非 0，且 JSON `ok` 为 false；当天仍为 ok 则绿灯。更早日期仍可 soft-fail。绝不写 mock/ok 掩盖失败。
-5. **Persist SQLite** → 写回 `data` 分支（含新的 `LAST_RUN.json`）；即使当天日报失败也要落库
+5. **Persist SQLite** → VACUUM+gzip 写回 `data` 分支（含新的 `LAST_RUN.json`）；即使当天日报失败也要落库。`EXIT` trap 切回原 ref 并恢复 live sqlite，让 `--check-today` 仍能看到 status file / DB
 6. **Test dedup / enrich / required fields / RSS soft-fail / latency consecutive / daily brief today-visibility**
 7. **Fail if today's daily brief is failed or missing** → `--check-today`，无 `continue-on-error`，把 run 打红（关闭 run 40258264336 那种绿洗：站点「当日摘要生成失败」而 daily-fetch 仍绿）
 8. **Upload artifact** → 备份数据库/JSONL/stats（90 天）

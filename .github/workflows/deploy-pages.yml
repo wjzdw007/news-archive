@@ -40,17 +40,23 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p data
-          
-          # Try to fetch the data branch and extract archive.sqlite3
+
           if git fetch origin data:data 2>/dev/null; then
-            echo "Data branch exists, attempting to restore archive.sqlite3..."
-            if git show data:data/archive.sqlite3 > data/archive.sqlite3 2>/dev/null; then
+            echo "Data branch exists, attempting to restore archive..."
+            set +e
+            bash scripts/data_branch_archive.sh restore data/archive.sqlite3
+            restore_rc=$?
+            set -e
+            if [ "$restore_rc" -eq 0 ]; then
               echo "found=true" >> "$GITHUB_OUTPUT"
               echo "✓ Restored archive.sqlite3 from data branch"
               ls -lh data/archive.sqlite3
+            elif [ "$restore_rc" -eq 2 ]; then
+              echo "❌ Archive payload on data branch failed integrity_check"
+              exit 1
             else
               echo "found=false" >> "$GITHUB_OUTPUT"
-              echo "⚠ Data branch exists but no archive.sqlite3 found"
+              echo "⚠ Data branch exists but no archive payload found"
             fi
           else
             echo "found=false" >> "$GITHUB_OUTPUT"
