@@ -1279,8 +1279,9 @@ def test_whitelist_registered_and_cap_unchanged():
     # trailing slash; homepage
     # announced). No 备 named
     # this batch. military_times
-    # / earthsky / outside stay
-    # hung for batch99 only.
+    # / earthsky / outside are
+    # now batch99 KEEP and still
+    # stay off the whitelist.
     # None of these match the
     # wired / verge /
     # techcrunch ALWAYS pattern.
@@ -1290,9 +1291,51 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "deadline_com" not in TECH_AI_SOURCE_WHITELIST
     assert "makezine_com" not in TECH_AI_SOURCE_WHITELIST
     assert "utilitydive" not in TECH_AI_SOURCE_WHITELIST
+    # batch99 RSS primaries stay off the tech/AI whitelist.
+    # military_times lands on 国际
+    # (defense newsroom, same as
+    # taskandpurpose / twz /
+    # defensenews) — new id —
+    # official www /feed/ (MUST
+    # www + trailing slash;
+    # homepage announced;
+    # atom:self). earthsky lands
+    # on 科学 (astronomy /
+    # science newsroom, same as
+    # astronomy /
+    # skyandtelescope /
+    # universe_today) — new id
+    # — official apex /feed/
+    # (MUST trailing slash;
+    # atom:self). Homepage does
+    # not announce RSS. outside
+    # lands on 综合 (outdoor
+    # lifestyle magazine, same
+    # as atlas_obscura) — new
+    # id — official www /feed/
+    # (MUST www + trailing
+    # slash; atom:self). Named
+    # 备 kottke / rollingstone /
+    # avclub unused — all KEEP
+    # passed. Do not pull
+    # batch100 hung ids
+    # (indiewire / lithub /
+    # pv_magazine). None of
+    # these match the wired /
+    # verge / techcrunch ALWAYS
+    # pattern.
     assert "military_times" not in TECH_AI_SOURCE_WHITELIST
     assert "earthsky" not in TECH_AI_SOURCE_WHITELIST
     assert "outside" not in TECH_AI_SOURCE_WHITELIST
+    assert "militarytimes" not in TECH_AI_SOURCE_WHITELIST
+    assert "earthsky_org" not in TECH_AI_SOURCE_WHITELIST
+    assert "outsideonline" not in TECH_AI_SOURCE_WHITELIST
+    assert "kottke" not in TECH_AI_SOURCE_WHITELIST
+    assert "rollingstone" not in TECH_AI_SOURCE_WHITELIST
+    assert "avclub" not in TECH_AI_SOURCE_WHITELIST
+    assert "indiewire" not in TECH_AI_SOURCE_WHITELIST
+    assert "lithub" not in TECH_AI_SOURCE_WHITELIST
+    assert "pv_magazine" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

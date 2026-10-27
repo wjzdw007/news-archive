@@ -13838,10 +13838,10 @@ _PHORONIX_ADAFRUIT_BOINGBOING_PRIMARY = {
 # is deadline / makezine /
 # utility_dive. Named 备: NONE
 # this batch — do not invent
-# replacements. Do not pull
+# replacements. batch99 KEEP
 # military_times / earthsky /
-# outside (hung for batch99
-# only).
+# outside are registered
+# separately.
 # deadline official
 # https://deadline.com/feed/
 # is new (no prior deadline /
@@ -13927,9 +13927,9 @@ _PHORONIX_ADAFRUIT_BOINGBOING_PRIMARY = {
 # ALWAYS set).
 # Do NOT register deadline_com
 # / makezine_com / utilitydive.
-# Do NOT register
-# military_times / earthsky /
-# outside (batch99 only).
+# batch99 KEEP military_times
+# / earthsky / outside are
+# registered separately.
 # Do NOT re-register phoronix
 # / adafruit / boingboing /
 # jalopnik / lwn /
@@ -13990,7 +13990,232 @@ _DEADLINE_MAKEZINE_UTILITY_DIVE_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 299
+# CEO-approved Military Times /
+# EarthSky / Outside Online RSS
+# primaries (batch99). On tip
+# 82cf65f after #164 (deadline
+# / makezine / utility_dive).
+# Product KEEP set is
+# military_times / earthsky /
+# outside. Named 备 (hard-swap
+# ONLY if a KEEP fails):
+# kottke / rollingstone /
+# avclub. Do not invent a
+# fourth replacement. Do not
+# pull batch100 hung ids
+# (indiewire / lithub /
+# pv_magazine).
+# military_times official
+# https://www.militarytimes.com/feed/
+# is new as a registered
+# primary (was an unused
+# leftover in older batches;
+# no prior militarytimes /
+# military_times_com id).
+# httpx+RSS_HEADERS HTTP 200
+# / 10 nonempty / 10
+# insertable (channel
+# "Military Times"). MUST
+# lock www + /feed/ (trailing
+# slash). Homepage <link>
+# announces this exact path;
+# atom:self matches. /feed
+# (no slash) remaps here;
+# apex remaps to www; /rss
+# /rss/ /feed/rss/ and
+# /arc/outboundfeeds/rss/?outputType=xml
+# remap here. /rss.xml
+# /index.xml are 404 HTML.
+# comments/feed is comments
+# — not the site-wide
+# primary. /m/rss and /rss-2
+# are HTML index pages — not
+# the feed. Distinct from
+# live defensenews /
+# taskandpurpose / twz /
+# breaking_defense. Do not
+# invent Feedburner /
+# section feeds. Lands on
+# 国际 (defense newsroom,
+# same as taskandpurpose /
+# twz / defensenews).
+# earthsky official
+# https://earthsky.org/feed/
+# is new (no prior earthsky
+# / earthsky_org / earth_sky
+# id). httpx+RSS_HEADERS
+# HTTP 200 / 10 nonempty /
+# 10 insertable (channel
+# "EarthSky"). MUST lock
+# apex /feed/ (trailing
+# slash); atom:self
+# announces this exact path.
+# Homepage does not announce
+# RSS (oEmbed only) —
+# official /feed/ is the
+# working site-wide path.
+# /feed (no slash) remaps
+# here; www remaps to apex;
+# /rss /rss/ /feed/rss/
+# /?feed=rss2 remap here.
+# /rss.xml remaps to
+# sitemap.rss (50 URL-only
+# items / 0 insertable) —
+# do not hang. /index.xml
+# /atom.xml are 404 HTML.
+# comments/feed is comments
+# — not the site-wide
+# primary. Distinct from
+# live astronomy /
+# skyandtelescope /
+# universe_today /
+# livescience. Do not
+# invent Feedburner /
+# section feeds. Lands on
+# 科学 (astronomy / science
+# newsroom, same as
+# astronomy /
+# skyandtelescope /
+# universe_today).
+# outside official
+# https://www.outsideonline.com/feed/
+# is new (no prior outside /
+# outsideonline /
+# outside_online /
+# outside_com id).
+# httpx+RSS_HEADERS HTTP 200
+# / 10 nonempty / 10
+# insertable (channel
+# "Outside Online"). MUST
+# lock www + /feed/
+# (trailing slash);
+# atom:self announces this
+# exact path. /feed/rss/
+# remaps here. /feed (no
+# slash) is the same 10-item
+# body but stays without
+# slash — do not lock it.
+# apex remaps to www.
+# Homepage remaps to
+# /featured and does not
+# announce RSS (oEmbed
+# only) — official /feed/
+# is the working site-wide
+# path. /rss /rss/ remap to
+# the magazine RSS-index
+# HTML page (0 insertable).
+# /rss.xml /index.xml
+# /adventure/feed/
+# /news/feed/ are 404 HTML.
+# /culture/feed/ is a
+# section feed — not the
+# site-wide primary.
+# comments/feed is comments.
+# Distinct from live
+# atlas_obscura / mongabay.
+# Do not invent Feedburner /
+# section feeds. Lands on
+# 综合 (outdoor lifestyle
+# magazine, same as
+# atlas_obscura).
+# All three ≥10 KEEP. Named
+# 备 unused (all KEEP
+# passed). Distinct from
+# live defensenews /
+# taskandpurpose / twz /
+# breaking_defense /
+# astronomy /
+# skyandtelescope /
+# universe_today /
+# livescience /
+# atlas_obscura / mongabay
+# / variety / deadline.
+# 0 article URL overlap
+# (www.militarytimes.com /
+# earthsky.org /
+# www.outsideonline.com
+# hosts). Not added to the
+# tech/AI whitelist
+# (later-batch sources stay
+# off the frozen ALWAYS
+# set).
+# Do NOT register
+# militarytimes /
+# military_times_com /
+# earthsky_org / earth_sky
+# / outsideonline /
+# outside_online /
+# outside_com.
+# Do NOT register kottke /
+# rollingstone / avclub
+# (备 unused). Do NOT
+# register indiewire /
+# lithub / pv_magazine
+# (batch100 only).
+# Do NOT re-register
+# deadline / makezine /
+# utility_dive / phoronix /
+# adafruit / boingboing /
+# jalopnik / lwn /
+# quanta_magazine / mit_tr
+# / hackaday / astronomy /
+# skyandtelescope /
+# latimes_technology /
+# yale360 / cleantechnica /
+# variety / literary_hub.
+# national_geographic stays
+# unregistered (no official
+# English RSS).
+# Do NOT use as backups
+# (product skip): bangkok_post
+# / indian_express /
+# rest_of_world / al_monitor /
+# hkfp / biographic /
+# asiatimes / dawn /
+# longreads / hrw /
+# independent (429) /
+# euractiv (301→rapporteur
+# FAIL) / atlantic_council
+# (403) / the_nation (empty
+# feed) / times_of_israel
+# (Cloudflare 403) / the_cut
+# / techdirt / engadget /
+# digital_trends /
+# bleepingcomputer / gizmodo /
+# the_baffler / new_statesman
+# / guernica / nationalinterest
+# / flightglobal /
+# newscientist (CI
+# httpx+RSS_HEADERS 406/empty).
+# qz3 勿挂. digiday0观察 — do not
+# add a second digiday.
+# fastcompany 勿二重.
+# sunday_review / cnbc (403
+# known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_MILITARY_TIMES_EARTHSKY_OUTSIDE_PRIMARY = {
+    "military_times": {
+        "name": "Military Times",
+        "feed_url": "https://www.militarytimes.com/feed/",
+        "category": "国际",
+    },
+    "earthsky": {
+        "name": "EarthSky",
+        "feed_url": "https://earthsky.org/feed/",
+        "category": "科学",
+    },
+    "outside": {
+        "name": "Outside Online",
+        "feed_url": "https://www.outsideonline.com/feed/",
+        "category": "综合",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 302
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -22346,7 +22571,10 @@ def test_mercopress_nature_news_crisis_group_primaries_registered():
     # batch67 primary (was an unused
     # batch58 leftover).
     assert "the_new_humanitarian" in by_id
-    assert "military_times" not in by_id
+    # military_times is now the
+    # batch99 primary (was an unused
+    # leftover).
+    assert "military_times" in by_id
     # defense_one is now the batch63
     # primary (was an unused batch58
     # backup).
@@ -22653,7 +22881,10 @@ def test_aeon_noema_marketwatch_primaries_registered():
     # batch67 primary (was an unused
     # leftover).
     assert "the_new_humanitarian" in by_id
-    assert "military_times" not in by_id
+    # military_times is now the
+    # batch99 primary (was an unused
+    # leftover).
+    assert "military_times" in by_id
     assert "hkfp" not in by_id
     assert "indian_express" not in by_id
     assert "al_monitor" not in by_id
@@ -22950,7 +23181,10 @@ def test_aspi_strategist_nautilus_hyperallergic_primaries_registered():
     # batch67 primary (was an unused
     # leftover).
     assert "the_new_humanitarian" in by_id
-    assert "military_times" not in by_id
+    # military_times is now the
+    # batch99 primary (was an unused
+    # leftover).
+    assert "military_times" in by_id
     assert "hkfp" not in by_id
     assert "indian_express" not in by_id
     assert "al_monitor" not in by_id
@@ -23278,7 +23512,10 @@ def test_the_markup_atlas_obscura_undark_primaries_registered():
     # batch67 primary (was an unused
     # leftover).
     assert "the_new_humanitarian" in by_id
-    assert "military_times" not in by_id
+    # military_times is now the
+    # batch99 primary (was an unused
+    # leftover).
+    assert "military_times" in by_id
     assert "hkfp" not in by_id
     assert "indian_express" not in by_id
     assert "al_monitor" not in by_id
@@ -24415,7 +24652,9 @@ def test_the_wire_china_literary_hub_himal_primaries_registered():
     # world_politics_review is now the
     # batch66 primary (was an unused
     # batch64 leftover). artnet /
-    # military_times unused because all
+    # military_times is now the
+    # batch99 primary (was an unused
+    # leftover). artnet unused because all
     # three batch64 primaries KEEP.
     # asiatimes / asia_times stay out (httpx 403).
     # biographic stays out (httpx 403).
@@ -24423,7 +24662,7 @@ def test_the_wire_china_literary_hub_himal_primaries_registered():
     assert "wpr" not in by_id
     assert "artnet" in by_id
     assert "artnet_news" not in by_id
-    assert "military_times" not in by_id
+    assert "military_times" in by_id
     assert "militarytimes" not in by_id
     assert "wire_china" not in by_id
     assert "thewirechina" not in by_id
@@ -38237,17 +38476,21 @@ def test_deadline_makezine_utility_dive_primaries_registered():
     assert by_id["deadline"].feed_url != by_id["utility_dive"].feed_url
     assert by_id["makezine"].feed_url != by_id["utility_dive"].feed_url
     # No 备 named this batch. Do not
-    # invent replacements. Do not
-    # pull batch99 hung ids.
+    # invent replacements. batch99
+    # KEEP ids are registered
+    # separately.
     assert "deadline_com" not in by_id
     assert "the_deadline" not in by_id
     assert "makezine_com" not in by_id
     assert "make_magazine" not in by_id
     assert "utilitydive" not in by_id
     assert "utilitydive_com" not in by_id
-    assert "military_times" not in by_id
-    assert "earthsky" not in by_id
-    assert "outside" not in by_id
+    # batch99 KEEP military_times /
+    # earthsky / outside are
+    # registered separately.
+    assert "military_times" in by_id
+    assert "earthsky" in by_id
+    assert "outside" in by_id
     # national_geographic stays
     # unregistered (no official
     # English RSS).
@@ -38378,6 +38621,257 @@ def test_deadline_makezine_utility_dive_feeds_live_httpx_rss_headers():
         )
 
 
+def test_military_times_earthsky_outside_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "military_times" in by_id
+    assert by_id["military_times"].feed_url == (
+        "https://www.militarytimes.com/feed/"
+    )
+    assert by_id["military_times"].feed_url != (
+        "https://www.militarytimes.com/feed"
+    )
+    assert by_id["military_times"].feed_url != (
+        "https://militarytimes.com/feed/"
+    )
+    assert by_id["military_times"].feed_url != (
+        "https://www.militarytimes.com/rss"
+    )
+    assert by_id["military_times"].feed_url != (
+        "https://www.militarytimes.com/rss.xml"
+    )
+    assert by_id["military_times"].feed_url != (
+        "https://www.militarytimes.com/comments/feed/"
+    )
+    assert by_id["military_times"].feed_url != (
+        "https://www.militarytimes.com/arc/outboundfeeds/rss/?outputType=xml"
+    )
+    assert by_id["military_times"].feed_url != (
+        "https://www.defensenews.com/arc/outboundfeeds/rss/?outputType=xml"
+    )
+    assert "earthsky" in by_id
+    assert by_id["earthsky"].feed_url == "https://earthsky.org/feed/"
+    assert by_id["earthsky"].feed_url != "https://earthsky.org/feed"
+    assert by_id["earthsky"].feed_url != "https://www.earthsky.org/feed/"
+    assert by_id["earthsky"].feed_url != "https://earthsky.org/rss"
+    assert by_id["earthsky"].feed_url != "https://earthsky.org/rss.xml"
+    assert by_id["earthsky"].feed_url != "https://earthsky.org/comments/feed/"
+    assert by_id["earthsky"].feed_url != "https://earthsky.org/sitemap.rss"
+    assert "outside" in by_id
+    assert by_id["outside"].feed_url == "https://www.outsideonline.com/feed/"
+    assert by_id["outside"].feed_url != "https://www.outsideonline.com/feed"
+    assert by_id["outside"].feed_url != "https://outsideonline.com/feed/"
+    assert by_id["outside"].feed_url != "https://www.outsideonline.com/rss"
+    assert by_id["outside"].feed_url != (
+        "https://www.outsideonline.com/culture/feed/"
+    )
+    assert by_id["outside"].feed_url != (
+        "https://www.outsideonline.com/comments/feed/"
+    )
+    assert by_id["outside"].feed_url != (
+        "https://www.outsideonline.com/feed/rss/"
+    )
+    # #164 / batch98 winners stay registered and unchanged.
+    # #163 / batch97 winners stay registered and unchanged.
+    # #162 / batch96 winners stay registered and unchanged.
+    # #161 / batch95 winners stay registered and unchanged.
+    # #160 / batch94 winner stays registered and unchanged.
+    # Do not touch deadline / makezine /
+    # utility_dive / phoronix / adafruit /
+    # boingboing / jalopnik / lwn /
+    # quanta_magazine / yale360 /
+    # cleantechnica / hackaday /
+    # astronomy / skyandtelescope /
+    # latimes_technology / variety /
+    # canary_media / defensenews /
+    # taskandpurpose / twz.
+    assert "deadline" in by_id
+    assert "makezine" in by_id
+    assert "utility_dive" in by_id
+    assert "phoronix" in by_id
+    assert "adafruit" in by_id
+    assert "boingboing" in by_id
+    assert "jalopnik" in by_id
+    assert "lwn" in by_id
+    assert "quanta_magazine" in by_id
+    assert "yale360" in by_id
+    assert "cleantechnica" in by_id
+    assert "hackaday" in by_id
+    assert "astronomy" in by_id
+    assert "skyandtelescope" in by_id
+    assert "latimes_technology" in by_id
+    assert "variety" in by_id
+    assert "canary_media" in by_id
+    assert "defensenews" in by_id
+    assert "taskandpurpose" in by_id
+    assert "twz" in by_id
+    # Feed locks + uniqueness vs live
+    # defense / astronomy / outdoor
+    # stack.
+    assert by_id["military_times"].feed_url != by_id["defensenews"].feed_url
+    assert by_id["military_times"].feed_url != by_id["taskandpurpose"].feed_url
+    assert by_id["military_times"].feed_url != by_id["twz"].feed_url
+    assert by_id["military_times"].feed_url != by_id["breaking_defense"].feed_url
+    assert by_id["military_times"].feed_url != by_id["aviationweek"].feed_url
+    assert by_id["earthsky"].feed_url != by_id["astronomy"].feed_url
+    assert by_id["earthsky"].feed_url != by_id["skyandtelescope"].feed_url
+    assert by_id["earthsky"].feed_url != by_id["universe_today"].feed_url
+    assert by_id["earthsky"].feed_url != by_id["livescience"].feed_url
+    assert by_id["earthsky"].feed_url != by_id["space_com"].feed_url
+    assert by_id["outside"].feed_url != by_id["atlas_obscura"].feed_url
+    assert by_id["outside"].feed_url != by_id["mongabay"].feed_url
+    assert by_id["outside"].feed_url != by_id["deadline"].feed_url
+    assert by_id["outside"].feed_url != by_id["variety"].feed_url
+    assert by_id["military_times"].feed_url != by_id["earthsky"].feed_url
+    assert by_id["military_times"].feed_url != by_id["outside"].feed_url
+    assert by_id["earthsky"].feed_url != by_id["outside"].feed_url
+    # Named 备 unused (all KEEP
+    # passed). Do not invent
+    # replacements. Do not pull
+    # batch100 hung ids.
+    assert "militarytimes" not in by_id
+    assert "military_times_com" not in by_id
+    assert "earthsky_org" not in by_id
+    assert "earth_sky" not in by_id
+    assert "outsideonline" not in by_id
+    assert "outside_online" not in by_id
+    assert "outside_com" not in by_id
+    assert "kottke" not in by_id
+    assert "rollingstone" not in by_id
+    assert "avclub" not in by_id
+    assert "indiewire" not in by_id
+    assert "lithub" not in by_id
+    assert "pv_magazine" not in by_id
+    # national_geographic stays
+    # unregistered (no official
+    # English RSS).
+    assert "national_geographic" not in by_id
+    assert "nationalgeographic" not in by_id
+    assert "natgeo" not in by_id
+    assert "carbonbrief" not in by_id
+    assert "carbon_brief" in by_id
+    assert "politico" not in by_id
+    assert "politico_politics" in by_id
+    assert "politico_europe" in by_id
+    assert "the_atlantic" not in by_id
+    assert "motherjones" not in by_id
+    assert "the_intercept" not in by_id
+    assert "theregister" not in by_id
+    assert "atlantic" in by_id
+    assert "mother_jones" in by_id
+    assert "intercept" in by_id
+    assert "the_register" in by_id
+    assert "newscientist" not in by_id
+    assert "qz3" not in by_id
+    assert "qz" not in by_id
+    assert "fastcompany" not in by_id
+    assert "fast_company" in by_id
+    assert "the_verge" not in by_id
+    assert "flightglobal" not in by_id
+    assert "gizmodo" not in by_id
+    assert "the_baffler" not in by_id
+    assert "new_statesman" not in by_id
+    assert "guernica" not in by_id
+    assert "nationalinterest" not in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "the_nation" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "techdirt" not in by_id
+    assert "engadget" not in by_id
+    assert "digital_trends" not in by_id
+    assert "the_cut" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "indian_express" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "al_monitor" not in by_id
+    assert "hkfp" not in by_id
+    assert "biographic" not in by_id
+    assert "asiatimes" not in by_id
+    assert "dawn" not in by_id
+    assert "longreads" not in by_id
+    assert "hrw" not in by_id
+    assert "independent" not in by_id
+    for source_id, expected in _MILITARY_TIMES_EARTHSKY_OUTSIDE_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_military_times_earthsky_outside_feeds_live_httpx_rss_headers():
+    """KEEP must pass the same httpx + RSS_HEADERS client CI uses."""
+    from news_archive.fetch import fetch_source
+
+    by_id = {s.id: s for s in SOURCES}
+    keep_floor = {"military_times": 10, "earthsky": 10, "outside": 10}
+    for source_id in _MILITARY_TIMES_EARTHSKY_OUTSIDE_PRIMARY:
+        source = by_id[source_id]
+        articles = fetch_source(source, timeout=30)
+        assert articles, f"{source_id} httpx+RSS_HEADERS insertable=0"
+        assert len(articles) >= keep_floor[source_id], (
+            f"{source_id} insertable {len(articles)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (military_times /
+        # earthsky / outside)
+        # uses the un-namespaced
+        # element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # military_times 10/10,
+        # earthsky 10/10, and
+        # outside 10/10 were 100%
+        # nonempty this probe.
+        # ≥10 KEEP.
+        # military_times MUST stay
+        # on www /feed/ (trailing
+        # slash; homepage
+        # announced; atom:self).
+        # earthsky MUST keep the
+        # trailing slash on apex
+        # /feed/ (atom:self).
+        # outside MUST stay on www
+        # /feed/ (trailing slash;
+        # atom:self).
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= keep_floor[source_id], (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -38487,6 +38981,7 @@ if __name__ == "__main__":
     test_lwn_primary_registered()
     test_phoronix_adafruit_boingboing_primaries_registered()
     test_deadline_makezine_utility_dive_primaries_registered()
+    test_military_times_earthsky_outside_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -38585,4 +39080,5 @@ if __name__ == "__main__":
     test_lwn_feed_live_httpx_rss_headers()
     test_phoronix_adafruit_boingboing_feeds_live_httpx_rss_headers()
     test_deadline_makezine_utility_dive_feeds_live_httpx_rss_headers()
+    test_military_times_earthsky_outside_feeds_live_httpx_rss_headers()
     print("✓ source registry tests PASSED")
