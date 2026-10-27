@@ -1962,6 +1962,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="taskandpurpose",
+        name="Task & Purpose",
+        feed_url="https://taskandpurpose.com/feed/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="twz",
+        name="The War Zone",
+        feed_url="https://www.twz.com/feed",
+        category="国际",
+        role="primary",
+    ),
+    Source(
+        id="flightglobal",
+        name="FlightGlobal",
+        feed_url="https://www.flightglobal.com/rss",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

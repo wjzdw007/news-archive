@@ -1013,6 +1013,39 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "taskandpurpose" not in TECH_AI_SOURCE_WHITELIST
     assert "twz" not in TECH_AI_SOURCE_WHITELIST
     assert "flightglobal" not in TECH_AI_SOURCE_WHITELIST
+    # batch91 RSS primaries stay off the tech/AI whitelist.
+    # taskandpurpose lands on 国际
+    # (defense / military newsroom,
+    # same as navalnews /
+    # breaking_defense / defense_one
+    # / war_on_rocks) — leftover
+    # unused from #155, now
+    # product-hung KEEP — and is not
+    # added to KEYWORD sources.
+    # twz lands on 国际 (defense /
+    # military newsroom, same as
+    # navalnews / breaking_defense).
+    # Official /feed on www.twz.com
+    # (no trailing slash).
+    # flightglobal lands on 国际
+    # (aviation newsroom, same as
+    # navalnews / breaking_defense).
+    # Official /rss on
+    # www.flightglobal.com.
+    # Unused leftovers aviationweek
+    # / defensenews / fastcompany
+    # stay off (all three primaries
+    # live KEEP; fastcompany already
+    # registered as fast_company).
+    # None of these match the wired
+    # / verge / techcrunch ALWAYS
+    # pattern.
+    assert "taskandpurpose" not in TECH_AI_SOURCE_WHITELIST
+    assert "twz" not in TECH_AI_SOURCE_WHITELIST
+    assert "flightglobal" not in TECH_AI_SOURCE_WHITELIST
+    assert "aviationweek" not in TECH_AI_SOURCE_WHITELIST
+    assert "defensenews" not in TECH_AI_SOURCE_WHITELIST
+    assert "fastcompany" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
