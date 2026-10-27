@@ -1815,6 +1815,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="inverse",
+        name="Inverse",
+        feed_url="https://www.inverse.com/rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="appleinsider",
+        name="AppleInsider",
+        feed_url="https://appleinsider.com/rss/news/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="popular_mechanics",
+        name="Popular Mechanics",
+        feed_url="https://www.popularmechanics.com/rss/all/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

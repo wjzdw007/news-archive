@@ -9420,7 +9420,307 @@ _POLYGON_PCMAG_MASHABLE_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 257
+# CEO-approved Inverse / AppleInsider /
+# Popular Mechanics RSS primaries
+# (batch84). These three are the new
+# adds after #146 (polygon + pcmag +
+# mashable) on tip
+# 3ef873be51c816eb4778fdaf5e6021babc4f5bb1.
+# Primaries were inverse /
+# appleinsider / popular_mechanics.
+# Backups were new_yorker / macworld
+# (probe only if a primary fails
+# thin/403). smithsonian_mag is
+# already a primary on tip from #147
+# — do not register it twice.
+# polygon / pcmag / mashable just
+# landed via #146 — do not undo.
+# Product feed locks
+# (official only; no Feedburner; do
+# NOT use /rss/index.xml for inverse):
+# inverse =
+# https://www.inverse.com/rss
+# (MUST lock /rss; /rss/index.xml is
+# empty — 0 entries this probe)
+# appleinsider =
+# https://appleinsider.com/rss/news/
+# popular_mechanics =
+# https://www.popularmechanics.com/rss/all/
+# new_yorker leftover backup =
+# https://www.newyorker.com/feed/everything
+# macworld leftover backup =
+# https://www.macworld.com/feed
+# (product prefers popular_mechanics
+# over macworld to reduce Apple stack
+# overlap with live 9to5mac +
+# macrumors; only use if a primary
+# falls through).
+# Active candidate set is these 5
+# (3 primary + 2 leftover backup).
+# CAP=6 sources max in the active
+# set. NEWS_SOURCE_CAP display stays 6 —
+# no CAP code change.
+# Do not restore atlantic_council.
+# Do not restore the_nation. Do not
+# restore independent. Do not restore
+# hrw. Do not restore euractiv. Do
+# not restore dawn / longreads. Do
+# not restore times_of_israel. Do not
+# restore techdirt. Do not restore
+# engadget. Do not restore
+# digital_trends. Do not restore
+# the_cut. Do not restore
+# bleepingcomputer. Do not restore
+# gizmodo (CI 403 after #147). Do not
+# probe / register product-skip:
+# bangkok_post / indian_express /
+# rest_of_world / al_monitor / hkfp /
+# biographic / asiatimes / dawn /
+# longreads / hrw / independent /
+# euractiv / atlantic_council /
+# the_nation / times_of_israel /
+# the_cut / techdirt / engadget /
+# digital_trends / bleepingcomputer /
+# gizmodo. Do not re-hang SCMP /
+# MIT TR / BBC World (already live).
+# Do not re-touch polygon / pcmag /
+# mashable (#146) / smithsonian_mag
+# (#147) / cnet / 9to5mac (#145) /
+# artnet / macrumors / quillette
+# (#144) / howtogeek / new_republic /
+# vox (#143) / android_authority /
+# unherd / psyche (#142) /
+# scotusblog / medicalxpress / infoq
+# (#141) / moscow_times / dezeen /
+# eff (#140) / livescience /
+# thehackernews / stereogum (#138) /
+# grist / balkan_insight /
+# tomshardware (#139 / #137) /
+# physics_world / kyiv_independent /
+# pitchfork (#136) / irish_times /
+# science_org / variety (#135) /
+# who_news / scientific_american /
+# thenewstack (#134 / #131).
+# Skip already-registered collisions:
+# the_verge (verge already
+# registered) / wired (already
+# registered). Do not hang a second
+# verge or wired.
+# inverse is the official site-wide
+# RSS (no prior inverse / inverse_com
+# id). Product lock: MUST lock
+# https://www.inverse.com/rss
+# (channel "Inverse") — do NOT lock
+# /rss/index.xml (HTTP 200 but 0
+# entries / empty). Live-diff winner:
+# HTTP 200 / 50 nonempty / 30
+# insertable (httpx fetch_source +
+# urllib; ingest cap 30/50). 50 is
+# not the 5–9 observe band. Distinct
+# from live smithsonian_mag /
+# polygon / pcmag / mashable / wired
+# / verge / popular_science /
+# atlantic / nautilus / undark /
+# atlas_obscura / variety /
+# pitchfork / slate / vox / cnet /
+# 9to5mac / howtogeek / macrumors /
+# android_authority / tomshardware /
+# zdnet / the_register /
+# ars_technica / techcrunch /
+# nyt_personaltech / thenewstack /
+# thehackernews / newatlas /
+# ieee_spectrum / mit_tr /
+# bbc_technology /
+# guardian_technology /
+# nyt_technology /
+# forbes_innovation / fast_company /
+# media404 / the_markup / infoq /
+# techinasia / bloomberg_technology /
+# scientific_american / livescience /
+# space_com / phys_org /
+# sciencedaily / science_news /
+# knowable. 0 article URL overlap
+# with those. Lands on the existing
+# 综合 category path (science /
+# culture / entertainment magazine,
+# same as smithsonian_mag / atlantic
+# / nautilus). Not added to the
+# tech/AI whitelist (later-batch
+# sources stay off the frozen
+# ALWAYS set).
+# appleinsider is the official News
+# RSS (no prior appleinsider /
+# apple_insider / appleinsider_com
+# id). Product lock: MUST lock
+# https://appleinsider.com/rss/news/
+# (channel "AppleInsider News") —
+# trailing slash required. Official
+# Cloudflare serves the feed at
+# HTTP 200 (cf-ray present; not a
+# JS challenge). Soft enrich 403 =
+# cooldown keep applies to
+# article-body enrich after ingest,
+# not to this working RSS 200.
+# Feedburner not used. Live-diff
+# winner: HTTP 200 / 50 nonempty /
+# 30 insertable (httpx fetch_source
+# + urllib; ingest cap 30/50). 50
+# is not the 5–9 observe band.
+# Distinct from live 9to5mac /
+# macrumors / cnet / howtogeek /
+# android_authority / pcmag /
+# mashable / polygon / tomshardware
+# / zdnet / the_register /
+# ars_technica / wired / verge /
+# techcrunch / nyt_personaltech /
+# thenewstack / thehackernews /
+# newatlas / ieee_spectrum / mit_tr
+# / bbc_technology /
+# guardian_technology /
+# nyt_technology /
+# forbes_innovation / fast_company /
+# media404 / the_markup / infoq /
+# techinasia / bloomberg_technology /
+# smithsonian_mag. 0 article URL
+# overlap with those (including 0
+# vs live 9to5mac + macrumors —
+# complementary Apple coverage, not
+# a mirror). Lands on the existing
+# 科技 category path (Apple
+# newsroom, same as macrumors /
+# 9to5mac). Not added to the
+# tech/AI whitelist (later-batch
+# tech sources stay off the frozen
+# ALWAYS set).
+# popular_mechanics is the official
+# site-wide RSS (no prior
+# popular_mechanics /
+# popularmechanics / popmech id).
+# Product lock: MUST lock
+# https://www.popularmechanics.com/rss/all/
+# (channel "Latest Content -
+# Popular Mechanics"). Live-diff
+# winner: HTTP 200 / 50 nonempty /
+# 30 insertable (httpx fetch_source
+# + urllib; ingest cap 30/50). 50
+# is not the 5–9 observe band.
+# Distinct from live
+# popular_science / smithsonian_mag
+# / newatlas / ieee_spectrum /
+# scientific_american / livescience
+# / space_com / phys_org /
+# sciencedaily / science_news /
+# knowable / wired / verge / cnet /
+# howtogeek / mashable / pcmag /
+# polygon / 9to5mac / macrumors /
+# android_authority / tomshardware /
+# zdnet / the_register /
+# ars_technica / techcrunch /
+# nyt_personaltech / thenewstack /
+# thehackernews / mit_tr /
+# bbc_technology /
+# guardian_technology /
+# nyt_technology /
+# forbes_innovation / fast_company /
+# media404 / the_markup / infoq /
+# techinasia / bloomberg_technology.
+# 0 article URL overlap with those.
+# Lands on the existing 科学
+# category path (science /
+# engineering magazine, same as
+# popular_science). Product prefers
+# this over macworld to reduce
+# Apple stack overlap with live
+# 9to5mac + macrumors. Not added
+# to the tech/AI whitelist
+# (later-batch sources stay off
+# the frozen ALWAYS set).
+# Unused leftover new_yorker
+# stays out (all three primaries
+# live KEEP ≥10; if a later
+# hard-swap falls through MUST
+# prefer
+# https://www.newyorker.com/feed/everything
+# over /feed/rss).
+# Unused leftover macworld stays
+# out (popular_mechanics live KEEP;
+# product prefers
+# popular_mechanics over macworld
+# to reduce Apple stack overlap
+# with live 9to5mac + macrumors;
+# only use if a primary falls
+# through —
+# https://www.macworld.com/feed).
+# smithsonian_mag is already the
+# gizmodo hard-swap primary on tip
+# (MUST lock
+# https://www.smithsonianmag.com/rss/latest_articles/
+# never stale /rss/articles/) —
+# do not register it twice.
+# polygon / pcmag / mashable stay
+# registered (batch83 KEEP).
+# engadget stays unregistered
+# (official CloudFront 403; do
+# not register Feedburner).
+# digital_trends stays
+# unregistered (official
+# Cloudflare 403 JS challenge;
+# do not register Feedburner).
+# techdirt stays unregistered
+# (official Cloudflare 403; do
+# not register Feedburner).
+# bleepingcomputer stays
+# unregistered (official
+# Cloudflare 403 JS challenge;
+# do not register Feedburner).
+# the_cut stays out (product
+# dropped — all 404; do not
+# probe / register). the_verge
+# stays out (verge already
+# registered). wired stays
+# registered as the existing
+# wired primary — do not hang a
+# second wired.
+# Do NOT use as backups (product
+# skip): bangkok_post /
+# indian_express / rest_of_world /
+# al_monitor / hkfp / biographic /
+# asiatimes / dawn / longreads /
+# hrw / independent (429) /
+# euractiv (301→rapporteur FAIL) /
+# atlantic_council (403) /
+# the_nation (empty feed) /
+# times_of_israel (Cloudflare 403)
+# / the_cut / techdirt / engadget /
+# digital_trends / bleepingcomputer
+# / gizmodo.
+# digiday0观察 — do not add a
+# second digiday. sunday_review /
+# cnbc (403 known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_INVERSE_APPLEINSIDER_POPULAR_MECHANICS_PRIMARY = {
+    "inverse": {
+        "name": "Inverse",
+        "feed_url": "https://www.inverse.com/rss",
+        "category": "综合",
+    },
+    "appleinsider": {
+        "name": "AppleInsider",
+        "feed_url": "https://appleinsider.com/rss/news/",
+        "category": "科技",
+    },
+    "popular_mechanics": {
+        "name": "Popular Mechanics",
+        "feed_url": "https://www.popularmechanics.com/rss/all/",
+        "category": "科学",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 260
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -29049,6 +29349,319 @@ def test_polygon_pcmag_mashable_feeds_live_http_200():
         )
 
 
+def test_inverse_appleinsider_popular_mechanics_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "inverse" in by_id
+    assert by_id["inverse"].feed_url == "https://www.inverse.com/rss"
+    assert by_id["inverse"].feed_url != "https://www.inverse.com/rss/index.xml"
+    assert "appleinsider" in by_id
+    assert by_id["appleinsider"].feed_url == "https://appleinsider.com/rss/news/"
+    assert "popular_mechanics" in by_id
+    assert by_id["popular_mechanics"].feed_url == (
+        "https://www.popularmechanics.com/rss/all/"
+    )
+    # #146 / batch83 winners stay registered and unchanged.
+    # #147 / #145 / batch82 winners stay registered and unchanged.
+    # #144 / batch81 winners stay registered and unchanged.
+    # #143 / batch80 winners stay registered and unchanged.
+    # #142 / batch79 winners stay registered and unchanged.
+    # #141 / batch78 winners stay registered and unchanged.
+    # #140 / batch77 winners stay registered and unchanged.
+    # #138 / batch76 winners stay registered and unchanged.
+    # #139 / #137 / batch75 winners stay registered and unchanged.
+    # #136 / batch74 winners stay registered and unchanged.
+    # #135 / batch73 winners stay registered and unchanged.
+    # #134 / #131 winners stay registered and unchanged.
+    # Do not touch polygon / pcmag /
+    # mashable / smithsonian_mag / cnet /
+    # 9to5mac / artnet / macrumors /
+    # quillette / howtogeek / new_republic /
+    # vox / android_authority / unherd /
+    # psyche / scotusblog / medicalxpress /
+    # infoq / moscow_times / dezeen /
+    # eff / livescience / thehackernews /
+    # stereogum / grist / balkan_insight /
+    # tomshardware / physics_world /
+    # kyiv_independent / pitchfork /
+    # irish_times / science_org / variety /
+    # who_news / scientific_american /
+    # thenewstack.
+    assert "polygon" in by_id
+    assert "pcmag" in by_id
+    assert "mashable" in by_id
+    assert "cnet" in by_id
+    assert "9to5mac" in by_id
+    assert "smithsonian_mag" in by_id
+    assert "gizmodo" not in by_id
+    assert "artnet" in by_id
+    assert "macrumors" in by_id
+    assert "quillette" in by_id
+    assert "howtogeek" in by_id
+    assert "new_republic" in by_id
+    assert "vox" in by_id
+    assert "android_authority" in by_id
+    assert "unherd" in by_id
+    assert "psyche" in by_id
+    assert "scotusblog" in by_id
+    assert "medicalxpress" in by_id
+    assert "infoq" in by_id
+    assert "moscow_times" in by_id
+    assert "dezeen" in by_id
+    assert "eff" in by_id
+    # Feed locks + uniqueness vs live
+    # Apple / science / culture stack.
+    assert by_id["inverse"].feed_url != by_id["smithsonian_mag"].feed_url
+    assert by_id["inverse"].feed_url != by_id["polygon"].feed_url
+    assert by_id["inverse"].feed_url != by_id["atlantic"].feed_url
+    assert by_id["inverse"].feed_url != by_id["popular_science"].feed_url
+    assert by_id["inverse"].feed_url != by_id["wired"].feed_url
+    assert by_id["inverse"].feed_url != by_id["verge"].feed_url
+    assert by_id["inverse"].feed_url != by_id["mashable"].feed_url
+    assert by_id["appleinsider"].feed_url != by_id["9to5mac"].feed_url
+    assert by_id["appleinsider"].feed_url != by_id["macrumors"].feed_url
+    assert by_id["appleinsider"].feed_url != by_id["cnet"].feed_url
+    assert by_id["appleinsider"].feed_url != by_id["pcmag"].feed_url
+    assert by_id["appleinsider"].feed_url != by_id["howtogeek"].feed_url
+    assert by_id["appleinsider"].feed_url != by_id["android_authority"].feed_url
+    assert by_id["popular_mechanics"].feed_url != by_id["popular_science"].feed_url
+    assert by_id["popular_mechanics"].feed_url != by_id["smithsonian_mag"].feed_url
+    assert by_id["popular_mechanics"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["popular_mechanics"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["popular_mechanics"].feed_url != by_id["scientific_american"].feed_url
+    assert by_id["inverse"].feed_url != by_id["appleinsider"].feed_url
+    assert by_id["inverse"].feed_url != by_id["popular_mechanics"].feed_url
+    assert by_id["appleinsider"].feed_url != by_id["popular_mechanics"].feed_url
+    # new_yorker stays unused leftover
+    # (all three primaries live KEEP;
+    # if a later hard-swap falls
+    # through MUST prefer
+    # /feed/everything).
+    # macworld stays unused leftover
+    # (popular_mechanics live KEEP;
+    # product prefers
+    # popular_mechanics to reduce
+    # Apple stack overlap with live
+    # 9to5mac + macrumors).
+    # smithsonian_mag is already the
+    # gizmodo hard-swap primary on tip
+    # (MUST lock /rss/latest_articles/
+    # never stale /rss/articles/) — do
+    # not register it twice.
+    # polygon / pcmag / mashable stay
+    # registered (batch83 KEEP).
+    # bleepingcomputer official Cloudflare
+    # 403 JS challenge — not registered
+    # (do not hang Feedburner).
+    # engadget / digital_trends stay
+    # unregistered (official RSS 403;
+    # do not hang Feedburner).
+    # the_verge stays out (verge already
+    # registered). Do not hang a second
+    # wired. the_cut stays out (product
+    # dropped — all 404). techdirt stays
+    # unregistered (official Cloudflare
+    # 403; do not hang Feedburner).
+    # gizmodo stays hung (official CI
+    # 403; do not re-hang).
+    # cnet / 9to5mac / smithsonian_mag
+    # stay registered (batch82 KEEP
+    # after the #147 hard-swap).
+    # artnet / macrumors / quillette stay
+    # registered (batch81 KEEP).
+    # howtogeek / new_republic / vox stay
+    # registered (batch80 KEEP).
+    # android_authority / unherd / psyche
+    # stay registered (batch79 KEEP).
+    # scotusblog / medicalxpress / infoq
+    # stay registered (batch78 KEEP).
+    # moscow_times / dezeen / eff stay
+    # registered (batch77 KEEP).
+    # livescience / thehackernews /
+    # stereogum stay registered
+    # (batch76 KEEP). balkan_insight /
+    # tomshardware stay registered
+    # (batch75 KEEP). physics_world /
+    # kyiv_independent / pitchfork stay
+    # registered (batch74 KEEP).
+    # irish_times / science_org / variety
+    # stay registered (batch73 KEEP).
+    # who_news stays registered
+    # (batch72 hard-swap KEEP).
+    # independent stays hung (daily-fetch
+    # #40291069350 httpx 429 勿再挂).
+    # independent_world stays hung
+    # (prior 429; World section — do not
+    # restore). passblue stays unused
+    # (batch71 leftover). longreads stays
+    # out (batch68 official httpx 403).
+    # dawn stays out (batch67 official
+    # Cloudflare 403). Do not register
+    # dawn Feedburner. Do not register
+    # euractiv Feedburner. asiatimes /
+    # asia_times stay out (httpx 403).
+    # biographic stays out (httpx 403).
+    # inkstick stays out (product dropped).
+    # hrw stays hung. euractiv stays unused
+    # (official www.euractiv.com 301s to
+    # rapporteur.com; Feedburner stale
+    # 2025-12 — do not register).
+    # times_of_israel stays unused
+    # (official Cloudflare 403 FAIL;
+    # Feedburner stale 2012).
+    assert "new_yorker" not in by_id
+    assert "newyorker" not in by_id
+    assert "the_new_yorker" not in by_id
+    assert "macworld" not in by_id
+    assert "mac_world" not in by_id
+    assert "macworld_com" not in by_id
+    assert "inverse_com" not in by_id
+    assert "apple_insider" not in by_id
+    assert "appleinsider_com" not in by_id
+    assert "popularmechanics" not in by_id
+    assert "popmech" not in by_id
+    assert "popular_mechanics_com" not in by_id
+    assert "smithsonian" not in by_id
+    assert "smithsonianmag" not in by_id
+    assert "smithsonian_magazine" not in by_id
+    assert "polygon_com" not in by_id
+    assert "pcmag_com" not in by_id
+    assert "pc_mag" not in by_id
+    assert "mashable_com" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bleeping_computer" not in by_id
+    assert "bleepingcomputer_com" not in by_id
+    assert "engadget" not in by_id
+    assert "engadget_com" not in by_id
+    assert "digital_trends" not in by_id
+    assert "digitaltrends" not in by_id
+    assert "digital_trends_com" not in by_id
+    assert "the_verge" not in by_id
+    assert "techdirt" not in by_id
+    assert "techdirt_com" not in by_id
+    assert "the_cut" not in by_id
+    assert "thecut" not in by_id
+    assert "the_cut_com" not in by_id
+    assert "cnet_com" not in by_id
+    assert "cnet_news" not in by_id
+    assert "nine_to_five_mac" not in by_id
+    assert "to5mac" not in by_id
+    assert "gizmodo" not in by_id
+    assert "gizmodo_com" not in by_id
+    assert "macrumors_com" not in by_id
+    assert "quillette_com" not in by_id
+    assert "artnet_news" not in by_id
+    assert "artnet_com" not in by_id
+    assert "howtogeek_com" not in by_id
+    assert "how_to_geek" not in by_id
+    assert "new_republic_com" not in by_id
+    assert "thenewrepublic" not in by_id
+    assert "newrepublic" not in by_id
+    assert "vox_com" not in by_id
+    assert "vox_media" not in by_id
+    assert "androidauthority" not in by_id
+    assert "android_authority_com" not in by_id
+    assert "unherd_com" not in by_id
+    assert "psyche_co" not in by_id
+    assert "psyche_magazine" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "timesofisrael" not in by_id
+    assert "scotus_blog" not in by_id
+    assert "medical_xpress" not in by_id
+    assert "info_q" not in by_id
+    assert "the_nation" not in by_id
+    assert "thenation" not in by_id
+    assert "the_moscow_times" not in by_id
+    assert "dezeen_com" not in by_id
+    assert "eff_org" not in by_id
+    assert "grist" in by_id
+    assert "grist_org" not in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "euractiv_com" not in by_id
+    assert "rapporteur" not in by_id
+    assert "live_science" not in by_id
+    assert "the_hacker_news" not in by_id
+    assert "stereogum_com" not in by_id
+    assert "who_news" in by_id
+    assert "independent" not in by_id
+    assert "independent_world" not in by_id
+    assert "passblue" not in by_id
+    assert "inkstick" not in by_id
+    assert "hrw" not in by_id
+    assert "longreads" not in by_id
+    assert "dawn" not in by_id
+    assert "asiatimes" not in by_id
+    assert "asia_times" not in by_id
+    assert "biographic" not in by_id
+    assert "hkfp" not in by_id
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "guardian_games" not in by_id
+    for source_id, expected in _INVERSE_APPLEINSIDER_POPULAR_MECHANICS_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_inverse_appleinsider_popular_mechanics_feeds_live_http_200():
+    """Hit the three batch84 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _INVERSE_APPLEINSIDER_POPULAR_MECHANICS_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (inverse / appleinsider /
+        # popular_mechanics) uses the
+        # un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # inverse 50/50, appleinsider
+        # 50/50, and popular_mechanics
+        # 50/50 were 100% nonempty this
+        # probe. ingest cap 30/50 still
+        # KEEP. inverse MUST stay on /rss
+        # ( /rss/index.xml is empty).
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= 10, (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -29139,6 +29752,7 @@ if __name__ == "__main__":
     test_gizmodo_hard_swapped_to_smithsonian_mag()
     test_cnet_9to5mac_smithsonian_mag_primaries_registered()
     test_polygon_pcmag_mashable_primaries_registered()
+    test_inverse_appleinsider_popular_mechanics_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -29221,4 +29835,5 @@ if __name__ == "__main__":
     test_artnet_macrumors_quillette_feeds_live_http_200()
     test_cnet_9to5mac_smithsonian_mag_feeds_live_http_200()
     test_polygon_pcmag_mashable_feeds_live_http_200()
+    test_inverse_appleinsider_popular_mechanics_feeds_live_http_200()
     print("✓ source registry tests PASSED")
