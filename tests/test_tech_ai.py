@@ -703,11 +703,10 @@ def test_whitelist_registered_and_cap_unchanged():
     # official FAIL (Cloudflare 403 JS
     # challenge; do not register
     # Feedburner) — not registered.
-    # Unused leftover polygon stays off
-    # (first-winner unused stay out; if
-    # a later hard-swap falls through
-    # MUST lock /feed/ never
-    # /rss/index.xml). new_yorker stays
+    # polygon is now batch83 KEEP (was
+    # a batch82 leftover; MUST lock
+    # /feed/ never /rss/index.xml) and
+    # stays off the whitelist. new_yorker stays
     # off (smithsonian_mag won). the_verge
     # stays off (verge already
     # registered). the_cut stays off
@@ -732,6 +731,65 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "artnet" not in TECH_AI_SOURCE_WHITELIST
     assert "macrumors" not in TECH_AI_SOURCE_WHITELIST
     assert "quillette" not in TECH_AI_SOURCE_WHITELIST
+    assert "atlantic_council" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_nation" not in TECH_AI_SOURCE_WHITELIST
+    assert "euractiv" not in TECH_AI_SOURCE_WHITELIST
+    # batch83 RSS primaries stay off the tech/AI whitelist.
+    # polygon lands on 综合 (gaming /
+    # entertainment newsroom, same as
+    # variety / pitchfork) and is not
+    # an ALWAYS tech source. pcmag
+    # lands on 科技 (consumer tech /
+    # reviews newsroom, same as cnet /
+    # howtogeek / tomshardware) but
+    # later-batch tech sources stay
+    # off the frozen ALWAYS set.
+    # mashable lands on 科技 (consumer
+    # tech / culture newsroom, same as
+    # gizmodo / cnet) but later-batch
+    # tech sources stay off the frozen
+    # ALWAYS set. None of these match
+    # the wired / verge / techcrunch
+    # ALWAYS pattern. Unused leftover
+    # bleepingcomputer stays off
+    # (official Cloudflare 403 JS
+    # challenge; do not register
+    # Feedburner). smithsonian_mag is
+    # already the gizmodo hard-swap
+    # primary and stays off the
+    # whitelist (MUST lock
+    # /rss/latest_articles/ never stale
+    # /rss/articles/). new_yorker stays
+    # unused leftover (smithsonian_mag
+    # live KEEP; if a later hard-swap
+    # falls through MUST prefer
+    # /feed/everything).
+    # engadget / digital_trends /
+    # techdirt stay off (official RSS
+    # 403; do not register Feedburner).
+    # the_cut stays off (product
+    # dropped — all 404). the_verge
+    # stays off (verge already
+    # registered). atlantic_council
+    # stays off (hard-swapped to grist
+    # in #139). the_nation stays off
+    # (empty site-wide FAIL). euractiv
+    # stays off (official 301 to
+    # rapporteur.com; Feedburner stale).
+    assert "polygon" not in TECH_AI_SOURCE_WHITELIST
+    assert "pcmag" not in TECH_AI_SOURCE_WHITELIST
+    assert "mashable" not in TECH_AI_SOURCE_WHITELIST
+    assert "bleepingcomputer" not in TECH_AI_SOURCE_WHITELIST
+    assert "smithsonian_mag" not in TECH_AI_SOURCE_WHITELIST
+    assert "new_yorker" not in TECH_AI_SOURCE_WHITELIST
+    assert "engadget" not in TECH_AI_SOURCE_WHITELIST
+    assert "digital_trends" not in TECH_AI_SOURCE_WHITELIST
+    assert "techdirt" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_cut" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_verge" not in TECH_AI_SOURCE_WHITELIST
+    assert "cnet" not in TECH_AI_SOURCE_WHITELIST
+    assert "9to5mac" not in TECH_AI_SOURCE_WHITELIST
+    assert "gizmodo" not in TECH_AI_SOURCE_WHITELIST
     assert "atlantic_council" not in TECH_AI_SOURCE_WHITELIST
     assert "the_nation" not in TECH_AI_SOURCE_WHITELIST
     assert "euractiv" not in TECH_AI_SOURCE_WHITELIST

@@ -1794,6 +1794,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="polygon",
+        name="Polygon",
+        feed_url="https://www.polygon.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="pcmag",
+        name="PCMag",
+        feed_url="https://www.pcmag.com/feeds/rss/latest",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="mashable",
+        name="Mashable",
+        feed_url="https://mashable.com/feeds/rss/all",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

@@ -9045,21 +9045,10 @@ _ARTNET_MACRUMORS_QUILLETTE_PRIMARY = {
 # as atlantic / nautilus / undark /
 # atlas_obscura). Not added to the
 # tech/AI whitelist.
-# Unused leftover polygon stays
-# out (first-winner unused stay
-# out; do not probe unused
-# backups after three KEEP). If a
-# later hard-swap falls through:
-# polygon MUST lock
-# https://www.polygon.com/feed/
-# (channel "Polygon.com"). Do NOT
-# use /rss/index.xml (remaps to
-# /feed/). /feed (no slash) and
-# apex remap to www /feed/.
-# /rss and /rss.xml are HTTP 404.
-# Feedburner /polygon is a
-# different garbled channel —
-# lock official, not Feedburner.
+# Unused leftover polygon is now
+# batch83 KEEP (was a batch82
+# leftover; product-locked
+# /feed/ never /rss/index.xml).
 # new_yorker stays unused
 # (smithsonian_mag won the
 # gizmodo hard-swap fill). If a
@@ -9128,7 +9117,310 @@ _CNET_9TO5MAC_SMITHSONIAN_MAG_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 254
+# CEO-approved Polygon / PCMag /
+# Mashable RSS primaries (batch83).
+# These three are the new adds after
+# #147 (gizmodo → smithsonian_mag
+# hard-swap) on tip
+# 3ca9c73045c1c053f0b536aba58545d57b29f236.
+# Primaries were polygon / pcmag /
+# mashable. Backups were
+# bleepingcomputer / new_yorker.
+# smithsonian_mag is already a
+# primary on tip — do not register
+# it twice; drop it from leftovers.
+# Product feed locks
+# (official only; no Feedburner; do
+# NOT use /rss/index.xml for any of
+# these):
+# polygon =
+# https://www.polygon.com/feed/
+# pcmag =
+# https://www.pcmag.com/feeds/rss/latest
+# mashable official site RSS only
+# (prefer /feed/ or documented
+# official) =
+# https://mashable.com/feeds/rss/all
+# bleepingcomputer = official RSS
+# new_yorker =
+# https://www.newyorker.com/feed/everything
+# Active candidate set is these 5
+# (3 primary + 2 leftover backup).
+# smithsonian_mag is already a
+# primary on tip, not a backup.
+# CAP=6 sources max in the active
+# set. NEWS_SOURCE_CAP display stays 6 —
+# no CAP code change.
+# Do not restore atlantic_council.
+# Do not restore the_nation. Do not
+# restore independent. Do not restore
+# hrw. Do not restore euractiv. Do
+# not restore dawn / longreads. Do
+# not restore times_of_israel. Do
+# not restore techdirt. Do not
+# restore engadget. Do not restore
+# digital_trends. Do not restore
+# the_cut. Do not re-hang gizmodo
+# (CI 403 after #147). Do not
+# re-touch cnet / 9to5mac /
+# smithsonian_mag (#147 / #145) /
+# artnet /
+# macrumors / quillette (#144) /
+# howtogeek / new_republic / vox
+# (#143) / android_authority / unherd /
+# psyche (#142) / scotusblog /
+# medicalxpress / infoq (#141) /
+# moscow_times / dezeen / eff (#140)
+# / livescience / thehackernews /
+# stereogum (#138) / grist /
+# balkan_insight / tomshardware
+# (#139 / #137) / physics_world /
+# kyiv_independent / pitchfork (#136)
+# / irish_times / science_org /
+# variety (#135) / who_news /
+# scientific_american / thenewstack
+# (#134 / #131) / texas_tribune /
+# pew_research / defector (#129) /
+# media404 / jacobin / un_news (#128
+# after the hard-swap) / kff_health /
+# niemanlab / reason (#127) /
+# popular_science / slate / the_19th
+# (#126) / the_new_humanitarian /
+# salon / mother_jones (#125).
+# Skip already-registered collisions:
+# the_verge (verge already
+# registered) / wired (already
+# registered). Do not hang a second
+# verge or wired.
+# polygon is the official site-wide
+# RSS (no prior polygon /
+# polygon_com id; was a batch82
+# unused leftover now promoted).
+# Product lock: MUST lock
+# https://www.polygon.com/feed/
+# (channel "Polygon.com") — do NOT
+# lock /rss/index.xml (remaps to
+# /feed/). /feed (no slash) remaps
+# to /feed/. apex remaps to www
+# /feed/. /rss and /rss.xml are
+# HTTP 404. Feedburner /polygon is
+# a different garbled channel
+# (windows-1251; channel text is
+# not "Polygon.com"; link
+# http://plgn.ru) — lock official,
+# not Feedburner. Live-diff winner:
+# HTTP 200 / 10 nonempty / 10
+# insertable (httpx fetch_source +
+# urllib). 10 is not the 5–9
+# observe band. Distinct from live
+# verge / wired / smithsonian_mag /
+# variety
+# / cnet / 9to5mac / howtogeek /
+# macrumors / android_authority /
+# tomshardware / zdnet /
+# the_register / ars_technica /
+# techcrunch / nyt_personaltech /
+# thenewstack / thehackernews /
+# newatlas / ieee_spectrum / mit_tr
+# / bbc_technology /
+# guardian_technology /
+# nyt_technology /
+# forbes_innovation / fast_company
+# / media404 / the_markup / infoq /
+# techinasia / bloomberg_technology
+# / vox / pitchfork / nyt_arts /
+# guardian_film / npr_arts. 0
+# article URL overlap with those.
+# Lands on the existing 综合
+# category path (gaming /
+# entertainment newsroom, same as
+# variety / pitchfork). Not added
+# to the tech/AI whitelist
+# (later-batch sources stay off
+# the frozen ALWAYS set).
+# pcmag is the official advertised
+# Latest RSS (no prior pcmag /
+# pcmag_com / pc_mag id). Product
+# lock: MUST lock
+# https://www.pcmag.com/feeds/rss/latest
+# (channel "PCMag.com - Technology
+# Product Reviews, News, Prices &
+# Tips") — do NOT lock
+# /rss/index.xml or /feed/.
+# /feeds/rss/latest/ remaps to the
+# no-trailing-slash official. apex
+# remaps to www /feeds/rss/latest.
+# /feed/ /rss /rss.xml are HTTP
+# 404. Official Cloudflare serves
+# the feed at HTTP 200 (cf-ray
+# present; not a JS challenge).
+# Soft enrich 403 = cooldown keep
+# applies to article-body enrich
+# after ingest, not to this
+# working RSS 200. Feedburner
+# /pcmag and /PCMag are live
+# mirrors — lock official, not
+# Feedburner. Live-diff winner:
+# HTTP 200 / 100 nonempty / 30
+# insertable (httpx fetch_source +
+# urllib; ingest cap 30). 100 is
+# not the 5–9 observe band.
+# Distinct from live cnet /
+# howtogeek / tomshardware / zdnet
+# / the_register / ars_technica /
+# wired / verge / techcrunch /
+# nyt_personaltech / thenewstack /
+# thehackernews / newatlas /
+# ieee_spectrum / mit_tr /
+# bbc_technology /
+# guardian_technology /
+# nyt_technology /
+# forbes_innovation / fast_company
+# / media404 / the_markup / infoq /
+# techinasia / bloomberg_technology
+# / 9to5mac / macrumors /
+# android_authority /
+# smithsonian_mag. 0
+# article URL overlap with those.
+# Lands on the existing 科技
+# category path (consumer tech /
+# reviews newsroom, same as cnet /
+# howtogeek / tomshardware). Not
+# added to the tech/AI whitelist
+# (later-batch tech sources stay
+# off the frozen ALWAYS set).
+# mashable is the official
+# documented site-wide RSS (no
+# prior mashable / mashable_com
+# id). Product lock: official site
+# RSS only — prefer /feed/ or
+# documented official; no
+# Feedburner. MUST lock
+# https://mashable.com/feeds/rss/all
+# (channel "Mashable") — that is
+# the documented official
+# destination /feed/ remaps to.
+# Do NOT lock /rss/index.xml.
+# /feed/ /feed and www /feed/
+# remap to /feeds/rss/all.
+# /feeds/rss/latest /rss /rss.xml
+# are HTTP 404. feeds.mashable.com
+# SSL-fails. Official Cloudflare
+# serves the feed at HTTP 200
+# (cf-ray present; not a JS
+# challenge). Soft enrich 403 =
+# cooldown keep applies to
+# article-body enrich after
+# ingest, not to this working RSS
+# 200. Feedburner /mashable and
+# /Mashable are live mirrors —
+# lock official, not Feedburner.
+# Live-diff winner: HTTP 200 / 100
+# nonempty / 30 insertable (httpx
+# fetch_source + urllib; ingest
+# cap 30). 100 is not the 5–9
+# observe band. Distinct from live
+# smithsonian_mag / cnet / verge /
+# wired /
+# techcrunch / vox / 9to5mac /
+# howtogeek / macrumors /
+# android_authority / tomshardware
+# / zdnet / the_register /
+# ars_technica / nyt_personaltech /
+# thenewstack / thehackernews /
+# newatlas / ieee_spectrum / mit_tr
+# / bbc_technology /
+# guardian_technology /
+# nyt_technology /
+# forbes_innovation / fast_company
+# / media404 / the_markup / infoq /
+# techinasia / bloomberg_technology
+# / variety / slate / pitchfork. 0
+# article URL overlap with those.
+# Lands on the existing 科技
+# category path (consumer tech /
+# culture newsroom, same as
+# gizmodo / cnet). Not added to
+# the tech/AI whitelist
+# (later-batch tech sources stay
+# off the frozen ALWAYS set).
+# Unused leftover
+# bleepingcomputer stays out
+# (official Cloudflare 403 JS
+# challenge "Just a moment...";
+# do NOT register Feedburner —
+# Feedburner /bleepingcomputer is
+# a YouTube channel, not the
+# official news RSS).
+# smithsonian_mag is already the
+# gizmodo hard-swap primary on
+# tip (MUST lock
+# https://www.smithsonianmag.com/rss/latest_articles/
+# never stale /rss/articles/) —
+# do not register it twice.
+# Unused leftover new_yorker
+# stays out (smithsonian_mag live
+# KEEP; if a later hard-swap
+# falls through MUST prefer
+# https://www.newyorker.com/feed/everything
+# over /feed/rss).
+# engadget stays unregistered
+# (official CloudFront 403; do
+# not register Feedburner).
+# digital_trends stays
+# unregistered (official
+# Cloudflare 403 JS challenge;
+# do not register Feedburner).
+# techdirt stays unregistered
+# (official Cloudflare 403; do
+# not register Feedburner).
+# the_cut stays out (product
+# dropped — all 404; do not
+# probe / register). the_verge
+# stays out (verge already
+# registered). wired stays
+# registered as the existing
+# wired primary — do not hang a
+# second wired.
+# Do NOT use as backups (product
+# skip): bangkok_post /
+# indian_express / rest_of_world /
+# al_monitor / hkfp / biographic /
+# asiatimes / dawn / longreads /
+# hrw / independent (429) /
+# euractiv (301→rapporteur FAIL) /
+# atlantic_council (403) /
+# the_nation (empty feed) /
+# times_of_israel (Cloudflare 403)
+# / the_cut / techdirt / engadget /
+# digital_trends.
+# digiday0观察 — do not add a
+# second digiday. sunday_review /
+# cnbc (403 known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_POLYGON_PCMAG_MASHABLE_PRIMARY = {
+    "polygon": {
+        "name": "Polygon",
+        "feed_url": "https://www.polygon.com/feed/",
+        "category": "综合",
+    },
+    "pcmag": {
+        "name": "PCMag",
+        "feed_url": "https://www.pcmag.com/feeds/rss/latest",
+        "category": "科技",
+    },
+    "mashable": {
+        "name": "Mashable",
+        "feed_url": "https://mashable.com/feeds/rss/all",
+        "category": "科技",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 257
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -27373,9 +27665,9 @@ def test_artnet_macrumors_quillette_primaries_registered():
     # engadget / digital_trends stay
     # unregistered (official RSS 403;
     # do not hang Feedburner). polygon
-    # stays unused (batch82 leftover;
-    # if a later hard-swap falls
-    # through MUST lock /feed/ never
+    # is now batch83 KEEP (was a
+    # batch82 leftover; MUST lock
+    # /feed/ never
     # /rss/index.xml).
     # the_cut stays out (product dropped
     # — all 404). howtogeek / new_republic
@@ -27497,7 +27789,7 @@ def test_artnet_macrumors_quillette_primaries_registered():
     assert "engadget_com" not in by_id
     assert "digital_trends" not in by_id
     assert "digitaltrends" not in by_id
-    assert "polygon" not in by_id
+    assert "polygon" in by_id
     assert "polygon_com" not in by_id
     assert "the_verge" not in by_id
     for source_id, expected in _ARTNET_MACRUMORS_QUILLETTE_PRIMARY.items():
@@ -28005,6 +28297,9 @@ def test_cnet_9to5mac_smithsonian_mag_primaries_registered():
     assert by_id["cnet"].feed_url != by_id["9to5mac"].feed_url
     assert by_id["cnet"].feed_url != by_id["smithsonian_mag"].feed_url
     assert by_id["9to5mac"].feed_url != by_id["smithsonian_mag"].feed_url
+    assert by_id["smithsonian_mag"].feed_url != by_id["polygon"].feed_url
+    assert by_id["smithsonian_mag"].feed_url != by_id["pcmag"].feed_url
+    assert by_id["smithsonian_mag"].feed_url != by_id["mashable"].feed_url
     # gizmodo official CI httpx 403 —
     # not registered (do not re-hang;
     # do not hang Feedburner).
@@ -28013,10 +28308,9 @@ def test_cnet_9to5mac_smithsonian_mag_primaries_registered():
     # Feedburner). digital_trends official
     # Cloudflare 403 — not registered
     # (do not hang Feedburner). polygon
-    # stays unused (first-winner unused
-    # stay out). If a later hard-swap
-    # falls through: polygon MUST lock
-    # /feed/ never /rss/index.xml.
+    # is now batch83 KEEP (was a
+    # batch82 leftover; MUST lock
+    # /feed/ never /rss/index.xml).
     # the_verge stays out (verge already
     # registered). Do not hang a second
     # wired. the_cut stays out (product
@@ -28073,7 +28367,7 @@ def test_cnet_9to5mac_smithsonian_mag_primaries_registered():
     assert "digital_trends" not in by_id
     assert "digitaltrends" not in by_id
     assert "digital_trends_com" not in by_id
-    assert "polygon" not in by_id
+    assert "polygon" in by_id
     assert "polygon_com" not in by_id
     assert "the_verge" not in by_id
     assert "cnet_com" not in by_id
@@ -28210,6 +28504,551 @@ def test_cnet_9to5mac_smithsonian_mag_feeds_live_http_200():
         )
 
 
+def test_polygon_pcmag_mashable_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "polygon" in by_id
+    assert by_id["polygon"].feed_url == "https://www.polygon.com/feed/"
+    assert "pcmag" in by_id
+    assert by_id["pcmag"].feed_url == "https://www.pcmag.com/feeds/rss/latest"
+    assert "mashable" in by_id
+    assert by_id["mashable"].feed_url == "https://mashable.com/feeds/rss/all"
+    # #145 / batch82 winners stay registered and unchanged.
+    # #144 / batch81 winners stay registered and unchanged.
+    # #143 / batch80 winners stay registered and unchanged.
+    # #142 / batch79 winners stay registered and unchanged.
+    # #141 / batch78 winners stay registered and unchanged.
+    # #140 / batch77 winners stay registered and unchanged.
+    # #138 / batch76 winners stay registered and unchanged.
+    # #139 / #137 / batch75 winners stay registered and unchanged.
+    # #136 / batch74 winners stay registered and unchanged.
+    # #135 / batch73 winners stay registered and unchanged.
+    # #134 / #131 winners stay registered and unchanged.
+    # #129 / #130 winners stay registered and unchanged.
+    # #128 winners stay registered and unchanged.
+    # #127 winners stay registered and unchanged.
+    # #126 winners stay registered and unchanged.
+    # #125 winners stay registered and unchanged.
+    # Do not touch cnet / 9to5mac /
+    # smithsonian_mag / artnet / macrumors /
+    # quillette / howtogeek / new_republic /
+    # vox / android_authority / unherd /
+    # psyche / scotusblog / medicalxpress /
+    # infoq / moscow_times / dezeen /
+    # eff / livescience / thehackernews /
+    # stereogum / grist / balkan_insight /
+    # tomshardware / physics_world /
+    # kyiv_independent / pitchfork /
+    # irish_times / science_org / variety /
+    # who_news / scientific_american /
+    # thenewstack / texas_tribune /
+    # pew_research / defector / media404 /
+    # jacobin / un_news / kff_health /
+    # niemanlab / reason / popular_science /
+    # slate / the_19th /
+    # the_new_humanitarian / salon /
+    # mother_jones.
+    assert "cnet" in by_id
+    assert "9to5mac" in by_id
+    assert "smithsonian_mag" in by_id
+    assert "gizmodo" not in by_id
+    assert "artnet" in by_id
+    assert "macrumors" in by_id
+    assert "quillette" in by_id
+    assert "howtogeek" in by_id
+    assert "new_republic" in by_id
+    assert "vox" in by_id
+    assert "android_authority" in by_id
+    assert "unherd" in by_id
+    assert "psyche" in by_id
+    assert "scotusblog" in by_id
+    assert "medicalxpress" in by_id
+    assert "infoq" in by_id
+    assert "moscow_times" in by_id
+    assert "dezeen" in by_id
+    assert "eff" in by_id
+    assert "livescience" in by_id
+    assert "thehackernews" in by_id
+    assert "stereogum" in by_id
+    assert "grist" in by_id
+    assert "atlantic_council" not in by_id
+    assert "balkan_insight" in by_id
+    assert "tomshardware" in by_id
+    assert "physics_world" in by_id
+    assert "kyiv_independent" in by_id
+    assert "pitchfork" in by_id
+    assert "irish_times" in by_id
+    assert "science_org" in by_id
+    assert "variety" in by_id
+    assert "who_news" in by_id
+    assert "independent" not in by_id
+    assert "scientific_american" in by_id
+    assert "thenewstack" in by_id
+    assert "texas_tribune" in by_id
+    assert "pew_research" in by_id
+    assert "defector" in by_id
+    assert "media404" in by_id
+    assert "jacobin" in by_id
+    assert "un_news" in by_id
+    assert "hrw" not in by_id
+    assert "kff_health" in by_id
+    assert "niemanlab" in by_id
+    assert "reason" in by_id
+    assert "popular_science" in by_id
+    assert "slate" in by_id
+    assert "the_19th" in by_id
+    assert "the_new_humanitarian" in by_id
+    assert "salon" in by_id
+    assert "mother_jones" in by_id
+    assert "zdnet" in by_id
+    assert "the_register" in by_id
+    assert "newatlas" in by_id
+    assert "phys_org" in by_id
+    assert "space_com" in by_id
+    assert "atlantic" in by_id
+    assert "verge" in by_id
+    assert "wired" in by_id
+    assert by_id["cnet"].feed_url == "https://www.cnet.com/rss/news/"
+    assert by_id["9to5mac"].feed_url == "https://9to5mac.com/feed/"
+    assert by_id["smithsonian_mag"].feed_url == (
+        "https://www.smithsonianmag.com/rss/latest_articles/"
+    )
+    assert by_id["artnet"].feed_url == "https://news.artnet.com/feed"
+    assert by_id["macrumors"].feed_url == (
+        "https://feeds.macrumors.com/MacRumors-All"
+    )
+    assert by_id["quillette"].feed_url == "https://quillette.com/articles/rss/"
+    assert by_id["howtogeek"].feed_url == "https://www.howtogeek.com/feed/"
+    assert by_id["new_republic"].feed_url == "https://newrepublic.com/rss.xml"
+    assert by_id["vox"].feed_url == "https://www.vox.com/rss/index.xml"
+    assert by_id["android_authority"].feed_url == (
+        "https://www.androidauthority.com/feed/"
+    )
+    assert by_id["unherd"].feed_url == "https://unherd.com/feed/"
+    assert by_id["psyche"].feed_url == "https://psyche.co/feed.rss"
+    assert by_id["scotusblog"].feed_url == "https://www.scotusblog.com/feed/"
+    assert by_id["medicalxpress"].feed_url == (
+        "https://medicalxpress.com/rss-feed/"
+    )
+    assert by_id["infoq"].feed_url == "https://feed.infoq.com/"
+    assert by_id["moscow_times"].feed_url == (
+        "https://www.themoscowtimes.com/rss/news"
+    )
+    assert by_id["dezeen"].feed_url == "https://www.dezeen.com/feed/"
+    assert by_id["eff"].feed_url == "https://www.eff.org/rss/updates.xml"
+    assert by_id["livescience"].feed_url == (
+        "https://www.livescience.com/feeds.xml"
+    )
+    assert by_id["thehackernews"].feed_url == (
+        "https://feeds.feedburner.com/TheHackersNews"
+    )
+    assert by_id["stereogum"].feed_url == "https://stereogum.com/feed"
+    assert by_id["grist"].feed_url == "https://grist.org/feed/"
+    assert by_id["balkan_insight"].feed_url == (
+        "https://balkaninsight.com/feed/"
+    )
+    assert by_id["tomshardware"].feed_url == (
+        "https://www.tomshardware.com/feeds.xml"
+    )
+    assert by_id["physics_world"].feed_url == "https://physicsworld.com/feed/"
+    assert by_id["kyiv_independent"].feed_url == (
+        "https://kyivindependent.com/feed/rss/"
+    )
+    assert by_id["pitchfork"].feed_url == "https://pitchfork.com/feed/rss"
+    assert by_id["irish_times"].feed_url == (
+        "https://www.irishtimes.com/arc/outboundfeeds/rss/?outputType=xml"
+    )
+    assert by_id["science_org"].feed_url == (
+        "https://www.science.org/rss/news_current.xml"
+    )
+    assert by_id["variety"].feed_url == "https://variety.com/feed/"
+    assert by_id["who_news"].feed_url == (
+        "https://www.who.int/rss-feeds/news-english.xml"
+    )
+    assert by_id["scientific_american"].feed_url == (
+        "https://www.scientificamerican.com/platform/syndication/rss/"
+    )
+    assert by_id["thenewstack"].feed_url == "https://thenewstack.io/feed/"
+    assert by_id["texas_tribune"].feed_url == (
+        "https://feeds.texastribune.org/feeds/main/"
+    )
+    assert by_id["pew_research"].feed_url == (
+        "https://www.pewresearch.org/feed/"
+    )
+    assert by_id["defector"].feed_url == "https://defector.com/feed"
+    assert by_id["media404"].feed_url == "https://www.404media.co/rss/"
+    assert by_id["jacobin"].feed_url == "https://jacobin.com/feed/"
+    assert by_id["un_news"].feed_url == (
+        "https://news.un.org/feed/subscribe/en/news/all/rss.xml"
+    )
+    assert by_id["kff_health"].feed_url == "https://kffhealthnews.org/feed/"
+    assert by_id["niemanlab"].feed_url == "https://www.niemanlab.org/feed/"
+    assert by_id["reason"].feed_url == "https://reason.com/feed/"
+    assert by_id["popular_science"].feed_url == "https://www.popsci.com/feed/"
+    assert by_id["slate"].feed_url == "https://slate.com/feeds/all.rss"
+    assert by_id["the_19th"].feed_url == "https://19thnews.org/feed/"
+    assert by_id["zdnet"].feed_url == "https://www.zdnet.com/feed/"
+    assert by_id["the_register"].feed_url == (
+        "https://www.theregister.com/headlines.atom"
+    )
+    assert by_id["newatlas"].feed_url == "https://newatlas.com/index.rss"
+    assert by_id["phys_org"].feed_url == "https://phys.org/rss-feed/"
+    assert by_id["space_com"].feed_url == "https://www.space.com/feeds.xml"
+    assert by_id["atlantic"].feed_url == "https://www.theatlantic.com/feed/all/"
+    assert by_id["the_markup"].feed_url == "https://themarkup.org/feeds/rss.xml"
+    assert by_id["hyperallergic"].feed_url == "https://hyperallergic.com/feed/"
+    assert by_id["artforum"].feed_url == "https://www.artforum.com/feed/"
+    assert by_id["aeon"].feed_url == "https://aeon.co/feed.rss"
+    assert by_id["verge"].feed_url == "https://www.theverge.com/rss/index.xml"
+    assert by_id["wired"].feed_url == "https://www.wired.com/feed/rss"
+    # polygon: MUST lock /feed/. Do NOT
+    # use /rss/index.xml.
+    assert by_id["polygon"].feed_url != "https://www.polygon.com/feed"
+    assert by_id["polygon"].feed_url != "https://polygon.com/feed/"
+    assert by_id["polygon"].feed_url != "https://www.polygon.com/rss/index.xml"
+    assert by_id["polygon"].feed_url != "https://www.polygon.com/rss"
+    assert by_id["polygon"].feed_url != "https://www.polygon.com/rss.xml"
+    assert by_id["polygon"].feed_url != "https://feeds.feedburner.com/polygon"
+    assert by_id["polygon"].feed_url != "https://feeds.feedburner.com/Polygon"
+    assert by_id["polygon"].feed_url != by_id["verge"].feed_url
+    assert by_id["polygon"].feed_url != by_id["wired"].feed_url
+    assert by_id["polygon"].feed_url != by_id["smithsonian_mag"].feed_url
+    assert by_id["polygon"].feed_url != by_id["variety"].feed_url
+    assert by_id["polygon"].feed_url != by_id["cnet"].feed_url
+    assert by_id["polygon"].feed_url != by_id["9to5mac"].feed_url
+    assert by_id["polygon"].feed_url != by_id["howtogeek"].feed_url
+    assert by_id["polygon"].feed_url != by_id["macrumors"].feed_url
+    assert by_id["polygon"].feed_url != by_id["android_authority"].feed_url
+    assert by_id["polygon"].feed_url != by_id["tomshardware"].feed_url
+    assert by_id["polygon"].feed_url != by_id["zdnet"].feed_url
+    assert by_id["polygon"].feed_url != by_id["the_register"].feed_url
+    assert by_id["polygon"].feed_url != by_id["ars_technica"].feed_url
+    assert by_id["polygon"].feed_url != by_id["techcrunch"].feed_url
+    assert by_id["polygon"].feed_url != by_id["nyt_personaltech"].feed_url
+    assert by_id["polygon"].feed_url != by_id["thenewstack"].feed_url
+    assert by_id["polygon"].feed_url != by_id["thehackernews"].feed_url
+    assert by_id["polygon"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["polygon"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["polygon"].feed_url != by_id["mit_tr"].feed_url
+    assert by_id["polygon"].feed_url != by_id["bbc_technology"].feed_url
+    assert by_id["polygon"].feed_url != by_id["guardian_technology"].feed_url
+    assert by_id["polygon"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["polygon"].feed_url != by_id["forbes_innovation"].feed_url
+    assert by_id["polygon"].feed_url != by_id["fast_company"].feed_url
+    assert by_id["polygon"].feed_url != by_id["media404"].feed_url
+    assert by_id["polygon"].feed_url != by_id["the_markup"].feed_url
+    assert by_id["polygon"].feed_url != by_id["infoq"].feed_url
+    assert by_id["polygon"].feed_url != by_id["techinasia"].feed_url
+    assert by_id["polygon"].feed_url != by_id["bloomberg_technology"].feed_url
+    assert by_id["polygon"].feed_url != by_id["vox"].feed_url
+    assert by_id["polygon"].feed_url != by_id["pitchfork"].feed_url
+    assert by_id["polygon"].feed_url != by_id["nyt_arts"].feed_url
+    assert by_id["polygon"].feed_url != by_id["guardian_film"].feed_url
+    assert by_id["polygon"].feed_url != by_id["npr_arts"].feed_url
+    # pcmag: MUST lock /feeds/rss/latest.
+    # Do NOT use /rss/index.xml or /feed/.
+    assert by_id["pcmag"].feed_url != "https://www.pcmag.com/feeds/rss/latest/"
+    assert by_id["pcmag"].feed_url != "https://pcmag.com/feeds/rss/latest"
+    assert by_id["pcmag"].feed_url != "https://www.pcmag.com/feed/"
+    assert by_id["pcmag"].feed_url != "https://www.pcmag.com/feed"
+    assert by_id["pcmag"].feed_url != "https://www.pcmag.com/rss"
+    assert by_id["pcmag"].feed_url != "https://www.pcmag.com/rss.xml"
+    assert by_id["pcmag"].feed_url != "https://www.pcmag.com/rss/index.xml"
+    assert by_id["pcmag"].feed_url != "https://feeds.feedburner.com/pcmag"
+    assert by_id["pcmag"].feed_url != "https://feeds.feedburner.com/PCMag"
+    assert by_id["pcmag"].feed_url != by_id["cnet"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["howtogeek"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["tomshardware"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["zdnet"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["the_register"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["ars_technica"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["wired"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["verge"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["techcrunch"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["nyt_personaltech"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["thenewstack"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["thehackernews"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["mit_tr"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["bbc_technology"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["guardian_technology"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["forbes_innovation"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["fast_company"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["media404"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["the_markup"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["infoq"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["techinasia"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["bloomberg_technology"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["9to5mac"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["macrumors"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["android_authority"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["smithsonian_mag"].feed_url
+    # mashable: MUST lock documented
+    # official /feeds/rss/all (the
+    # destination /feed/ remaps to).
+    # Do NOT use /rss/index.xml.
+    # Official site RSS only — no
+    # Feedburner.
+    assert by_id["mashable"].feed_url != "https://mashable.com/feed/"
+    assert by_id["mashable"].feed_url != "https://mashable.com/feed"
+    assert by_id["mashable"].feed_url != "https://www.mashable.com/feed/"
+    assert by_id["mashable"].feed_url != "https://mashable.com/feeds/rss/latest"
+    assert by_id["mashable"].feed_url != "https://mashable.com/rss"
+    assert by_id["mashable"].feed_url != "https://mashable.com/rss.xml"
+    assert by_id["mashable"].feed_url != "https://mashable.com/rss/index.xml"
+    assert by_id["mashable"].feed_url != "https://feeds.mashable.com/mashable"
+    assert by_id["mashable"].feed_url != "https://feeds.feedburner.com/mashable"
+    assert by_id["mashable"].feed_url != "https://feeds.feedburner.com/Mashable"
+    assert by_id["mashable"].feed_url != by_id["smithsonian_mag"].feed_url
+    assert by_id["mashable"].feed_url != by_id["cnet"].feed_url
+    assert by_id["mashable"].feed_url != by_id["verge"].feed_url
+    assert by_id["mashable"].feed_url != by_id["wired"].feed_url
+    assert by_id["mashable"].feed_url != by_id["techcrunch"].feed_url
+    assert by_id["mashable"].feed_url != by_id["vox"].feed_url
+    assert by_id["mashable"].feed_url != by_id["9to5mac"].feed_url
+    assert by_id["mashable"].feed_url != by_id["howtogeek"].feed_url
+    assert by_id["mashable"].feed_url != by_id["macrumors"].feed_url
+    assert by_id["mashable"].feed_url != by_id["android_authority"].feed_url
+    assert by_id["mashable"].feed_url != by_id["tomshardware"].feed_url
+    assert by_id["mashable"].feed_url != by_id["zdnet"].feed_url
+    assert by_id["mashable"].feed_url != by_id["the_register"].feed_url
+    assert by_id["mashable"].feed_url != by_id["ars_technica"].feed_url
+    assert by_id["mashable"].feed_url != by_id["nyt_personaltech"].feed_url
+    assert by_id["mashable"].feed_url != by_id["thenewstack"].feed_url
+    assert by_id["mashable"].feed_url != by_id["thehackernews"].feed_url
+    assert by_id["mashable"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["mashable"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["mashable"].feed_url != by_id["mit_tr"].feed_url
+    assert by_id["mashable"].feed_url != by_id["bbc_technology"].feed_url
+    assert by_id["mashable"].feed_url != by_id["guardian_technology"].feed_url
+    assert by_id["mashable"].feed_url != by_id["nyt_technology"].feed_url
+    assert by_id["mashable"].feed_url != by_id["forbes_innovation"].feed_url
+    assert by_id["mashable"].feed_url != by_id["fast_company"].feed_url
+    assert by_id["mashable"].feed_url != by_id["media404"].feed_url
+    assert by_id["mashable"].feed_url != by_id["the_markup"].feed_url
+    assert by_id["mashable"].feed_url != by_id["infoq"].feed_url
+    assert by_id["mashable"].feed_url != by_id["techinasia"].feed_url
+    assert by_id["mashable"].feed_url != by_id["bloomberg_technology"].feed_url
+    assert by_id["mashable"].feed_url != by_id["variety"].feed_url
+    assert by_id["mashable"].feed_url != by_id["slate"].feed_url
+    assert by_id["mashable"].feed_url != by_id["pitchfork"].feed_url
+    assert by_id["polygon"].feed_url != by_id["pcmag"].feed_url
+    assert by_id["polygon"].feed_url != by_id["mashable"].feed_url
+    assert by_id["pcmag"].feed_url != by_id["mashable"].feed_url
+    # bleepingcomputer official Cloudflare
+    # 403 JS challenge — not registered
+    # (do not hang Feedburner).
+    # smithsonian_mag is already the
+    # gizmodo hard-swap primary on tip
+    # (MUST lock /rss/latest_articles/
+    # never stale /rss/articles/) — do
+    # not register it twice.
+    # new_yorker stays unused
+    # (smithsonian_mag live KEEP; if a
+    # later hard-swap falls through MUST
+    # prefer /feed/everything).
+    # engadget / digital_trends stay
+    # unregistered (official RSS 403;
+    # do not hang Feedburner).
+    # the_verge stays out (verge already
+    # registered). Do not hang a second
+    # wired. the_cut stays out (product
+    # dropped — all 404). techdirt stays
+    # unregistered (official Cloudflare
+    # 403; do not hang Feedburner).
+    # gizmodo stays hung (official CI
+    # 403; do not re-hang).
+    # cnet / 9to5mac / smithsonian_mag
+    # stay registered (batch82 KEEP
+    # after the #147 hard-swap).
+    # artnet / macrumors / quillette stay
+    # registered (batch81 KEEP).
+    # howtogeek / new_republic / vox stay
+    # registered (batch80 KEEP).
+    # android_authority / unherd / psyche
+    # stay registered (batch79 KEEP).
+    # scotusblog / medicalxpress / infoq
+    # stay registered (batch78 KEEP).
+    # moscow_times / dezeen / eff stay
+    # registered (batch77 KEEP).
+    # livescience / thehackernews /
+    # stereogum stay registered
+    # (batch76 KEEP). balkan_insight /
+    # tomshardware stay registered
+    # (batch75 KEEP). physics_world /
+    # kyiv_independent / pitchfork stay
+    # registered (batch74 KEEP).
+    # irish_times / science_org / variety
+    # stay registered (batch73 KEEP).
+    # who_news stays registered
+    # (batch72 hard-swap KEEP).
+    # independent stays hung (daily-fetch
+    # #40291069350 httpx 429 勿再挂).
+    # independent_world stays hung
+    # (prior 429; World section — do not
+    # restore). passblue stays unused
+    # (batch71 leftover). longreads stays
+    # out (batch68 official httpx 403).
+    # dawn stays out (batch67 official
+    # Cloudflare 403). Do not register
+    # dawn Feedburner. Do not register
+    # euractiv Feedburner. asiatimes /
+    # asia_times stay out (httpx 403).
+    # biographic stays out (httpx 403).
+    # inkstick stays out (product dropped).
+    # hrw stays hung. euractiv stays unused
+    # (official www.euractiv.com 301s to
+    # rapporteur.com; Feedburner stale
+    # 2025-12 — do not register).
+    # times_of_israel stays unused
+    # (official Cloudflare 403 FAIL;
+    # Feedburner stale 2012).
+    assert "bleepingcomputer" not in by_id
+    assert "bleeping_computer" not in by_id
+    assert "bleepingcomputer_com" not in by_id
+    assert "smithsonian_mag" in by_id
+    assert "smithsonian" not in by_id
+    assert "smithsonianmag" not in by_id
+    assert "smithsonian_magazine" not in by_id
+    assert "new_yorker" not in by_id
+    assert "newyorker" not in by_id
+    assert "the_new_yorker" not in by_id
+    assert "polygon_com" not in by_id
+    assert "pcmag_com" not in by_id
+    assert "pc_mag" not in by_id
+    assert "mashable_com" not in by_id
+    assert "engadget" not in by_id
+    assert "engadget_com" not in by_id
+    assert "digital_trends" not in by_id
+    assert "digitaltrends" not in by_id
+    assert "digital_trends_com" not in by_id
+    assert "the_verge" not in by_id
+    assert "techdirt" not in by_id
+    assert "techdirt_com" not in by_id
+    assert "the_cut" not in by_id
+    assert "thecut" not in by_id
+    assert "the_cut_com" not in by_id
+    assert "cnet_com" not in by_id
+    assert "cnet_news" not in by_id
+    assert "nine_to_five_mac" not in by_id
+    assert "to5mac" not in by_id
+    assert "gizmodo" not in by_id
+    assert "gizmodo_com" not in by_id
+    assert "macrumors_com" not in by_id
+    assert "quillette_com" not in by_id
+    assert "artnet_news" not in by_id
+    assert "artnet_com" not in by_id
+    assert "howtogeek_com" not in by_id
+    assert "how_to_geek" not in by_id
+    assert "new_republic_com" not in by_id
+    assert "thenewrepublic" not in by_id
+    assert "newrepublic" not in by_id
+    assert "vox_com" not in by_id
+    assert "vox_media" not in by_id
+    assert "androidauthority" not in by_id
+    assert "android_authority_com" not in by_id
+    assert "unherd_com" not in by_id
+    assert "psyche_co" not in by_id
+    assert "psyche_magazine" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "timesofisrael" not in by_id
+    assert "scotus_blog" not in by_id
+    assert "medical_xpress" not in by_id
+    assert "info_q" not in by_id
+    assert "the_nation" not in by_id
+    assert "thenation" not in by_id
+    assert "the_moscow_times" not in by_id
+    assert "dezeen_com" not in by_id
+    assert "eff_org" not in by_id
+    assert "grist" in by_id
+    assert "grist_org" not in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "euractiv_com" not in by_id
+    assert "rapporteur" not in by_id
+    assert "live_science" not in by_id
+    assert "the_hacker_news" not in by_id
+    assert "stereogum_com" not in by_id
+    assert "who_news" in by_id
+    assert "independent" not in by_id
+    assert "independent_world" not in by_id
+    assert "passblue" not in by_id
+    assert "inkstick" not in by_id
+    assert "hrw" not in by_id
+    assert "longreads" not in by_id
+    assert "dawn" not in by_id
+    assert "asiatimes" not in by_id
+    assert "asia_times" not in by_id
+    assert "biographic" not in by_id
+    assert "hkfp" not in by_id
+    assert "indian_express" not in by_id
+    assert "al_monitor" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "restofworld" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "nyt_media" not in by_id
+    assert "guardian_media" not in by_id
+    assert "guardian_games" not in by_id
+    for source_id, expected in _POLYGON_PCMAG_MASHABLE_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_polygon_pcmag_mashable_feeds_live_http_200():
+    """Hit the three batch83 feeds with the same headers fetch_source sends (not stubs)."""
+    by_id = {s.id: s for s in SOURCES}
+    for source_id in _POLYGON_PCMAG_MASHABLE_PRIMARY:
+        source = by_id[source_id]
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (polygon / pcmag /
+        # mashable) uses the
+        # un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # polygon 10/10, pcmag 100/100,
+        # and mashable 100/100 were 100%
+        # nonempty this probe. pcmag and
+        # mashable ingest cap 30/100
+        # still KEEP.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= 10, (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -28299,6 +29138,7 @@ if __name__ == "__main__":
     test_artnet_macrumors_quillette_primaries_registered()
     test_gizmodo_hard_swapped_to_smithsonian_mag()
     test_cnet_9to5mac_smithsonian_mag_primaries_registered()
+    test_polygon_pcmag_mashable_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -28380,4 +29220,5 @@ if __name__ == "__main__":
     test_howtogeek_new_republic_vox_feeds_live_http_200()
     test_artnet_macrumors_quillette_feeds_live_http_200()
     test_cnet_9to5mac_smithsonian_mag_feeds_live_http_200()
+    test_polygon_pcmag_mashable_feeds_live_http_200()
     print("✓ source registry tests PASSED")
