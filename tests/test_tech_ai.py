@@ -1239,8 +1239,11 @@ def test_whitelist_registered_and_cap_unchanged():
     # id — official apex /feed
     # (MUST no trailing slash).
     # Named 备 deadline / makezine
-    # / utility_dive unused — all
-    # KEEP passed. lwn already
+    # / utility_dive unused in
+    # batch97 — all KEEP passed;
+    # they are now batch98 KEEP
+    # and still stay off the
+    # whitelist. lwn already
     # live via #162 — not
     # re-hung. None of these match
     # the wired / verge /
@@ -1251,9 +1254,45 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "phoronix_com" not in TECH_AI_SOURCE_WHITELIST
     assert "adafruit_blog" not in TECH_AI_SOURCE_WHITELIST
     assert "boing_boing" not in TECH_AI_SOURCE_WHITELIST
+    # batch98 RSS primaries stay off the tech/AI whitelist.
+    # deadline lands on 综合
+    # (entertainment newsroom,
+    # same as variety /
+    # pitchfork) — new id —
+    # official apex /feed/ (MUST
+    # trailing slash; homepage
+    # /feed/rss/ remaps here).
+    # makezine lands on 科技
+    # (maker newsroom, same as
+    # adafruit / hackaday) — new
+    # id — official apex /feed/
+    # (MUST trailing slash;
+    # atom:self). Homepage is
+    # CF 403 under the same
+    # client. utility_dive
+    # lands on 科学 (energy
+    # newsroom, same as
+    # canary_media / yale360 /
+    # carbon_brief) — new id —
+    # official www
+    # /feeds/news/ (MUST www +
+    # trailing slash; homepage
+    # announced). No 备 named
+    # this batch. military_times
+    # / earthsky / outside stay
+    # hung for batch99 only.
+    # None of these match the
+    # wired / verge /
+    # techcrunch ALWAYS pattern.
     assert "deadline" not in TECH_AI_SOURCE_WHITELIST
     assert "makezine" not in TECH_AI_SOURCE_WHITELIST
     assert "utility_dive" not in TECH_AI_SOURCE_WHITELIST
+    assert "deadline_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "makezine_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "utilitydive" not in TECH_AI_SOURCE_WHITELIST
+    assert "military_times" not in TECH_AI_SOURCE_WHITELIST
+    assert "earthsky" not in TECH_AI_SOURCE_WHITELIST
+    assert "outside" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
