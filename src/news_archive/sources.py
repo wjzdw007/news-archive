@@ -2060,6 +2060,13 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="lwn",
+        name="Linux Weekly News",
+        feed_url="https://lwn.net/headlines/rss",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

@@ -13572,8 +13572,46 @@ _YALE360_CLEANTECHNICA_PRIMARY = {
 # tech/AI whitelist.
 # mit_technology_review stays
 # unregistered (feed-URL
-# collision with live mit_tr;
-# no 备).
+# collision with live mit_tr).
+# Product+CEO hard-swapped that
+# empty slot to lwn (batch97 备
+# named specifically). Do not
+# invent a further replacement.
+# Do not re-register mit_tr /
+# mit_technology_review.
+# lwn official
+# https://lwn.net/headlines/rss
+# is new (no prior lwn / lwn_net
+# / linux_weekly_news id).
+# httpx+RSS_HEADERS HTTP 200 /
+# 15 nonempty / 15 insertable
+# (channel "LWN.net"). MUST lock
+# apex /headlines/rss (no
+# trailing slash): www remaps
+# here; /headlines/rss/ serves
+# the same 15-item body;
+# /headlines/newrss is an
+# identical 15-item twin — do
+# not hang. /headlines/Features
+# is a Features section (20
+# items, 7/15 title overlap) —
+# not the site-wide headlines
+# primary. /feed /feed/ /rss
+# /rss.xml /Articles/rss are
+# 404 HTML. Do not invent
+# Feedburner / section feeds.
+# ≥10 KEEP. Distinct from live
+# hackaday / thenewstack /
+# zdnet / the_register /
+# tomshardware / howtogeek /
+# infoq / thehackernews /
+# krebsonsecurity. 0 article
+# URL overlap (lwn.net host).
+# Lands on the existing 科技
+# category path (Linux / kernel
+# newsroom, same as hackaday /
+# thenewstack). Not added to
+# the tech/AI whitelist.
 # national_geographic stays
 # unregistered (no official
 # English RSS).
@@ -13626,7 +13664,23 @@ _JALOPNIK_QUANTA_MAGAZINE_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 292
+# Product+CEO hard-swap of the
+# empty mit_technology_review
+# slot (batch96 PR #162). lwn
+# is the named batch97 备 —
+# do not invent another
+# replacement. jalopnik /
+# quanta_magazine KEEP locks
+# stay unchanged.
+_LWN_PRIMARY = {
+    "lwn": {
+        "name": "Linux Weekly News",
+        "feed_url": "https://lwn.net/headlines/rss",
+        "category": "科技",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 293
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -37299,9 +37353,14 @@ def test_jalopnik_quanta_magazine_primaries_registered():
     # mit_technology_review is a
     # feed-URL collision with live
     # mit_tr (same official
-    # /feed/). No 备 named — leave
-    # slot empty. Do not invent a
-    # section / Feedburner alias.
+    # /feed/). Product+CEO
+    # hard-swapped that empty slot
+    # to lwn (batch97 备 named
+    # specifically). Do not
+    # re-register mit_tr /
+    # mit_technology_review. Do
+    # not invent a further
+    # replacement.
     assert "mit_technology_review" not in by_id
     assert "mit_tech_review" not in by_id
     assert "technology_review" not in by_id
@@ -37309,6 +37368,8 @@ def test_jalopnik_quanta_magazine_primaries_registered():
     assert by_id["mit_tr"].feed_url == (
         "https://www.technologyreview.com/feed/"
     )
+    assert "lwn" in by_id
+    assert by_id["lwn"].feed_url == "https://lwn.net/headlines/rss"
     # national_geographic stays
     # unregistered (no official
     # English RSS).
@@ -37443,6 +37504,119 @@ def test_jalopnik_quanta_magazine_feeds_live_httpx_rss_headers():
         )
 
 
+def test_lwn_primary_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "lwn" in by_id
+    assert by_id["lwn"].feed_url == "https://lwn.net/headlines/rss"
+    assert by_id["lwn"].feed_url != "https://lwn.net/headlines/rss/"
+    assert by_id["lwn"].feed_url != "https://lwn.net/headlines/newrss"
+    assert by_id["lwn"].feed_url != "https://lwn.net/headlines/newrss/"
+    assert by_id["lwn"].feed_url != "https://lwn.net/headlines/Features"
+    assert by_id["lwn"].feed_url != "https://lwn.net/feed"
+    assert by_id["lwn"].feed_url != "https://lwn.net/feed/"
+    assert by_id["lwn"].feed_url != "https://lwn.net/rss"
+    assert by_id["lwn"].feed_url != "https://lwn.net/rss.xml"
+    assert by_id["lwn"].feed_url != "https://www.lwn.net/headlines/rss"
+    assert by_id["lwn"].name == "Linux Weekly News"
+    assert by_id["lwn"].category == "科技"
+    assert by_id["lwn"].role == "primary"
+    # jalopnik / quanta_magazine KEEP
+    # locks stay unchanged on this
+    # hard-swap.
+    assert by_id["jalopnik"].feed_url == "https://www.jalopnik.com/feed/"
+    assert by_id["quanta_magazine"].feed_url == (
+        "https://www.quantamagazine.org/feed/"
+    )
+    # Do not re-register MIT TR.
+    assert "mit_technology_review" not in by_id
+    assert "mit_tr" in by_id
+    assert "lwn_net" not in by_id
+    assert "linux_weekly_news" not in by_id
+    assert "lwn_headlines" not in by_id
+    # Uniqueness vs live Linux /
+    # hardware / trade-press stack.
+    assert by_id["lwn"].feed_url != by_id["hackaday"].feed_url
+    assert by_id["lwn"].feed_url != by_id["thenewstack"].feed_url
+    assert by_id["lwn"].feed_url != by_id["zdnet"].feed_url
+    assert by_id["lwn"].feed_url != by_id["the_register"].feed_url
+    assert by_id["lwn"].feed_url != by_id["tomshardware"].feed_url
+    assert by_id["lwn"].feed_url != by_id["howtogeek"].feed_url
+    assert by_id["lwn"].feed_url != by_id["infoq"].feed_url
+    assert by_id["lwn"].feed_url != by_id["thehackernews"].feed_url
+    assert by_id["lwn"].feed_url != by_id["krebsonsecurity"].feed_url
+    assert by_id["lwn"].feed_url != by_id["jalopnik"].feed_url
+    assert by_id["lwn"].feed_url != by_id["quanta_magazine"].feed_url
+    for source_id, expected in _LWN_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_lwn_feed_live_httpx_rss_headers():
+    """KEEP must pass the same httpx + RSS_HEADERS client CI uses."""
+    from news_archive.fetch import fetch_source
+
+    by_id = {s.id: s for s in SOURCES}
+    keep_floor = {"lwn": 10}
+    for source_id in _LWN_PRIMARY:
+        source = by_id[source_id]
+        articles = fetch_source(source, timeout=30)
+        assert articles, f"{source_id} httpx+RSS_HEADERS insertable=0"
+        assert len(articles) >= keep_floor[source_id], (
+            f"{source_id} insertable {len(articles)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (lwn headlines)
+        # uses the un-namespaced
+        # element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # lwn 15/15 was 100%
+        # nonempty this probe.
+        # ≥10 KEEP.
+        # lwn MUST stay on official
+        # /headlines/rss (no
+        # trailing slash; www
+        # remaps here).
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= keep_floor[source_id], (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -37549,6 +37723,7 @@ if __name__ == "__main__":
     test_hackaday_primary_registered()
     test_yale360_cleantechnica_primaries_registered()
     test_jalopnik_quanta_magazine_primaries_registered()
+    test_lwn_primary_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -37644,4 +37819,5 @@ if __name__ == "__main__":
     test_hackaday_feed_live_httpx_rss_headers()
     test_yale360_cleantechnica_feeds_live_httpx_rss_headers()
     test_jalopnik_quanta_magazine_feeds_live_httpx_rss_headers()
+    test_lwn_feed_live_httpx_rss_headers()
     print("✓ source registry tests PASSED")
