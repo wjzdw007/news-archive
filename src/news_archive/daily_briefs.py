@@ -11,6 +11,7 @@ import hashlib
 import json
 import os
 import re
+import time
 from datetime import datetime, timedelta, timezone
 from typing import Any, Callable
 from zoneinfo import ZoneInfo
@@ -49,6 +50,19 @@ LLM_POOL_TIMEOUT_S = 10.0
 TODAY_LLM_ATTEMPTS = 3
 OLDER_LLM_ATTEMPTS = 1
 LLM_RETRY_BACKOFF_S = 2.0
+# Language repair reuses today's bounded retry / backoff (not a second provider).
+LANGUAGE_LLM_ATTEMPTS = TODAY_LLM_ATTEMPTS
+# Reject Latin-script-only / English-dominant lede, titles, and bullets.
+LATIN_DOMINANCE_RATIO = 0.70
+CHINESE_REPAIR_HINT = (
+    "Previous output had English lede, section titles, or bullets. "
+    "Rewrite ALL of lede, every section title, and every bullet in Simplified Chinese. "
+    "Latin-script-only titles or bullets are invalid. Proper nouns may keep Latin "
+    "letters, but each sentence or title as a whole must be Chinese. "
+    "Do not translate link titles."
+)
+_CJK_RE = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]")
+_LATIN_LETTER_RE = re.compile(r"[A-Za-z]")
 
 # Public/LLM article fields. content_snapshot is intentionally absent.
 DAILY_BRIEF_ARTICLE_FIELDS = (
@@ -579,9 +593,9 @@ def public_x_section(
 ) -> dict[str, Any]:
     posts = section.get("x_posts") or []
     llm_section = llm_section if isinstance(llm_section, dict) else {}
-    bullets = clip_bullets(llm_section.get("bullets") or section.get("bullets"))
-    if not bullets:
-        bullets = bullets_from_x_posts(posts)
+    # X title is always 「X 动态」. Bullets must be Chinese LLM rewrites —
+    # never paste English text_snapshot via bullets_from_x_posts.
+    bullets = chinese_bullets(llm_section.get("bullets"))
     return {
         "topic_id": X_SECTION_TOPIC_ID,
         "title": X_SECTION_TITLE,
@@ -892,6 +906,88 @@ def group_sections(articles: list[dict[str, Any]]) -> list[dict[str, Any]]:
     ][:SECTIONS_MAX]
 
 
+def is_predominantly_english(text: str | None) -> bool:
+    """True when text is Latin-script-only or overwhelmingly English (no real CJK).
+
+    Empty / punctuation-only is not English. Proper nouns may keep Latin letters
+    when the sentence or title as a whole is Chinese.
+    """
+    raw = (text or "").strip()
+    if not raw:
+        return False
+    latin = len(_LATIN_LETTER_RE.findall(raw))
+    cjk = len(_CJK_RE.findall(raw))
+    if cjk == 0:
+        return latin > 0
+    return latin / (latin + cjk) >= LATIN_DOMINANCE_RATIO
+
+
+def chinese_text_ok(text: str | None, *, allow_empty: bool = False) -> bool:
+    raw = (text or "").strip()
+    if not raw:
+        return allow_empty
+    return not is_predominantly_english(raw)
+
+
+def _llm_section_has_english(raw: dict[str, Any]) -> bool:
+    if is_x_section(raw):
+        for bullet in raw.get("bullets") or []:
+            if is_predominantly_english(str(bullet)):
+                return True
+        return False
+    if is_predominantly_english(raw.get("title")):
+        return True
+    for bullet in raw.get("bullets") or []:
+        if is_predominantly_english(str(bullet)):
+            return True
+    return False
+
+
+def llm_payload_has_english(payload: dict[str, Any] | None) -> bool:
+    """True if lede or any section title/bullet is predominantly English."""
+    if not isinstance(payload, dict):
+        return False
+    if is_predominantly_english(payload.get("lede")):
+        return True
+    sections = payload.get("sections")
+    if not isinstance(sections, list):
+        return False
+    return any(
+        isinstance(section, dict) and _llm_section_has_english(section)
+        for section in sections
+    )
+
+
+def first_chinese_text(*candidates: Any) -> str:
+    for candidate in candidates:
+        text = str(candidate or "").strip()
+        if text and not is_predominantly_english(text):
+            return text
+    return ""
+
+
+def chinese_bullets(*candidates: Any) -> list[str]:
+    for items in candidates:
+        cleaned = [b for b in clip_bullets(items) if not is_predominantly_english(b)]
+        if cleaned:
+            return cleaned
+    return []
+
+
+def invoke_llm_fn(
+    llm_fn: LlmFn,
+    grouped: list[dict[str, Any]],
+    repair_hint: str | None = None,
+) -> dict[str, Any]:
+    """Call llm_fn; pass repair_hint when the callable accepts it."""
+    if not repair_hint:
+        return llm_fn(grouped)
+    try:
+        return llm_fn(grouped, repair_hint=repair_hint)  # type: ignore[call-arg]
+    except TypeError:
+        return llm_fn(grouped)
+
+
 def clip_lede(text: str | None) -> str:
     return re.sub(r"\s+", " ", (text or "").strip())[:LEDE_MAX]
 
@@ -916,10 +1012,19 @@ def public_section(section: dict[str, Any]) -> dict[str, Any]:
     topic_id = section.get("topic_id")
     if topic_id is not None:
         topic_id = str(topic_id).strip() or None
-    title = (section.get("title") or "").strip() or OTHER_TITLE
-    bullets = clip_bullets(section.get("bullets"))
-    if not bullets:
-        bullets = bullets_from_title_summary(section.get("articles") or [])
+    raw_title = (section.get("title") or "").strip()
+    if is_x_section(section) or topic_id == X_SECTION_TOPIC_ID:
+        title = X_SECTION_TITLE
+    elif topic_id is None:
+        title = OTHER_TITLE
+    elif raw_title and not is_predominantly_english(raw_title):
+        title = raw_title
+    else:
+        title = ""
+    # Never fill public title/bullets from English article.title/summary.
+    bullets = chinese_bullets(section.get("bullets"))
+    if not title:
+        bullets = []
     links = section.get("links") or links_from_articles(section.get("articles") or [])
     if not isinstance(links, list):
         links = []
@@ -1048,6 +1153,7 @@ def openai_complete(
     model: str,
     base_url: str,
     timeout: float | None = None,
+    repair_hint: str | None = None,
 ) -> dict[str, Any]:
     import httpx
 
@@ -1055,7 +1161,13 @@ def openai_complete(
         {
             "role": "system",
             "content": (
-                "You write a concise Chinese daily news brief. Reply with JSON only: "
+                "You write a concise Simplified Chinese daily news brief. "
+                "ALL of lede, every section title, and every bullet MUST be Simplified Chinese. "
+                "Latin-script-only titles or bullets are invalid. "
+                "Proper nouns (SpaceX, Kolkata, Reuters) may keep Latin letters, "
+                "but each sentence or title as a whole must be Chinese. "
+                "Do not leave any lede, title, or bullet in English. "
+                "Reply with JSON only: "
                 '{"lede":"...","sections":[{"topic_id":null,"title":"...","bullets":["..."]}]}'
                 " Use ONLY the given titles and summaries for RSS; do not invent facts. "
                 "Prioritize hard news (disasters, geopolitics, conflict, elections) over product "
@@ -1064,9 +1176,11 @@ def openai_complete(
                 f"Keep the given topic_id values. Untopic'd soft RSS items stay in one section titled {OTHER_TITLE}. "
                 f"If a section titled {X_SECTION_TITLE} is present, keep that exact title and "
                 f'topic_id "{X_SECTION_TOPIC_ID}"; write 1–{BULLETS_MAX} bullets as multi-account '
-                "highlights (not one bullet per post); use ONLY that section's author, "
+                "highlights in Simplified Chinese (not one bullet per post; rewrite English "
+                "text_snapshot — do not paste it); use ONLY that section's author, "
                 "text_snapshot, url, posted_at. Treat that X section as supplementary, not the lead, "
-                "when RSS hard news is present. Do not merge X posts into RSS topic_id clusters."
+                "when RSS hard news is present. Do not merge X posts into RSS topic_id clusters. "
+                "Do not translate link titles; links are attached later from the source set."
             ),
         },
         {
@@ -1074,6 +1188,8 @@ def openai_complete(
             "content": json.dumps({"sections": _prompt_sections(grouped)}, ensure_ascii=False),
         },
     ]
+    if repair_hint:
+        messages.append({"role": "user", "content": repair_hint})
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
@@ -1127,12 +1243,20 @@ def merge_llm_sections(
     for section in grouped:
         topic_id = section.get("topic_id")
         llm_section = by_id.get(topic_id, {})
+        # Public title/bullets: LLM Chinese first; grouped Chinese only if LLM
+        # omitted the section. Never fall back to English article title/summary.
+        title = first_chinese_text(llm_section.get("title"), section.get("title"))
+        bullets = chinese_bullets(llm_section.get("bullets"), section.get("bullets"))
+        if topic_id is None:
+            title = OTHER_TITLE
+        if not title or not bullets:
+            continue
         merged.append(
             public_section(
                 {
                     "topic_id": topic_id,
-                    "title": llm_section.get("title") or section.get("title"),
-                    "bullets": llm_section.get("bullets") or section.get("bullets"),
+                    "title": title,
+                    "bullets": bullets,
                     "links": section.get("links"),
                     "articles": section.get("articles"),
                 }
@@ -1150,12 +1274,18 @@ def generate_daily_brief(
     model: str = "",
     now: datetime | None = None,
     missing_config: bool = False,
+    sleep=None,
+    llm_attempts: int | None = None,
 ) -> dict[str, Any]:
     """Build one daily brief. Never reads content_snapshot.
 
     empty: no active articles and no same-day X posts that Shanghai day
     failed: missing DAILY_BRIEF_API_KEY/BASE, model error, or unusable output
-    ok: LLM returned a usable brief (RSS links from grouping; X links from x_posts)
+    ok: LLM returned a usable Simplified Chinese brief
+        (RSS links from grouping; X links from x_posts; link titles may stay
+        original-language). English lede/title/bullets are rejected and the
+        same LLM is retried with a repair hint. No English article.title /
+        summary fallback into the public body.
     Same-day X posts become at most one 「X 动态」 section (omitted when none).
     """
     selected = daily_brief_fingerprint_input(articles, date, x_posts)
@@ -1189,35 +1319,61 @@ def generate_daily_brief(
     if x_section:
         prompt_grouped.append(x_section)
 
-    try:
-        llm_payload = llm_fn(prompt_grouped)
-    except Exception as exc:
-        return _with_fp(
-            failed_brief(
-                date, error=redact_secrets(str(exc)), now=now, model=model
+    sleeper = time.sleep if sleep is None else sleep
+    attempts = max(1, LANGUAGE_LLM_ATTEMPTS if llm_attempts is None else llm_attempts)
+    llm_payload: dict[str, Any] | None = None
+    last_error = "LLM returned empty brief"
+    for attempt in range(1, attempts + 1):
+        hint = CHINESE_REPAIR_HINT if attempt > 1 else None
+        try:
+            llm_payload = invoke_llm_fn(llm_fn, prompt_grouped, repair_hint=hint)
+        except Exception as exc:
+            return _with_fp(
+                failed_brief(
+                    date, error=redact_secrets(str(exc)), now=now, model=model
+                )
             )
-        )
+        if not isinstance(llm_payload, dict):
+            return _with_fp(
+                failed_brief(
+                    date, error="LLM returned non-object JSON", now=now, model=model
+                )
+            )
+        if llm_payload_has_english(llm_payload):
+            last_error = "LLM returned English lede/section titles/bullets"
+            if attempt < attempts:
+                backoff = LLM_RETRY_BACKOFF_S * attempt
+                if backoff > 0:
+                    sleeper(backoff)
+                continue
+        break
 
     if not isinstance(llm_payload, dict):
         return _with_fp(
-            failed_brief(date, error="LLM returned non-object JSON", now=now, model=model)
+            failed_brief(date, error=last_error, now=now, model=model)
         )
 
     lede = clip_lede(llm_payload.get("lede"))
+    if is_predominantly_english(lede):
+        lede = ""
     sections = merge_llm_sections(grouped, llm_payload)
-    if not sections and grouped:
-        sections = [public_section(s) for s in grouped if s.get("bullets")][:SECTIONS_MAX]
     if x_section:
         x_pub = public_x_section(x_section, llm_x_section(llm_payload))
-        if x_pub.get("bullets") or x_pub.get("links"):
+        if x_pub.get("bullets"):
             sections.append(x_pub)
     if not lede and not sections:
-        return _with_fp(
-            failed_brief(date, error="LLM returned empty brief", now=now, model=model)
-        )
+        return _with_fp(failed_brief(date, error=last_error, now=now, model=model))
     if not lede:
-        titles = [s["title"] for s in sections[:3] if s.get("title")]
+        titles = [
+            s["title"]
+            for s in sections[:3]
+            if s.get("title") and not is_predominantly_english(s["title"])
+        ]
         lede = clip_lede("；".join(titles))
+        if is_predominantly_english(lede):
+            lede = ""
+    if not lede and not sections:
+        return _with_fp(failed_brief(date, error=last_error, now=now, model=model))
 
     return _with_fp(
         {
@@ -1233,13 +1389,17 @@ def generate_daily_brief(
 
 
 def make_llm_fn(config: dict[str, str]) -> LlmFn:
-    def _fn(grouped: list[dict[str, Any]]) -> dict[str, Any]:
+    def _fn(
+        grouped: list[dict[str, Any]],
+        repair_hint: str | None = None,
+    ) -> dict[str, Any]:
         try:
             return openai_complete(
                 grouped,
                 api_key=config["api_key"],
                 model=config["model"],
                 base_url=config["base_url"],
+                repair_hint=repair_hint,
             )
         except Exception as exc:
             raise RuntimeError(
