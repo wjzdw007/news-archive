@@ -2025,6 +2025,13 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="newscientist",
+        name="New Scientist",
+        feed_url="https://www.newscientist.com/feed/home/",
+        category="科学",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

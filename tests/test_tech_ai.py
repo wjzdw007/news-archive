@@ -1124,6 +1124,34 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "astronomy" not in TECH_AI_SOURCE_WHITELIST
     assert "skyandtelescope" not in TECH_AI_SOURCE_WHITELIST
     assert "latimes_technology" not in TECH_AI_SOURCE_WHITELIST
+    # batch94 RSS primary stays off the tech/AI whitelist.
+    # newscientist lands on 科学
+    # (science magazine newsroom,
+    # same as nature_news /
+    # scientific_american /
+    # science_news /
+    # popular_science) — product-hung
+    # KEEP — and is not added to
+    # KEYWORD sources. Official
+    # /feed/home/ (MUST trailing
+    # slash; 301 to /feed/).
+    # the_intercept / theregister
+    # official feeds are already
+    # registered as intercept /
+    # the_register — not re-hung.
+    # carbonbrief / politico /
+    # hackaday were pulled to
+    # batch95 and stay off this
+    # batch (do not register).
+    # None of these match the
+    # wired / verge / techcrunch
+    # ALWAYS pattern.
+    assert "newscientist" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_intercept" not in TECH_AI_SOURCE_WHITELIST
+    assert "theregister" not in TECH_AI_SOURCE_WHITELIST
+    assert "carbonbrief" not in TECH_AI_SOURCE_WHITELIST
+    assert "politico" not in TECH_AI_SOURCE_WHITELIST
+    assert "hackaday" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
