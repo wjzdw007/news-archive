@@ -12835,96 +12835,101 @@ _ASTRONOMY_SKYANDTELESCOPE_LATIMES_TECHNOLOGY_PRIMARY = {
     },
 }
 
-# CEO-approved New Scientist RSS primary
-# (batch94). This is the new add
-# after #159 (batch93 astronomy /
-# skyandtelescope /
-# latimes_technology) on tip
-# 7ee69d1c4decb913e4654d9221f8bec2472bd9a9
-# (main after #159). Primaries
-# were newscientist /
+# CEO-approved Hackaday RSS primary
+# (batch94 product hard-swap of
+# all three original slots). On
+# tip 7ee69d1 after #159
+# (astronomy / skyandtelescope /
+# latimes_technology). Original
+# primaries were newscientist /
 # the_intercept / theregister.
-# Product mid-flight: carbonbrief /
-# politico / hackaday are NO
-# LONGER batch94 backups — they
-# are reserved as batch95 KEEP
-# primaries. Do NOT register
-# carbonbrief / politico /
-# hackaday in this batch (not as
-# KEEP, not as hard-swap). Do not
-# invent Feedburner and do not
-# invent a replacement id if a
-# primary fails. If a primary
-# fails CF/403/empty/<5, leave
-# that slot out and report for
-# product hard-swap; keep a
-# failing primary only when it is
-# product-hung KEEP and live ≥5.
-# Prefer all three primaries when
-# they KEEP.
-# newscientist live KEEP this
-# probe (urllib RSS_HEADERS HTTP
-# 200 / 10 nonempty / 10
-# insertable). the_intercept and
-# theregister official feeds are
-# already registered as intercept
-# / the_register — 0-collision
-# rule, do not re-hang, do not
-# invent an alias path. astronomy
-# / skyandtelescope /
+# Product QA HOLD: newscientist
+# CI httpx+RSS_HEADERS is
+# Varnish 406 / empty (same class
+# as flightglobal CI406/DB0).
+# empty-UA / urllib 200 does NOT
+# count — do not KEEP, do not
+# re-hang. the_intercept official
+# /feed/ is already intercept.
+# theregister official
+# headlines.atom is already
+# the_register. Product then
+# named the_atlantic /
+# motherjones / hackaday as the
+# three-slot hard-swap KEEP set.
+# the_atlantic official
+# /feed/all/ is already atlantic
+# (batch47 lock; /feed/best-of/
+# is "Best of The Atlantic" —
+# not the general primary —
+# 21/25 article overlap this
+# probe). motherjones official
+# /feed/ is already mother_jones
+# (batch67 lock; /politics/feed/
+# is a Politics section — 8/10
+# article overlap this probe).
+# Do not register those
+# collisions or invent an alias
+# / section / Feedburner path.
+# hackaday official /feed/ is
+# new, httpx+RSS_HEADERS HTTP
+# 200 / 7 nonempty / 7
+# insertable — product-hung KEEP
+# in the 5–9 band (live ≥5).
+# Do not invent a further backup
+# for the two failed slots.
+# Do NOT register newscientist /
+# the_atlantic / motherjones /
+# the_intercept / theregister /
+# carbonbrief / politico
+# (politico_politics /
+# politico_europe already live;
+# carbon_brief already live).
+# astronomy / skyandtelescope /
 # latimes_technology just landed
 # via #159 — do not undo.
-# defensenews / motherboard /
-# macworld (#158) /
-# taskandpurpose / twz /
-# aviationweek (#156 / #157) /
-# xda_developers /
-# infosecurity_magazine /
-# csoonline (#155) / thedrive /
-# venturebeat / navalnews (#154)
-# / krebsonsecurity /
-# androidpolice / cyberscoop
-# (#153) stay.
-# Product feed locks
-# (official only; no Feedburner):
-# newscientist =
-# https://www.newscientist.com/feed/home/
+# Product feed lock (official
+# only; no Feedburner):
+# hackaday =
+# https://hackaday.com/feed/
 # (MUST trailing slash on
-# site-documented All-articles
-# /feed/home/; live host
-# www.newscientist.com —
-# /feed/home (no slash) and
-# /feed/home/ 301 to /feed/;
-# atom:link self is /feed/.
-# Section /section/news/feed/ and
-# subject /*/feed/ are not the
-# general primary. do NOT invent
-# /feed /feed/ /rss.xml
-# /index.rss /rss/index.xml /
-# Feedburner)
-# the_intercept official
-# https://theintercept.com/feed/
-# is already locked on intercept
-# — /feed and /feeds/ remap to
-# /feed/. Do not register
-# the_intercept (feed-URL
-# collision). Do not invent
-# Feedburner.
-# theregister official
-# https://www.theregister.com/headlines.atom
+# official site-wide /feed/;
+# live host hackaday.com —
+# /feed remaps to /feed/;
+# /blog/feed/ is a near-
+# duplicate "Blog – Hackaday"
+# channel; comments/feed is
+# comments. do NOT invent
+# /feed /blog/feed/ /rss.xml
+# /rss/index.xml / Feedburner)
+# the_atlantic official
+# https://www.theatlantic.com/feed/all/
+# is already locked on atlantic
+# — /feed/ 404; /feed/best-of/
+# is not the general primary.
+# Do not register the_atlantic
+# (feed-URL collision). Do not
+# invent Feedburner.
+# motherjones official
+# https://www.motherjones.com/feed/
 # is already locked on
-# the_register — headlines.rss
-# remaps to the same
-# api.theregister.com RSS 2.0
-# body. Do not register
-# theregister (feed-URL
+# mother_jones — /feed remaps to
+# /feed/; /politics/feed/ is a
+# section. Do not register
+# motherjones (feed-URL
 # collision). Do not invent
-# Feedburner.
-# Active candidate set is these 3
-# primaries (product named no
-# backups this batch after the
-# mid-flight pull). CAP=6 sources
-# max in the active set.
+# Feedburner (site also lists
+# feeds.feedburner.com/motherjones/feed
+# — never hang).
+# newscientist official
+# /feed/home/ is product-skip
+# after CI httpx+RSS_HEADERS
+# 406/empty (same class as
+# flightglobal). Do not re-hang.
+# Active candidate set is these
+# 3 hard-swap ids (product named
+# no further backups). CAP=6
+# sources max in the active set.
 # NEWS_SOURCE_CAP display stays 6
 # — no CAP code change.
 # Do not restore atlantic_council.
@@ -12947,6 +12952,8 @@ _ASTRONOMY_SKYANDTELESCOPE_LATIMES_TECHNOLOGY_PRIMARY = {
 # nationalinterest (CF 403 leftover).
 # Do not restore flightglobal
 # (CI/httpx RSS 403 after #156).
+# Do not restore newscientist
+# (CI httpx+RSS_HEADERS 406/empty).
 # Do not probe / register
 # product-skip: bangkok_post /
 # indian_express / rest_of_world /
@@ -12959,7 +12966,8 @@ _ASTRONOMY_SKYANDTELESCOPE_LATIMES_TECHNOLOGY_PRIMARY = {
 # digital_trends / bleepingcomputer /
 # gizmodo / the_baffler /
 # new_statesman / guernica /
-# nationalinterest / flightglobal.
+# nationalinterest / flightglobal /
+# newscientist.
 # qz3 勿挂. digiday0观察 — do not
 # add a second digiday. Do not
 # add a second fastcompany
@@ -12979,156 +12987,84 @@ _ASTRONOMY_SKYANDTELESCOPE_LATIMES_TECHNOLOGY_PRIMARY = {
 # csoonline (#155) / thedrive /
 # venturebeat / navalnews (#154)
 # / krebsonsecurity /
-# androidpolice / cyberscoop (#153)
-# / theweek / harpers /
-# justsecurity (#152) /
-# sciencealert /
-# responsiblestatecraft / lrb
-# (#150) / universe_today /
-# new_yorker / darkreading (#149)
-# / inverse / appleinsider /
-# popular_mechanics (#148) /
-# polygon / pcmag / mashable
-# (#146) / smithsonian_mag (#147)
-# / cnet / 9to5mac (#145) /
-# artnet / macrumors / quillette
-# (#144) / howtogeek /
-# new_republic / vox (#143).
+# androidpolice / cyberscoop (#153).
 # Skip already-registered
-# collisions: the_intercept
-# (intercept already registered)
-# / theregister (the_register
-# already registered) / the_verge
+# collisions: the_atlantic
+# (atlantic already registered)
+# / motherjones (mother_jones
+# already registered) /
+# the_intercept (intercept
+# already registered) /
+# theregister (the_register
+# already registered) /
+# carbonbrief (carbon_brief
+# already registered) /
+# politico (politico_politics /
+# politico_europe already
+# registered) / the_verge
 # (verge already registered) /
-# wired (already registered) /
-# android_authority (already
-# registered) / fast_company
-# (already registered) /
-# latimes_world (already
-# registered). Do not hang a
-# second intercept, register,
-# verge, wired,
+# wired / android_authority /
+# fast_company / latimes_world.
+# Do not hang a second atlantic,
+# mother jones, intercept,
+# register, carbon brief,
+# politico, verge, wired,
 # android_authority, fastcompany,
 # or latimes.
-# newscientist is the official
-# site-documented All-articles
-# RSS (https://www.newscientist.com/rss-feeds/
-# lists /feed/home/ as "All
-# articles"). Product lock: MUST
-# lock
-# https://www.newscientist.com/feed/home/
-# (channel "New Scientist") —
+# hackaday is the official
+# site-wide RSS (no prior
+# hackaday / hack_a_day /
+# hackaday_com id). Product
+# lock: MUST lock
+# https://hackaday.com/feed/
+# (channel "Hackaday") —
 # trailing slash required; live
-# host www.newscientist.com
-# (/feed/home no-slash and
-# /feed/home/ 301 to /feed/;
-# atom:link self is /feed/).
-# Section /section/news/feed/ and
-# subject /*/feed/ are not the
-# general primary. Never invent
-# Feedburner.
-# Live-diff winner: HTTP 200 / 10
-# nonempty / 10 insertable
-# (urllib + RSS_HEADERS; same
-# headers fetch_source sends).
-# 10 is the KEEP floor, not the
-# 5–9 observe band. httpx with
-# the Chrome UA in RSS_HEADERS
-# returns Varnish 406 on this
-# host this probe; wget / urllib
-# / empty-UA httpx are 200. Not
-# CF/403/empty/<5 — product-hung
-# KEEP stands. Distinct from live
-# astronomy / skyandtelescope /
-# universe_today / space_com /
-# sciencealert / livescience /
-# popular_science /
-# popular_mechanics / phys_org /
-# sciencedaily / science_news /
-# science_org /
-# scientific_american /
-# physics_world / nautilus /
-# undark / knowable /
-# smithsonian_mag / newatlas /
-# ieee_spectrum / nyt_science /
-# guardian_science / npr_science
-# / nature_news / bbc_science.
-# 0 article URL overlap with
-# those (www.newscientist.com
-# host). Lands on the existing
-# 科学 category path (science
-# magazine newsroom, same as
-# nature_news /
-# scientific_american /
-# science_news /
-# popular_science). Not added to
-# the tech/AI whitelist
+# host hackaday.com (/feed
+# remaps here). /blog/feed/ is
+# a near-duplicate "Blog –
+# Hackaday" channel — do not
+# hang. Never invent Feedburner.
+# Live-diff winner: HTTP 200 / 7
+# nonempty / 7 insertable (httpx
+# fetch_source + RSS_HEADERS).
+# 7 is product-hung KEEP in the
+# 5–9 band (live ≥5), not the
+# ≥10 floor. Distinct from live
+# tomshardware / newatlas /
+# howtogeek / thenewstack /
+# zdnet / techinasia /
+# android_authority /
+# androidpolice / xda_developers
+# / macworld / macrumors /
+# 9to5mac / appleinsider / cnet
+# / pcmag / mashable /
+# motherboard / media404 /
+# the_markup / wired / verge /
+# ars_technica / techcrunch /
+# ieee_spectrum /
+# latimes_technology. 0 article
+# URL overlap with those
+# (hackaday.com host). Lands on
+# the existing 科技 category
+# path (hardware / maker
+# newsroom, same as
+# tomshardware / newatlas). Not
+# added to the tech/AI whitelist
 # (later-batch sources stay off
-# the frozen ALWAYS / KEYWORD
-# set).
-# the_intercept official
-# https://theintercept.com/feed/
-# is already the intercept
-# primary (HTTP 200 / 20
-# insertable this probe). Do not
-# register a second Intercept
-# id. Report for product
-# hard-swap — backups
-# carbonbrief / politico /
-# hackaday are reserved for
-# batch95 and must stay out.
-# theregister official
-# https://www.theregister.com/headlines.atom
-# is already the the_register
-# primary (HTTP 200 / 50 items /
-# 30 insertable this probe,
-# ingest cap 30). headlines.rss
-# remaps to the same
-# api.theregister.com body. Do
-# not register a second Register
-# id. Report for product
-# hard-swap — backups
-# carbonbrief / politico /
-# hackaday are reserved for
-# batch95 and must stay out.
-# Product named no leftover
-# backups this batch after the
-# mid-flight pull — do not
-# invent a replacement id.
+# the frozen ALWAYS set).
+# the_atlantic / motherjones /
+# newscientist / the_intercept /
+# theregister stay
+# unregistered (see collisions /
+# CI406 skip above). atlantic /
+# mother_jones / intercept /
+# the_register / carbon_brief /
+# politico_politics /
+# politico_europe stay as
+# already registered.
 # astronomy / skyandtelescope /
 # latimes_technology stay
 # registered (batch93 KEEP).
-# defensenews / motherboard /
-# macworld stay registered
-# (batch92 KEEP).
-# taskandpurpose / twz /
-# aviationweek stay registered
-# (batch91 KEEP + #157 hotfix).
-# xda_developers /
-# infosecurity_magazine /
-# csoonline stay registered
-# (batch90 KEEP). thedrive /
-# venturebeat / navalnews stay
-# registered (batch89 KEEP).
-# krebsonsecurity /
-# androidpolice / cyberscoop
-# stay registered (batch88
-# KEEP).
-# intercept stays registered as
-# the existing intercept
-# primary — do not hang
-# the_intercept. the_register
-# stays registered as the
-# existing the_register primary
-# — do not hang theregister.
-# carbon_brief stays registered
-# as the existing carbon_brief
-# primary — do not hang
-# carbonbrief. politico_politics
-# / politico_europe stay
-# registered — do not hang
-# politico. hackaday stays out
-# (reserved batch95).
 # Do NOT use as backups
 # (product skip): bangkok_post
 # / indian_express /
@@ -13147,20 +13083,23 @@ _ASTRONOMY_SKYANDTELESCOPE_LATIMES_TECHNOLOGY_PRIMARY = {
 # bleepingcomputer / gizmodo /
 # the_baffler / new_statesman
 # / guernica / nationalinterest
-# / flightglobal. qz3 勿挂.
-# digiday0观察 — do not add a
-# second digiday. sunday_review /
-# cnbc (403 known) / ap stay
+# / flightglobal /
+# newscientist (CI
+# httpx+RSS_HEADERS 406/empty).
+# qz3 勿挂. digiday0观察 — do not
+# add a second digiday.
+# sunday_review / cnbc (403
+# known) / ap stay
 # unregistered (product lock).
 # NEWS_SOURCE_CAP display stays 6
 # — no CAP code change. No X this
 # batch. No LLM this batch. Not
 # tech/AI whitelist.
-_NEWSCIENTIST_PRIMARY = {
-    "newscientist": {
-        "name": "New Scientist",
-        "feed_url": "https://www.newscientist.com/feed/home/",
-        "category": "科学",
+_HACKADAY_PRIMARY = {
+    "hackaday": {
+        "name": "Hackaday",
+        "feed_url": "https://hackaday.com/feed/",
+        "category": "科技",
     },
 }
 
@@ -36096,13 +36035,14 @@ def test_astronomy_skyandtelescope_latimes_technology_primaries_registered():
     # Product named no leftover
     # backups this batch. All three
     # primaries live KEEP — no
-    # hard-swap. batch94 adds
-    # newscientist (the_intercept /
-    # theregister already live as
-    # intercept / the_register;
-    # carbonbrief / politico /
-    # hackaday reserved for
-    # batch95). defensenews /
+    # hard-swap. batch94 product
+    # hard-swaps all three original
+    # slots: newscientist CI406
+    # skip; the_atlantic /
+    # motherjones official feeds
+    # already live as atlantic /
+    # mother_jones; hackaday KEEP
+    # (5–9 product-hung). defensenews /
     # motherboard / macworld stay
     # registered (batch92 KEEP).
     # taskandpurpose / twz /
@@ -36349,42 +36289,21 @@ def test_astronomy_skyandtelescope_latimes_technology_feeds_live_http_200():
         )
 
 
-def test_newscientist_primary_registered():
+def test_hackaday_primary_registered():
     by_id = {s.id: s for s in SOURCES}
-    assert "newscientist" in by_id
-    assert by_id["newscientist"].feed_url == (
-        "https://www.newscientist.com/feed/home/"
-    )
-    assert by_id["newscientist"].feed_url != (
-        "https://www.newscientist.com/feed/home"
-    )
-    assert by_id["newscientist"].feed_url != (
-        "https://www.newscientist.com/feed/"
-    )
-    assert by_id["newscientist"].feed_url != (
-        "https://www.newscientist.com/feed"
-    )
-    assert by_id["newscientist"].feed_url != (
-        "https://newscientist.com/feed/home/"
-    )
-    assert by_id["newscientist"].feed_url != (
-        "https://www.newscientist.com/section/news/feed/"
-    )
-    assert by_id["newscientist"].feed_url != (
-        "https://www.newscientist.com/section/features/feed/"
-    )
-    assert by_id["newscientist"].feed_url != (
-        "https://www.newscientist.com/rss.xml"
-    )
-    assert by_id["newscientist"].feed_url != (
-        "https://www.newscientist.com/index.rss"
+    assert "hackaday" in by_id
+    assert by_id["hackaday"].feed_url == "https://hackaday.com/feed/"
+    assert by_id["hackaday"].feed_url != "https://hackaday.com/feed"
+    assert by_id["hackaday"].feed_url != "https://hackaday.com/blog/feed/"
+    assert by_id["hackaday"].feed_url != "https://hackaday.com/blog/feed"
+    assert by_id["hackaday"].feed_url != "https://hackaday.com/rss.xml"
+    assert by_id["hackaday"].feed_url != "https://hackaday.com/rss/index.xml"
+    assert by_id["hackaday"].feed_url != (
+        "https://feeds.feedburner.com/hackaday"
     )
     # #159 / batch93 winners stay registered and unchanged.
     # #158 / batch92 winners stay registered and unchanged.
     # #157 / #156 / batch91 winners stay registered and unchanged.
-    # #155 / batch90 winners stay registered and unchanged.
-    # #154 / batch89 winners stay registered and unchanged.
-    # #153 / batch88 winners stay registered and unchanged.
     # Do not touch astronomy /
     # skyandtelescope /
     # latimes_technology /
@@ -36393,10 +36312,7 @@ def test_newscientist_primary_registered():
     # twz / aviationweek /
     # xda_developers /
     # infosecurity_magazine /
-    # csoonline / thedrive /
-    # venturebeat / navalnews /
-    # krebsonsecurity /
-    # androidpolice / cyberscoop.
+    # csoonline.
     assert "astronomy" in by_id
     assert "skyandtelescope" in by_id
     assert "latimes_technology" in by_id
@@ -36409,69 +36325,73 @@ def test_newscientist_primary_registered():
     assert "xda_developers" in by_id
     assert "infosecurity_magazine" in by_id
     assert "csoonline" in by_id
-    assert "thedrive" in by_id
-    assert "venturebeat" in by_id
-    assert "navalnews" in by_id
-    assert "krebsonsecurity" in by_id
-    assert "androidpolice" in by_id
-    assert "cyberscoop" in by_id
     # Feed locks + uniqueness vs live
-    # science-magazine stack.
-    assert by_id["newscientist"].feed_url != by_id["astronomy"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["skyandtelescope"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["universe_today"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["space_com"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["sciencealert"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["livescience"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["popular_science"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["popular_mechanics"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["phys_org"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["sciencedaily"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["science_news"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["science_org"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["scientific_american"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["physics_world"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["nautilus"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["undark"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["knowable"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["smithsonian_mag"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["newatlas"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["ieee_spectrum"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["nyt_science"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["guardian_science"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["npr_science"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["nature_news"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["bbc_science"].feed_url
-    # the_intercept / theregister
-    # official feeds are already
-    # registered as intercept /
-    # the_register. Product mid-flight
-    # pulled carbonbrief / politico /
-    # hackaday to batch95 — do not
-    # register them here. Do not
-    # invent a replacement id.
+    # hardware / maker tech stack.
+    assert by_id["hackaday"].feed_url != by_id["tomshardware"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["howtogeek"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["thenewstack"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["zdnet"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["techinasia"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["android_authority"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["androidpolice"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["xda_developers"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["macworld"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["macrumors"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["9to5mac"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["appleinsider"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["cnet"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["pcmag"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["mashable"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["motherboard"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["media404"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["the_markup"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["wired"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["verge"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["ars_technica"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["techcrunch"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["latimes_technology"].feed_url
+    # Product hard-swap of all three
+    # original slots: newscientist
+    # CI406 skip; the_atlantic /
+    # motherjones / the_intercept /
+    # theregister official feeds
+    # already live under other ids.
+    # Do not invent a replacement
+    # id or alias path.
+    assert "newscientist" not in by_id
+    assert "new_scientist" not in by_id
+    assert "newscientist_com" not in by_id
+    assert "the_atlantic" not in by_id
+    assert "motherjones" not in by_id
     assert "the_intercept" not in by_id
     assert "theregister" not in by_id
+    assert "atlantic" in by_id
+    assert "mother_jones" in by_id
     assert "intercept" in by_id
     assert "the_register" in by_id
+    assert by_id["atlantic"].feed_url == (
+        "https://www.theatlantic.com/feed/all/"
+    )
+    assert by_id["mother_jones"].feed_url == (
+        "https://www.motherjones.com/feed/"
+    )
     assert by_id["intercept"].feed_url == "https://theintercept.com/feed/"
     assert by_id["the_register"].feed_url == (
         "https://www.theregister.com/headlines.atom"
     )
-    assert by_id["newscientist"].feed_url != by_id["intercept"].feed_url
-    assert by_id["newscientist"].feed_url != by_id["the_register"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["atlantic"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["mother_jones"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["intercept"].feed_url
+    assert by_id["hackaday"].feed_url != by_id["the_register"].feed_url
     assert "carbonbrief" not in by_id
     assert "carbon_brief" in by_id
     assert "politico" not in by_id
     assert "politico_politics" in by_id
     assert "politico_europe" in by_id
-    assert "hackaday" not in by_id
     assert "hack_a_day" not in by_id
     assert "hackaday_com" not in by_id
-    assert "new_scientist" not in by_id
-    assert "newscientist_com" not in by_id
-    assert "new_scientist_com" not in by_id
-    assert "ns" not in by_id
     assert "qz3" not in by_id
     assert "qz" not in by_id
     assert "fastcompany" not in by_id
@@ -36503,7 +36423,7 @@ def test_newscientist_primary_registered():
     assert "longreads" not in by_id
     assert "hrw" not in by_id
     assert "independent" not in by_id
-    for source_id, expected in _NEWSCIENTIST_PRIMARY.items():
+    for source_id, expected in _HACKADAY_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
         assert source.role == "primary"
@@ -36512,11 +36432,20 @@ def test_newscientist_primary_registered():
         assert source.category == expected["category"]
 
 
-def test_newscientist_feed_live_http_200():
-    """Hit the KEEP feed with the same headers fetch_source sends (not stubs)."""
+def test_hackaday_feed_live_httpx_rss_headers():
+    """KEEP must pass the same httpx + RSS_HEADERS client CI uses."""
+    from news_archive.fetch import fetch_source
+
     by_id = {s.id: s for s in SOURCES}
-    for source_id in _NEWSCIENTIST_PRIMARY:
+    keep_floor = {"hackaday": 5}
+    for source_id in _HACKADAY_PRIMARY:
         source = by_id[source_id]
+        articles = fetch_source(source, timeout=30)
+        assert articles, f"{source_id} httpx+RSS_HEADERS insertable=0"
+        assert len(articles) >= keep_floor[source_id], (
+            f"{source_id} insertable {len(articles)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
         request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
         try:
             with urllib.request.urlopen(request, timeout=30) as resp:
@@ -36533,9 +36462,8 @@ def test_newscientist_feed_live_http_200():
         count = len(items)
         assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
         # Required: parseable title / url / published on each item.
-        # RSS 2.0 (newscientist)
-        # uses the un-namespaced
-        # element text.
+        # RSS 2.0 (hackaday) uses the
+        # un-namespaced element text.
         for i, item in enumerate(items):
             title = _item_title(item)
             url = _item_link(item)
@@ -36544,15 +36472,12 @@ def test_newscientist_feed_live_http_200():
             assert url, f"{source_id} item[{i}] missing url"
             assert published, f"{source_id} item[{i}] missing published"
         # #43 thin-skip: empty description would insert 0.
-        # newscientist 10/10 was
-        # 100% nonempty this probe.
-        # ingest cap 30 still KEEP.
-        # newscientist MUST keep the
-        # trailing slash on
-        # site-documented
-        # /feed/home/ (301 to
-        # /feed/; do not lock
-        # section /subject feeds).
+        # hackaday 7/7 was 100%
+        # nonempty this probe.
+        # product-hung KEEP in the
+        # 5–9 band (live ≥5).
+        # hackaday MUST keep the
+        # trailing slash on /feed/.
         nonempty = 0
         for item in items:
             if _item_description(item):
@@ -36561,8 +36486,9 @@ def test_newscientist_feed_live_http_200():
             f"{source_id} empty description: "
             f"{len(items) - nonempty}/{len(items)}"
         )
-        assert nonempty >= 10, (
-            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP"
+        assert nonempty >= keep_floor[source_id], (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP floor "
+            f"{keep_floor[source_id]}"
         )
 
 
@@ -36669,7 +36595,7 @@ if __name__ == "__main__":
     test_taskandpurpose_twz_aviationweek_primaries_registered()
     test_defensenews_motherboard_macworld_primaries_registered()
     test_astronomy_skyandtelescope_latimes_technology_primaries_registered()
-    test_newscientist_primary_registered()
+    test_hackaday_primary_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -36762,5 +36688,5 @@ if __name__ == "__main__":
     test_taskandpurpose_twz_aviationweek_feeds_live_http_200()
     test_defensenews_motherboard_macworld_feeds_live_http_200()
     test_astronomy_skyandtelescope_latimes_technology_feeds_live_http_200()
-    test_newscientist_feed_live_http_200()
+    test_hackaday_feed_live_httpx_rss_headers()
     print("✓ source registry tests PASSED")
