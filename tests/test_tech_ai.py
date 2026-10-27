@@ -960,6 +960,32 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "nationalinterest" not in TECH_AI_SOURCE_WHITELIST
     assert "thedrive" not in TECH_AI_SOURCE_WHITELIST
     assert "defensenews" not in TECH_AI_SOURCE_WHITELIST
+    # batch89 RSS primaries stay off the tech/AI whitelist.
+    # thedrive lands on 科技 (auto
+    # newsroom) — leftover observe
+    # from #153, now product-hung KEEP
+    # — and is not added to KEYWORD
+    # sources.
+    # venturebeat lands on 科技 (tech
+    # newsroom, same as techcrunch /
+    # verge). Official Feedburner
+    # /venturebeat/SZYF.
+    # navalnews lands on 国际 (defense
+    # newsroom, same as
+    # breaking_defense / defense_one /
+    # war_on_rocks).
+    # Unused leftovers xda_developers
+    # / infosecurity_magazine /
+    # csoonline stay off (all three
+    # primaries live KEEP). None of
+    # these match the wired / verge /
+    # techcrunch ALWAYS pattern.
+    assert "thedrive" not in TECH_AI_SOURCE_WHITELIST
+    assert "venturebeat" not in TECH_AI_SOURCE_WHITELIST
+    assert "navalnews" not in TECH_AI_SOURCE_WHITELIST
+    assert "xda_developers" not in TECH_AI_SOURCE_WHITELIST
+    assert "infosecurity_magazine" not in TECH_AI_SOURCE_WHITELIST
+    assert "csoonline" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 

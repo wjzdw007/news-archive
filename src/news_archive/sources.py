@@ -1920,6 +1920,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="thedrive",
+        name="The Drive",
+        feed_url="https://www.thedrive.com/feed",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="venturebeat",
+        name="VentureBeat",
+        feed_url="https://feeds.feedburner.com/venturebeat/SZYF",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="navalnews",
+        name="Naval News",
+        feed_url="https://www.navalnews.com/feed/",
+        category="国际",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
