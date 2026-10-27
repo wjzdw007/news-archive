@@ -11588,24 +11588,33 @@ _XDA_INFOSECURITY_CSOONLINE_PRIMARY = {
 }
 
 # CEO-approved Task & Purpose / The
-# War Zone / FlightGlobal RSS
-# primaries (batch91). These three
-# are the new adds after #155
-# (batch90 xda_developers +
-# infosecurity_magazine +
-# csoonline) on tip
-# ead80b0870476676e17f46cedc02ee98a1b0a9df.
-# Primaries were taskandpurpose /
-# twz / flightglobal. Backups were
-# aviationweek / defensenews /
-# fastcompany (probe only if a
-# primary fails thin/403). All
-# three primaries live KEEP this
-# probe — no hard-swap.
-# taskandpurpose / twz /
-# flightglobal were the unused
-# leftovers in #155; product now
-# hung them as KEEP primaries.
+# War Zone / Aviation Week RSS
+# primaries (batch91 + hotfix).
+# batch91 on tip ead80b0 after #155
+# hung taskandpurpose / twz /
+# flightglobal as KEEP primaries.
+# daily-fetch #40450144377 then
+# failed P0 Source Incremental:
+# flightglobal official RSS
+# CI/httpx 403 from Actions (box
+# curl still 200) → DB=0. Same
+# class as nationalinterest CF403
+# → HARD-SWAP never Feedburner.
+# Product lock (this hotfix, tip
+# 9a9538f after #156 MERGED):
+# unregister flightglobal
+# (product-skip 勿再挂; do not
+# re-probe / do not invent
+# Feedburner) and register
+# aviationweek at official
+# /rss.xml. taskandpurpose / twz
+# stay unchanged from #156.
+# Final KEEP: taskandpurpose /
+# twz / aviationweek.
+# Backups were aviationweek /
+# defensenews / fastcompany
+# (aviationweek now used as the
+# flightglobal hard-swap fill).
 # xda_developers /
 # infosecurity_magazine /
 # csoonline just landed via #155
@@ -11638,19 +11647,22 @@ _XDA_INFOSECURITY_CSOONLINE_PRIMARY = {
 # thewarzone.com apex 301s here;
 # www.thewarzone.com NXDOMAIN; do
 # NOT invent /feed/ /rss/index.xml)
-# flightglobal =
-# https://www.flightglobal.com/rss
-# (lock /rss; live host
-# www.flightglobal.com; official
-# /rss 301s to /feed/ and
-# fetch_source follows; do NOT
-# invent /feed /feed/ /rss/
-# /rss/news/ /rss/index.xml)
-# aviationweek leftover backup =
-# official RSS (typically
-# aviationweek.com — unused
-# because taskandpurpose KEEP;
-# not probed)
+# flightglobal = PRODUCT-SKIP
+# (official CI/httpx RSS 403
+# after #156 / daily-fetch
+# #40450144377; same class as
+# nationalinterest CF403; do
+# not re-probe / do not invent
+# Feedburner / do not re-hang
+# https://www.flightglobal.com/rss)
+# aviationweek =
+# https://aviationweek.com/rss.xml
+# (MUST /rss.xml; live host
+# aviationweek.com — www.
+# aviationweek.com/rss.xml
+# redirects here; do NOT invent
+# /rss.xml/ /feed /feed/ /rss
+# /rss/ /rss/index.xml)
 # defensenews leftover backup =
 # https://www.defensenews.com/arc/outboundfeeds/rss/?outputType=xml
 # (unused because twz KEEP;
@@ -11662,9 +11674,8 @@ _XDA_INFOSECURITY_CSOONLINE_PRIMARY = {
 # already registered as
 # fast_company at
 # https://www.fastcompany.com/latest/rss
-# (unused because flightglobal
-# KEEP; do not add a second
-# fastcompany)
+# (unused leftover; do not add
+# a second fastcompany)
 # Active candidate set is these 6
 # (3 primary + 3 leftover backup).
 # CAP=6 sources max in the active
@@ -11688,6 +11699,8 @@ _XDA_INFOSECURITY_CSOONLINE_PRIMARY = {
 # Do not restore guernica (product
 # skip). Do not restore
 # nationalinterest (CF 403 leftover).
+# Do not restore flightglobal
+# (CI/httpx RSS 403 after #156).
 # Do not probe / register
 # product-skip: bangkok_post /
 # indian_express / rest_of_world /
@@ -11700,7 +11713,7 @@ _XDA_INFOSECURITY_CSOONLINE_PRIMARY = {
 # digital_trends / bleepingcomputer /
 # gizmodo / the_baffler /
 # new_statesman / guernica /
-# nationalinterest.
+# nationalinterest / flightglobal.
 # digiday0观察 — do not add a
 # second digiday.
 # Do not re-hang SCMP / MIT TR /
@@ -11759,7 +11772,7 @@ _XDA_INFOSECURITY_CSOONLINE_PRIMARY = {
 # aspi_strategist /
 # lowy_interpreter /
 # the_diplomat / crisis_group /
-# twz / flightglobal. 0 article
+# twz / aviationweek. 0 article
 # URL overlap with those. Lands
 # on the existing 国际 category
 # path (defense / military
@@ -11795,7 +11808,7 @@ _XDA_INFOSECURITY_CSOONLINE_PRIMARY = {
 # aspi_strategist /
 # lowy_interpreter /
 # the_diplomat / crisis_group /
-# taskandpurpose / flightglobal.
+# taskandpurpose / aviationweek.
 # 0 article URL overlap with
 # those. Lands on the existing
 # 国际 category path (defense /
@@ -11806,18 +11819,22 @@ _XDA_INFOSECURITY_CSOONLINE_PRIMARY = {
 # whitelist (later-batch sources
 # stay off the frozen ALWAYS
 # set).
-# flightglobal is the official
-# site-wide RSS (batch90 leftover
-# unused; product now hung KEEP).
+# aviationweek is the official
+# site-wide RSS (batch91 leftover
+# unused; product now hung KEEP
+# as the flightglobal hard-swap
+# fill after daily-fetch
+# #40450144377 CI/httpx RSS 403).
 # Product lock: MUST lock
-# https://www.flightglobal.com/rss
-# (channel "FlightGlobal") —
-# lock /rss; live host
-# www.flightglobal.com; official
-# /rss 301s to /feed/ and
-# fetch_source follows; do NOT
-# invent /feed /feed/ /rss/
-# /rss/news/ /rss/index.xml.
+# https://aviationweek.com/rss.xml
+# (channel "Aviation Week") —
+# MUST /rss.xml; live host
+# aviationweek.com (www.
+# aviationweek.com/rss.xml
+# redirects here); do NOT invent
+# /rss.xml/ /feed /feed/ /rss
+# /rss/ /rss/index.xml. Never
+# invent Feedburner.
 # Live-diff winner: HTTP 200 / 10
 # nonempty / 10 insertable (httpx
 # fetch_source + urllib). 10 is
@@ -11832,27 +11849,28 @@ _XDA_INFOSECURITY_CSOONLINE_PRIMARY = {
 # taskandpurpose / twz. 0
 # article URL overlap with
 # those. Lands on the existing
-# 国际 category path (aviation
-# newsroom, same as navalnews /
-# breaking_defense). Not added
-# to the tech/AI whitelist
-# (later-batch sources stay off
-# the frozen ALWAYS set).
-# Unused leftover aviationweek
-# stays out (taskandpurpose
-# KEEP; official RSS typically
-# aviationweek.com — not
-# probed).
+# 国际 category path (aviation /
+# defense newsroom, same as
+# navalnews / flightglobal was).
+# Not added to the tech/AI
+# whitelist (later-batch sources
+# stay off the frozen ALWAYS
+# set).
+# flightglobal stays
+# unregistered (official
+# CI/httpx RSS 403 after #156;
+# product-skip 勿再挂; do not
+# re-probe / do not hang
+# Feedburner).
 # Unused leftover defensenews
 # stays out (twz KEEP; official
 # Arc outbound from #153
 # leftover notes — not probed;
 # do NOT invent Feedburner).
 # Unused leftover fastcompany
-# stays out (flightglobal KEEP;
-# already registered as
-# fast_company — do not add a
-# second).
+# stays out (already registered
+# as fast_company — do not add
+# a second).
 # xda_developers /
 # infosecurity_magazine /
 # csoonline stay registered
@@ -11918,6 +11936,10 @@ _XDA_INFOSECURITY_CSOONLINE_PRIMARY = {
 # unregistered (official
 # Cloudflare 403 leftover; do
 # not hang Feedburner).
+# flightglobal stays
+# unregistered (official
+# CI/httpx RSS 403 leftover;
+# do not hang Feedburner).
 # fast_company stays registered
 # as the existing fast_company
 # primary — do not hang a
@@ -11939,7 +11961,8 @@ _XDA_INFOSECURITY_CSOONLINE_PRIMARY = {
 # digital_trends /
 # bleepingcomputer / gizmodo /
 # the_baffler / new_statesman
-# / guernica / nationalinterest.
+# / guernica / nationalinterest
+# / flightglobal.
 # digiday0观察 — do not add a
 # second digiday. sunday_review /
 # cnbc (403 known) / ap stay
@@ -11948,7 +11971,7 @@ _XDA_INFOSECURITY_CSOONLINE_PRIMARY = {
 # — no CAP code change. No X this
 # batch. No LLM this batch. Not
 # tech/AI whitelist.
-_TASKANDPURPOSE_TWZ_FLIGHTGLOBAL_PRIMARY = {
+_TASKANDPURPOSE_TWZ_AVIATIONWEEK_PRIMARY = {
     "taskandpurpose": {
         "name": "Task & Purpose",
         "feed_url": "https://taskandpurpose.com/feed/",
@@ -11959,9 +11982,9 @@ _TASKANDPURPOSE_TWZ_FLIGHTGLOBAL_PRIMARY = {
         "feed_url": "https://www.twz.com/feed",
         "category": "国际",
     },
-    "flightglobal": {
-        "name": "FlightGlobal",
-        "feed_url": "https://www.flightglobal.com/rss",
+    "aviationweek": {
+        "name": "Aviation Week",
+        "feed_url": "https://aviationweek.com/rss.xml",
         "category": "国际",
     },
 }
@@ -33633,10 +33656,14 @@ def test_xda_developers_infosecurity_magazine_csoonline_primaries_registered():
     # at batch90 time (all three
     # primaries live KEEP).
     # batch91 promotes
-    # taskandpurpose / twz /
-    # flightglobal leftover backups
-    # to KEEP primaries — registered
-    # below.
+    # taskandpurpose / twz leftover
+    # backups to KEEP primaries —
+    # registered below. flightglobal
+    # leftover was also promoted in
+    # #156 then hard-swapped to
+    # aviationweek after daily-fetch
+    # #40450144377 CI/httpx RSS 403
+    # (product-skip 勿再挂).
     # thedrive / venturebeat /
     # navalnews stay registered
     # (batch89 KEEP).
@@ -33700,9 +33727,10 @@ def test_xda_developers_infosecurity_magazine_csoonline_primaries_registered():
     assert "the_war_zone" not in by_id
     assert "thewarzone" not in by_id
     assert "thewarzone_com" not in by_id
-    assert "flightglobal" in by_id
+    assert "flightglobal" not in by_id
     assert "flight_global" not in by_id
     assert "flightglobal_com" not in by_id
+    assert "aviationweek" in by_id
     assert "the_drive" not in by_id
     assert "thedrive_com" not in by_id
     assert "venture_beat" not in by_id
@@ -33852,7 +33880,56 @@ def test_xda_developers_infosecurity_magazine_csoonline_feeds_live_http_200():
         )
 
 
-def test_taskandpurpose_twz_flightglobal_primaries_registered():
+def test_flightglobal_hard_swapped_to_aviationweek():
+    """Product lock: flightglobal CI/httpx RSS 403; aviationweek is the KEEP fill."""
+    by_id = {s.id: s for s in SOURCES}
+    assert "flightglobal" not in by_id
+    assert "flight_global" not in by_id
+    assert "flightglobal_com" not in by_id
+    assert "aviationweek" in by_id
+    source = by_id["aviationweek"]
+    assert source.role == "primary"
+    assert source.name == "Aviation Week"
+    assert source.feed_url == "https://aviationweek.com/rss.xml"
+    assert source.category == "国际"
+    assert "https://www.flightglobal.com/rss" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://www.flightglobal.com/rss/" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://www.flightglobal.com/feed" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://www.flightglobal.com/feed/" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://feeds.feedburner.com/flightglobal" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://feeds.feedburner.com/FlightGlobal" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://aviationweek.com/rss.xml/" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://www.aviationweek.com/rss.xml" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://aviationweek.com/feed/" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://aviationweek.com/rss" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://aviationweek.com/rss/index.xml" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "taskandpurpose" in by_id
+    assert "twz" in by_id
+
+
+def test_taskandpurpose_twz_aviationweek_primaries_registered():
     by_id = {s.id: s for s in SOURCES}
     assert "taskandpurpose" in by_id
     assert by_id["taskandpurpose"].feed_url == (
@@ -33870,25 +33947,26 @@ def test_taskandpurpose_twz_flightglobal_primaries_registered():
     assert by_id["twz"].feed_url != "https://www.twz.com/rss/index.xml"
     assert by_id["twz"].feed_url != "https://thewarzone.com/feed"
     assert by_id["twz"].feed_url != "https://www.thewarzone.com/feed"
-    assert "flightglobal" in by_id
-    assert by_id["flightglobal"].feed_url == (
-        "https://www.flightglobal.com/rss"
+    assert "aviationweek" in by_id
+    assert by_id["aviationweek"].feed_url == (
+        "https://aviationweek.com/rss.xml"
     )
-    assert by_id["flightglobal"].feed_url != (
-        "https://www.flightglobal.com/rss/"
+    assert by_id["aviationweek"].feed_url != (
+        "https://aviationweek.com/rss.xml/"
     )
-    assert by_id["flightglobal"].feed_url != (
-        "https://www.flightglobal.com/feed"
+    assert by_id["aviationweek"].feed_url != (
+        "https://www.aviationweek.com/rss.xml"
     )
-    assert by_id["flightglobal"].feed_url != (
-        "https://www.flightglobal.com/feed/"
+    assert by_id["aviationweek"].feed_url != (
+        "https://aviationweek.com/feed/"
     )
-    assert by_id["flightglobal"].feed_url != (
-        "https://www.flightglobal.com/rss/news/"
+    assert by_id["aviationweek"].feed_url != (
+        "https://aviationweek.com/rss"
     )
-    assert by_id["flightglobal"].feed_url != (
-        "https://www.flightglobal.com/rss/index.xml"
+    assert by_id["aviationweek"].feed_url != (
+        "https://aviationweek.com/rss/index.xml"
     )
+    assert "flightglobal" not in by_id
     # #155 / batch90 winners stay registered and unchanged.
     # #154 / batch89 winners stay registered and unchanged.
     # #153 / batch88 winners stay registered and unchanged.
@@ -33980,26 +34058,31 @@ def test_taskandpurpose_twz_flightglobal_primaries_registered():
     assert by_id["twz"].feed_url != by_id["lowy_interpreter"].feed_url
     assert by_id["twz"].feed_url != by_id["the_diplomat"].feed_url
     assert by_id["twz"].feed_url != by_id["crisis_group"].feed_url
-    assert by_id["flightglobal"].feed_url != by_id["navalnews"].feed_url
-    assert by_id["flightglobal"].feed_url != by_id["breaking_defense"].feed_url
-    assert by_id["flightglobal"].feed_url != by_id["defense_one"].feed_url
-    assert by_id["flightglobal"].feed_url != by_id["war_on_rocks"].feed_url
-    assert by_id["flightglobal"].feed_url != by_id["thedrive"].feed_url
-    assert by_id["flightglobal"].feed_url != by_id["space_com"].feed_url
-    assert by_id["flightglobal"].feed_url != by_id["newatlas"].feed_url
-    assert by_id["flightglobal"].feed_url != by_id["popular_mechanics"].feed_url
-    assert by_id["flightglobal"].feed_url != by_id["ieee_spectrum"].feed_url
+    assert by_id["aviationweek"].feed_url != by_id["navalnews"].feed_url
+    assert by_id["aviationweek"].feed_url != by_id["breaking_defense"].feed_url
+    assert by_id["aviationweek"].feed_url != by_id["defense_one"].feed_url
+    assert by_id["aviationweek"].feed_url != by_id["war_on_rocks"].feed_url
+    assert by_id["aviationweek"].feed_url != by_id["thedrive"].feed_url
+    assert by_id["aviationweek"].feed_url != by_id["space_com"].feed_url
+    assert by_id["aviationweek"].feed_url != by_id["newatlas"].feed_url
+    assert by_id["aviationweek"].feed_url != by_id["popular_mechanics"].feed_url
+    assert by_id["aviationweek"].feed_url != by_id["ieee_spectrum"].feed_url
     assert by_id["taskandpurpose"].feed_url != by_id["twz"].feed_url
-    assert by_id["taskandpurpose"].feed_url != by_id["flightglobal"].feed_url
-    assert by_id["twz"].feed_url != by_id["flightglobal"].feed_url
+    assert by_id["taskandpurpose"].feed_url != by_id["aviationweek"].feed_url
+    assert by_id["twz"].feed_url != by_id["aviationweek"].feed_url
     # Unused leftover backups stay out
-    # (all three primaries live KEEP).
-    # aviationweek / defensenews /
-    # fastcompany were not probed
+    # (taskandpurpose / twz KEEP;
+    # aviationweek is the
+    # flightglobal hard-swap fill).
+    # defensenews was not probed
     # for KEEP-fill. fastcompany is
     # already registered as
     # fast_company — do not hang a
     # second.
+    # flightglobal official CI/httpx
+    # RSS 403 after #156 — not
+    # registered (do not hang
+    # Feedburner).
     # xda_developers /
     # infosecurity_magazine /
     # csoonline stay registered
@@ -34051,6 +34134,9 @@ def test_taskandpurpose_twz_flightglobal_primaries_registered():
     # nationalinterest stays out
     # (official Cloudflare 403 leftover;
     # do not hang Feedburner).
+    # flightglobal stays out
+    # (official CI/httpx RSS 403 after
+    # #156; do not hang Feedburner).
     assert "task_and_purpose" not in by_id
     assert "task_purpose" not in by_id
     assert "taskandpurpose_com" not in by_id
@@ -34059,9 +34145,10 @@ def test_taskandpurpose_twz_flightglobal_primaries_registered():
     assert "thewarzone_com" not in by_id
     assert "twz_com" not in by_id
     assert "the_warzone" not in by_id
+    assert "flightglobal" not in by_id
     assert "flight_global" not in by_id
     assert "flightglobal_com" not in by_id
-    assert "aviationweek" not in by_id
+    assert "aviationweek" in by_id
     assert "aviation_week" not in by_id
     assert "aviationweek_com" not in by_id
     assert "defensenews" not in by_id
@@ -34156,7 +34243,7 @@ def test_taskandpurpose_twz_flightglobal_primaries_registered():
     assert "bangkok_post" not in by_id
     assert "times_of_israel" not in by_id
     assert "the_nation" not in by_id
-    for source_id, expected in _TASKANDPURPOSE_TWZ_FLIGHTGLOBAL_PRIMARY.items():
+    for source_id, expected in _TASKANDPURPOSE_TWZ_AVIATIONWEEK_PRIMARY.items():
         assert source_id in by_id, f"missing source id {source_id}"
         source = by_id[source_id]
         assert source.role == "primary"
@@ -34165,10 +34252,10 @@ def test_taskandpurpose_twz_flightglobal_primaries_registered():
         assert source.category == expected["category"]
 
 
-def test_taskandpurpose_twz_flightglobal_feeds_live_http_200():
-    """Hit the three batch91 feeds with the same headers fetch_source sends (not stubs)."""
+def test_taskandpurpose_twz_aviationweek_feeds_live_http_200():
+    """Hit the three KEEP feeds with the same headers fetch_source sends (not stubs)."""
     by_id = {s.id: s for s in SOURCES}
-    for source_id in _TASKANDPURPOSE_TWZ_FLIGHTGLOBAL_PRIMARY:
+    for source_id in _TASKANDPURPOSE_TWZ_AVIATIONWEEK_PRIMARY:
         source = by_id[source_id]
         request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
         try:
@@ -34187,7 +34274,7 @@ def test_taskandpurpose_twz_flightglobal_feeds_live_http_200():
         assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
         # Required: parseable title / url / published on each item.
         # RSS 2.0 (taskandpurpose /
-        # twz / flightglobal) uses
+        # twz / aviationweek) uses
         # the un-namespaced element
         # text.
         for i, item in enumerate(items):
@@ -34200,7 +34287,7 @@ def test_taskandpurpose_twz_flightglobal_feeds_live_http_200():
         # #43 thin-skip: empty description would insert 0.
         # taskandpurpose 26/26, twz
         # 30/30 (ingest cap 30/30),
-        # and flightglobal 10/10 were
+        # and aviationweek 10/10 were
         # 100% nonempty this probe.
         # ingest cap 30 still KEEP.
         # taskandpurpose MUST keep the
@@ -34208,8 +34295,12 @@ def test_taskandpurpose_twz_flightglobal_feeds_live_http_200():
         # twz MUST stay on /feed (no
         # trailing slash; host
         # www.twz.com).
-        # flightglobal MUST stay on
-        # /rss (do not invent /feed/).
+        # aviationweek MUST stay on
+        # /rss.xml (host
+        # aviationweek.com; do not
+        # invent /feed /rss).
+        # flightglobal is product-skip
+        # — do not re-probe.
         nonempty = 0
         for item in items:
             if _item_description(item):
@@ -34322,7 +34413,8 @@ if __name__ == "__main__":
     test_krebsonsecurity_androidpolice_cyberscoop_primaries_registered()
     test_thedrive_venturebeat_navalnews_primaries_registered()
     test_xda_developers_infosecurity_magazine_csoonline_primaries_registered()
-    test_taskandpurpose_twz_flightglobal_primaries_registered()
+    test_flightglobal_hard_swapped_to_aviationweek()
+    test_taskandpurpose_twz_aviationweek_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -34412,5 +34504,5 @@ if __name__ == "__main__":
     test_krebsonsecurity_androidpolice_cyberscoop_feeds_live_http_200()
     test_thedrive_venturebeat_navalnews_feeds_live_http_200()
     test_xda_developers_infosecurity_magazine_csoonline_feeds_live_http_200()
-    test_taskandpurpose_twz_flightglobal_feeds_live_http_200()
+    test_taskandpurpose_twz_aviationweek_feeds_live_http_200()
     print("✓ source registry tests PASSED")

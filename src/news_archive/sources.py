@@ -1976,9 +1976,9 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
-        id="flightglobal",
-        name="FlightGlobal",
-        feed_url="https://www.flightglobal.com/rss",
+        id="aviationweek",
+        name="Aviation Week",
+        feed_url="https://aviationweek.com/rss.xml",
         category="国际",
         role="primary",
     ),
