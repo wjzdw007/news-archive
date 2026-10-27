@@ -16,9 +16,11 @@ from news_archive.daily_briefs import (
     API_BASE_ENV,
     API_KEY_ENV,
     BRIEF_CALIBRATION,
+    CHINESE_REPAIR_HINT,
     DAILY_BRIEF_ARTICLE_FIELDS,
     DAILY_BRIEF_X_FIELDS,
     DEFAULT_MODEL,
+    LANGUAGE_LLM_ATTEMPTS,
     LLM_READ_TIMEOUT_S,
     MODEL_ENV,
     OLDER_LLM_ATTEMPTS,
@@ -35,11 +37,15 @@ from news_archive.daily_briefs import (
     generate_daily_brief,
     group_sections,
     input_fingerprint,
+    is_predominantly_english,
     is_retryable_llm_error,
     is_soft_x_post,
     last_n_shanghai_dates,
+    llm_payload_has_english,
+    merge_llm_sections,
     order_dates_today_first,
     prioritize_failed_backfill,
+    public_section,
     redact_secrets,
     resolve_llm_config,
     resolve_model,
@@ -97,16 +103,43 @@ def _x_section_count(sections) -> int:
 
 
 def _ok_llm(grouped):
-    first = grouped[0]
-    return {
-        "lede": "多源关注航天发射进展。",
-        "sections": [
+    sections = []
+    for item in grouped:
+        if item.get("topic_id") == X_SECTION_TOPIC_ID or item.get("title") == X_SECTION_TITLE:
+            sections.append(
+                {
+                    "topic_id": X_SECTION_TOPIC_ID,
+                    "title": X_SECTION_TITLE,
+                    "bullets": ["外媒账号关注当日要闻与市场动态。"],
+                }
+            )
+            continue
+        raw_title = (item.get("title") or "").strip()
+        if item.get("topic_id") is None or raw_title == OTHER_TITLE:
+            title = OTHER_TITLE
+        elif raw_title and not is_predominantly_english(raw_title):
+            title = raw_title
+        else:
+            title = "要闻"
+        sections.append(
             {
-                "topic_id": first.get("topic_id"),
-                "title": first.get("title"),
+                "topic_id": item.get("topic_id"),
+                "title": title,
                 "bullets": ["发射按计划完成，地面站确认信号。"],
             }
-        ],
+        )
+    if not sections:
+        first = grouped[0] if grouped else {}
+        sections = [
+            {
+                "topic_id": first.get("topic_id"),
+                "title": "要闻",
+                "bullets": ["发射按计划完成，地面站确认信号。"],
+            }
+        ]
+    return {
+        "lede": "多源关注航天发射进展。",
+        "sections": sections,
     }
 
 
@@ -838,8 +871,10 @@ def test_order_dates_today_first_then_failed_backfill():
     assert not today_status_is_success("skipped")
     assert is_retryable_llm_error("The read operation timed out")
     assert not is_retryable_llm_error("missing DAILY_BRIEF_API_KEY or DAILY_BRIEF_API_BASE")
+    assert not is_retryable_llm_error("LLM returned English lede/section titles/bullets")
     assert LLM_READ_TIMEOUT_S >= 90
     assert TODAY_LLM_ATTEMPTS >= 3
+    assert LANGUAGE_LLM_ATTEMPTS == TODAY_LLM_ATTEMPTS
     assert OLDER_LLM_ATTEMPTS == 1
 
 
@@ -1277,6 +1312,17 @@ def test_openai_complete_uses_raised_read_timeout():
     assert "timeout=45" not in src
     assert "httpx.Timeout(" in src
     assert "read=read_timeout" in src
+    assert "ALL of lede, every section title, and every bullet MUST be Simplified Chinese" in src
+    assert "Latin-script-only titles or bullets are invalid" in src
+    assert "CHINESE_REPAIR_HINT" in src
+    public_start = src.index("def public_section")
+    public_end = src.index("\ndef empty_brief")
+    assert "bullets_from_title_summary" not in src[public_start:public_end]
+    gen_start = src.index("def generate_daily_brief")
+    gen_end = src.index("\ndef make_llm_fn")
+    assert "if not sections and grouped" not in src[gen_start:gen_end]
+    assert "deepseek/deepseek-flash" in src
+    assert "openai.com" not in src[src.index("DEFAULT_MODEL") : src.index("MODEL_ENV")]
 
 
 def test_store_upsert_failed_does_not_clobber_ok():
@@ -2195,6 +2241,339 @@ def test_ok_brief_prompt_includes_hard_news_when_tech_crowds():
     assert SECRET_SNAPSHOT not in json.dumps(brief, ensure_ascii=False)
 
 
+def test_is_predominantly_english_latin_only_vs_chinese():
+    assert is_predominantly_english("Kolkata stampede kills 40 at railway station")
+    assert is_predominantly_english("Markets rose as traders priced in a rate pause.")
+    assert is_predominantly_english("SpaceX Falcon 9 reaches orbit")
+    assert not is_predominantly_english("加尔各答火车站踩踏已造成多人死亡")
+    assert not is_predominantly_english("SpaceX 今日完成发射，任务按计划进行。")
+    assert not is_predominantly_english(X_SECTION_TITLE)
+    assert not is_predominantly_english(OTHER_TITLE)
+    assert not is_predominantly_english("FT 与 BBC 账号同时提到市场与午夜动态。")
+    assert not is_predominantly_english("")
+    assert not is_predominantly_english(None)
+    assert llm_payload_has_english(
+        {
+            "lede": "Markets and a launch dominated the day.",
+            "sections": [
+                {
+                    "topic_id": "t-space",
+                    "title": "SpaceX launch succeeds",
+                    "bullets": ["The Falcon 9 mission reached orbit as planned."],
+                }
+            ],
+        }
+    )
+    assert not llm_payload_has_english(
+        {
+            "lede": "多源关注航天发射进展。",
+            "sections": [
+                {
+                    "topic_id": "t-space",
+                    "title": "航天发射",
+                    "bullets": ["发射按计划完成，地面站确认信号。"],
+                }
+            ],
+        }
+    )
+
+
+def test_english_llm_retries_then_chinese_ok():
+    calls = {"n": 0, "hints": []}
+
+    def llm(_grouped, repair_hint=None):
+        calls["n"] += 1
+        calls["hints"].append(repair_hint)
+        if calls["n"] == 1:
+            return {
+                "lede": "Markets and a SpaceX launch dominated the day.",
+                "sections": [
+                    {
+                        "topic_id": "t-space",
+                        "title": "SpaceX launch succeeds",
+                        "bullets": ["The Falcon 9 mission reached orbit as planned."],
+                    }
+                ],
+            }
+        return {
+            "lede": "多源关注航天发射进展。",
+            "sections": [
+                {
+                    "topic_id": "t-space",
+                    "title": "航天发射",
+                    "bullets": ["发射按计划完成，地面站确认信号。"],
+                }
+            ],
+        }
+
+    brief = generate_daily_brief(
+        [_art()],
+        "2026-10-15",
+        llm_fn=llm,
+        model="deepseek/deepseek-flash",
+        sleep=lambda _s: None,
+    )
+    assert calls["n"] == 2
+    assert calls["hints"][0] is None
+    assert calls["hints"][1]
+    assert "English" in calls["hints"][1]
+    assert "Chinese" in calls["hints"][1] or "中文" in calls["hints"][1]
+    assert CHINESE_REPAIR_HINT in calls["hints"][1] or calls["hints"][1] == CHINESE_REPAIR_HINT
+    assert brief["status"] == "ok"
+    assert not is_predominantly_english(brief["lede"])
+    for section in brief["sections"]:
+        assert not is_predominantly_english(section["title"])
+        assert section["bullets"]
+        assert all(not is_predominantly_english(b) for b in section["bullets"])
+
+
+def test_english_llm_exhausted_retries_failed_without_english_body():
+    calls = {"n": 0}
+
+    def llm(_grouped, repair_hint=None):
+        calls["n"] += 1
+        return {
+            "lede": "Markets rose as traders priced in a rate pause.",
+            "sections": [
+                {
+                    "topic_id": "t-space",
+                    "title": "Markets pause as traders wait",
+                    "bullets": ["Wall Street futures pointed to a mixed open."],
+                }
+            ],
+        }
+
+    articles = [
+        _art(
+            title="Kolkata stampede kills 40 at railway station",
+            summary="A stampede at a Kolkata railway station killed at least 40 people.",
+        )
+    ]
+    brief = generate_daily_brief(
+        articles,
+        "2026-10-15",
+        llm_fn=llm,
+        model="deepseek/deepseek-flash",
+        sleep=lambda _s: None,
+    )
+    assert calls["n"] == LANGUAGE_LLM_ATTEMPTS
+    assert brief["status"] == "failed"
+    assert brief["lede"] == ""
+    assert brief["sections"] == []
+    blob = json.dumps(brief, ensure_ascii=False)
+    assert "Kolkata stampede" not in blob
+    assert "Wall Street" not in blob
+    assert "Markets rose" not in blob
+    assert "stampede" not in blob.lower()
+    assert "English" in (brief.get("error") or "")
+
+
+def test_public_brief_keeps_english_link_titles():
+    def llm(_grouped, repair_hint=None):
+        if not repair_hint:
+            return {
+                "lede": "English only lede about markets and launches.",
+                "sections": [
+                    {
+                        "topic_id": "t-space",
+                        "title": "English title only here",
+                        "bullets": ["English bullet about the launch window."],
+                    }
+                ],
+            }
+        return {
+            "lede": "多源关注航天发射进展。",
+            "sections": [
+                {
+                    "topic_id": "t-space",
+                    "title": "航天发射",
+                    "bullets": ["发射按计划完成。"],
+                }
+            ],
+        }
+
+    english_title = "SpaceX Falcon 9 reaches orbit on first try"
+    brief = generate_daily_brief(
+        [
+            _art(
+                title=english_title,
+                summary="The Falcon 9 mission reached orbit as planned.",
+            )
+        ],
+        "2026-10-15",
+        llm_fn=llm,
+        model="deepseek/deepseek-flash",
+        sleep=lambda _s: None,
+    )
+    assert brief["status"] == "ok"
+    link_titles = [link["title"] for section in brief["sections"] for link in section["links"]]
+    assert english_title in link_titles
+    assert all(not is_predominantly_english(section["title"]) for section in brief["sections"])
+    assert all(
+        not is_predominantly_english(bullet)
+        for section in brief["sections"]
+        for bullet in section["bullets"]
+    )
+
+
+def test_empty_llm_does_not_paste_english_grouped_body():
+    def llm(_grouped):
+        return {"lede": "", "sections": []}
+
+    brief = generate_daily_brief(
+        [
+            _art(
+                title="Kolkata stampede kills 40 at railway station",
+                summary="A stampede at a Kolkata railway station killed at least 40 people.",
+            )
+        ],
+        "2026-10-15",
+        llm_fn=llm,
+        model="deepseek/deepseek-flash",
+        sleep=lambda _s: None,
+    )
+    assert brief["status"] == "failed"
+    assert brief["lede"] == ""
+    assert brief["sections"] == []
+    blob = json.dumps(brief, ensure_ascii=False)
+    assert "Kolkata stampede" not in blob
+    assert "stampede" not in blob.lower()
+
+
+def test_x_english_bullets_retry_then_chinese_title_fixed():
+    calls = {"n": 0}
+
+    def llm(_grouped, repair_hint=None):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            return {
+                "lede": "Wire accounts tracked the market open.",
+                "sections": [
+                    {
+                        "topic_id": X_SECTION_TOPIC_ID,
+                        "title": "X Highlights",
+                        "bullets": ["FT said markets rose as traders priced in a pause."],
+                    }
+                ],
+            }
+        return {
+            "lede": "外媒账号关注市场定价。",
+            "sections": [
+                {
+                    "topic_id": X_SECTION_TOPIC_ID,
+                    "title": X_SECTION_TITLE,
+                    "bullets": ["FT 等账号关注市场定价与利率预期。"],
+                }
+            ],
+        }
+
+    brief = generate_daily_brief(
+        [],
+        "2026-10-15",
+        x_posts=[_x()],
+        llm_fn=llm,
+        model="deepseek/deepseek-flash",
+        sleep=lambda _s: None,
+    )
+    assert calls["n"] == 2
+    assert brief["status"] == "ok"
+    assert _x_section_count(brief["sections"]) == 1
+    section = brief["sections"][-1]
+    assert section["title"] == X_SECTION_TITLE
+    assert all(not is_predominantly_english(b) for b in section["bullets"])
+    assert section["links"]
+    assert is_predominantly_english(section["links"][0]["title"]) or section["links"][0]["title"]
+
+
+def test_x_english_only_exhausted_omits_english_snapshot_bullets():
+    def llm(_grouped, repair_hint=None):
+        return {
+            "lede": "Wire accounts tracked the market open today.",
+            "sections": [
+                {
+                    "topic_id": X_SECTION_TOPIC_ID,
+                    "title": "X Highlights",
+                    "bullets": ["FT said markets rose as traders priced in a pause."],
+                }
+            ],
+        }
+
+    brief = generate_daily_brief(
+        [],
+        "2026-10-15",
+        x_posts=[_x()],
+        llm_fn=llm,
+        model="deepseek/deepseek-flash",
+        sleep=lambda _s: None,
+    )
+    assert brief["status"] == "failed"
+    assert brief["lede"] == ""
+    assert brief["sections"] == []
+    blob = json.dumps(brief, ensure_ascii=False)
+    assert "Markets rose as traders priced in a rate pause." not in blob
+    assert "priced in a pause" not in blob
+
+
+def test_merge_and_public_section_drop_english_fields():
+    grouped = group_sections(
+        [
+            _art(
+                title="Kolkata stampede kills 40 at railway station",
+                summary="A stampede at a Kolkata railway station killed at least 40 people.",
+            )
+        ]
+    )
+    assert grouped
+    dropped = merge_llm_sections(
+        grouped,
+        {
+            "lede": "English lede about the stampede.",
+            "sections": [
+                {
+                    "topic_id": grouped[0]["topic_id"],
+                    "title": "Kolkata stampede kills dozens",
+                    "bullets": ["At least 40 people died in the crush."],
+                }
+            ],
+        },
+    )
+    assert dropped == []
+    public = public_section(grouped[0])
+    assert public["bullets"] == []
+    assert "stampede" not in (public.get("title") or "").lower()
+    chinese = merge_llm_sections(
+        grouped,
+        {
+            "lede": "加尔各答踩踏造成重大伤亡。",
+            "sections": [
+                {
+                    "topic_id": grouped[0]["topic_id"],
+                    "title": "加尔各答火车站踩踏",
+                    "bullets": ["事故已造成数十人死亡。"],
+                }
+            ],
+        },
+    )
+    assert len(chinese) == 1
+    assert chinese[0]["title"] == "加尔各答火车站踩踏"
+    assert chinese[0]["links"]
+    assert "Kolkata stampede" in chinese[0]["links"][0]["title"]
+
+
+def test_ok_fixture_chinese_fields_still_pass():
+    fixture = json.loads(
+        (ROOT / "tests" / "fixtures" / "daily_brief_ok.json").read_text(encoding="utf-8")
+    )
+    assert fixture["status"] == "ok"
+    assert not is_predominantly_english(fixture["lede"])
+    for section in fixture["sections"]:
+        assert not is_predominantly_english(section["title"])
+        assert section["bullets"]
+        assert all(not is_predominantly_english(b) for b in section["bullets"])
+    x_links = next(s for s in fixture["sections"] if s["title"] == X_SECTION_TITLE)["links"]
+    assert is_predominantly_english(x_links[0]["title"])
+
+
 if __name__ == "__main__":
     test_shanghai_date_uses_calendar_not_utc()
     test_articles_for_day_published_at_fallback_fetched_at()
@@ -2260,4 +2639,13 @@ if __name__ == "__main__":
     test_serious_tech_archive_kept_when_hard_news_fills()
     test_calibration_does_not_widen_shanghai_day()
     test_ok_brief_prompt_includes_hard_news_when_tech_crowds()
+    test_is_predominantly_english_latin_only_vs_chinese()
+    test_english_llm_retries_then_chinese_ok()
+    test_english_llm_exhausted_retries_failed_without_english_body()
+    test_public_brief_keeps_english_link_titles()
+    test_empty_llm_does_not_paste_english_grouped_body()
+    test_x_english_bullets_retry_then_chinese_title_fixed()
+    test_x_english_only_exhausted_omits_english_snapshot_bullets()
+    test_merge_and_public_section_drop_english_fields()
+    test_ok_fixture_chinese_fields_still_pass()
     print("✓ All daily brief tests passed")

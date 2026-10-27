@@ -279,6 +279,7 @@ def generate_for_dates(
                     llm_fn=llm_fn,
                     model=model,
                     missing_config=missing_config,
+                    sleep=sleep,
                 )
             except Exception as exc:  # never invent ok content
                 brief = _failed_row(
