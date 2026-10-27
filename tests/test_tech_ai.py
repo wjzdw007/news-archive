@@ -986,6 +986,33 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "xda_developers" not in TECH_AI_SOURCE_WHITELIST
     assert "infosecurity_magazine" not in TECH_AI_SOURCE_WHITELIST
     assert "csoonline" not in TECH_AI_SOURCE_WHITELIST
+    # batch90 RSS primaries stay off the tech/AI whitelist.
+    # xda_developers lands on 科技
+    # (mobile / Android newsroom, same
+    # as androidpolice /
+    # android_authority) — leftover
+    # unused from #154, now
+    # product-hung KEEP — and is not
+    # added to KEYWORD sources.
+    # infosecurity_magazine lands on
+    # 科技 (cybersecurity newsroom,
+    # same as darkreading /
+    # cyberscoop). Official /rss/news/.
+    # csoonline lands on 科技 (CISO /
+    # security newsroom, same as
+    # darkreading / cyberscoop).
+    # Unused leftovers taskandpurpose
+    # / twz / flightglobal stay off
+    # (all three primaries live KEEP).
+    # None of these match the wired /
+    # verge / techcrunch ALWAYS
+    # pattern.
+    assert "xda_developers" not in TECH_AI_SOURCE_WHITELIST
+    assert "infosecurity_magazine" not in TECH_AI_SOURCE_WHITELIST
+    assert "csoonline" not in TECH_AI_SOURCE_WHITELIST
+    assert "taskandpurpose" not in TECH_AI_SOURCE_WHITELIST
+    assert "twz" not in TECH_AI_SOURCE_WHITELIST
+    assert "flightglobal" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
