@@ -2319,6 +2319,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="architecturaldigest",
+        name="Architectural Digest",
+        feed_url="https://www.architecturaldigest.com/feed/rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="allure",
+        name="Allure",
+        feed_url="https://www.allure.com/feed/rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="entrepreneur",
+        name="Entrepreneur",
+        feed_url="https://www.entrepreneur.com/latest.rss",
+        category="财经",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

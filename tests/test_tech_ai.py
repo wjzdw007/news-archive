@@ -1787,6 +1787,51 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "rollcall" not in TECH_AI_SOURCE_WHITELIST
     assert "colossal" not in TECH_AI_SOURCE_WHITELIST
     assert "creativebloq" not in TECH_AI_SOURCE_WHITELIST
+    # batch109 RSS primaries stay off the tech/AI whitelist.
+    # architecturaldigest lands on 综合
+    # (architecture / design
+    # magazine, same as dezeen) —
+    # new id — official www
+    # /feed/rss (MUST www + NO
+    # trailing slash; homepage
+    # announced; atom:self).
+    # /feed/rss/ serves the same
+    # body.
+    # allure lands on 综合 (beauty
+    # / lifestyle magazine, same
+    # as guardian_fashion) — new
+    # id — official www /feed/rss
+    # (MUST www + NO trailing
+    # slash; homepage announced;
+    # atom:self). /feed/rss/
+    # serves the same body.
+    # entrepreneur lands on 财经
+    # (business / entrepreneur
+    # newsroom, same as inc) —
+    # new id — official www
+    # /latest.rss (homepage RSS
+    # menu announced). /latest.rss
+    # remaps to /rss-feed/latest.
+    # atom:self is the homepage —
+    # do not lock it.
+    # Named 备 unused (all KEEP
+    # passed): puck / artnews /
+    # stratechery.
+    # None of these match the
+    # wired / verge / techcrunch
+    # ALWAYS pattern.
+    assert "architecturaldigest" not in TECH_AI_SOURCE_WHITELIST
+    assert "allure" not in TECH_AI_SOURCE_WHITELIST
+    assert "entrepreneur" not in TECH_AI_SOURCE_WHITELIST
+    assert "architectural_digest" not in TECH_AI_SOURCE_WHITELIST
+    assert "archdigest" not in TECH_AI_SOURCE_WHITELIST
+    assert "allure_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "allure_magazine" not in TECH_AI_SOURCE_WHITELIST
+    assert "entrepreneur_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_entrepreneur" not in TECH_AI_SOURCE_WHITELIST
+    assert "puck" not in TECH_AI_SOURCE_WHITELIST
+    assert "artnews" not in TECH_AI_SOURCE_WHITELIST
+    assert "stratechery" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
