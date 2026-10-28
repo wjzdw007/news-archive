@@ -119,18 +119,20 @@
 
 **数据持久化（Data Branch）**：
 
-每次运行自动从 `data` 分支恢复并回写 `archive.sqlite3`：
+每次运行自动从 `data` 分支恢复并回写压缩后的 archive：
 
 1. **恢复阶段**（fetch 前）：
    - `git fetch origin data:data`
-   - `git show data:data/archive.sqlite3 > data/archive.sqlite3`
+   - `scripts/data_branch_archive.sh restore data/archive.sqlite3`（优先 `archive.sqlite3.gz` / 分片，回退旧裸 sqlite）
    - 若 `data` 分支或文件不存在 → 从空数据库开始（首次运行正常）
 
 2. **验证阶段**（fetch + P0 验收）
 
 3. **持久化阶段**（验证成功后立即执行，在其他测试之前）：
-   - Checkout `data` 分支（不存在则创建 orphan branch）
-   - 将更新的 `data/archive.sqlite3` 和 `data/LAST_RUN.json` commit 并 push
+   - `scripts/data_branch_archive.sh pack`：VACUUM 副本 + gzip-9；单文件 ≥90MiB 则按 90MiB 分片（GitHub 单 blob 硬限 100MiB）
+   - Checkout `data` 分支（不存在则创建 orphan branch）；`git rm` 旧的裸 `archive.sqlite3`
+   - 将 packed 文件和 `data/LAST_RUN.json` commit 并 push
+   - `trap EXIT`：无论 push 成败都切回原 ref，并从 `RUNNER_TEMP` 拷回 live sqlite（避免 checkout `data` 后 `src/` 消失，brief check 报 `No module named news_archive.daily_brief`）
    - 冲突处理：`git pull --rebase origin data` + 最多重试 3 次
    - 持续冲突 → 失败（红），需人工介入
 
@@ -179,7 +181,17 @@
 - 单元测试失败不会阻止数据库更新
 - 将 `validation-meta.json` 中的 `latency_sla_passed` 与 `latency_soft_miss` 写入 `LAST_RUN.json`，供下一轮连续检测使用
 
-#### 3. 测试高频去重
+#### 3. 测试 data-branch archive pack/restore
+```yaml
+- name: Test data-branch archive pack/restore (100MB persist)
+  run: |
+    PYTHONPATH=src python tests/test_data_branch_archive.py
+```
+
+- gzip 往返、旧裸 sqlite 回退、90MiB 分片拼接、Persist checkout dance 后 live DB 仍在原 ref
+- 失败 → **workflow 失败（红）**，但不影响已完成的数据持久化
+
+#### 4. 测试高频去重
 ```yaml
 - name: Test high-frequency dedup
   run: |

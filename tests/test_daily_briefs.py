@@ -782,6 +782,8 @@ def test_workflow_wires_daily_brief_secrets_soft_fail():
     assert "--check-today" in yml
     assert "--write-status" in yml
     assert "Fail if today's daily brief is failed or missing" in yml
+    assert "scripts/data_branch_archive.sh" in yml
+    assert "restore_workspace" in yml
     assert "latency_soft_miss" in yml
     assert "OPENAI_API_KEY" not in yml
     assert "X_BEARER" not in yml

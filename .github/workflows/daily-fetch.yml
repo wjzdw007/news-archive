@@ -30,17 +30,25 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p data
-          
-          # Try to fetch the data branch and extract archive.sqlite3
+
+          # gzip (or split gzip parts) on the data branch; fallback to the
+          # legacy uncompressed blob so the first run after this hotfix works.
           if git fetch origin data:data 2>/dev/null; then
-            echo "Data branch exists, attempting to restore archive.sqlite3..."
-            if git show data:data/archive.sqlite3 > data/archive.sqlite3 2>/dev/null; then
+            echo "Data branch exists, attempting to restore archive..."
+            set +e
+            bash scripts/data_branch_archive.sh restore data/archive.sqlite3
+            restore_rc=$?
+            set -e
+            if [ "$restore_rc" -eq 0 ]; then
               echo "restored=true" >> "$GITHUB_OUTPUT"
               echo "✓ Restored archive.sqlite3 from data branch"
               ls -lh data/archive.sqlite3
+            elif [ "$restore_rc" -eq 2 ]; then
+              echo "❌ Archive payload on data branch failed integrity_check"
+              exit 1
             else
               echo "restored=false" >> "$GITHUB_OUTPUT"
-              echo "⚠ Data branch exists but no archive.sqlite3 found, starting fresh"
+              echo "⚠ Data branch exists but no archive payload found, starting fresh"
             fi
           else
             echo "restored=false" >> "$GITHUB_OUTPUT"
@@ -109,19 +117,49 @@ jobs:
         if: always() && steps.fetch.outcome == 'success' && hashFiles('data/archive.sqlite3') != ''
         run: |
           set -euo pipefail
-          
-          # Configure git
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Copy archive.sqlite3 + validation-meta to temp BEFORE switching branches
-          # (orphan/git rm wipes workspace; also avoids same-file cp on sqlite)
+
+          # Copy live DB + sidecar files BEFORE switching branches.
+          # orphan/git rm wipes the workspace; checkout data also drops src/
+          # (run 40500314784: push hit GH 100MB, never came back, brief check
+          # died with "No module named news_archive.daily_brief").
           cp "$GITHUB_WORKSPACE/data/archive.sqlite3" "$RUNNER_TEMP/archive.sqlite3"
           if [ -f "$GITHUB_WORKSPACE/data/validation-meta.json" ]; then
             cp "$GITHUB_WORKSPACE/data/validation-meta.json" "$RUNNER_TEMP/validation-meta.json"
           fi
-          
-          # Try to checkout data branch, or create it as orphan if it doesn't exist
+          if [ -f "$GITHUB_WORKSPACE/data/archive.jsonl" ]; then
+            cp "$GITHUB_WORKSPACE/data/archive.jsonl" "$RUNNER_TEMP/archive.jsonl"
+          fi
+          if [ -f "$GITHUB_WORKSPACE/data/run-stats.json" ]; then
+            cp "$GITHUB_WORKSPACE/data/run-stats.json" "$RUNNER_TEMP/run-stats.json"
+          fi
+
+          # VACUUM + gzip-9 (+ 90MiB split). Never push the raw sqlite blob.
+          bash scripts/data_branch_archive.sh pack \
+            "$RUNNER_TEMP/archive.sqlite3" \
+            "$RUNNER_TEMP/archive-packed"
+
+          ORIGINAL_REF="${{ github.ref_name }}"
+          ORIGINAL_SHA="${{ github.sha }}"
+          restore_workspace() {
+            local rc=$?
+            trap - EXIT
+            set +e
+            git checkout -f "$ORIGINAL_REF" 2>/dev/null || git checkout -f "$ORIGINAL_SHA"
+            mkdir -p "$GITHUB_WORKSPACE/data"
+            cp "$RUNNER_TEMP/archive.sqlite3" "$GITHUB_WORKSPACE/data/archive.sqlite3"
+            if [ -f "$RUNNER_TEMP/archive.jsonl" ]; then
+              cp "$RUNNER_TEMP/archive.jsonl" "$GITHUB_WORKSPACE/data/archive.jsonl"
+            fi
+            if [ -f "$RUNNER_TEMP/run-stats.json" ]; then
+              cp "$RUNNER_TEMP/run-stats.json" "$GITHUB_WORKSPACE/data/run-stats.json"
+            fi
+            exit "$rc"
+          }
+          trap restore_workspace EXIT
+
           if git fetch origin data:data 2>/dev/null; then
             git checkout data
           else
@@ -130,10 +168,31 @@ jobs:
             git rm -rf . 2>/dev/null || true
             mkdir -p data
           fi
-          
-          # Copy sqlite from temp to data branch
-          cp "$RUNNER_TEMP/archive.sqlite3" data/archive.sqlite3
-          
+
+          mkdir -p data
+          # Drop the raw 100MB+ blob so the next tree cannot re-hit GH001.
+          git rm -f --ignore-unmatch data/archive.sqlite3
+          git rm -f --ignore-unmatch data/archive.sqlite3.gz
+          if old_parts=$(git ls-files 'data/archive.sqlite3.gz.*'); then
+            if [ -n "$old_parts" ]; then
+              git rm -f -- $old_parts
+            fi
+          fi
+          rm -f data/archive.sqlite3 data/archive.sqlite3.gz
+          rm -f data/archive.sqlite3.gz.*
+
+          python3 - "$RUNNER_TEMP/archive-packed/PACK_META.json" <<'PY'
+          import json, shutil, sys
+          from pathlib import Path
+          meta = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          packed = Path(sys.argv[1]).parent
+          dest = Path("data")
+          dest.mkdir(parents=True, exist_ok=True)
+          for name in meta["files"]:
+              shutil.copy2(packed / name, dest / name)
+              print(f"staged packed {name}")
+          PY
+
           # Read latency_sla_passed / latency_soft_miss from TEMP copy
           # (workspace meta is gone after checkout). Single soft miss keeps
           # passed=true and sets soft_miss so only consecutive large-N reds.
@@ -143,8 +202,7 @@ jobs:
             LATENCY_PASSED=$(python3 -c "import json; print(json.dumps(json.load(open('$RUNNER_TEMP/validation-meta.json')).get('latency_sla_passed', None)))" 2>/dev/null || echo "null")
             LATENCY_SOFT_MISS=$(python3 -c "import json; print(json.dumps(bool(json.load(open('$RUNNER_TEMP/validation-meta.json')).get('latency_soft_miss', False))))" 2>/dev/null || echo "false")
           fi
-          
-          # Create run metadata with latency SLA status for consecutive check
+
           cat > data/LAST_RUN.json <<EOF
           {
             "run_id": "${{ github.run_id }}",
@@ -157,20 +215,24 @@ jobs:
             "latency_soft_miss": ${LATENCY_SOFT_MISS}
           }
           EOF
-          
-          # Stage and commit
-          git add data/archive.sqlite3 data/LAST_RUN.json
-          
-          # Check if there are changes to commit
+
+          git add data/LAST_RUN.json
+          python3 - "$RUNNER_TEMP/archive-packed/PACK_META.json" <<'PY'
+          import json, subprocess, sys
+          from pathlib import Path
+          meta = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          paths = [f"data/{name}" for name in meta["files"]]
+          subprocess.run(["git", "add", "--", *paths], check=True)
+          PY
+
           if git diff --cached --quiet; then
             echo "No changes to persist (DB unchanged)"
           else
             git commit -m "Archive update from run ${{ github.run_id }}"
-            
-            # Push with retry on conflict
+
             for attempt in 1 2 3; do
               if git push origin data; then
-                echo "✓ Successfully pushed to data branch"
+                echo "✓ Successfully pushed packed archive to data branch"
                 break
               else
                 if [ $attempt -lt 3 ]; then
@@ -183,9 +245,6 @@ jobs:
               fi
             done
           fi
-          
-          # Return to original branch
-          git checkout "${{ github.ref_name }}"
 
       - name: Test high-frequency dedup
         run: |
@@ -206,6 +265,10 @@ jobs:
       - name: Test latency consecutive soft-miss (keep persist green)
         run: |
           PYTHONPATH=src python tests/test_latency_consecutive.py
+
+      - name: Test data-branch archive pack/restore (100MB persist)
+        run: |
+          PYTHONPATH=src python tests/test_data_branch_archive.py
 
       - name: Test daily brief today-visibility + timeout
         run: |

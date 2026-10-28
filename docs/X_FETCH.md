@@ -131,7 +131,7 @@ PYTHONPATH=src python -m news_archive.x_cli --db data/archive.sqlite3 --mode liv
 - **有凭证**（`X_AUTH_TOKEN` + `X_CT0_TOKEN`）：使用 live 模式抓取真实帖子
 - **无凭证**：降级到 mock 模式，不会 fail（soft-fail）
 
-数据持久化到 `data` 分支的 `archive.sqlite3`（与 RSS 文章共享同一 DB）。
+数据持久化到 `data` 分支的 `archive.sqlite3.gz`（与 RSS 文章共享同一 DB；Restore 解压到 `data/archive.sqlite3`）。
 
 ## 数据库持久化
 
