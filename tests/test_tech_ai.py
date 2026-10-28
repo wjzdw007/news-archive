@@ -1741,6 +1741,52 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "omgubuntu" not in TECH_AI_SOURCE_WHITELIST
     assert "thurrott" not in TECH_AI_SOURCE_WHITELIST
     assert "lobsters" not in TECH_AI_SOURCE_WHITELIST
+    # batch108 RSS primaries stay off the tech/AI whitelist.
+    # platformer lands on 科技 (tech
+    # platforms / AI policy
+    # newsroom, same as
+    # motherboard) — new id —
+    # official www /rss/ (MUST
+    # www + trailing slash;
+    # homepage announced;
+    # atom:self). /rss remaps
+    # here.
+    # inc lands on 财经 (business
+    # / entrepreneur newsroom)
+    # — new id — official www
+    # /rss/ (MUST www + trailing
+    # slash; atom:self). /rss
+    # serves the same body.
+    # Homepage HTML is often 403
+    # so no rel=alternate was
+    # recovered.
+    # bulwark lands on 综合
+    # (political commentary
+    # newsroom, same as atlantic
+    # / reason / unherd) — new
+    # id — official www /feed
+    # (MUST www + NO trailing
+    # slash; homepage announced;
+    # atom:self). /feed/ remaps
+    # here. apex is CF 403.
+    # Named 备 unused (all KEEP
+    # passed): rollcall /
+    # colossal / creativebloq.
+    # None of these match the
+    # wired / verge / techcrunch
+    # ALWAYS pattern.
+    assert "platformer" not in TECH_AI_SOURCE_WHITELIST
+    assert "inc" not in TECH_AI_SOURCE_WHITELIST
+    assert "bulwark" not in TECH_AI_SOURCE_WHITELIST
+    assert "platformer_news" not in TECH_AI_SOURCE_WHITELIST
+    assert "platformer_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "inc_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "inc_magazine" not in TECH_AI_SOURCE_WHITELIST
+    assert "the_bulwark" not in TECH_AI_SOURCE_WHITELIST
+    assert "thebulwark" not in TECH_AI_SOURCE_WHITELIST
+    assert "rollcall" not in TECH_AI_SOURCE_WHITELIST
+    assert "colossal" not in TECH_AI_SOURCE_WHITELIST
+    assert "creativebloq" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
