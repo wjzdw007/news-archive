@@ -2256,6 +2256,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="ign",
+        name="IGN",
+        feed_url="https://www.ign.com/rss/v2/articles/feed",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="roadandtrack",
+        name="Road & Track",
+        feed_url="https://www.roadandtrack.com/rss/all.xml",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="soundguys",
+        name="SoundGuys",
+        feed_url="https://www.soundguys.com/feed/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

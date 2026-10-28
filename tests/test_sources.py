@@ -14714,12 +14714,13 @@ _INSIDECLIMATENEWS_CONSEQUENCE_C4ISRNET_PRIMARY = {
 # spaceflightnow) or their
 # 备 (rockpapershotgun /
 # spin / carscoops).
-# Do not pull batch106
-# hung ids (techspot /
-# roadandtrack /
-# soundguys) or their 备
-# (ign / eurogamer /
-# gamespot).
+# batch106 KEEP ign
+# (hard-swap techspot
+# CF/403) / roadandtrack /
+# soundguys are registered
+# separately. Named 备
+# unused: eurogamer /
+# gamespot.
 # usni_news official
 # https://news.usni.org/feed
 # is new (no prior usni_news
@@ -14981,11 +14982,13 @@ _USNI_NEWS_SLASHFILM_SINGULARITYHUB_PRIMARY = {
 # spaceflightnow) or their
 # 备 (rockpapershotgun /
 # spin / carscoops).
-# Do not pull batch106 hung
-# ids (techspot /
-# roadandtrack / soundguys)
-# or their 备 (ign /
-# eurogamer / gamespot).
+# batch106 KEEP ign
+# (hard-swap techspot
+# CF/403) / roadandtrack /
+# soundguys are registered
+# separately. Named 备
+# unused: eurogamer /
+# gamespot.
 # bandcamp_daily official
 # https://daily.bandcamp.com/feed/
 # is new (no prior
@@ -15242,11 +15245,13 @@ _BANDCAMP_DAILY_COMPUTERWORLD_BIGTHINK_PRIMARY = {
 # spaceflightnow) or their
 # 备 (rockpapershotgun /
 # spin / carscoops).
-# Do not pull batch106 hung
-# ids (techspot /
-# roadandtrack / soundguys)
-# or their 备 (ign /
-# eurogamer / gamespot).
+# batch106 KEEP ign
+# (hard-swap techspot
+# CF/403) / roadandtrack /
+# soundguys are registered
+# separately. Named 备
+# unused: eurogamer /
+# gamespot.
 # Do not pull batch107 hung
 # ids (mining / adweek /
 # govexec) or their 备
@@ -15413,10 +15418,15 @@ _BANDCAMP_DAILY_COMPUTERWORLD_BIGTHINK_PRIMARY = {
 # passed). Do NOT register
 # rockpapershotgun / spin /
 # carscoops (unused 备).
-# Do NOT register techspot /
-# roadandtrack / soundguys /
-# ign / eurogamer /
-# gamespot / mining /
+# batch106 KEEP ign
+# (hard-swap techspot
+# CF/403) / roadandtrack /
+# soundguys are registered
+# separately. Do NOT
+# register techspot
+# (hard-swap CF/403) /
+# eurogamer / gamespot
+# (unused 备) / mining /
 # adweek / govexec /
 # omgubuntu / thurrott /
 # lobsters / platformer /
@@ -15508,12 +15518,14 @@ _ENERGY_STORAGE_NEWS_GEEKWIRE_HOLLYWOODREPORTER_PRIMARY = {
 # a KEEP fails):
 # rockpapershotgun / spin /
 # carscoops. Unused — all KEEP
-# passed. Do not invent. Do
-# not pull batch106 hung ids
-# (techspot / roadandtrack /
-# soundguys) or their 备
-# (ign / eurogamer /
-# gamespot).
+# passed. Do not invent.
+# batch106 KEEP ign
+# (hard-swap techspot
+# CF/403) / roadandtrack /
+# soundguys are registered
+# separately. Named 备
+# unused: eurogamer /
+# gamespot.
 # Do not pull batch107 hung
 # ids (mining / adweek /
 # govexec) or their 备
@@ -15681,10 +15693,15 @@ _ENERGY_STORAGE_NEWS_GEEKWIRE_HOLLYWOODREPORTER_PRIMARY = {
 # Do NOT register
 # rockpapershotgun / spin /
 # carscoops (unused 备).
-# Do NOT register techspot /
-# roadandtrack / soundguys /
-# ign / eurogamer /
-# gamespot / mining /
+# batch106 KEEP ign
+# (hard-swap techspot
+# CF/403) / roadandtrack /
+# soundguys are registered
+# separately. Do NOT
+# register techspot
+# (hard-swap CF/403) /
+# eurogamer / gamespot
+# (unused 备) / mining /
 # adweek / govexec /
 # omgubuntu / thurrott /
 # lobsters / platformer /
@@ -15776,7 +15793,321 @@ _KOTAKU_MAKEUSEOF_SPACEFLIGHTNOW_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 320
+# CEO-approved IGN / Road & Track /
+# SoundGuys RSS primaries
+# (batch106). On tip c5a6d44 after
+# #172 (persist gzip) and #171
+# (kotaku / makeuseof /
+# spaceflightnow).
+# Product KEEP set is techspot /
+# roadandtrack / soundguys.
+# Named 备 (hard-swap ONLY if
+# a KEEP fails): ign /
+# eurogamer / gamespot.
+# techspot hard-fails: every
+# homepage + candidate path
+# (www/apex /feed /rss
+# /rss.xml /backend.php
+# /feeds /news/feed) is
+# Cloudflare 403
+# (cf-mitigated=challenge)
+# with httpx+RSS_HEADERS —
+# never KEEP a dead feed.
+# Hard-swap slot 1 → ign.
+# roadandtrack + soundguys
+# KEEP. Named 备 unused:
+# eurogamer / gamespot. Do
+# not invent.
+# Do not pull batch107 hung
+# ids (mining / adweek /
+# govexec) or their 备
+# (omgubuntu / thurrott /
+# lobsters).
+# Do not pull batch108 hung
+# ids (platformer / inc /
+# bulwark) or their 备
+# (rollcall / colossal /
+# creativebloq).
+# Do not pull batch109 hung
+# ids (architecturaldigest /
+# allure / entrepreneur) or
+# their 备 (puck / artnews /
+# stratechery).
+# Do not pull batch110 hung
+# ids (nikkei_asia /
+# morningbrew / techmeme) or
+# their 备 (vogue /
+# filmmaker / newcriterion).
+# ign official
+# https://www.ign.com/rss/v2/articles/feed
+# is new (no prior ign /
+# ign_com / ign_articles /
+# ign_rss id). httpx+RSS_HEADERS
+# HTTP 200 / 20 nonempty /
+# 20 insertable (channel
+# "The Latest Articles from
+# IGN"). MUST lock www +
+# /rss/v2/articles/feed (NO
+# trailing slash). Homepage
+# <link> announces this
+# exact path; atom:self
+# matches. /rss/v2/articles/feed/
+# (trailing slash) serves
+# the same body but
+# atom:self is the no-slash
+# path — do not lock it.
+# apex remaps to www.
+# /rss/articles/feed is a
+# parallel older path
+# (channel "IGN Articles")
+# — not the announced v2
+# site-wide articles
+# primary. /rss/v2/videos/feed
+# is videos (section).
+# /rss/wikis/feed is empty
+# wikis — not the
+# site-wide primary.
+# /feed /feed/ /rss /
+# rss.xml /atom.xml /
+# index.xml /feed.xml /
+# feeds.xml /articles/feed
+# /rss/v2/articles /
+# rss/v2/feed /feed/rss/
+# are 404. /?feed=rss2 is
+# HTML homepage.
+# feeds.ign.com/ign/all
+# remaps to
+# /rss/articles/feed (not
+# v2). Feedburner
+# feeds.feedburner.com/ignfeeds
+# is IGN الشرق الأوسط —
+# never invent Feedburner.
+# Distinct from live
+# polygon / kotaku /
+# deadline / variety /
+# slashfilm / indiewire /
+# consequence. Lands on
+# 综合 (gaming newsroom,
+# same as polygon /
+# kotaku).
+# roadandtrack official
+# https://www.roadandtrack.com/rss/all.xml
+# is new (no prior
+# roadandtrack /
+# road_and_track /
+# roadandtrack_com id).
+# httpx+RSS_HEADERS HTTP 200
+# / 50 items / 49 nonempty
+# / 30 insertable (ingest
+# cap 30; channel "Latest
+# Content - Road & Track").
+# 1 photo-gallery item is
+# title+link+pubDate only
+# (#43 thin-skip). 49 ≥10
+# KEEP. MUST lock www +
+# /rss/all.xml (NO trailing
+# slash; atom:self).
+# Homepage footer announces
+# /rss/all.xml/ which
+# remaps here. /rss/all
+# /rss/all/ serve the same
+# body; atom:self is still
+# /rss/all.xml. apex remaps
+# to www. /feed /feed/ are
+# 404 HTML. /rss.xml /
+# atom.xml /index.xml /
+# feed.xml /feeds.xml
+# return "XML assets are
+# not allowed". /rss/
+# remaps to /new-cars/
+# HTML. /?feed=rss2 is
+# HTML homepage.
+# /rss/news.xml is a
+# section. /rss/all/index.xml
+# is empty "Index" — not
+# the site-wide primary.
+# Distinct from live
+# jalopnik / thedrive /
+# electrek / insideevs /
+# nyt_automobiles. Do not
+# invent Feedburner /
+# section feeds. Lands on
+# 科技 (auto newsroom,
+# same as jalopnik /
+# thedrive).
+# soundguys official
+# https://www.soundguys.com/feed/
+# is new (no prior
+# soundguys / sound_guys /
+# soundguys_com id).
+# httpx+RSS_HEADERS HTTP 200
+# / 10 nonempty / 10
+# insertable (channel
+# "SoundGuys"). MUST lock
+# www + /feed/ (trailing
+# slash). Homepage <link>
+# announces this exact
+# path; atom:self matches.
+# /feed (no slash) remaps
+# here; apex remaps to
+# www. /rss /rss/ /rss.xml
+# /atom.xml /index.xml /
+# feed.xml /feed/rss/ are
+# 404 HTML. /?feed=rss2 is
+# HTML homepage — not the
+# announced site-wide
+# primary. comments/feed
+# is comments — not the
+# site-wide primary.
+# /news/feed/ is section
+# "Audio news";
+# /reviews/feed/ is
+# section "Audio reviews"
+# — not the site-wide
+# primary. Distinct from
+# live howtogeek / pcmag /
+# cnet / zdnet /
+# computerworld /
+# geekwire. Do not invent
+# Feedburner / section
+# feeds. Lands on 科技
+# (audio / consumer-tech
+# newsroom, same as
+# howtogeek).
+# ign + roadandtrack +
+# soundguys all ≥10 KEEP.
+# Named 备 unused:
+# eurogamer / gamespot
+# (techspot hard-swapped
+# to ign). Distinct from
+# live polygon / kotaku /
+# deadline / variety /
+# slashfilm / indiewire /
+# consequence / jalopnik /
+# thedrive / electrek /
+# insideevs /
+# nyt_automobiles /
+# howtogeek / pcmag /
+# cnet / zdnet /
+# computerworld /
+# geekwire.
+# 0 article URL overlap
+# (www.ign.com /
+# www.roadandtrack.com /
+# www.soundguys.com
+# hosts). Not added to the
+# tech/AI whitelist
+# (later-batch sources stay
+# off the frozen ALWAYS
+# set).
+# Do NOT register techspot
+# / techspot_com /
+# tech_spot (hard-swap
+# CF/403). Do NOT register
+# ign_com / ign_articles /
+# ign_rss / road_and_track
+# / roadandtrack_com /
+# sound_guys /
+# soundguys_com.
+# Do NOT register
+# eurogamer / gamespot
+# (unused 备).
+# Do NOT register mining /
+# adweek / govexec /
+# omgubuntu / thurrott /
+# lobsters / platformer /
+# inc / bulwark / rollcall /
+# colossal / creativebloq /
+# architecturaldigest /
+# allure / entrepreneur /
+# puck / artnews /
+# stratechery / nikkei_asia
+# / morningbrew / techmeme /
+# vogue / filmmaker /
+# newcriterion (later hung).
+# Do NOT re-register
+# kotaku / makeuseof /
+# spaceflightnow /
+# energy_storage_news /
+# geekwire /
+# hollywoodreporter /
+# bandcamp_daily /
+# computerworld / bigthink /
+# usni_news / slashfilm /
+# singularityhub /
+# insideclimatenews /
+# consequence / c4isrnet /
+# indiewire / kottke /
+# pv_magazine /
+# military_times /
+# earthsky / outside /
+# deadline / makezine /
+# utility_dive / phoronix /
+# adafruit / boingboing /
+# jalopnik / lwn /
+# quanta_magazine /
+# pitchfork / stereogum /
+# zdnet / cnet / pcmag /
+# howtogeek / polygon /
+# space_com /
+# universe_today /
+# astronomy /
+# skyandtelescope /
+# aviationweek / thedrive /
+# electrek / insideevs.
+# national_geographic stays
+# unregistered (no official
+# English RSS).
+# Do NOT use as backups
+# (product skip): bangkok_post
+# / indian_express /
+# rest_of_world / al_monitor /
+# hkfp / biographic /
+# asiatimes / dawn /
+# longreads / hrw /
+# independent (429) /
+# euractiv (301→rapporteur
+# FAIL) / atlantic_council
+# (403) / the_nation (empty
+# feed) / times_of_israel
+# (Cloudflare 403) / the_cut
+# / techdirt / engadget /
+# digital_trends /
+# bleepingcomputer / gizmodo /
+# the_baffler / new_statesman
+# / guernica / nationalinterest
+# / flightglobal /
+# newscientist (CI
+# httpx+RSS_HEADERS 406/empty).
+# qz3 勿挂. digiday0观察 — do not
+# add a second digiday.
+# fastcompany 勿二重.
+# sunday_review / cnbc (403
+# known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_IGN_ROADANDTRACK_SOUNDGUYS_PRIMARY = {
+    "ign": {
+        "name": "IGN",
+        "feed_url": "https://www.ign.com/rss/v2/articles/feed",
+        "category": "综合",
+    },
+    "roadandtrack": {
+        "name": "Road & Track",
+        "feed_url": "https://www.roadandtrack.com/rss/all.xml",
+        "category": "科技",
+    },
+    "soundguys": {
+        "name": "SoundGuys",
+        "feed_url": "https://www.soundguys.com/feed/",
+        "category": "科技",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 323
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -41549,8 +41880,13 @@ def test_bandcamp_daily_computerworld_bigthink_primaries_registered():
     # spaceflightnow are
     # registered separately.
     # Named 备 unused (all KEEP
-    # passed). Do not pull
-    # batch106 hung ids.
+    # passed). batch106 KEEP
+    # ign (hard-swap techspot
+    # CF/403) / roadandtrack /
+    # soundguys are registered
+    # separately. Named 备
+    # unused: eurogamer /
+    # gamespot.
     assert "bandcamp" not in by_id
     assert "bandcamp_com" not in by_id
     assert "computer_world" not in by_id
@@ -41573,9 +41909,9 @@ def test_bandcamp_daily_computerworld_bigthink_primaries_registered():
     assert "spin" not in by_id
     assert "carscoops" not in by_id
     assert "techspot" not in by_id
-    assert "roadandtrack" not in by_id
-    assert "soundguys" not in by_id
-    assert "ign" not in by_id
+    assert "roadandtrack" in by_id
+    assert "soundguys" in by_id
+    assert "ign" in by_id
     assert "eurogamer" not in by_id
     assert "gamespot" not in by_id
     # national_geographic stays
@@ -41910,8 +42246,13 @@ def test_energy_storage_news_geekwire_hollywoodreporter_primaries_registered():
     # spaceflightnow are
     # registered separately.
     # Named 备 unused (all KEEP
-    # passed). Do not pull
-    # batch106 hung ids.
+    # passed). batch106 KEEP
+    # ign (hard-swap techspot
+    # CF/403) / roadandtrack /
+    # soundguys are registered
+    # separately. Named 备
+    # unused: eurogamer /
+    # gamespot.
     assert "energy_storage" not in by_id
     assert "energystorage" not in by_id
     assert "energy_storage_news_com" not in by_id
@@ -41930,9 +42271,9 @@ def test_energy_storage_news_geekwire_hollywoodreporter_primaries_registered():
     assert "spin" not in by_id
     assert "carscoops" not in by_id
     assert "techspot" not in by_id
-    assert "roadandtrack" not in by_id
-    assert "soundguys" not in by_id
-    assert "ign" not in by_id
+    assert "roadandtrack" in by_id
+    assert "soundguys" in by_id
+    assert "ign" in by_id
     assert "eurogamer" not in by_id
     assert "gamespot" not in by_id
     assert "mining" not in by_id
@@ -42299,9 +42640,9 @@ def test_kotaku_makeuseof_spaceflightnow_primaries_registered():
     assert "spin" not in by_id
     assert "carscoops" not in by_id
     assert "techspot" not in by_id
-    assert "roadandtrack" not in by_id
-    assert "soundguys" not in by_id
-    assert "ign" not in by_id
+    assert "roadandtrack" in by_id
+    assert "soundguys" in by_id
+    assert "ign" in by_id
     assert "eurogamer" not in by_id
     assert "gamespot" not in by_id
     assert "mining" not in by_id
@@ -42468,6 +42809,456 @@ def test_kotaku_makeuseof_spaceflightnow_feeds_live_httpx_rss_headers():
         )
 
 
+def test_techspot_hard_swapped_to_ign():
+    """Product lock: techspot CF/403; ign is the KEEP fill."""
+    by_id = {s.id: s for s in SOURCES}
+    assert "techspot" not in by_id
+    assert "techspot_com" not in by_id
+    assert "tech_spot" not in by_id
+    assert "ign" in by_id
+    source = by_id["ign"]
+    assert source.role == "primary"
+    assert source.name == "IGN"
+    assert source.feed_url == "https://www.ign.com/rss/v2/articles/feed"
+    assert source.category == "综合"
+    assert "https://www.techspot.com/feed/" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://www.techspot.com/feed" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://www.techspot.com/rss.xml" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://www.techspot.com/backend.php" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://techspot.com/feed/" not in {s.feed_url for s in SOURCES}
+    assert "https://feeds.feedburner.com/techspot" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://www.ign.com/rss/v2/articles/feed/" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://www.ign.com/rss/articles/feed" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://feeds.ign.com/ign/all" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://feeds.feedburner.com/ignfeeds" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "roadandtrack" in by_id
+    assert "soundguys" in by_id
+    assert "eurogamer" not in by_id
+    assert "gamespot" not in by_id
+
+
+def test_ign_roadandtrack_soundguys_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "ign" in by_id
+    assert by_id["ign"].feed_url == (
+        "https://www.ign.com/rss/v2/articles/feed"
+    )
+    assert by_id["ign"].feed_url != (
+        "https://www.ign.com/rss/v2/articles/feed/"
+    )
+    assert by_id["ign"].feed_url != (
+        "https://www.ign.com/rss/articles/feed"
+    )
+    assert by_id["ign"].feed_url != (
+        "https://www.ign.com/rss/articles/feed/"
+    )
+    assert by_id["ign"].feed_url != "https://ign.com/rss/v2/articles/feed"
+    assert by_id["ign"].feed_url != "https://www.ign.com/feed"
+    assert by_id["ign"].feed_url != "https://www.ign.com/feed/"
+    assert by_id["ign"].feed_url != "https://www.ign.com/rss"
+    assert by_id["ign"].feed_url != "https://www.ign.com/rss.xml"
+    assert by_id["ign"].feed_url != (
+        "https://www.ign.com/rss/v2/videos/feed"
+    )
+    assert by_id["ign"].feed_url != "https://www.ign.com/rss/wikis/feed"
+    assert by_id["ign"].feed_url != "https://feeds.ign.com/ign/all"
+    assert by_id["ign"].feed_url != (
+        "https://feeds.feedburner.com/ignfeeds"
+    )
+    assert "roadandtrack" in by_id
+    assert by_id["roadandtrack"].feed_url == (
+        "https://www.roadandtrack.com/rss/all.xml"
+    )
+    assert by_id["roadandtrack"].feed_url != (
+        "https://www.roadandtrack.com/rss/all.xml/"
+    )
+    assert by_id["roadandtrack"].feed_url != (
+        "https://www.roadandtrack.com/rss/all"
+    )
+    assert by_id["roadandtrack"].feed_url != (
+        "https://www.roadandtrack.com/rss/all/"
+    )
+    assert by_id["roadandtrack"].feed_url != (
+        "https://roadandtrack.com/rss/all.xml"
+    )
+    assert by_id["roadandtrack"].feed_url != (
+        "https://www.roadandtrack.com/feed/"
+    )
+    assert by_id["roadandtrack"].feed_url != (
+        "https://www.roadandtrack.com/feed"
+    )
+    assert by_id["roadandtrack"].feed_url != (
+        "https://www.roadandtrack.com/rss.xml"
+    )
+    assert by_id["roadandtrack"].feed_url != (
+        "https://www.roadandtrack.com/rss/news.xml"
+    )
+    assert by_id["roadandtrack"].feed_url != (
+        "https://www.roadandtrack.com/rss/all/index.xml"
+    )
+    assert by_id["roadandtrack"].feed_url != (
+        "https://www.roadandtrack.com/?feed=rss2"
+    )
+    assert "soundguys" in by_id
+    assert by_id["soundguys"].feed_url == (
+        "https://www.soundguys.com/feed/"
+    )
+    assert by_id["soundguys"].feed_url != "https://www.soundguys.com/feed"
+    assert by_id["soundguys"].feed_url != "https://soundguys.com/feed/"
+    assert by_id["soundguys"].feed_url != "https://www.soundguys.com/rss"
+    assert by_id["soundguys"].feed_url != "https://www.soundguys.com/rss/"
+    assert by_id["soundguys"].feed_url != (
+        "https://www.soundguys.com/rss.xml"
+    )
+    assert by_id["soundguys"].feed_url != (
+        "https://www.soundguys.com/atom.xml"
+    )
+    assert by_id["soundguys"].feed_url != (
+        "https://www.soundguys.com/index.xml"
+    )
+    assert by_id["soundguys"].feed_url != (
+        "https://www.soundguys.com/comments/feed/"
+    )
+    assert by_id["soundguys"].feed_url != (
+        "https://www.soundguys.com/news/feed/"
+    )
+    assert by_id["soundguys"].feed_url != (
+        "https://www.soundguys.com/reviews/feed/"
+    )
+    assert by_id["soundguys"].feed_url != (
+        "https://www.soundguys.com/?feed=rss2"
+    )
+    # #171 / batch105 winners stay registered and unchanged.
+    # #170 / batch104 winners stay registered and unchanged.
+    # #169 / batch103 winners stay registered and unchanged.
+    # #168 / batch102 winners stay registered and unchanged.
+    # #167 / batch101 winners stay registered and unchanged.
+    # #166 / batch100 winners stay registered and unchanged.
+    # Do not touch kotaku / makeuseof /
+    # spaceflightnow /
+    # energy_storage_news / geekwire /
+    # hollywoodreporter /
+    # bandcamp_daily / computerworld /
+    # bigthink / usni_news / slashfilm /
+    # singularityhub /
+    # insideclimatenews /
+    # consequence / c4isrnet /
+    # indiewire / kottke /
+    # pv_magazine / military_times /
+    # earthsky / outside / deadline /
+    # makezine / utility_dive /
+    # phoronix / adafruit /
+    # boingboing / jalopnik / lwn /
+    # quanta_magazine / yale360 /
+    # cleantechnica / hackaday /
+    # astronomy / skyandtelescope /
+    # latimes_technology / variety /
+    # canary_media / defensenews /
+    # taskandpurpose / twz /
+    # navalnews / climate_home /
+    # grist / carbon_brief /
+    # pitchfork / stereogum / zdnet /
+    # cnet / pcmag / howtogeek /
+    # polygon / space_com /
+    # universe_today / aviationweek /
+    # thedrive / electrek / insideevs.
+    assert "kotaku" in by_id
+    assert "makeuseof" in by_id
+    assert "spaceflightnow" in by_id
+    assert "energy_storage_news" in by_id
+    assert "geekwire" in by_id
+    assert "hollywoodreporter" in by_id
+    assert "bandcamp_daily" in by_id
+    assert "computerworld" in by_id
+    assert "bigthink" in by_id
+    assert "usni_news" in by_id
+    assert "slashfilm" in by_id
+    assert "singularityhub" in by_id
+    assert "insideclimatenews" in by_id
+    assert "consequence" in by_id
+    assert "c4isrnet" in by_id
+    assert "indiewire" in by_id
+    assert "kottke" in by_id
+    assert "pv_magazine" in by_id
+    assert "military_times" in by_id
+    assert "earthsky" in by_id
+    assert "outside" in by_id
+    assert "deadline" in by_id
+    assert "makezine" in by_id
+    assert "utility_dive" in by_id
+    assert "phoronix" in by_id
+    assert "adafruit" in by_id
+    assert "boingboing" in by_id
+    assert "jalopnik" in by_id
+    assert "lwn" in by_id
+    assert "quanta_magazine" in by_id
+    assert "yale360" in by_id
+    assert "cleantechnica" in by_id
+    assert "hackaday" in by_id
+    assert "astronomy" in by_id
+    assert "skyandtelescope" in by_id
+    assert "latimes_technology" in by_id
+    assert "variety" in by_id
+    assert "canary_media" in by_id
+    assert "defensenews" in by_id
+    assert "taskandpurpose" in by_id
+    assert "twz" in by_id
+    assert "navalnews" in by_id
+    assert "climate_home" in by_id
+    assert "grist" in by_id
+    assert "carbon_brief" in by_id
+    assert "pitchfork" in by_id
+    assert "stereogum" in by_id
+    assert "zdnet" in by_id
+    assert "cnet" in by_id
+    assert "pcmag" in by_id
+    assert "howtogeek" in by_id
+    assert "polygon" in by_id
+    assert "space_com" in by_id
+    assert "universe_today" in by_id
+    assert "aviationweek" in by_id
+    assert "thedrive" in by_id
+    assert "electrek" in by_id
+    assert "insideevs" in by_id
+    # Feed locks + uniqueness vs live
+    # gaming / auto / audio stack.
+    assert by_id["ign"].feed_url != by_id["polygon"].feed_url
+    assert by_id["ign"].feed_url != by_id["kotaku"].feed_url
+    assert by_id["ign"].feed_url != by_id["deadline"].feed_url
+    assert by_id["ign"].feed_url != by_id["variety"].feed_url
+    assert by_id["ign"].feed_url != by_id["slashfilm"].feed_url
+    assert by_id["ign"].feed_url != by_id["indiewire"].feed_url
+    assert by_id["ign"].feed_url != by_id["consequence"].feed_url
+    assert by_id["roadandtrack"].feed_url != by_id["jalopnik"].feed_url
+    assert by_id["roadandtrack"].feed_url != by_id["thedrive"].feed_url
+    assert by_id["roadandtrack"].feed_url != by_id["electrek"].feed_url
+    assert by_id["roadandtrack"].feed_url != by_id["insideevs"].feed_url
+    assert by_id["roadandtrack"].feed_url != by_id["nyt_automobiles"].feed_url
+    assert by_id["soundguys"].feed_url != by_id["howtogeek"].feed_url
+    assert by_id["soundguys"].feed_url != by_id["pcmag"].feed_url
+    assert by_id["soundguys"].feed_url != by_id["cnet"].feed_url
+    assert by_id["soundguys"].feed_url != by_id["zdnet"].feed_url
+    assert by_id["soundguys"].feed_url != by_id["computerworld"].feed_url
+    assert by_id["soundguys"].feed_url != by_id["geekwire"].feed_url
+    assert by_id["ign"].feed_url != by_id["roadandtrack"].feed_url
+    assert by_id["ign"].feed_url != by_id["soundguys"].feed_url
+    assert by_id["roadandtrack"].feed_url != by_id["soundguys"].feed_url
+    # techspot hard-swapped to ign
+    # (CF/403). Named 备 unused
+    # (eurogamer / gamespot). Do
+    # not invent replacements. Do
+    # not pull later hung batches.
+    assert "techspot" not in by_id
+    assert "techspot_com" not in by_id
+    assert "tech_spot" not in by_id
+    assert "ign_com" not in by_id
+    assert "ign_articles" not in by_id
+    assert "ign_rss" not in by_id
+    assert "road_and_track" not in by_id
+    assert "roadandtrack_com" not in by_id
+    assert "sound_guys" not in by_id
+    assert "soundguys_com" not in by_id
+    assert "eurogamer" not in by_id
+    assert "gamespot" not in by_id
+    assert "mining" not in by_id
+    assert "adweek" not in by_id
+    assert "govexec" not in by_id
+    assert "omgubuntu" not in by_id
+    assert "thurrott" not in by_id
+    assert "lobsters" not in by_id
+    assert "platformer" not in by_id
+    assert "inc" not in by_id
+    assert "bulwark" not in by_id
+    assert "rollcall" not in by_id
+    assert "colossal" not in by_id
+    assert "creativebloq" not in by_id
+    assert "architecturaldigest" not in by_id
+    assert "allure" not in by_id
+    assert "entrepreneur" not in by_id
+    assert "puck" not in by_id
+    assert "artnews" not in by_id
+    assert "stratechery" not in by_id
+    assert "nikkei_asia" not in by_id
+    assert "morningbrew" not in by_id
+    assert "techmeme" not in by_id
+    assert "vogue" not in by_id
+    assert "filmmaker" not in by_id
+    assert "newcriterion" not in by_id
+    # national_geographic stays
+    # unregistered (no official
+    # English RSS).
+    assert "national_geographic" not in by_id
+    assert "nationalgeographic" not in by_id
+    assert "natgeo" not in by_id
+    assert "carbonbrief" not in by_id
+    assert "carbon_brief" in by_id
+    assert "politico" not in by_id
+    assert "politico_politics" in by_id
+    assert "politico_europe" in by_id
+    assert "the_atlantic" not in by_id
+    assert "motherjones" not in by_id
+    assert "the_intercept" not in by_id
+    assert "theregister" not in by_id
+    assert "atlantic" in by_id
+    assert "mother_jones" in by_id
+    assert "intercept" in by_id
+    assert "the_register" in by_id
+    assert "newscientist" not in by_id
+    assert "qz3" not in by_id
+    assert "qz" not in by_id
+    assert "fastcompany" not in by_id
+    assert "fast_company" in by_id
+    assert "the_verge" not in by_id
+    assert "flightglobal" not in by_id
+    assert "gizmodo" not in by_id
+    assert "the_baffler" not in by_id
+    assert "new_statesman" not in by_id
+    assert "guernica" not in by_id
+    assert "nationalinterest" not in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "the_nation" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "techdirt" not in by_id
+    assert "engadget" not in by_id
+    assert "digital_trends" not in by_id
+    assert "the_cut" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "indian_express" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "al_monitor" not in by_id
+    assert "hkfp" not in by_id
+    assert "biographic" not in by_id
+    assert "asiatimes" not in by_id
+    assert "dawn" not in by_id
+    assert "longreads" not in by_id
+    assert "hrw" not in by_id
+    assert "independent" not in by_id
+    for source_id, expected in (
+        _IGN_ROADANDTRACK_SOUNDGUYS_PRIMARY.items()
+    ):
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_ign_roadandtrack_soundguys_feeds_live_httpx_rss_headers():
+    """KEEP must pass the same httpx + RSS_HEADERS client CI uses."""
+    from news_archive.fetch import fetch_source
+
+    by_id = {s.id: s for s in SOURCES}
+    keep_floor = {
+        "ign": 10,
+        "roadandtrack": 10,
+        "soundguys": 10,
+    }
+    for source_id in _IGN_ROADANDTRACK_SOUNDGUYS_PRIMARY:
+        source = by_id[source_id]
+        articles = fetch_source(source, timeout=30)
+        assert articles, f"{source_id} httpx+RSS_HEADERS insertable=0"
+        assert len(articles) >= keep_floor[source_id], (
+            f"{source_id} insertable {len(articles)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (ign / roadandtrack /
+        # soundguys) uses the
+        # un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # ign 20/20, soundguys 10/10
+        # were 100% nonempty this
+        # probe. roadandtrack 49/50
+        # nonempty — 1 Hearst
+        # photo-gallery item is
+        # title+link+pubDate only
+        # (skipped on ingest). ≥10
+        # KEEP.
+        # ign MUST stay on www
+        # /rss/v2/articles/feed
+        # (NO trailing slash;
+        # homepage announced;
+        # atom:self).
+        # /rss/v2/articles/feed/
+        # serves the same body.
+        # roadandtrack MUST stay on
+        # www /rss/all.xml (NO
+        # trailing slash; homepage
+        # announces /rss/all.xml/
+        # which remaps here;
+        # atom:self).
+        # soundguys MUST stay on www
+        # /feed/ (trailing slash;
+        # homepage announced;
+        # atom:self). /feed remaps
+        # here.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        if source_id == "roadandtrack":
+            assert nonempty >= keep_floor[source_id], (
+                f"{source_id} nonempty {nonempty}/{len(items)} below KEEP floor "
+                f"{keep_floor[source_id]}"
+            )
+            assert nonempty >= len(items) - 1, (
+                f"{source_id} too many empty descriptions: "
+                f"{len(items) - nonempty}/{len(items)}"
+            )
+        else:
+            assert nonempty == len(items), (
+                f"{source_id} empty description: "
+                f"{len(items) - nonempty}/{len(items)}"
+            )
+            assert nonempty >= keep_floor[source_id], (
+                f"{source_id} nonempty {nonempty}/{len(items)} below KEEP floor "
+                f"{keep_floor[source_id]}"
+            )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -42584,6 +43375,8 @@ if __name__ == "__main__":
     test_bandcamp_daily_computerworld_bigthink_primaries_registered()
     test_energy_storage_news_geekwire_hollywoodreporter_primaries_registered()
     test_kotaku_makeuseof_spaceflightnow_primaries_registered()
+    test_techspot_hard_swapped_to_ign()
+    test_ign_roadandtrack_soundguys_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -42689,4 +43482,5 @@ if __name__ == "__main__":
     test_bandcamp_daily_computerworld_bigthink_feeds_live_httpx_rss_headers()
     test_energy_storage_news_geekwire_hollywoodreporter_feeds_live_httpx_rss_headers()
     test_kotaku_makeuseof_spaceflightnow_feeds_live_httpx_rss_headers()
+    test_ign_roadandtrack_soundguys_feeds_live_httpx_rss_headers()
     print("✓ source registry tests PASSED")

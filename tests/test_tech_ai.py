@@ -1628,12 +1628,12 @@ def test_whitelist_registered_and_cap_unchanged():
     # announced; atom:self).
     # /feed remaps here.
     # Named 备 unused (all KEEP
-    # passed). Do not pull
-    # batch106 hung ids
-    # (techspot / roadandtrack /
-    # soundguys) or their 备
-    # (ign / eurogamer /
-    # gamespot).
+    # passed). batch106 KEEP
+    # ign (hard-swap techspot
+    # CF/403) / roadandtrack /
+    # soundguys are registered
+    # separately and also stay
+    # off the whitelist.
     # None of these match the
     # wired / verge / techcrunch
     # ALWAYS pattern.
@@ -1650,6 +1650,52 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "rockpapershotgun" not in TECH_AI_SOURCE_WHITELIST
     assert "spin" not in TECH_AI_SOURCE_WHITELIST
     assert "carscoops" not in TECH_AI_SOURCE_WHITELIST
+    # batch106 RSS primaries stay off the tech/AI whitelist.
+    # ign lands on 综合 (gaming
+    # newsroom, same as polygon /
+    # kotaku) — new id — official
+    # www /rss/v2/articles/feed
+    # (MUST www + NO trailing
+    # slash; homepage announced;
+    # atom:self). techspot
+    # hard-swapped (every
+    # homepage + candidate path
+    # is Cloudflare 403).
+    # roadandtrack lands on 科技
+    # (auto newsroom, same as
+    # jalopnik / thedrive) — new
+    # id — official www
+    # /rss/all.xml (MUST www +
+    # NO trailing slash;
+    # homepage announces
+    # /rss/all.xml/ which remaps
+    # here; atom:self).
+    # soundguys lands on 科技
+    # (audio / consumer-tech
+    # newsroom, same as
+    # howtogeek) — new id —
+    # official www /feed/
+    # (MUST www + trailing
+    # slash; homepage announced;
+    # atom:self). /feed remaps
+    # here.
+    # Named 备 unused:
+    # eurogamer / gamespot.
+    # None of these match the
+    # wired / verge / techcrunch
+    # ALWAYS pattern.
+    assert "ign" not in TECH_AI_SOURCE_WHITELIST
+    assert "roadandtrack" not in TECH_AI_SOURCE_WHITELIST
+    assert "soundguys" not in TECH_AI_SOURCE_WHITELIST
+    assert "techspot" not in TECH_AI_SOURCE_WHITELIST
+    assert "techspot_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "tech_spot" not in TECH_AI_SOURCE_WHITELIST
+    assert "ign_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "ign_articles" not in TECH_AI_SOURCE_WHITELIST
+    assert "road_and_track" not in TECH_AI_SOURCE_WHITELIST
+    assert "sound_guys" not in TECH_AI_SOURCE_WHITELIST
+    assert "eurogamer" not in TECH_AI_SOURCE_WHITELIST
+    assert "gamespot" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
