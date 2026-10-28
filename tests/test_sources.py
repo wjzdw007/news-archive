@@ -15252,13 +15252,13 @@ _BANDCAMP_DAILY_COMPUTERWORLD_BIGTHINK_PRIMARY = {
 # separately. Named 备
 # unused: eurogamer /
 # gamespot.
-# Do not pull batch107 hung
-# ids (mining / adweek /
-# govexec) or their 备
-# (omgubuntu / thurrott /
-# lobsters).
-# Do not pull batch108 hung
-# ids (platformer / inc /
+# batch107 KEEP mining /
+# adweek / govexec are
+# registered separately.
+# Named 备 unused (all KEEP
+# passed). Do not pull
+# batch108 hung ids
+# (platformer / inc /
 # bulwark) or their 备
 # (rollcall / colossal /
 # creativebloq).
@@ -15426,13 +15426,16 @@ _BANDCAMP_DAILY_COMPUTERWORLD_BIGTHINK_PRIMARY = {
 # register techspot
 # (hard-swap CF/403) /
 # eurogamer / gamespot
-# (unused 备) / mining /
-# adweek / govexec /
+# (unused 备). batch107 KEEP
+# mining / adweek / govexec
+# are registered separately.
+# Named 备 unused (all KEEP
+# passed). Do NOT register
 # omgubuntu / thurrott /
-# lobsters / platformer /
-# inc / bulwark / rollcall /
-# colossal / creativebloq
-# (later hung).
+# lobsters (unused 备) /
+# platformer / inc / bulwark
+# / rollcall / colossal /
+# creativebloq (later hung).
 # Do NOT re-register
 # bandcamp_daily /
 # computerworld / bigthink /
@@ -15526,13 +15529,13 @@ _ENERGY_STORAGE_NEWS_GEEKWIRE_HOLLYWOODREPORTER_PRIMARY = {
 # separately. Named 备
 # unused: eurogamer /
 # gamespot.
-# Do not pull batch107 hung
-# ids (mining / adweek /
-# govexec) or their 备
-# (omgubuntu / thurrott /
-# lobsters).
-# Do not pull batch108 hung
-# ids (platformer / inc /
+# batch107 KEEP mining /
+# adweek / govexec are
+# registered separately.
+# Named 备 unused (all KEEP
+# passed). Do not pull
+# batch108 hung ids
+# (platformer / inc /
 # bulwark) or their 备
 # (rollcall / colossal /
 # creativebloq).
@@ -15701,12 +15704,16 @@ _ENERGY_STORAGE_NEWS_GEEKWIRE_HOLLYWOODREPORTER_PRIMARY = {
 # register techspot
 # (hard-swap CF/403) /
 # eurogamer / gamespot
-# (unused 备) / mining /
-# adweek / govexec /
+# (unused 备). batch107 KEEP
+# mining / adweek / govexec
+# are registered separately.
+# Named 备 unused (all KEEP
+# passed). Do NOT register
 # omgubuntu / thurrott /
-# lobsters / platformer /
-# inc / bulwark / rollcall /
-# colossal / creativebloq /
+# lobsters (unused 备) /
+# platformer / inc / bulwark
+# / rollcall / colossal /
+# creativebloq /
 # architecturaldigest /
 # allure / entrepreneur /
 # puck / artnews /
@@ -15818,13 +15825,13 @@ _KOTAKU_MAKEUSEOF_SPACEFLIGHTNOW_PRIMARY = {
 # KEEP. Named 备 unused:
 # eurogamer / gamespot. Do
 # not invent.
-# Do not pull batch107 hung
-# ids (mining / adweek /
-# govexec) or their 备
-# (omgubuntu / thurrott /
-# lobsters).
-# Do not pull batch108 hung
-# ids (platformer / inc /
+# batch107 KEEP mining /
+# adweek / govexec are
+# registered separately.
+# Named 备 unused (all KEEP
+# passed). Do not pull
+# batch108 hung ids
+# (platformer / inc /
 # bulwark) or their 备
 # (rollcall / colossal /
 # creativebloq).
@@ -16012,12 +16019,16 @@ _KOTAKU_MAKEUSEOF_SPACEFLIGHTNOW_PRIMARY = {
 # Do NOT register
 # eurogamer / gamespot
 # (unused 备).
-# Do NOT register mining /
-# adweek / govexec /
+# batch107 KEEP mining /
+# adweek / govexec are
+# registered separately.
+# Named 备 unused (all KEEP
+# passed). Do NOT register
 # omgubuntu / thurrott /
-# lobsters / platformer /
-# inc / bulwark / rollcall /
-# colossal / creativebloq /
+# lobsters (unused 备) /
+# platformer / inc / bulwark
+# / rollcall / colossal /
+# creativebloq /
 # architecturaldigest /
 # allure / entrepreneur /
 # puck / artnews /
@@ -16107,7 +16118,297 @@ _IGN_ROADANDTRACK_SOUNDGUYS_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 323
+# CEO-approved MINING.COM / Adweek /
+# Government Executive RSS primaries
+# (batch107). On tip ac54290 after
+# #174 (ign / roadandtrack /
+# soundguys; techspot hard-swap).
+# Product KEEP set is mining /
+# adweek / govexec.
+# Named 备 (hard-swap ONLY if
+# a KEEP fails): omgubuntu /
+# thurrott / lobsters. Unused
+# — all KEEP passed. Do not
+# invent.
+# Do not pull batch108 hung
+# ids (platformer / inc /
+# bulwark) or their 备
+# (rollcall / colossal /
+# creativebloq).
+# Do not pull batch109 hung
+# ids (architecturaldigest /
+# allure / entrepreneur) or
+# their 备 (puck / artnews /
+# stratechery).
+# Do not pull batch110 hung
+# ids (nikkei_asia /
+# morningbrew / techmeme) or
+# their 备 (vogue /
+# filmmaker / newcriterion).
+# mining official
+# https://www.mining.com/feed/
+# is new (no prior mining /
+# mining_com / mining_dot_com
+# / miningcom id).
+# httpx+RSS_HEADERS HTTP 200
+# / 36 nonempty / 30
+# insertable (ingest cap 30;
+# channel "MINING.COM").
+# 36 ≥10 KEEP. MUST lock www
+# + /feed/ (trailing slash).
+# Homepage nav announces
+# href="/feed/"; atom:self
+# matches. Homepage has no
+# <link rel="alternate"
+# type="application/rss+xml">
+# — lock the announced path
+# + atom:self. /feed (no
+# slash) serves the same
+# body but atom:self is the
+# no-slash path — do not
+# lock it. apex remaps to
+# www. /rss /rss/ /
+# feed/rss/ serve a thinner
+# parallel RSS (no
+# atom:self) — not the
+# announced site-wide
+# primary. /?feed=rss2
+# serves the same body but
+# atom:self is the query
+# string — not the announced
+# path. /rss.xml /atom.xml /
+# index.xml /feed.xml /
+# news/feed/ are 404 HTML.
+# comments/feed is comments
+# (channel "Comments for
+# MINING.COM") — not the
+# site-wide primary. Tag
+# /tag/*/feed/ paths are
+# commodity sections — not
+# the site-wide primary. Do
+# not invent Feedburner /
+# section feeds. Distinct
+# from live oilprice /
+# energy_storage_news /
+# pv_magazine / utility_dive
+# / canary_media /
+# insideclimatenews /
+# cleantechnica /
+# climate_home / grist /
+# carbon_brief. Lands on 财经
+# (commodity / mining
+# newsroom, same as
+# oilprice).
+# adweek official
+# https://www.adweek.com/feed/
+# is new (no prior adweek /
+# ad_week / adweek_com id).
+# httpx+RSS_HEADERS HTTP 200
+# / 10 nonempty / 10
+# insertable (channel
+# "Adweek Feed"). 10 ≥10
+# KEEP. MUST lock www +
+# /feed/ (trailing slash).
+# Homepage footer/nav
+# announces href="/feed/";
+# atom:self matches.
+# Homepage has no <link
+# rel="alternate"
+# type="application/rss+xml">
+# (only oEmbed). /feed (no
+# slash) remaps here; apex
+# remaps to www. /rss /rss/
+# /feed/rss/ /?feed=rss2
+# remap here. /rss.xml /
+# atom.xml /index.xml /
+# feed.xml are 404 HTML.
+# /news/feed/ remaps to the
+# HTML homepage. comments/feed
+# serves the same site-wide
+# body this probe — still
+# not the announced path.
+# /category/news/feed/ is a
+# news-section feed — not
+# the site-wide primary.
+# Feedburner
+# feeds.feedburner.com/AdweekRSS
+# is 404 — never invent
+# Feedburner. Distinct from
+# live hollywoodreporter /
+# deadline / variety /
+# slashfilm / indiewire /
+# consequence / niemanlab /
+# media404 / fast_company.
+# Lands on 综合 (advertising
+# / media newsroom, same as
+# hollywoodreporter /
+# niemanlab).
+# govexec official
+# https://www.govexec.com/rss/all/
+# is new (no prior govexec /
+# gov_exec / govexec_com /
+# government_executive id).
+# httpx+RSS_HEADERS HTTP 200
+# / 24 nonempty / 24
+# insertable (channel
+# "Government Executive -
+# All Content"). 24 ≥10
+# KEEP. MUST lock www +
+# /rss/all/ (trailing
+# slash). Homepage RSS icon
+# announces href="/rss/all/";
+# atom:self matches.
+# Homepage has no <link
+# rel="alternate">. /rss/all
+# (no slash) remaps here;
+# /rss/all.xml remaps here;
+# apex remaps to www. /feed
+# /feed/ /rss.xml /atom.xml
+# /index.xml /feed.xml /
+# rss/news/ /comments/feed/
+# are 404 HTML. /rss /rss/
+# remap to /feeds/ (HTML
+# directory of section
+# feeds) — not the
+# site-wide primary.
+# /?feed=rss2 is HTML
+# homepage. /rss/management/
+# /rss/pay-benefits/ /
+# rss/workforce/ /
+# rss/oversight/ /
+# rss/technology/ /
+# rss/defense/ are section
+# feeds — not the site-wide
+# primary. Distinct from
+# live the_hill /
+# politico_politics /
+# politico_europe /
+# defense_one / c4isrnet /
+# defensenews /
+# military_times /
+# taskandpurpose. Do not
+# invent Feedburner /
+# section feeds. Lands on
+# 综合 (US federal government
+# newsroom, same as
+# the_hill /
+# politico_politics).
+# mining + adweek + govexec
+# all ≥10 KEEP. Named 备
+# unused: omgubuntu /
+# thurrott / lobsters.
+# Distinct from live
+# oilprice /
+# energy_storage_news /
+# pv_magazine / utility_dive
+# / hollywoodreporter /
+# deadline / variety /
+# niemanlab / the_hill /
+# politico_politics /
+# defense_one.
+# 0 article URL overlap
+# (www.mining.com /
+# www.adweek.com /
+# www.govexec.com hosts).
+# Not added to the tech/AI
+# whitelist (later-batch
+# sources stay off the
+# frozen ALWAYS set).
+# Do NOT register mining_com
+# / mining_dot_com /
+# miningcom / ad_week /
+# adweek_com / gov_exec /
+# govexec_com /
+# government_executive.
+# Do NOT register omgubuntu
+# / thurrott / lobsters
+# (unused 备).
+# Do NOT register
+# platformer / inc / bulwark
+# / rollcall / colossal /
+# creativebloq /
+# architecturaldigest /
+# allure / entrepreneur /
+# puck / artnews /
+# stratechery / nikkei_asia
+# / morningbrew / techmeme /
+# vogue / filmmaker /
+# newcriterion (later hung).
+# Do NOT re-register ign /
+# roadandtrack / soundguys /
+# kotaku / makeuseof /
+# spaceflightnow /
+# energy_storage_news /
+# geekwire /
+# hollywoodreporter /
+# bandcamp_daily /
+# computerworld / bigthink /
+# usni_news / slashfilm /
+# singularityhub /
+# insideclimatenews /
+# consequence / c4isrnet /
+# indiewire / kottke /
+# pv_magazine /
+# military_times /
+# earthsky / outside /
+# deadline / makezine /
+# utility_dive / oilprice /
+# the_hill /
+# politico_politics /
+# fast_company / niemanlab.
+# national_geographic stays
+# unregistered (no official
+# English RSS).
+# Do NOT use as backups
+# (product skip): bangkok_post
+# / indian_express /
+# rest_of_world / al_monitor /
+# hkfp / biographic /
+# asiatimes / dawn /
+# longreads / hrw /
+# independent (429) /
+# euractiv (301→rapporteur
+# FAIL) / atlantic_council
+# (403) / the_nation (empty
+# feed) / times_of_israel
+# (Cloudflare 403) / the_cut
+# / techdirt / engadget /
+# digital_trends /
+# bleepingcomputer / gizmodo /
+# the_baffler / new_statesman
+# / guernica / nationalinterest
+# / flightglobal /
+# newscientist (CI
+# httpx+RSS_HEADERS 406/empty).
+# qz3 勿挂. digiday0观察 — do not
+# add a second digiday.
+# fastcompany 勿二重.
+# sunday_review / cnbc (403
+# known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_MINING_ADWEEK_GOVEXEC_PRIMARY = {
+    "mining": {
+        "name": "MINING.COM",
+        "feed_url": "https://www.mining.com/feed/",
+        "category": "财经",
+    },
+    "adweek": {
+        "name": "Adweek",
+        "feed_url": "https://www.adweek.com/feed/",
+        "category": "综合",
+    },
+    "govexec": {
+        "name": "Government Executive",
+        "feed_url": "https://www.govexec.com/rss/all/",
+        "category": "综合",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 326
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -42276,9 +42577,9 @@ def test_energy_storage_news_geekwire_hollywoodreporter_primaries_registered():
     assert "ign" in by_id
     assert "eurogamer" not in by_id
     assert "gamespot" not in by_id
-    assert "mining" not in by_id
-    assert "adweek" not in by_id
-    assert "govexec" not in by_id
+    assert "mining" in by_id
+    assert "adweek" in by_id
+    assert "govexec" in by_id
     assert "omgubuntu" not in by_id
     assert "thurrott" not in by_id
     assert "lobsters" not in by_id
@@ -42645,9 +42946,9 @@ def test_kotaku_makeuseof_spaceflightnow_primaries_registered():
     assert "ign" in by_id
     assert "eurogamer" not in by_id
     assert "gamespot" not in by_id
-    assert "mining" not in by_id
-    assert "adweek" not in by_id
-    assert "govexec" not in by_id
+    assert "mining" in by_id
+    assert "adweek" in by_id
+    assert "govexec" in by_id
     assert "omgubuntu" not in by_id
     assert "thurrott" not in by_id
     assert "lobsters" not in by_id
@@ -43078,9 +43379,9 @@ def test_ign_roadandtrack_soundguys_primaries_registered():
     assert "soundguys_com" not in by_id
     assert "eurogamer" not in by_id
     assert "gamespot" not in by_id
-    assert "mining" not in by_id
-    assert "adweek" not in by_id
-    assert "govexec" not in by_id
+    assert "mining" in by_id
+    assert "adweek" in by_id
+    assert "govexec" in by_id
     assert "omgubuntu" not in by_id
     assert "thurrott" not in by_id
     assert "lobsters" not in by_id
@@ -43259,6 +43560,327 @@ def test_ign_roadandtrack_soundguys_feeds_live_httpx_rss_headers():
             )
 
 
+def test_mining_adweek_govexec_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "mining" in by_id
+    assert by_id["mining"].feed_url == "https://www.mining.com/feed/"
+    assert by_id["mining"].feed_url != "https://www.mining.com/feed"
+    assert by_id["mining"].feed_url != "https://mining.com/feed/"
+    assert by_id["mining"].feed_url != "https://mining.com/feed"
+    assert by_id["mining"].feed_url != "https://www.mining.com/rss"
+    assert by_id["mining"].feed_url != "https://www.mining.com/rss/"
+    assert by_id["mining"].feed_url != "https://www.mining.com/rss.xml"
+    assert by_id["mining"].feed_url != "https://www.mining.com/atom.xml"
+    assert by_id["mining"].feed_url != "https://www.mining.com/index.xml"
+    assert by_id["mining"].feed_url != "https://www.mining.com/feed.xml"
+    assert by_id["mining"].feed_url != "https://www.mining.com/?feed=rss2"
+    assert by_id["mining"].feed_url != "https://www.mining.com/feed/rss/"
+    assert by_id["mining"].feed_url != "https://www.mining.com/comments/feed/"
+    assert by_id["mining"].feed_url != "https://www.mining.com/news/feed/"
+    assert by_id["mining"].feed_url != "https://www.mining.com/tag/gold/feed/"
+    assert "adweek" in by_id
+    assert by_id["adweek"].feed_url == "https://www.adweek.com/feed/"
+    assert by_id["adweek"].feed_url != "https://www.adweek.com/feed"
+    assert by_id["adweek"].feed_url != "https://adweek.com/feed/"
+    assert by_id["adweek"].feed_url != "https://adweek.com/feed"
+    assert by_id["adweek"].feed_url != "https://www.adweek.com/rss"
+    assert by_id["adweek"].feed_url != "https://www.adweek.com/rss/"
+    assert by_id["adweek"].feed_url != "https://www.adweek.com/rss.xml"
+    assert by_id["adweek"].feed_url != "https://www.adweek.com/atom.xml"
+    assert by_id["adweek"].feed_url != "https://www.adweek.com/index.xml"
+    assert by_id["adweek"].feed_url != "https://www.adweek.com/feed.xml"
+    assert by_id["adweek"].feed_url != "https://www.adweek.com/?feed=rss2"
+    assert by_id["adweek"].feed_url != "https://www.adweek.com/feed/rss/"
+    assert by_id["adweek"].feed_url != "https://www.adweek.com/comments/feed/"
+    assert by_id["adweek"].feed_url != "https://www.adweek.com/news/feed/"
+    assert by_id["adweek"].feed_url != (
+        "https://www.adweek.com/category/news/feed/"
+    )
+    assert by_id["adweek"].feed_url != "https://feeds.feedburner.com/AdweekRSS"
+    assert "govexec" in by_id
+    assert by_id["govexec"].feed_url == "https://www.govexec.com/rss/all/"
+    assert by_id["govexec"].feed_url != "https://www.govexec.com/rss/all"
+    assert by_id["govexec"].feed_url != "https://govexec.com/rss/all/"
+    assert by_id["govexec"].feed_url != "https://www.govexec.com/rss/all.xml"
+    assert by_id["govexec"].feed_url != "https://www.govexec.com/feed/"
+    assert by_id["govexec"].feed_url != "https://www.govexec.com/feed"
+    assert by_id["govexec"].feed_url != "https://www.govexec.com/rss"
+    assert by_id["govexec"].feed_url != "https://www.govexec.com/rss/"
+    assert by_id["govexec"].feed_url != "https://www.govexec.com/feeds/"
+    assert by_id["govexec"].feed_url != "https://www.govexec.com/rss.xml"
+    assert by_id["govexec"].feed_url != "https://www.govexec.com/?feed=rss2"
+    assert by_id["govexec"].feed_url != "https://www.govexec.com/rss/news/"
+    assert by_id["govexec"].feed_url != (
+        "https://www.govexec.com/rss/management/"
+    )
+    assert by_id["govexec"].feed_url != (
+        "https://www.govexec.com/rss/workforce/"
+    )
+    assert by_id["govexec"].feed_url != (
+        "https://www.govexec.com/comments/feed/"
+    )
+    # #174 / batch106 winners stay registered and unchanged.
+    # #171 / batch105 winners stay registered and unchanged.
+    # #170 / batch104 winners stay registered and unchanged.
+    # #169 / batch103 winners stay registered and unchanged.
+    # #168 / batch102 winners stay registered and unchanged.
+    # #167 / batch101 winners stay registered and unchanged.
+    # Do not touch ign / roadandtrack /
+    # soundguys / kotaku / makeuseof /
+    # spaceflightnow /
+    # energy_storage_news / geekwire /
+    # hollywoodreporter /
+    # bandcamp_daily / computerworld /
+    # bigthink / usni_news / slashfilm /
+    # singularityhub /
+    # insideclimatenews /
+    # consequence / c4isrnet /
+    # indiewire / kottke /
+    # pv_magazine / military_times /
+    # earthsky / outside / deadline /
+    # makezine / utility_dive /
+    # oilprice / the_hill /
+    # politico_politics / fast_company /
+    # niemanlab.
+    assert "ign" in by_id
+    assert "roadandtrack" in by_id
+    assert "soundguys" in by_id
+    assert "kotaku" in by_id
+    assert "makeuseof" in by_id
+    assert "spaceflightnow" in by_id
+    assert "energy_storage_news" in by_id
+    assert "geekwire" in by_id
+    assert "hollywoodreporter" in by_id
+    assert "bandcamp_daily" in by_id
+    assert "computerworld" in by_id
+    assert "bigthink" in by_id
+    assert "usni_news" in by_id
+    assert "slashfilm" in by_id
+    assert "singularityhub" in by_id
+    assert "insideclimatenews" in by_id
+    assert "consequence" in by_id
+    assert "c4isrnet" in by_id
+    assert "indiewire" in by_id
+    assert "kottke" in by_id
+    assert "pv_magazine" in by_id
+    assert "military_times" in by_id
+    assert "earthsky" in by_id
+    assert "outside" in by_id
+    assert "deadline" in by_id
+    assert "makezine" in by_id
+    assert "utility_dive" in by_id
+    assert "oilprice" in by_id
+    assert "the_hill" in by_id
+    assert "politico_politics" in by_id
+    assert "fast_company" in by_id
+    assert "niemanlab" in by_id
+    # Feed locks + uniqueness vs live
+    # commodity / media / government
+    # stack.
+    assert by_id["mining"].feed_url != by_id["oilprice"].feed_url
+    assert by_id["mining"].feed_url != by_id["energy_storage_news"].feed_url
+    assert by_id["mining"].feed_url != by_id["pv_magazine"].feed_url
+    assert by_id["mining"].feed_url != by_id["utility_dive"].feed_url
+    assert by_id["mining"].feed_url != by_id["canary_media"].feed_url
+    assert by_id["mining"].feed_url != by_id["insideclimatenews"].feed_url
+    assert by_id["mining"].feed_url != by_id["cleantechnica"].feed_url
+    assert by_id["mining"].feed_url != by_id["climate_home"].feed_url
+    assert by_id["mining"].feed_url != by_id["grist"].feed_url
+    assert by_id["mining"].feed_url != by_id["carbon_brief"].feed_url
+    assert by_id["adweek"].feed_url != by_id["hollywoodreporter"].feed_url
+    assert by_id["adweek"].feed_url != by_id["deadline"].feed_url
+    assert by_id["adweek"].feed_url != by_id["variety"].feed_url
+    assert by_id["adweek"].feed_url != by_id["slashfilm"].feed_url
+    assert by_id["adweek"].feed_url != by_id["indiewire"].feed_url
+    assert by_id["adweek"].feed_url != by_id["consequence"].feed_url
+    assert by_id["adweek"].feed_url != by_id["niemanlab"].feed_url
+    assert by_id["adweek"].feed_url != by_id["media404"].feed_url
+    assert by_id["adweek"].feed_url != by_id["fast_company"].feed_url
+    assert by_id["govexec"].feed_url != by_id["the_hill"].feed_url
+    assert by_id["govexec"].feed_url != by_id["politico_politics"].feed_url
+    assert by_id["govexec"].feed_url != by_id["politico_europe"].feed_url
+    assert by_id["govexec"].feed_url != by_id["defense_one"].feed_url
+    assert by_id["govexec"].feed_url != by_id["c4isrnet"].feed_url
+    assert by_id["govexec"].feed_url != by_id["defensenews"].feed_url
+    assert by_id["govexec"].feed_url != by_id["military_times"].feed_url
+    assert by_id["govexec"].feed_url != by_id["taskandpurpose"].feed_url
+    assert by_id["mining"].feed_url != by_id["adweek"].feed_url
+    assert by_id["mining"].feed_url != by_id["govexec"].feed_url
+    assert by_id["adweek"].feed_url != by_id["govexec"].feed_url
+    # Named 备 unused (all KEEP
+    # passed). Do not invent
+    # replacements. Do not pull
+    # later hung batches.
+    assert "mining_com" not in by_id
+    assert "mining_dot_com" not in by_id
+    assert "miningcom" not in by_id
+    assert "ad_week" not in by_id
+    assert "adweek_com" not in by_id
+    assert "gov_exec" not in by_id
+    assert "govexec_com" not in by_id
+    assert "government_executive" not in by_id
+    assert "omgubuntu" not in by_id
+    assert "thurrott" not in by_id
+    assert "lobsters" not in by_id
+    assert "platformer" not in by_id
+    assert "inc" not in by_id
+    assert "bulwark" not in by_id
+    assert "rollcall" not in by_id
+    assert "colossal" not in by_id
+    assert "creativebloq" not in by_id
+    assert "architecturaldigest" not in by_id
+    assert "allure" not in by_id
+    assert "entrepreneur" not in by_id
+    assert "puck" not in by_id
+    assert "artnews" not in by_id
+    assert "stratechery" not in by_id
+    assert "nikkei_asia" not in by_id
+    assert "morningbrew" not in by_id
+    assert "techmeme" not in by_id
+    assert "vogue" not in by_id
+    assert "filmmaker" not in by_id
+    assert "newcriterion" not in by_id
+    # national_geographic stays
+    # unregistered (no official
+    # English RSS).
+    assert "national_geographic" not in by_id
+    assert "nationalgeographic" not in by_id
+    assert "natgeo" not in by_id
+    assert "carbonbrief" not in by_id
+    assert "carbon_brief" in by_id
+    assert "politico" not in by_id
+    assert "politico_politics" in by_id
+    assert "politico_europe" in by_id
+    assert "the_atlantic" not in by_id
+    assert "motherjones" not in by_id
+    assert "the_intercept" not in by_id
+    assert "theregister" not in by_id
+    assert "atlantic" in by_id
+    assert "mother_jones" in by_id
+    assert "intercept" in by_id
+    assert "the_register" in by_id
+    assert "newscientist" not in by_id
+    assert "qz3" not in by_id
+    assert "qz" not in by_id
+    assert "fastcompany" not in by_id
+    assert "fast_company" in by_id
+    assert "the_verge" not in by_id
+    assert "flightglobal" not in by_id
+    assert "gizmodo" not in by_id
+    assert "the_baffler" not in by_id
+    assert "new_statesman" not in by_id
+    assert "guernica" not in by_id
+    assert "nationalinterest" not in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "the_nation" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "techdirt" not in by_id
+    assert "engadget" not in by_id
+    assert "digital_trends" not in by_id
+    assert "the_cut" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "indian_express" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "al_monitor" not in by_id
+    assert "hkfp" not in by_id
+    assert "biographic" not in by_id
+    assert "asiatimes" not in by_id
+    assert "dawn" not in by_id
+    assert "longreads" not in by_id
+    assert "hrw" not in by_id
+    assert "independent" not in by_id
+    assert "digiday" not in by_id
+    assert "stat_news" in by_id
+    for source_id, expected in _MINING_ADWEEK_GOVEXEC_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_mining_adweek_govexec_feeds_live_httpx_rss_headers():
+    """KEEP must pass the same httpx + RSS_HEADERS client CI uses."""
+    from news_archive.fetch import fetch_source
+
+    by_id = {s.id: s for s in SOURCES}
+    keep_floor = {
+        "mining": 10,
+        "adweek": 10,
+        "govexec": 10,
+    }
+    for source_id in _MINING_ADWEEK_GOVEXEC_PRIMARY:
+        source = by_id[source_id]
+        articles = fetch_source(source, timeout=30)
+        assert articles, f"{source_id} httpx+RSS_HEADERS insertable=0"
+        assert len(articles) >= keep_floor[source_id], (
+            f"{source_id} insertable {len(articles)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (mining / adweek /
+        # govexec) uses the
+        # un-namespaced element text.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # mining 36/36, adweek 10/10,
+        # and govexec 24/24 were 100%
+        # nonempty this probe. ≥10
+        # KEEP. mining insertable 30
+        # (ingest cap 30).
+        # mining MUST stay on www
+        # /feed/ (trailing slash;
+        # homepage announced;
+        # atom:self). /feed serves
+        # the same body.
+        # adweek MUST stay on www
+        # /feed/ (trailing slash;
+        # homepage announced;
+        # atom:self). /feed remaps
+        # here.
+        # govexec MUST stay on www
+        # /rss/all/ (trailing slash;
+        # homepage announced;
+        # atom:self). /rss/all
+        # remaps here.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        assert nonempty == len(items), (
+            f"{source_id} empty description: "
+            f"{len(items) - nonempty}/{len(items)}"
+        )
+        assert nonempty >= keep_floor[source_id], (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -43377,6 +43999,7 @@ if __name__ == "__main__":
     test_kotaku_makeuseof_spaceflightnow_primaries_registered()
     test_techspot_hard_swapped_to_ign()
     test_ign_roadandtrack_soundguys_primaries_registered()
+    test_mining_adweek_govexec_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -43483,4 +44106,5 @@ if __name__ == "__main__":
     test_energy_storage_news_geekwire_hollywoodreporter_feeds_live_httpx_rss_headers()
     test_kotaku_makeuseof_spaceflightnow_feeds_live_httpx_rss_headers()
     test_ign_roadandtrack_soundguys_feeds_live_httpx_rss_headers()
+    test_mining_adweek_govexec_feeds_live_httpx_rss_headers()
     print("✓ source registry tests PASSED")

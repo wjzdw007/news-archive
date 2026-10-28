@@ -2277,6 +2277,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="mining",
+        name="MINING.COM",
+        feed_url="https://www.mining.com/feed/",
+        category="财经",
+        role="primary",
+    ),
+    Source(
+        id="adweek",
+        name="Adweek",
+        feed_url="https://www.adweek.com/feed/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="govexec",
+        name="Government Executive",
+        feed_url="https://www.govexec.com/rss/all/",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
