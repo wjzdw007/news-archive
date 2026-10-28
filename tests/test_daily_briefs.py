@@ -1300,12 +1300,22 @@ def test_failed_today_does_not_write_mock_ok():
 
 
 def test_check_today_missing_status_file_exits_nonzero():
-    rc, out, err = _cli_json_rc(
-        ["--check-today", "--status-file", "/tmp/daily-brief-status-missing.json"]
-    )
-    assert rc == 1
-    assert "missing" in out
-    assert "::error::" in err
+    # Isolate from Persist-restored live data/archive.sqlite3 (CI 40613256235).
+    with tempfile.TemporaryDirectory() as tmp:
+        missing_status = Path(tmp) / "daily-brief-status-missing.json"
+        missing_db = Path(tmp) / "missing.sqlite3"
+        rc, out, err = _cli_json_rc(
+            [
+                "--check-today",
+                "--status-file",
+                str(missing_status),
+                "--db",
+                str(missing_db),
+            ]
+        )
+        assert rc == 1
+        assert "missing" in out
+        assert "::error::" in err
 
 
 def test_openai_complete_uses_raised_read_timeout():
