@@ -1696,6 +1696,51 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "sound_guys" not in TECH_AI_SOURCE_WHITELIST
     assert "eurogamer" not in TECH_AI_SOURCE_WHITELIST
     assert "gamespot" not in TECH_AI_SOURCE_WHITELIST
+    # batch107 RSS primaries stay off the tech/AI whitelist.
+    # mining lands on 财经 (commodity
+    # / mining newsroom, same as
+    # oilprice) — new id —
+    # official www /feed/ (MUST
+    # www + trailing slash;
+    # homepage announced;
+    # atom:self). /feed serves
+    # the same body.
+    # adweek lands on 综合
+    # (advertising / media
+    # newsroom, same as
+    # hollywoodreporter /
+    # niemanlab) — new id —
+    # official www /feed/ (MUST
+    # www + trailing slash;
+    # homepage announced;
+    # atom:self). /feed remaps
+    # here.
+    # govexec lands on 综合 (US
+    # federal government
+    # newsroom, same as the_hill
+    # / politico_politics) — new
+    # id — official www
+    # /rss/all/ (MUST www +
+    # trailing slash; homepage
+    # announced; atom:self).
+    # /rss/all remaps here.
+    # Named 备 unused (all KEEP
+    # passed): omgubuntu /
+    # thurrott / lobsters.
+    # None of these match the
+    # wired / verge / techcrunch
+    # ALWAYS pattern.
+    assert "mining" not in TECH_AI_SOURCE_WHITELIST
+    assert "adweek" not in TECH_AI_SOURCE_WHITELIST
+    assert "govexec" not in TECH_AI_SOURCE_WHITELIST
+    assert "mining_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "ad_week" not in TECH_AI_SOURCE_WHITELIST
+    assert "adweek_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "gov_exec" not in TECH_AI_SOURCE_WHITELIST
+    assert "govexec_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "omgubuntu" not in TECH_AI_SOURCE_WHITELIST
+    assert "thurrott" not in TECH_AI_SOURCE_WHITELIST
+    assert "lobsters" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
