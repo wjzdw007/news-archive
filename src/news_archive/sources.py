@@ -2298,6 +2298,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="platformer",
+        name="Platformer",
+        feed_url="https://www.platformer.news/rss/",
+        category="科技",
+        role="primary",
+    ),
+    Source(
+        id="inc",
+        name="Inc.",
+        feed_url="https://www.inc.com/rss/",
+        category="财经",
+        role="primary",
+    ),
+    Source(
+        id="bulwark",
+        name="The Bulwark",
+        feed_url="https://www.thebulwark.com/feed",
+        category="综合",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",
