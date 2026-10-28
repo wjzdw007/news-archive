@@ -1832,6 +1832,51 @@ def test_whitelist_registered_and_cap_unchanged():
     assert "puck" not in TECH_AI_SOURCE_WHITELIST
     assert "artnews" not in TECH_AI_SOURCE_WHITELIST
     assert "stratechery" not in TECH_AI_SOURCE_WHITELIST
+    # batch110 RSS primaries stay off the tech/AI whitelist.
+    # vogue lands on 综合 (fashion
+    # magazine, same as
+    # nyt_fashion /
+    # guardian_fashion / allure)
+    # — new id — official www
+    # /feed/rss (MUST www + NO
+    # trailing slash; homepage
+    # announced; atom:self).
+    # Hard-swap fill for
+    # nikkei_asia (official
+    # /rss/feed/nar is
+    # title+link only;
+    # insertable=0).
+    # morningbrew lands on 财经
+    # (business newsletter, same
+    # as inc / entrepreneur) —
+    # new id — official www
+    # /feed.xml (MUST www;
+    # atom:self). Homepage has no
+    # rel=alternate; /feed remaps
+    # here.
+    # techmeme lands on 科技
+    # (tech aggregator, same as
+    # platformer / motherboard)
+    # — new id — official www
+    # /feed.xml (MUST www;
+    # homepage announced).
+    # Named 备 unused: filmmaker /
+    # newcriterion.
+    # None of these match the
+    # wired / verge / techcrunch
+    # ALWAYS pattern.
+    assert "vogue" not in TECH_AI_SOURCE_WHITELIST
+    assert "morningbrew" not in TECH_AI_SOURCE_WHITELIST
+    assert "techmeme" not in TECH_AI_SOURCE_WHITELIST
+    assert "vogue_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "vogue_magazine" not in TECH_AI_SOURCE_WHITELIST
+    assert "morning_brew" not in TECH_AI_SOURCE_WHITELIST
+    assert "morningbrew_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "tech_meme" not in TECH_AI_SOURCE_WHITELIST
+    assert "techmeme_com" not in TECH_AI_SOURCE_WHITELIST
+    assert "nikkei_asia" not in TECH_AI_SOURCE_WHITELIST
+    assert "filmmaker" not in TECH_AI_SOURCE_WHITELIST
+    assert "newcriterion" not in TECH_AI_SOURCE_WHITELIST
     print("✓ whitelist registered + CAP=6")
 
 
