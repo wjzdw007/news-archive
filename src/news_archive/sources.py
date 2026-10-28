@@ -2340,6 +2340,27 @@ SOURCES: tuple[Source, ...] = (
         role="primary",
     ),
     Source(
+        id="vogue",
+        name="Vogue",
+        feed_url="https://www.vogue.com/feed/rss",
+        category="综合",
+        role="primary",
+    ),
+    Source(
+        id="morningbrew",
+        name="Morning Brew",
+        feed_url="https://www.morningbrew.com/feed.xml",
+        category="财经",
+        role="primary",
+    ),
+    Source(
+        id="techmeme",
+        name="Techmeme",
+        feed_url="https://www.techmeme.com/feed.xml",
+        category="科技",
+        role="primary",
+    ),
+    Source(
         id="people_finance",
         name="人民网·财经",
         feed_url="https://www.people.com.cn/rss/finance.xml",

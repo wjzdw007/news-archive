@@ -15556,11 +15556,15 @@ _ENERGY_STORAGE_NEWS_GEEKWIRE_HOLLYWOODREPORTER_PRIMARY = {
 # Named 备 unused (all KEEP
 # passed): puck / artnews /
 # stratechery.
-# Do not pull batch110 hung
-# ids (nikkei_asia /
-# morningbrew / techmeme) or
-# their 备 (vogue /
-# filmmaker / newcriterion).
+# batch110 KEEP vogue
+# (hard-swap nikkei_asia
+# title+link / insertable=0)
+# / morningbrew / techmeme
+# are registered separately.
+# Named 备 unused:
+# filmmaker / newcriterion.
+# Do not pull later hung
+# batches 111–120.
 # kotaku official
 # https://kotaku.com/feed
 # is new (no prior kotaku /
@@ -15729,14 +15733,23 @@ _ENERGY_STORAGE_NEWS_GEEKWIRE_HOLLYWOODREPORTER_PRIMARY = {
 # Named 备 unused (all KEEP
 # passed): rollcall /
 # colossal / creativebloq.
-# Do NOT register
+# batch109 KEEP
 # architecturaldigest /
-# allure / entrepreneur /
-# puck / artnews /
-# stratechery / nikkei_asia
-# / morningbrew / techmeme /
-# vogue / filmmaker /
-# newcriterion (later hung).
+# allure / entrepreneur are
+# registered separately.
+# Do NOT register puck /
+# artnews / stratechery
+# (unused batch109 备).
+# batch110 KEEP vogue
+# (hard-swap nikkei_asia) /
+# morningbrew / techmeme are
+# registered separately.
+# Do NOT register
+# nikkei_asia (hard-swap
+# title+link / insertable=0)
+# / filmmaker /
+# newcriterion (unused
+# batch110 备).
 # Do NOT re-register
 # energy_storage_news /
 # geekwire /
@@ -15858,11 +15871,15 @@ _KOTAKU_MAKEUSEOF_SPACEFLIGHTNOW_PRIMARY = {
 # Named 备 unused (all KEEP
 # passed): puck / artnews /
 # stratechery.
-# Do not pull batch110 hung
-# ids (nikkei_asia /
-# morningbrew / techmeme) or
-# their 备 (vogue /
-# filmmaker / newcriterion).
+# batch110 KEEP vogue
+# (hard-swap nikkei_asia
+# title+link / insertable=0)
+# / morningbrew / techmeme
+# are registered separately.
+# Named 备 unused:
+# filmmaker / newcriterion.
+# Do not pull later hung
+# batches 111–120.
 # ign official
 # https://www.ign.com/rss/v2/articles/feed
 # is new (no prior ign /
@@ -16050,14 +16067,23 @@ _KOTAKU_MAKEUSEOF_SPACEFLIGHTNOW_PRIMARY = {
 # Named 备 unused (all KEEP
 # passed): rollcall /
 # colossal / creativebloq.
-# Do NOT register
+# batch109 KEEP
 # architecturaldigest /
-# allure / entrepreneur /
-# puck / artnews /
-# stratechery / nikkei_asia
-# / morningbrew / techmeme /
-# vogue / filmmaker /
-# newcriterion (later hung).
+# allure / entrepreneur are
+# registered separately.
+# Do NOT register puck /
+# artnews / stratechery
+# (unused batch109 备).
+# batch110 KEEP vogue
+# (hard-swap nikkei_asia) /
+# morningbrew / techmeme are
+# registered separately.
+# Do NOT register
+# nikkei_asia (hard-swap
+# title+link / insertable=0)
+# / filmmaker /
+# newcriterion (unused
+# batch110 备).
 # Do NOT re-register
 # kotaku / makeuseof /
 # spaceflightnow /
@@ -16165,11 +16191,15 @@ _IGN_ROADANDTRACK_SOUNDGUYS_PRIMARY = {
 # Named 备 unused (all KEEP
 # passed): puck / artnews /
 # stratechery.
-# Do not pull batch110 hung
-# ids (nikkei_asia /
-# morningbrew / techmeme) or
-# their 备 (vogue /
-# filmmaker / newcriterion).
+# batch110 KEEP vogue
+# (hard-swap nikkei_asia
+# title+link / insertable=0)
+# / morningbrew / techmeme
+# are registered separately.
+# Named 备 unused:
+# filmmaker / newcriterion.
+# Do not pull later hung
+# batches 111–120.
 # mining official
 # https://www.mining.com/feed/
 # is new (no prior mining /
@@ -16354,14 +16384,23 @@ _IGN_ROADANDTRACK_SOUNDGUYS_PRIMARY = {
 # Do NOT register rollcall /
 # colossal / creativebloq
 # (unused 备).
-# Do NOT register
+# batch109 KEEP
 # architecturaldigest /
-# allure / entrepreneur /
-# puck / artnews /
-# stratechery / nikkei_asia
-# / morningbrew / techmeme /
-# vogue / filmmaker /
-# newcriterion (later hung).
+# allure / entrepreneur are
+# registered separately.
+# Do NOT register puck /
+# artnews / stratechery
+# (unused batch109 备).
+# batch110 KEEP vogue
+# (hard-swap nikkei_asia) /
+# morningbrew / techmeme are
+# registered separately.
+# Do NOT register
+# nikkei_asia (hard-swap
+# title+link / insertable=0)
+# / filmmaker /
+# newcriterion (unused
+# batch110 备).
 # Do NOT re-register ign /
 # roadandtrack / soundguys /
 # kotaku / makeuseof /
@@ -16455,13 +16494,15 @@ _MINING_ADWEEK_GOVEXEC_PRIMARY = {
 # Named 备 unused (all KEEP
 # passed): puck / artnews /
 # stratechery.
-# Do not pull batch110 hung
-# ids (nikkei_asia /
-# morningbrew / techmeme) or
-# their 备 (vogue /
-# filmmaker / newcriterion).
+# batch110 KEEP vogue
+# (hard-swap nikkei_asia
+# title+link / insertable=0)
+# / morningbrew / techmeme
+# are registered separately.
+# Named 备 unused:
+# filmmaker / newcriterion.
 # Do not pull later hung
-# batches 110–119.
+# batches 111–120.
 # platformer official
 # https://www.platformer.news/rss/
 # is new (no prior platformer /
@@ -16620,11 +16661,16 @@ _MINING_ADWEEK_GOVEXEC_PRIMARY = {
 # Do NOT register puck /
 # artnews / stratechery
 # (unused batch109 备).
+# batch110 KEEP vogue
+# (hard-swap nikkei_asia) /
+# morningbrew / techmeme are
+# registered separately.
 # Do NOT register
-# nikkei_asia / morningbrew
-# / techmeme / vogue /
-# filmmaker / newcriterion
-# (later hung).
+# nikkei_asia (hard-swap
+# title+link / insertable=0)
+# / filmmaker /
+# newcriterion (unused
+# batch110 备).
 # Do NOT re-register mining /
 # adweek / govexec / ign /
 # roadandtrack / soundguys /
@@ -16707,13 +16753,15 @@ _PLATFORMER_INC_BULWARK_PRIMARY = {
 # artnews / stratechery.
 # Unused — all KEEP passed.
 # Do not invent.
-# Do not pull batch110 hung
-# ids (nikkei_asia /
-# morningbrew / techmeme) or
-# their 备 (vogue /
-# filmmaker / newcriterion).
+# batch110 KEEP vogue
+# (hard-swap nikkei_asia
+# title+link / insertable=0)
+# / morningbrew / techmeme
+# are registered separately.
+# Named 备 unused:
+# filmmaker / newcriterion.
 # Do not pull later hung
-# batches 110–119.
+# batches 111–120.
 # architecturaldigest official
 # https://www.architecturaldigest.com/feed/rss
 # is new (no prior
@@ -16873,11 +16921,16 @@ _PLATFORMER_INC_BULWARK_PRIMARY = {
 # Do NOT register puck /
 # artnews / stratechery
 # (unused 备).
+# batch110 KEEP vogue
+# (hard-swap nikkei_asia) /
+# morningbrew / techmeme are
+# registered separately.
 # Do NOT register
-# nikkei_asia / morningbrew
-# / techmeme / vogue /
-# filmmaker / newcriterion
-# (later hung).
+# nikkei_asia (hard-swap
+# title+link / insertable=0)
+# / filmmaker /
+# newcriterion (unused
+# batch110 备).
 # Do NOT re-register
 # platformer / inc / bulwark
 # / mining / adweek /
@@ -16951,7 +17004,229 @@ _ARCHITECTURALDIGEST_ALLURE_ENTREPRENEUR_PRIMARY = {
     },
 }
 
-_EXPECTED_PRIMARY_COUNT = 332
+# CEO-approved Vogue / Morning Brew /
+# Techmeme RSS primaries
+# (batch110). On tip a8d99ec
+# after #177
+# (architecturaldigest /
+# allure / entrepreneur).
+# Product KEEP set is
+# nikkei_asia / morningbrew /
+# techmeme.
+# nikkei_asia official
+# https://asia.nikkei.com/rss/feed/nar
+# is title+link only (RSS
+# 1.0; no description; no
+# pubDate) — insertable=0
+# under article_from_entry
+# thin-skip. Homepage RSS
+# page
+# https://info.asia.nikkei.com/rss
+# announces this exact path.
+# Hard-swap to named 备
+# vogue.
+# morningbrew official
+# https://www.morningbrew.com/feed.xml
+# is new (no prior
+# morningbrew / morning_brew
+# / morningbrew_com id).
+# httpx+RSS_HEADERS HTTP 200
+# / 40 nonempty / 30
+# insertable (ingest cap 30;
+# channel "Morning Brew").
+# 40 ≥10 KEEP. MUST lock www
+# + /feed.xml. Homepage has
+# no <link rel="alternate">
+# and no RSS menu — lock
+# atom:self. /feed /feed/
+# remaps here. apex remaps
+# to www. /rss /rss/ /
+# rss.xml /atom.xml /
+# index.xml are 404 HTML.
+# /?feed=rss2 is HTML
+# homepage. comments/feed/
+# is 404. Feedburner
+# feeds.feedburner.com/morningbrew
+# is empty — never invent
+# Feedburner. Lands on 财经
+# (business newsletter, same
+# as inc / entrepreneur).
+# techmeme official
+# https://www.techmeme.com/feed.xml
+# is new (no prior techmeme /
+# tech_meme / techmeme_com
+# id). httpx+RSS_HEADERS
+# HTTP 200 / 15 nonempty /
+# 15 insertable (channel
+# "Techmeme"). 15 ≥10 KEEP.
+# MUST lock www + /feed.xml
+# (NO trailing slash).
+# Homepage <link
+# rel="alternate"
+# type="application/rss+xml"
+# title="Techmeme">
+# announces
+# href="https://www.techmeme.com/feed.xml".
+# /feed.xml/ is 404. /feed
+# /feed/ /rss /rss/ /
+# rss.xml /atom.xml /
+# comments/feed/ /
+# river.xml are 404.
+# /index.xml remaps here.
+# /?feed=rss2 is HTML
+# homepage. apex
+# /feed.xml serves the same
+# body — do not lock apex;
+# homepage announces www.
+# No atom:self. Feedburner
+# feeds.feedburner.com/Techmeme
+# serves a body — never
+# invent Feedburner
+# (homepage also announces
+# Feedburner podcast
+# Techmeme Ride Home — do
+# not lock it). Lands on 科技
+# (tech aggregator, same as
+# platformer / motherboard).
+# vogue official
+# https://www.vogue.com/feed/rss
+# is new (no prior vogue /
+# vogue_com / vogue_magazine
+# id). httpx+RSS_HEADERS
+# HTTP 200 / 29 items / 27
+# nonempty / 27 insertable
+# (channel "Vogue"). 27 ≥10
+# KEEP. Two runway-show
+# items are title-only
+# (thin-skip). MUST lock www
+# + /feed/rss (NO trailing
+# slash). Homepage <link
+# rel="alternate"
+# type="application/rss+xml"
+# announces
+# href="https://www.vogue.com/feed/rss";
+# atom:self matches.
+# /feed/rss/ serves the same
+# body but atom:self stays
+# /feed/rss/ — do not lock
+# the trailing-slash path.
+# apex remaps to www. /feed
+# is 404 HTML. /feed/ is 400
+# JSON. /rss /rss/ /
+# rss.xml /atom.xml /
+# index.xml /feed.xml are
+# 404 HTML. /?feed=rss2 is
+# HTML homepage.
+# comments/feed/ /
+# feed/rss/all are 404.
+# Feedburner
+# feeds.feedburner.com/vogue
+# is empty — never invent
+# Feedburner. Lands on 综合
+# (fashion magazine, same as
+# nyt_fashion /
+# guardian_fashion / allure).
+# Named 备 unused: filmmaker
+# / newcriterion.
+# Distinct from live
+# nyt_fashion /
+# guardian_fashion / allure /
+# inc / entrepreneur /
+# fast_company / platformer /
+# motherboard / the_markup.
+# 0 article URL overlap
+# (www.vogue.com /
+# www.morningbrew.com /
+# www.techmeme.com hosts).
+# Not added to the tech/AI
+# whitelist (later-batch
+# sources stay off the
+# frozen ALWAYS set).
+# Do NOT register
+# nikkei_asia / nikkei /
+# nikkeiasia / asia_nikkei
+# (hard-swap title+link).
+# Do NOT register vogue_com /
+# vogue_magazine /
+# morning_brew /
+# morningbrew_com /
+# tech_meme / techmeme_com.
+# Do NOT register filmmaker /
+# newcriterion (unused 备).
+# Do NOT re-register
+# architecturaldigest /
+# allure / entrepreneur /
+# platformer / inc / bulwark
+# / mining / adweek /
+# govexec / ign /
+# roadandtrack / soundguys /
+# kotaku / makeuseof /
+# spaceflightnow /
+# energy_storage_news /
+# geekwire /
+# hollywoodreporter /
+# bandcamp_daily /
+# computerworld / bigthink /
+# usni_news / slashfilm /
+# singularityhub /
+# insideclimatenews /
+# consequence / c4isrnet /
+# fast_company / stat_news /
+# nyt_fashion /
+# guardian_fashion.
+# national_geographic stays
+# unregistered (no official
+# English RSS).
+# Do NOT use as backups
+# (product skip): bangkok_post
+# / indian_express /
+# rest_of_world / al_monitor /
+# hkfp / biographic /
+# asiatimes / dawn /
+# longreads / hrw /
+# independent (429) /
+# euractiv (301→rapporteur
+# FAIL) / atlantic_council
+# (403) / the_nation (empty
+# feed) / times_of_israel
+# (Cloudflare 403) / the_cut
+# / techdirt / engadget /
+# digital_trends /
+# bleepingcomputer / gizmodo /
+# the_baffler / new_statesman
+# / guernica / nationalinterest
+# / flightglobal /
+# newscientist (CI
+# httpx+RSS_HEADERS 406/empty).
+# qz3 勿挂. digiday0观察 — do not
+# add a second digiday.
+# fastcompany 勿二重.
+# sunday_review / cnbc (403
+# known) / ap stay
+# unregistered (product lock).
+# NEWS_SOURCE_CAP display stays 6
+# — no CAP code change. No X this
+# batch. No LLM this batch. Not
+# tech/AI whitelist.
+_VOGUE_MORNINGBREW_TECHMEME_PRIMARY = {
+    "vogue": {
+        "name": "Vogue",
+        "feed_url": "https://www.vogue.com/feed/rss",
+        "category": "综合",
+    },
+    "morningbrew": {
+        "name": "Morning Brew",
+        "feed_url": "https://www.morningbrew.com/feed.xml",
+        "category": "财经",
+    },
+    "techmeme": {
+        "name": "Techmeme",
+        "feed_url": "https://www.techmeme.com/feed.xml",
+        "category": "科技",
+    },
+}
+
+_EXPECTED_PRIMARY_COUNT = 335
 _EXPECTED_CONTROL_COUNT = 1
 
 # RSS 1.0 / RDF (dw_en / dw_world) and Atom fallbacks for live XML probes.
@@ -43507,10 +43782,10 @@ def test_kotaku_makeuseof_spaceflightnow_primaries_registered():
     assert "puck" not in by_id
     assert "artnews" not in by_id
     assert "stratechery" not in by_id
+    assert "vogue" in by_id
+    assert "morningbrew" in by_id
+    assert "techmeme" in by_id
     assert "nikkei_asia" not in by_id
-    assert "morningbrew" not in by_id
-    assert "techmeme" not in by_id
-    assert "vogue" not in by_id
     assert "filmmaker" not in by_id
     assert "newcriterion" not in by_id
     # national_geographic stays
@@ -43940,10 +44215,10 @@ def test_ign_roadandtrack_soundguys_primaries_registered():
     assert "puck" not in by_id
     assert "artnews" not in by_id
     assert "stratechery" not in by_id
+    assert "vogue" in by_id
+    assert "morningbrew" in by_id
+    assert "techmeme" in by_id
     assert "nikkei_asia" not in by_id
-    assert "morningbrew" not in by_id
-    assert "techmeme" not in by_id
-    assert "vogue" not in by_id
     assert "filmmaker" not in by_id
     assert "newcriterion" not in by_id
     # national_geographic stays
@@ -44277,10 +44552,10 @@ def test_mining_adweek_govexec_primaries_registered():
     assert "puck" not in by_id
     assert "artnews" not in by_id
     assert "stratechery" not in by_id
+    assert "vogue" in by_id
+    assert "morningbrew" in by_id
+    assert "techmeme" in by_id
     assert "nikkei_asia" not in by_id
-    assert "morningbrew" not in by_id
-    assert "techmeme" not in by_id
-    assert "vogue" not in by_id
     assert "filmmaker" not in by_id
     assert "newcriterion" not in by_id
     # national_geographic stays
@@ -44599,10 +44874,10 @@ def test_platformer_inc_bulwark_primaries_registered():
     assert "puck" not in by_id
     assert "artnews" not in by_id
     assert "stratechery" not in by_id
+    assert "vogue" in by_id
+    assert "morningbrew" in by_id
+    assert "techmeme" in by_id
     assert "nikkei_asia" not in by_id
-    assert "morningbrew" not in by_id
-    assert "techmeme" not in by_id
-    assert "vogue" not in by_id
     assert "filmmaker" not in by_id
     assert "newcriterion" not in by_id
     # national_geographic stays
@@ -44979,10 +45254,10 @@ def test_architecturaldigest_allure_entrepreneur_primaries_registered():
     assert "puck" not in by_id
     assert "artnews" not in by_id
     assert "stratechery" not in by_id
+    assert "vogue" in by_id
+    assert "morningbrew" in by_id
+    assert "techmeme" in by_id
     assert "nikkei_asia" not in by_id
-    assert "morningbrew" not in by_id
-    assert "techmeme" not in by_id
-    assert "vogue" not in by_id
     assert "filmmaker" not in by_id
     assert "newcriterion" not in by_id
     # national_geographic stays
@@ -45134,6 +45409,391 @@ def test_architecturaldigest_allure_entrepreneur_feeds_live_httpx_rss_headers():
         )
 
 
+def test_nikkei_asia_hard_swapped_to_vogue():
+    """Product lock: nikkei_asia title+link / insertable=0; vogue is the KEEP fill."""
+    by_id = {s.id: s for s in SOURCES}
+    assert "nikkei_asia" not in by_id
+    assert "nikkei" not in by_id
+    assert "nikkeiasia" not in by_id
+    assert "asia_nikkei" not in by_id
+    assert "vogue" in by_id
+    source = by_id["vogue"]
+    assert source.role == "primary"
+    assert source.name == "Vogue"
+    assert source.feed_url == "https://www.vogue.com/feed/rss"
+    assert source.category == "综合"
+    assert "https://asia.nikkei.com/rss/feed/nar" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://asia.nikkei.com/rss/feed/nar/" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://feeds.feedburner.com/NikkeiAsia" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://feeds.feedburner.com/nikkeiasia" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://www.vogue.com/feed/rss/" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "https://vogue.com/feed/rss" not in {s.feed_url for s in SOURCES}
+    assert "https://www.vogue.com/feed" not in {s.feed_url for s in SOURCES}
+    assert "https://feeds.feedburner.com/vogue" not in {
+        s.feed_url for s in SOURCES
+    }
+    assert "morningbrew" in by_id
+    assert "techmeme" in by_id
+    assert "filmmaker" not in by_id
+    assert "newcriterion" not in by_id
+
+
+def test_vogue_morningbrew_techmeme_primaries_registered():
+    by_id = {s.id: s for s in SOURCES}
+    assert "vogue" in by_id
+    assert by_id["vogue"].feed_url == "https://www.vogue.com/feed/rss"
+    assert by_id["vogue"].feed_url != "https://www.vogue.com/feed/rss/"
+    assert by_id["vogue"].feed_url != "https://vogue.com/feed/rss"
+    assert by_id["vogue"].feed_url != "https://vogue.com/feed/rss/"
+    assert by_id["vogue"].feed_url != "https://www.vogue.com/feed"
+    assert by_id["vogue"].feed_url != "https://www.vogue.com/feed/"
+    assert by_id["vogue"].feed_url != "https://www.vogue.com/rss"
+    assert by_id["vogue"].feed_url != "https://www.vogue.com/rss/"
+    assert by_id["vogue"].feed_url != "https://www.vogue.com/rss.xml"
+    assert by_id["vogue"].feed_url != "https://www.vogue.com/atom.xml"
+    assert by_id["vogue"].feed_url != "https://www.vogue.com/index.xml"
+    assert by_id["vogue"].feed_url != "https://www.vogue.com/feed.xml"
+    assert by_id["vogue"].feed_url != "https://www.vogue.com/?feed=rss2"
+    assert by_id["vogue"].feed_url != "https://www.vogue.com/feed/rss/all"
+    assert by_id["vogue"].feed_url != "https://www.vogue.com/comments/feed/"
+    assert by_id["vogue"].feed_url != (
+        "https://feeds.feedburner.com/vogue"
+    )
+    assert "morningbrew" in by_id
+    assert by_id["morningbrew"].feed_url == (
+        "https://www.morningbrew.com/feed.xml"
+    )
+    assert by_id["morningbrew"].feed_url != (
+        "https://www.morningbrew.com/feed.xml/"
+    )
+    assert by_id["morningbrew"].feed_url != (
+        "https://www.morningbrew.com/feed"
+    )
+    assert by_id["morningbrew"].feed_url != (
+        "https://www.morningbrew.com/feed/"
+    )
+    assert by_id["morningbrew"].feed_url != (
+        "https://morningbrew.com/feed.xml"
+    )
+    assert by_id["morningbrew"].feed_url != "https://morningbrew.com/feed"
+    assert by_id["morningbrew"].feed_url != "https://www.morningbrew.com/rss"
+    assert by_id["morningbrew"].feed_url != (
+        "https://www.morningbrew.com/rss/"
+    )
+    assert by_id["morningbrew"].feed_url != (
+        "https://www.morningbrew.com/rss.xml"
+    )
+    assert by_id["morningbrew"].feed_url != (
+        "https://www.morningbrew.com/atom.xml"
+    )
+    assert by_id["morningbrew"].feed_url != (
+        "https://www.morningbrew.com/index.xml"
+    )
+    assert by_id["morningbrew"].feed_url != (
+        "https://www.morningbrew.com/?feed=rss2"
+    )
+    assert by_id["morningbrew"].feed_url != (
+        "https://www.morningbrew.com/daily/feed"
+    )
+    assert by_id["morningbrew"].feed_url != (
+        "https://www.morningbrew.com/daily/feed.xml"
+    )
+    assert by_id["morningbrew"].feed_url != (
+        "https://www.morningbrew.com/comments/feed/"
+    )
+    assert by_id["morningbrew"].feed_url != (
+        "https://feeds.feedburner.com/morningbrew"
+    )
+    assert "techmeme" in by_id
+    assert by_id["techmeme"].feed_url == "https://www.techmeme.com/feed.xml"
+    assert by_id["techmeme"].feed_url != "https://www.techmeme.com/feed.xml/"
+    assert by_id["techmeme"].feed_url != "https://techmeme.com/feed.xml"
+    assert by_id["techmeme"].feed_url != "https://www.techmeme.com/feed"
+    assert by_id["techmeme"].feed_url != "https://www.techmeme.com/feed/"
+    assert by_id["techmeme"].feed_url != "https://www.techmeme.com/rss"
+    assert by_id["techmeme"].feed_url != "https://www.techmeme.com/rss/"
+    assert by_id["techmeme"].feed_url != "https://www.techmeme.com/rss.xml"
+    assert by_id["techmeme"].feed_url != "https://www.techmeme.com/atom.xml"
+    assert by_id["techmeme"].feed_url != "https://www.techmeme.com/index.xml"
+    assert by_id["techmeme"].feed_url != "https://www.techmeme.com/?feed=rss2"
+    assert by_id["techmeme"].feed_url != (
+        "https://www.techmeme.com/comments/feed/"
+    )
+    assert by_id["techmeme"].feed_url != "https://www.techmeme.com/river.xml"
+    assert by_id["techmeme"].feed_url != (
+        "https://feeds.feedburner.com/Techmeme"
+    )
+    assert by_id["techmeme"].feed_url != (
+        "https://feeds.feedburner.com/techmeme"
+    )
+    # #177 / batch109 winners stay registered and unchanged.
+    # #176 / batch108 winners stay registered and unchanged.
+    # #175 / batch107 winners stay registered and unchanged.
+    # #174 / batch106 winners stay registered and unchanged.
+    # Do not touch architecturaldigest /
+    # allure / entrepreneur /
+    # platformer / inc / bulwark /
+    # mining / adweek / govexec /
+    # ign / roadandtrack /
+    # soundguys / kotaku / makeuseof /
+    # spaceflightnow /
+    # energy_storage_news / geekwire /
+    # hollywoodreporter /
+    # bandcamp_daily / computerworld /
+    # bigthink / usni_news / slashfilm /
+    # singularityhub /
+    # insideclimatenews /
+    # consequence / c4isrnet /
+    # nyt_fashion / guardian_fashion /
+    # allure / inc / entrepreneur /
+    # fast_company / platformer /
+    # motherboard.
+    assert "architecturaldigest" in by_id
+    assert "allure" in by_id
+    assert "entrepreneur" in by_id
+    assert "platformer" in by_id
+    assert "inc" in by_id
+    assert "bulwark" in by_id
+    assert "mining" in by_id
+    assert "adweek" in by_id
+    assert "govexec" in by_id
+    assert "ign" in by_id
+    assert "roadandtrack" in by_id
+    assert "soundguys" in by_id
+    assert "kotaku" in by_id
+    assert "makeuseof" in by_id
+    assert "spaceflightnow" in by_id
+    assert "energy_storage_news" in by_id
+    assert "geekwire" in by_id
+    assert "hollywoodreporter" in by_id
+    assert "bandcamp_daily" in by_id
+    assert "computerworld" in by_id
+    assert "bigthink" in by_id
+    assert "usni_news" in by_id
+    assert "slashfilm" in by_id
+    assert "singularityhub" in by_id
+    assert "insideclimatenews" in by_id
+    assert "consequence" in by_id
+    assert "c4isrnet" in by_id
+    assert "fast_company" in by_id
+    assert "forbes_innovation" in by_id
+    assert "nyt_fashion" in by_id
+    assert "guardian_fashion" in by_id
+    assert "motherboard" in by_id
+    # Feed locks + uniqueness vs live
+    # fashion / business / tech
+    # stack.
+    assert by_id["vogue"].feed_url != by_id["nyt_fashion"].feed_url
+    assert by_id["vogue"].feed_url != by_id["guardian_fashion"].feed_url
+    assert by_id["vogue"].feed_url != by_id["allure"].feed_url
+    assert by_id["vogue"].feed_url != by_id["hyperallergic"].feed_url
+    assert by_id["vogue"].feed_url != by_id["artforum"].feed_url
+    assert (
+        by_id["morningbrew"].feed_url != by_id["inc"].feed_url
+    )
+    assert (
+        by_id["morningbrew"].feed_url != by_id["entrepreneur"].feed_url
+    )
+    assert (
+        by_id["morningbrew"].feed_url != by_id["fast_company"].feed_url
+    )
+    assert (
+        by_id["morningbrew"].feed_url
+        != by_id["forbes_innovation"].feed_url
+    )
+    assert by_id["morningbrew"].feed_url != by_id["marketwatch"].feed_url
+    assert by_id["techmeme"].feed_url != by_id["platformer"].feed_url
+    assert by_id["techmeme"].feed_url != by_id["motherboard"].feed_url
+    assert by_id["techmeme"].feed_url != by_id["the_markup"].feed_url
+    assert by_id["techmeme"].feed_url != by_id["venturebeat"].feed_url
+    assert by_id["vogue"].feed_url != by_id["morningbrew"].feed_url
+    assert by_id["vogue"].feed_url != by_id["techmeme"].feed_url
+    assert by_id["morningbrew"].feed_url != by_id["techmeme"].feed_url
+    # nikkei_asia hard-swapped to
+    # vogue (title+link /
+    # insertable=0). Named 备
+    # unused: filmmaker /
+    # newcriterion. Do not invent
+    # replacements. Do not pull
+    # later hung batches.
+    assert "nikkei_asia" not in by_id
+    assert "nikkei" not in by_id
+    assert "nikkeiasia" not in by_id
+    assert "asia_nikkei" not in by_id
+    assert "vogue_com" not in by_id
+    assert "vogue_magazine" not in by_id
+    assert "morning_brew" not in by_id
+    assert "morningbrew_com" not in by_id
+    assert "tech_meme" not in by_id
+    assert "techmeme_com" not in by_id
+    assert "filmmaker" not in by_id
+    assert "newcriterion" not in by_id
+    # national_geographic stays
+    # unregistered (no official
+    # English RSS).
+    assert "national_geographic" not in by_id
+    assert "nationalgeographic" not in by_id
+    assert "natgeo" not in by_id
+    assert "carbonbrief" not in by_id
+    assert "carbon_brief" in by_id
+    assert "politico" not in by_id
+    assert "politico_politics" in by_id
+    assert "politico_europe" in by_id
+    assert "the_atlantic" not in by_id
+    assert "motherjones" not in by_id
+    assert "the_intercept" not in by_id
+    assert "theregister" not in by_id
+    assert "atlantic" in by_id
+    assert "mother_jones" in by_id
+    assert "intercept" in by_id
+    assert "the_register" in by_id
+    assert "newscientist" not in by_id
+    assert "qz3" not in by_id
+    assert "qz" not in by_id
+    assert "fastcompany" not in by_id
+    assert "fast_company" in by_id
+    assert "the_verge" not in by_id
+    assert "flightglobal" not in by_id
+    assert "gizmodo" not in by_id
+    assert "the_baffler" not in by_id
+    assert "new_statesman" not in by_id
+    assert "guernica" not in by_id
+    assert "nationalinterest" not in by_id
+    assert "atlantic_council" not in by_id
+    assert "euractiv" not in by_id
+    assert "the_nation" not in by_id
+    assert "times_of_israel" not in by_id
+    assert "techdirt" not in by_id
+    assert "engadget" not in by_id
+    assert "digital_trends" not in by_id
+    assert "the_cut" not in by_id
+    assert "bleepingcomputer" not in by_id
+    assert "bangkok_post" not in by_id
+    assert "indian_express" not in by_id
+    assert "rest_of_world" not in by_id
+    assert "al_monitor" not in by_id
+    assert "hkfp" not in by_id
+    assert "biographic" not in by_id
+    assert "asiatimes" not in by_id
+    assert "dawn" not in by_id
+    assert "longreads" not in by_id
+    assert "hrw" not in by_id
+    assert "independent" not in by_id
+    assert "digiday" not in by_id
+    assert "stat_news" in by_id
+    assert "techspot" not in by_id
+    for source_id, expected in _VOGUE_MORNINGBREW_TECHMEME_PRIMARY.items():
+        assert source_id in by_id, f"missing source id {source_id}"
+        source = by_id[source_id]
+        assert source.role == "primary"
+        assert source.name == expected["name"]
+        assert source.feed_url == expected["feed_url"]
+        assert source.category == expected["category"]
+
+
+def test_vogue_morningbrew_techmeme_feeds_live_httpx_rss_headers():
+    """KEEP must pass the same httpx + RSS_HEADERS client CI uses."""
+    from news_archive.fetch import fetch_source
+
+    by_id = {s.id: s for s in SOURCES}
+    keep_floor = {
+        "vogue": 10,
+        "morningbrew": 10,
+        "techmeme": 10,
+    }
+    for source_id in _VOGUE_MORNINGBREW_TECHMEME_PRIMARY:
+        source = by_id[source_id]
+        articles = fetch_source(source, timeout=30)
+        assert articles, f"{source_id} httpx+RSS_HEADERS insertable=0"
+        assert len(articles) >= keep_floor[source_id], (
+            f"{source_id} insertable {len(articles)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+        request = urllib.request.Request(source.feed_url, headers=RSS_HEADERS)
+        try:
+            with urllib.request.urlopen(request, timeout=30) as resp:
+                status = resp.status
+                body = resp.read()
+        except urllib.error.HTTPError as exc:
+            raise AssertionError(
+                f"{source_id} {source.feed_url} HTTP {exc.code} with RSS_HEADERS"
+            ) from exc
+        assert status == 200, f"{source_id} HTTP {status}"
+        assert body, f"{source_id} empty body"
+        root = ET.fromstring(_decode_feed_body(body))
+        items = _feed_items(root)
+        count = len(items)
+        assert count > 0, f"{source_id} parsed 0 items (bytes={len(body)})"
+        # Required: parseable title / url / published on each item.
+        # RSS 2.0 (vogue /
+        # morningbrew / techmeme)
+        # uses the un-namespaced
+        # element text. vogue
+        # runway-show items may
+        # lack description but
+        # still have title / url /
+        # published.
+        for i, item in enumerate(items):
+            title = _item_title(item)
+            url = _item_link(item)
+            published = _item_published(item)
+            assert title, f"{source_id} item[{i}] missing title"
+            assert url, f"{source_id} item[{i}] missing url"
+            assert published, f"{source_id} item[{i}] missing published"
+        # #43 thin-skip: empty description would insert 0.
+        # vogue 27/29 nonempty
+        # (2 runway-show items
+        # title-only; 27
+        # insertable). ≥10 KEEP.
+        # morningbrew 40/40
+        # nonempty; insertable 30
+        # (ingest cap 30). ≥10
+        # KEEP.
+        # techmeme 15/15 nonempty
+        # / 15 insertable. ≥10
+        # KEEP.
+        # vogue MUST stay on www
+        # /feed/rss (NO trailing
+        # slash; homepage
+        # announced; atom:self).
+        # /feed/rss/ serves the
+        # same body.
+        # morningbrew MUST stay on
+        # www /feed.xml (atom:self).
+        # /feed remaps here.
+        # Homepage has no
+        # rel=alternate.
+        # techmeme MUST stay on
+        # www /feed.xml (homepage
+        # announced). /index.xml
+        # remaps here. apex serves
+        # the same body — do not
+        # lock apex.
+        nonempty = 0
+        for item in items:
+            if _item_description(item):
+                nonempty += 1
+        if source_id != "vogue":
+            assert nonempty == len(items), (
+                f"{source_id} empty description: "
+                f"{len(items) - nonempty}/{len(items)}"
+            )
+        assert nonempty >= keep_floor[source_id], (
+            f"{source_id} nonempty {nonempty}/{len(items)} below KEEP floor "
+            f"{keep_floor[source_id]}"
+        )
+
+
 if __name__ == "__main__":
     test_source_ids_unique()
     test_source_counts()
@@ -45255,6 +45915,8 @@ if __name__ == "__main__":
     test_mining_adweek_govexec_primaries_registered()
     test_platformer_inc_bulwark_primaries_registered()
     test_architecturaldigest_allure_entrepreneur_primaries_registered()
+    test_nikkei_asia_hard_swapped_to_vogue()
+    test_vogue_morningbrew_techmeme_primaries_registered()
     test_rss_fetch_sends_browser_user_agent()
     test_asia_tech_feeds_live_http_200()
     test_china_tech_feeds_live_http_200()
@@ -45364,4 +46026,5 @@ if __name__ == "__main__":
     test_mining_adweek_govexec_feeds_live_httpx_rss_headers()
     test_platformer_inc_bulwark_feeds_live_httpx_rss_headers()
     test_architecturaldigest_allure_entrepreneur_feeds_live_httpx_rss_headers()
+    test_vogue_morningbrew_techmeme_feeds_live_httpx_rss_headers()
     print("✓ source registry tests PASSED")
