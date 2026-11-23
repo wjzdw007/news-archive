@@ -1,9 +1,9 @@
 {
-  "run_id": "45072045053",
-  "run_number": 298,
+  "run_id": "45114810893",
+  "run_number": 299,
   "run_attempt": 1,
   "sha": "a8d99ecab49edd857a675f05b85ab95cf0885911",
-  "timestamp": "2026-11-22T21:35:47Z",
+  "timestamp": "2026-11-23T05:09:26Z",
   "workflow": "daily-fetch",
   "latency_sla_passed": true,
   "latency_soft_miss": false
