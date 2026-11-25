@@ -1,10 +1,10 @@
 {
-  "run_id": "45538747862",
-  "run_number": 303,
+  "run_id": "45626823453",
+  "run_number": 304,
   "run_attempt": 1,
   "sha": "a8d99ecab49edd857a675f05b85ab95cf0885911",
-  "timestamp": "2026-11-25T03:38:07Z",
+  "timestamp": "2026-11-25T14:05:22Z",
   "workflow": "daily-fetch",
   "latency_sla_passed": true,
-  "latency_soft_miss": true
+  "latency_soft_miss": false
 }
